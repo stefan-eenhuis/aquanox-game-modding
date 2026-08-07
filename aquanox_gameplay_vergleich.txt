@@ -1,0 +1,214 @@
+================================================================================
+AQUANOX 1 GEGEN AQUANOX 2 -- KONKRETE GAMEPLAY-UNTERSCHIEDE
+================================================================================
+Stand: 2026-07-27
+Ergaenzt aquanox_engine_vergleich.txt um vier konkrete Fragen aus der Praxis.
+
+--------------------------------------------------------------------------------
+FRAGE 1: WARUM KANN MAN IN AN2 EINEN LOOPING FAHREN UND IN AN1 NICHT?
+--------------------------------------------------------------------------------
+ANTWORT: Weil AN1 ein festverdrahtetes, lagestabilisiertes Bewegungsmodell hat
+und AN2 ein parametrisiertes mit drei freien Drehachsen.
+
+DER BELEG -- AN1 hat fuenf fest einprogrammierte Bewegungsmodelle:
+    MOT_Player::Parse()      MOT_Vessel::Parse()     MOT_Turn::Parse()
+    MOT_Vehicle::Parse()     MOT_OldOne::Parse()
+In AquaNox 2 gibt es KEINEN einzigen MOT_-String mehr. Das Subsystem ist
+ersatzlos verschwunden und durch etwas anderes ersetzt worden.
+
+WAS AN2 STATTDESSEN HAT -- ini\inputmode_presets.des:
+    pla_fps_invert          = 0
+    pla_sim_invert          = 1        <- ZWEI Steuerungsmodi: FPS und SIM
+    pla_yawforstrafe        = 0
+    pla_autorollsensitivity = 0.0      <- Rollkorrektur, einstellbar bis 0
+
+Dazu im Menue drei getrennte Achsenempfindlichkeiten:
+    AlphaSensitivity        (Gieren)
+    BetaSensitivity         (Nicken)
+    GammaSensitivity        (ROLLEN)
+    GammaStrafeSensitivity / GammaThrustSensitivity / GammaTurnSensitivity
+    AutoRollSensitivity / AutoYawSensitivity / YawForStrafeSensitivity
+    InputRollCorrectionSlider
+    InvertYFpsChoice / InvertYSimChoice
+
+AquaNox 1 kennt die Begriffe "Pitch" und "Yaw" ueberhaupt nicht -- kein
+einziger solcher String steht in Aqua.exe. Es gibt dort auch keine
+Rollkorrektur zum Abschalten, weil das Modell die Lage immer selbst
+stabilisiert.
+
+=> In AN2 ist Rollen (Gamma) eine echte Eingabeachse mit abschaltbarer
+   Selbstaufrichtung. Steht AutoRollSensitivity auf 0 und der Sim-Modus an,
+   kann sich das Boot frei um alle drei Achsen drehen -- der Looping.
+   In AN1 richtet das Bewegungsmodell das Boot immer wieder auf.
+
+WAS BEIDE GLEICH HABEN: der [Control]-Block im OSD ist in beiden Spielen
+Feld fuer Feld identisch (MovePV, MoveNV, MoveT, StrafeHorrVel/T,
+StrafeVertVel/T, TurnPV, TurnNV, TurnT, TurnR, SwingT, SwingA,
+MoveFriction, TurnFriction). Der Unterschied liegt NICHT in den
+Schiffsdaten, sondern im Bewegungsmodell der Engine.
+
+EIN IRRWEG, den ich zuerst genommen habe: AN2 hat in 162 OSDs die Felder
+MinBeta, MaxBeta und AlphaRange, die AN1 fehlen. Das sah nach der Loesung
+aus, ist aber etwas anderes -- sie stehen bei Tuermen, Panzern und Bombern
+und begrenzen den SCHWENKBEREICH VON GESCHUETZEN (Alpha waagerecht,
+typisch 180 Grad; Beta senkrecht, typisch 90 Grad). Mit dem Flugmodell
+haben sie nichts zu tun.
+
+--------------------------------------------------------------------------------
+FRAGE 2: DAS MENUE ZWISCHEN DEN MISSIONEN (STATIONEN, DIALOGE)
+--------------------------------------------------------------------------------
+ANTWORT: Beide Spiele haben dasselbe Konzept -- Stationen mit begehbaren
+Raeumen und Gespraechspartnern. Umgesetzt ist es voellig verschieden.
+
+AQUANOX 1: dat\sty\room_d.des, 20.392 Byte, NumOfRoom = 91
+    [Room0]
+    {
+        Key      = 1
+        Name     = "Dock"
+        Station  = 1
+        Category = 3
+        Image    = "vfx\menu\picture\menu_talk_room01.tga"
+        Sound    = "sfx\sample\room\dock.sam"
+    }
+    Weitere Raeume: "Haendler", "Waffenlager", ...
+    Jeder Raum ist ein STANDBILD (Image) mit einer Klangkulisse.
+    Die Oberflaeche darueber ist fest einprogrammiert -- MAI_-Klassen:
+        MAI_Dialog::Enter        MAI_Dock::Enter
+        MAI_Handler::Handle_Station()   MAI_Handler::Handle_Dock()
+        MAI_Display::GAL_BUT_SetRoom()  MAI_Display::LEV_BUT_SetRoom()
+        MAI_Display::EQU_BUT_On/Off()   (Ausruestung)
+    Dazu GUI_Menu, GUI_MenuInterface, GUI_DataAnimator.
+
+AQUANOX 2: dat\sty\room.des, aber OHNE Image-Feld
+    [Room0]
+    {
+        Key     = 1
+        Station = 1
+        Sound   = "gui\gui_station_harvester\sound\bridge.sam"
+        // (Harvester) Bruecke (beide)
+    }
+    Raeume der Harvester: Bruecke, Messe/Bar, Crew's Quarters A,
+    Trash Sluice, Dock. Dazu El Topo's Office u.a.
+    Statt Standbildern gibt es je Station eine gebaute Oberflaeche:
+        gui_station_ref          82 Dateien   (gemeinsame Vorlagen)
+        gui_station_harvester    52
+        gui_station_neopolis     23
+        gui_station_atacama      23
+        gui_station_eltopo       19
+    Das sind .usi.bin-Baeume mit Animation, Videoflaechen, Schiebereglern
+    und Listen (siehe Handoff v9). Die Anbindung an die Spiellogik laeuft
+    ueber AUI_Observer_Room::Enter, AUI_Observer_Dialog, AUI_Observer_Shop,
+    AUI_Observer_ShipSelect, AUI_Observer_Briefing, AUI_Observer_Debriefing.
+
+=> AN1: statische Bilder mit Menuetasten darueber.
+   AN2: animierte, aus Bausteinen gebaute Oberflaechen je Station.
+   Begehbar im raeumlichen Sinn ist in BEIDEN nichts -- es sind Menues.
+
+--------------------------------------------------------------------------------
+FRAGE 3: SIND 3D-OBJEKTE IM LEVEL ANIMIERBAR? (z.B. eine Tuer am Brainfire)
+--------------------------------------------------------------------------------
+ANTWORT: Ja, aber nicht ueber ein Animationssystem, sondern indem das
+Skript die Teile Bild fuer Bild bewegt. Die Voraussetzungen sind da,
+im Originalspiel wurde es nie gemacht.
+
+WAS ES AN ANIMATION GIBT -- nur vier Kommandos, in BEIDEN Spielen gleich:
+    Character_StartAnimation(targetNode, string)
+    Character_StopAnimation(targetNode)
+    PhysicalCharacter_StartAnimation(targetNode, int32, float)
+    PhysicalCharacter_StopAnimation(targetNode, int32, float)
+Diese greifen auf das Skelettsystem zu (.bor/.boa, siehe Handoff v7) und
+gelten NUR fuer Charaktere -- in AquaNox 1 die vier Bionten-Bosse.
+Fuer gewoehnliche Levelobjekte gibt es KEIN Animationskommando.
+
+WAS ABER GEHT: jedes Objekt laesst sich per Skript versetzen und drehen.
+    Body_SetCS(targetNode, MAT_Vector3 pos, MAT_Vector3 rot)
+    Body_SetPosition(targetNode, MAT_Vector3)
+    Body_SetOrientation(targetNode, MAT_Vector3)
+In einem Takt (DelayedFunction alle 0,05 s) aufgerufen ergibt das eine
+Bewegung. Genau so haben wir im Rennen die KI-Schiffe versetzt.
+
+UND: UNTERTEILE SIND EINZELN ANSPRECHBAR.
+Die Levelobjekte sind mehrteilig aufgebaut. Beispiel Torpedotor in 2h1:
+    gate_torp_maneater_1.msb
+    gate_torp_maneater_1_child0.msb
+    gate_torp_maneater_1_child0_child0.msb
+Und das Missionsskript 2h1.sco spricht sie mit PFAD an:
+    "Gate_torp_maneater_1/Turm1"
+    "Can_torp_maneater_1/Turm1"
+    "/Scenario_Static/Object/DIR_GateTowers"
+ueber Node_Find(node, "pfad/unterteil").
+
+DAS BRAINFIRE-GEBAEUDE ist ebenfalls mehrteilig:
+    map\3h3\lmsh\des_brainfire_1.msb        Hauptkoerper
+                 _child0, _child3, _child4, _child5, _child6.msb
+    vfx\osd\des\des_brainfire~.osd  mit child0 .. child7
+Ein Tor liesse sich also so bauen: das passende child ueber Node_Find
+holen und in einem Takt per Body_SetOrientation aufschwenken.
+
+DIE EINSCHRAENKUNG: In allen 74 Originalskripten von AquaNox 1 gibt es
+KEINEN EINZIGEN Fall, in dem ein Koerper in einem Takt bewegt wird --
+Body_SetOrientation wird von keinem Missionsskript ueberhaupt benutzt.
+Das Verfahren ist also unerprobt. Aus unserem Rennversuch wissen wir
+ausserdem: die Engine interpoliert zwischen zwei Skriptschritten nicht,
+die Bewegung wird also nur so weich wie die Taktrate.
+
+AN2 HAT DAFUER EINE EIGENE KLASSE: NOD_Turbine (1.528 B, Basis
+NOD_Generic) -- offenbar fuer dauerhaft rotierende Teile. Skriptkommandos
+dazu gibt es keine, sie wird also ueber das OSD eingestellt.
+AN1 hat diese Klasse nicht.
+
+--------------------------------------------------------------------------------
+FRAGE 4: KANN MAN AUSSTEIGEN UND ZU FUSS DURCH EINE STATION LAUFEN?
+--------------------------------------------------------------------------------
+ANTWORT: Nein. In keinem der beiden Spiele.
+
+DER SPIELER IST IMMER EIN SCHIFF:
+    NOD_Player, Basis NOD_ShieldedBody
+        AquaNox 1:  6.008 Byte
+        AquaNox 2: 13.724 Byte
+NOD_ShieldedBody ist die Basisklasse fuer alles mit Schild und Rumpf --
+also ein Fahrzeug. Es gibt keine Spielerklasse ohne Schiff.
+
+ES GIBT ZWAR EINE FUSSGAENGERKLASSE, aber nicht fuer den Spieler:
+    NOD_PhysicalCharacter (AN1 2.932 B, AN2 3.180 B)
+    mit PhysicalCharacter_SwitchToGoing / _SwitchToStanding
+    (gehen und stehen), _GotoStart, _LookToObject, _StartAnimation
+Sie ist in BEIDEN Spielen vorhanden und wird fuer die grossen
+Kreaturen benutzt -- in AN1 sind das Belial, Crocell, Forneus und Marax,
+deren Skelettdaten unter dat\animation\ liegen. Der Spieler kann diese
+Klasse nicht annehmen; es gibt kein Kommando dafuer.
+
+WAS ES AN AUSSTIEG GIBT, ist die Rettungskapsel:
+    Body_ActivateEscapePod / Body_DeactivateEscapePod
+    Body_ForceEjection / Body_EscapePodEjected
+    Aqua_Spawn::SpawnEscapePod()
+Das ist ein Sterbevorgang, kein Wechsel der Fortbewegungsart.
+
+UND DIE STATIONEN? Die Raeume aus Frage 2 sind Menueseiten mit Bild
+beziehungsweise Oberflaeche und Klangkulisse -- keine 3D-Raeume. Es gibt
+keine Levelgeometrie fuer Stationsinnenraeume, keine Kollision dafuer und
+keine Kamera, die einen Fussgaenger begleiten wuerde.
+
+KOENNTE MAN ES NACHBAUEN? Nur sehr eingeschraenkt. Man koennte einen
+NOD_PhysicalCharacter erzeugen und ihn per Skript bewegen, aber:
+    - die Steuerung bliebe beim Schiff (kein Eingabepfad zum Charakter)
+    - es gibt keine Lauf-Animationen ausser denen der vier Bosse
+    - Innenraeume muessten als Levelgeometrie erst gebaut werden
+Fuer Nachtschicht ist das ausserhalb des Machbaren.
+
+--------------------------------------------------------------------------------
+ZUSAMMENFASSUNG
+--------------------------------------------------------------------------------
+    Looping                  AN2 ja, AN1 nein -- anderes Bewegungsmodell
+    Stationsmenue            beide ja, AN1 mit Standbildern,
+                             AN2 mit gebauten Oberflaechen
+    Levelobjekte animieren   in beiden nur per Skript-Takt ueber
+                             Body_SetCS/SetOrientation; Unterteile sind
+                             ueber Node_Find adressierbar; im Original
+                             nirgends gemacht
+    Aussteigen, zu Fuss      in beiden nein; die Fussgaengerklasse gibt es,
+                             aber nur fuer NPC-Kreaturen
+
+================================================================================
+ENDE
+================================================================================

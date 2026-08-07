@@ -1,0 +1,6063 @@
+{
+ "_source": "GOG Aqua.exe (DRM-frei), SHA256 ee061c4fc0176225aa664ffd663f6364cbb86c9e174a739ee6391e6390721639",
+ "_method": "Prototyp-Factories: `push <id>; call 0x4c80a0` liefert die Message-ID, die Factory-Vtable[3] (GetName-Stub B8 <str> C3) liefert den Lua-Namen. Signaturen aus vt[4] GetArgCount / vt[5] GetReturnCount / vt[6] GetParamType(i) / vt[7] GetReturnType(i), ausgewertet mit tools/stub_eval.py.",
+ "_verification": "398/398 IDs eindeutig, keine Doppelten; 398/398 Signaturen vollstaendig aufgeloest (0 unbekannte Parametertypen). 16 ID- und 11 Signatur-Stichproben aus Handoff v81 Abschnitt 28/40/49 stimmen exakt.",
+ "_typecodes": {
+  "0x0": "none",
+  "0x1": "int8",
+  "0x2": "int16",
+  "0x3": "uint16",
+  "0x4": "int16b",
+  "0x5": "int32",
+  "0x6": "uint32",
+  "0x7": "float",
+  "0x8": "floatb",
+  "0x9": "MAT_Vector3",
+  "0xa": "string",
+  "0xb": "string",
+  "0xc": "string",
+  "0xd": "node"
+ },
+ "_note_targetnode": "Methoden-Kommandos werden aus Lua als fn(targetNode, <params>) gerufen; der Zielknoten ist NICHT in params enthalten. Factory-Kommandos (Node_CreateNode, Node_Find) haben keinen Zielknoten.",
+ "count": 398,
+ "commands": {
+  "ANT_Client_ConnectAborted": {
+   "message_id": 38001,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Client_ConnectAborted()",
+   "lua_call": "ANT_Client_ConnectAborted(targetNode)",
+   "vtable": "0x5f9c7c",
+   "getname_stub": "0x4c7b40",
+   "factory": "0x4c7a98"
+  },
+  "ANT_Client_ConnectCompleted": {
+   "message_id": 38000,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Client_ConnectCompleted()",
+   "lua_call": "ANT_Client_ConnectCompleted(targetNode)",
+   "vtable": "0x5f9c5c",
+   "getname_stub": "0x4c79d0",
+   "factory": "0x4c7928"
+  },
+  "ANT_Client_DuplicationComplete": {
+   "message_id": 38003,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Client_DuplicationComplete()",
+   "lua_call": "ANT_Client_DuplicationComplete(targetNode)",
+   "vtable": "0x5f9cbc",
+   "getname_stub": "0x4c7e20",
+   "factory": "0x4c7d78"
+  },
+  "ANT_Client_MapChange": {
+   "message_id": 38004,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Client_MapChange()",
+   "lua_call": "ANT_Client_MapChange(targetNode)",
+   "vtable": "0x5f9cdc",
+   "getname_stub": "0x4c7f90",
+   "factory": "0x4c7ee8"
+  },
+  "ANT_Client_SessionTerminated": {
+   "message_id": 38002,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Client_SessionTerminated()",
+   "lua_call": "ANT_Client_SessionTerminated(targetNode)",
+   "vtable": "0x5f9c9c",
+   "getname_stub": "0x4c7cb0",
+   "factory": "0x4c7c08"
+  },
+  "ANT_Message_AskForPlayerRecreation": {
+   "message_id": 39005,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Message_AskForPlayerRecreation()",
+   "lua_call": "ANT_Message_AskForPlayerRecreation(targetNode)",
+   "vtable": "0x5f54d0",
+   "getname_stub": "0x47c4c0",
+   "factory": "0x47c418"
+  },
+  "ANT_Message_AuthenticateFailure": {
+   "message_id": 39029,
+   "subsystem": "ANT",
+   "argc": 4,
+   "params": [
+    "int32",
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_AuthenticateFailure(int32, int32, int32, int32)",
+   "lua_call": "ANT_Message_AuthenticateFailure(targetNode, int32, int32, int32, int32)",
+   "vtable": "0x5f57d0",
+   "getname_stub": "0x481cd0",
+   "factory": "0x481c28"
+  },
+  "ANT_Message_AuthenticateQuery": {
+   "message_id": 39027,
+   "subsystem": "ANT",
+   "argc": 9,
+   "params": [
+    "int32",
+    "uint16",
+    "uint16",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_AuthenticateQuery(int32, uint16, uint16, int32, int32, int32, int32, int32, int32)",
+   "lua_call": "ANT_Message_AuthenticateQuery(targetNode, int32, uint16, uint16, int32, int32, int32, int32, int32, int32)",
+   "vtable": "0x5f5790",
+   "getname_stub": "0x481180",
+   "factory": "0x4810d8"
+  },
+  "ANT_Message_AuthenticateReply": {
+   "message_id": 39028,
+   "subsystem": "ANT",
+   "argc": 12,
+   "params": [
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "string",
+    "string",
+    "int8",
+    "string"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_AuthenticateReply(int32, int32, int32, int32, int32, int32, int32, int32, string, string, int8, string)",
+   "lua_call": "ANT_Message_AuthenticateReply(targetNode, int32, int32, int32, int32, int32, int32, int32, int32, string, string, int8, string)",
+   "vtable": "0x5f57b0",
+   "getname_stub": "0x481700",
+   "factory": "0x481658"
+  },
+  "ANT_Message_BodyAnglesUpdate": {
+   "message_id": 39019,
+   "subsystem": "ANT",
+   "argc": 2,
+   "params": [
+    "float",
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_BodyAnglesUpdate(float, MAT_Vector3)",
+   "lua_call": "ANT_Message_BodyAnglesUpdate(targetNode, float, MAT_Vector3)",
+   "vtable": "0x5f5690",
+   "getname_stub": "0x47f9d0",
+   "factory": "0x47f928"
+  },
+  "ANT_Message_BodyUpdate": {
+   "message_id": 39007,
+   "subsystem": "ANT",
+   "argc": 4,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_BodyUpdate(float, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "lua_call": "ANT_Message_BodyUpdate(targetNode, float, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x5f5510",
+   "getname_stub": "0x47cb80",
+   "factory": "0x47cad8"
+  },
+  "ANT_Message_ClientIsLeft": {
+   "message_id": 39004,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_ClientIsLeft(int8)",
+   "lua_call": "ANT_Message_ClientIsLeft(targetNode, int8)",
+   "vtable": "0x5f54b0",
+   "getname_stub": "0x47c320",
+   "factory": "0x47c278"
+  },
+  "ANT_Message_CreateBuzzerOnServer": {
+   "message_id": 39018,
+   "subsystem": "ANT",
+   "argc": 6,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "MAT_Vector3",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_CreateBuzzerOnServer(float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32)",
+   "lua_call": "ANT_Message_CreateBuzzerOnServer(targetNode, float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32)",
+   "vtable": "0x5f5670",
+   "getname_stub": "0x47f330",
+   "factory": "0x47f288"
+  },
+  "ANT_Message_CreateObject": {
+   "message_id": 39000,
+   "subsystem": "ANT",
+   "argc": 5,
+   "params": [
+    "int32",
+    "uint16",
+    "string",
+    "int32",
+    "string"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_CreateObject(int32, uint16, string, int32, string)",
+   "lua_call": "ANT_Message_CreateObject(targetNode, int32, uint16, string, int32, string)",
+   "vtable": "0x5f5430",
+   "getname_stub": "0x47b860",
+   "factory": "0x47b7b8"
+  },
+  "ANT_Message_CreatePlayerOnClient": {
+   "message_id": 39006,
+   "subsystem": "ANT",
+   "argc": 5,
+   "params": [
+    "string",
+    "int32",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "string"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_CreatePlayerOnClient(string, int32, MAT_Vector3, MAT_Vector3, string)",
+   "lua_call": "ANT_Message_CreatePlayerOnClient(targetNode, string, int32, MAT_Vector3, MAT_Vector3, string)",
+   "vtable": "0x5f54f0",
+   "getname_stub": "0x47c630",
+   "factory": "0x47c588"
+  },
+  "ANT_Message_CreateTorpedoOnServer": {
+   "message_id": 39011,
+   "subsystem": "ANT",
+   "argc": 8,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "int8",
+    "int8",
+    "int32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_CreateTorpedoOnServer(float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "lua_call": "ANT_Message_CreateTorpedoOnServer(targetNode, float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "vtable": "0x5f5590",
+   "getname_stub": "0x47dae0",
+   "factory": "0x47da38"
+  },
+  "ANT_Message_DestroyNode": {
+   "message_id": 39013,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Message_DestroyNode()",
+   "lua_call": "ANT_Message_DestroyNode(targetNode)",
+   "vtable": "0x5f55d0",
+   "getname_stub": "0x47e620",
+   "factory": "0x47e578"
+  },
+  "ANT_Message_ObjectStateChange": {
+   "message_id": 39002,
+   "subsystem": "ANT",
+   "argc": 2,
+   "params": [
+    "int8",
+    "uint16"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_ObjectStateChange(int8, uint16)",
+   "lua_call": "ANT_Message_ObjectStateChange(targetNode, int8, uint16)",
+   "vtable": "0x5f5470",
+   "getname_stub": "0x47be20",
+   "factory": "0x47bd78"
+  },
+  "ANT_Message_ObjectWasKilled": {
+   "message_id": 39016,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_ObjectWasKilled(int32)",
+   "lua_call": "ANT_Message_ObjectWasKilled(targetNode, int32)",
+   "vtable": "0x5f5630",
+   "getname_stub": "0x47ead0",
+   "factory": "0x47ea28"
+  },
+  "ANT_Message_SendClientInfo": {
+   "message_id": 39003,
+   "subsystem": "ANT",
+   "argc": 2,
+   "params": [
+    "int8",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SendClientInfo(int8, int32)",
+   "lua_call": "ANT_Message_SendClientInfo(targetNode, int8, int32)",
+   "vtable": "0x5f5490",
+   "getname_stub": "0x47c0a0",
+   "factory": "0x47bff8"
+  },
+  "ANT_Message_SendGameInfo": {
+   "message_id": 39025,
+   "subsystem": "ANT",
+   "argc": 5,
+   "params": [
+    "int8",
+    "uint16",
+    "uint16",
+    "uint16",
+    "int8"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SendGameInfo(int8, uint16, uint16, uint16, int8)",
+   "lua_call": "ANT_Message_SendGameInfo(targetNode, int8, uint16, uint16, uint16, int8)",
+   "vtable": "0x5f5750",
+   "getname_stub": "0x480af0",
+   "factory": "0x480a48"
+  },
+  "ANT_Message_SendServerInfo": {
+   "message_id": 39026,
+   "subsystem": "ANT",
+   "argc": 4,
+   "params": [
+    "string",
+    "int8",
+    "int8",
+    "string"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SendServerInfo(string, int8, int8, string)",
+   "lua_call": "ANT_Message_SendServerInfo(targetNode, string, int8, int8, string)",
+   "vtable": "0x5f5770",
+   "getname_stub": "0x480eb0",
+   "factory": "0x480e08"
+  },
+  "ANT_Message_SendVoice": {
+   "message_id": 39021,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Message_SendVoice()",
+   "lua_call": "ANT_Message_SendVoice(targetNode)",
+   "vtable": "0x5f56d0",
+   "getname_stub": "0x47ff70",
+   "factory": "0x47fec8"
+  },
+  "ANT_Message_SetBandwidth": {
+   "message_id": 39015,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SetBandwidth(int32)",
+   "lua_call": "ANT_Message_SetBandwidth(targetNode, int32)",
+   "vtable": "0x5f5610",
+   "getname_stub": "0x47e930",
+   "factory": "0x47e888"
+  },
+  "ANT_Message_SetClientInfo": {
+   "message_id": 39020,
+   "subsystem": "ANT",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SetClientInfo(string, string, int32)",
+   "lua_call": "ANT_Message_SetClientInfo(targetNode, string, string, int32)",
+   "vtable": "0x5f56b0",
+   "getname_stub": "0x47fd30",
+   "factory": "0x47fc88"
+  },
+  "ANT_Message_SetNodeFlags": {
+   "message_id": 39014,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SetNodeFlags(int8)",
+   "lua_call": "ANT_Message_SetNodeFlags(targetNode, int8)",
+   "vtable": "0x5f55f0",
+   "getname_stub": "0x47e790",
+   "factory": "0x47e6e8"
+  },
+  "ANT_Message_ShieldUpdateAbsolute": {
+   "message_id": 39010,
+   "subsystem": "ANT",
+   "argc": 2,
+   "params": [
+    "int8",
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_ShieldUpdateAbsolute(int8, uint32)",
+   "lua_call": "ANT_Message_ShieldUpdateAbsolute(targetNode, int8, uint32)",
+   "vtable": "0x5f5570",
+   "getname_stub": "0x47d8e0",
+   "factory": "0x47d838"
+  },
+  "ANT_Message_ShieldUpdateRelative": {
+   "message_id": 39009,
+   "subsystem": "ANT",
+   "argc": 3,
+   "params": [
+    "int8",
+    "uint32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_ShieldUpdateRelative(int8, uint32, int32)",
+   "lua_call": "ANT_Message_ShieldUpdateRelative(targetNode, int8, uint32, int32)",
+   "vtable": "0x5f5550",
+   "getname_stub": "0x47d600",
+   "factory": "0x47d558"
+  },
+  "ANT_Message_SimpleExplosion": {
+   "message_id": 39024,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SimpleExplosion(MAT_Vector3)",
+   "lua_call": "ANT_Message_SimpleExplosion(targetNode, MAT_Vector3)",
+   "vtable": "0x5f5730",
+   "getname_stub": "0x4808e0",
+   "factory": "0x480838"
+  },
+  "ANT_Message_SpawnBullet": {
+   "message_id": 39008,
+   "subsystem": "ANT",
+   "argc": 5,
+   "params": [
+    "MAT_Vector3",
+    "int32",
+    "int8",
+    "int8",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SpawnBullet(MAT_Vector3, int32, int8, int8, int32)",
+   "lua_call": "ANT_Message_SpawnBullet(targetNode, MAT_Vector3, int32, int8, int8, int32)",
+   "vtable": "0x5f5530",
+   "getname_stub": "0x47d160",
+   "factory": "0x47d0b8"
+  },
+  "ANT_Message_SpawnBuzzerOnClient": {
+   "message_id": 39017,
+   "subsystem": "ANT",
+   "argc": 7,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "MAT_Vector3",
+    "int32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SpawnBuzzerOnClient(float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32, int32)",
+   "lua_call": "ANT_Message_SpawnBuzzerOnClient(targetNode, float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32, int32)",
+   "vtable": "0x5f5650",
+   "getname_stub": "0x47ec70",
+   "factory": "0x47ebc8"
+  },
+  "ANT_Message_SpawnSplash": {
+   "message_id": 39022,
+   "subsystem": "ANT",
+   "argc": 3,
+   "params": [
+    "MAT_Vector3",
+    "uint16",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SpawnSplash(MAT_Vector3, uint16, int32)",
+   "lua_call": "ANT_Message_SpawnSplash(targetNode, MAT_Vector3, uint16, int32)",
+   "vtable": "0x5f56f0",
+   "getname_stub": "0x480090",
+   "factory": "0x47ffe8"
+  },
+  "ANT_Message_SpawnTorpedoOnClient": {
+   "message_id": 39012,
+   "subsystem": "ANT",
+   "argc": 8,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "int8",
+    "int8",
+    "int32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_SpawnTorpedoOnClient(float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "lua_call": "ANT_Message_SpawnTorpedoOnClient(targetNode, float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "vtable": "0x5f55b0",
+   "getname_stub": "0x47df30",
+   "factory": "0x47de88"
+  },
+  "ANT_Message_TimeStamp": {
+   "message_id": 39001,
+   "subsystem": "ANT",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_TimeStamp(float, float, float, float)",
+   "lua_call": "ANT_Message_TimeStamp(targetNode, float, float, float, float)",
+   "vtable": "0x5f5450",
+   "getname_stub": "0x47bba0",
+   "factory": "0x47baf8"
+  },
+  "ANT_Message_TorpedoImpactEffect": {
+   "message_id": 39023,
+   "subsystem": "ANT",
+   "argc": 3,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Message_TorpedoImpactEffect(MAT_Vector3, MAT_Vector3, int32)",
+   "lua_call": "ANT_Message_TorpedoImpactEffect(targetNode, MAT_Vector3, MAT_Vector3, int32)",
+   "vtable": "0x5f5710",
+   "getname_stub": "0x480450",
+   "factory": "0x4803a8"
+  },
+  "ANT_Rules_ChangeTeam": {
+   "message_id": 32006,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "ANT_Rules_ChangeTeam(int8)",
+   "lua_call": "ANT_Rules_ChangeTeam(targetNode, int8)",
+   "vtable": "0x5f9c3c",
+   "getname_stub": "0x4c7830",
+   "factory": "0x4c7788"
+  },
+  "ANT_Rules_ConnectCompleted": {
+   "message_id": 32000,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Rules_ConnectCompleted()",
+   "lua_call": "ANT_Rules_ConnectCompleted(targetNode)",
+   "vtable": "0x5f9b7c",
+   "getname_stub": "0x4c6ec0",
+   "factory": "0x4c6e18"
+  },
+  "ANT_Rules_EventCTF": {
+   "message_id": 32004,
+   "subsystem": "ANT",
+   "argc": 4,
+   "params": [
+    "int8",
+    "int8",
+    "int8",
+    "int8"
+   ],
+   "returns": [],
+   "signature": "ANT_Rules_EventCTF(int8, int8, int8, int8)",
+   "lua_call": "ANT_Rules_EventCTF(targetNode, int8, int8, int8, int8)",
+   "vtable": "0x5f9bfc",
+   "getname_stub": "0x4c7340",
+   "factory": "0x4c7298"
+  },
+  "ANT_Rules_RulesPlayerInfoUpdate": {
+   "message_id": 32003,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Rules_RulesPlayerInfoUpdate()",
+   "lua_call": "ANT_Rules_RulesPlayerInfoUpdate(targetNode)",
+   "vtable": "0x5f9bdc",
+   "getname_stub": "0x4c7220",
+   "factory": "0x4c7178"
+  },
+  "ANT_Rules_RulesPlayerUpdate": {
+   "message_id": 32002,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Rules_RulesPlayerUpdate()",
+   "lua_call": "ANT_Rules_RulesPlayerUpdate(targetNode)",
+   "vtable": "0x5f9bbc",
+   "getname_stub": "0x4c7100",
+   "factory": "0x4c7058"
+  },
+  "ANT_Rules_RulesTeamUpdate": {
+   "message_id": 32001,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Rules_RulesTeamUpdate()",
+   "lua_call": "ANT_Rules_RulesTeamUpdate(targetNode)",
+   "vtable": "0x5f9b9c",
+   "getname_stub": "0x4c6fe0",
+   "factory": "0x4c6f38"
+  },
+  "ANT_Rules_StartTime": {
+   "message_id": 32005,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "ANT_Rules_StartTime(float)",
+   "lua_call": "ANT_Rules_StartTime(targetNode, float)",
+   "vtable": "0x5f9c1c",
+   "getname_stub": "0x4c7680",
+   "factory": "0x4c75d8"
+  },
+  "ANT_Server_RemoteConsole": {
+   "message_id": 37005,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Server_RemoteConsole()",
+   "lua_call": "ANT_Server_RemoteConsole(targetNode)",
+   "vtable": "0x5f9b5c",
+   "getname_stub": "0x4c6da0",
+   "factory": "0x4c6cf8"
+  },
+  "ANT_Server_RemoteJoined": {
+   "message_id": 37000,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Server_RemoteJoined(int32)",
+   "lua_call": "ANT_Server_RemoteJoined(targetNode, int32)",
+   "vtable": "0x5f9abc",
+   "getname_stub": "0x4c6660",
+   "factory": "0x4c65b8"
+  },
+  "ANT_Server_RemoteLeft": {
+   "message_id": 37001,
+   "subsystem": "ANT",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "ANT_Server_RemoteLeft(int32)",
+   "lua_call": "ANT_Server_RemoteLeft(targetNode, int32)",
+   "vtable": "0x5f9adc",
+   "getname_stub": "0x4c6800",
+   "factory": "0x4c6758"
+  },
+  "ANT_Server_SessionTerminated": {
+   "message_id": 37002,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Server_SessionTerminated()",
+   "lua_call": "ANT_Server_SessionTerminated(targetNode)",
+   "vtable": "0x5f9afc",
+   "getname_stub": "0x4c69a0",
+   "factory": "0x4c68f8"
+  },
+  "ANT_Server_StartScenegraphDuplication": {
+   "message_id": 37003,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Server_StartScenegraphDuplication()",
+   "lua_call": "ANT_Server_StartScenegraphDuplication(targetNode)",
+   "vtable": "0x5f9b1c",
+   "getname_stub": "0x4c6ac0",
+   "factory": "0x4c6a18"
+  },
+  "ANT_Server_StartScenegraphSync": {
+   "message_id": 37004,
+   "subsystem": "ANT",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ANT_Server_StartScenegraphSync()",
+   "lua_call": "ANT_Server_StartScenegraphSync(targetNode)",
+   "vtable": "0x5f9b3c",
+   "getname_stub": "0x4c6c30",
+   "factory": "0x4c6b88"
+  },
+  "Body_ActivateEscapePod": {
+   "message_id": 1038,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_ActivateEscapePod()",
+   "lua_call": "Body_ActivateEscapePod(targetNode)",
+   "vtable": "0x5f99bc",
+   "getname_stub": "0x4c5d10",
+   "factory": "0x4c5c68"
+  },
+  "Body_ActivateShieldGuard": {
+   "message_id": 1014,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_ActivateShieldGuard()",
+   "lua_call": "Body_ActivateShieldGuard(targetNode)",
+   "vtable": "0x5f96bc",
+   "getname_stub": "0x4c3b00",
+   "factory": "0x4c3a58"
+  },
+  "Body_AddItem": {
+   "message_id": 1034,
+   "subsystem": "Body",
+   "argc": 2,
+   "params": [
+    "string",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Body_AddItem(string, int32)",
+   "lua_call": "Body_AddItem(targetNode, string, int32)",
+   "vtable": "0x5f993c",
+   "getname_stub": "0x4c5670",
+   "factory": "0x4c55c8"
+  },
+  "Body_AddItemInteger": {
+   "message_id": 1035,
+   "subsystem": "Body",
+   "argc": 2,
+   "params": [
+    "uint16",
+    "uint16"
+   ],
+   "returns": [],
+   "signature": "Body_AddItemInteger(uint16, uint16)",
+   "lua_call": "Body_AddItemInteger(targetNode, uint16, uint16)",
+   "vtable": "0x5f995c",
+   "getname_stub": "0x4c57c0",
+   "factory": "0x4c5718"
+  },
+  "Body_BioShieldBarrierReached": {
+   "message_id": 1025,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_BioShieldBarrierReached(float)",
+   "lua_call": "Body_BioShieldBarrierReached(targetNode, float)",
+   "vtable": "0x5f981c",
+   "getname_stub": "0x4c48d0",
+   "factory": "0x4c4828"
+  },
+  "Body_DeactivateEscapePod": {
+   "message_id": 1039,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_DeactivateEscapePod()",
+   "lua_call": "Body_DeactivateEscapePod(targetNode)",
+   "vtable": "0x5f99dc",
+   "getname_stub": "0x4c5e30",
+   "factory": "0x4c5d88"
+  },
+  "Body_DeactivateShieldGuard": {
+   "message_id": 1015,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_DeactivateShieldGuard()",
+   "lua_call": "Body_DeactivateShieldGuard(targetNode)",
+   "vtable": "0x5f96dc",
+   "getname_stub": "0x4c3c20",
+   "factory": "0x4c3b78"
+  },
+  "Body_EMPParalyzed": {
+   "message_id": 1033,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_EMPParalyzed()",
+   "lua_call": "Body_EMPParalyzed(targetNode)",
+   "vtable": "0x5f991c",
+   "getname_stub": "0x4c5500",
+   "factory": "0x4c5458"
+  },
+  "Body_EmpShieldBarrierReached": {
+   "message_id": 1022,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_EmpShieldBarrierReached(float)",
+   "lua_call": "Body_EmpShieldBarrierReached(targetNode, float)",
+   "vtable": "0x5f97bc",
+   "getname_stub": "0x4c44e0",
+   "factory": "0x4c4438"
+  },
+  "Body_EnemyArrival": {
+   "message_id": 1028,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_EnemyArrival()",
+   "lua_call": "Body_EnemyArrival(targetNode)",
+   "vtable": "0x5f987c",
+   "getname_stub": "0x4c4d50",
+   "factory": "0x4c4ca8"
+  },
+  "Body_EnemyArrivalPatrol": {
+   "message_id": 1031,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_EnemyArrivalPatrol()",
+   "lua_call": "Body_EnemyArrivalPatrol(targetNode)",
+   "vtable": "0x5f98dc",
+   "getname_stub": "0x4c5270",
+   "factory": "0x4c51c8"
+  },
+  "Body_EscapePodEjected": {
+   "message_id": 1041,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_EscapePodEjected()",
+   "lua_call": "Body_EscapePodEjected(targetNode)",
+   "vtable": "0x5f9a1c",
+   "getname_stub": "0x4c6070",
+   "factory": "0x4c5fc8"
+  },
+  "Body_ForceEjection": {
+   "message_id": 1040,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_ForceEjection()",
+   "lua_call": "Body_ForceEjection(targetNode)",
+   "vtable": "0x5f99fc",
+   "getname_stub": "0x4c5f50",
+   "factory": "0x4c5ea8"
+  },
+  "Body_Freeze": {
+   "message_id": 1045,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_Freeze()",
+   "lua_call": "Body_Freeze(targetNode)",
+   "vtable": "0x5f9a9c",
+   "getname_stub": "0x4c6540",
+   "factory": "0x4c6498"
+  },
+  "Body_GetBioShield": {
+   "message_id": 1011,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "float"
+   ],
+   "signature": "Body_GetBioShield() -> float",
+   "lua_call": "Body_GetBioShield(targetNode)",
+   "vtable": "0x5f965c",
+   "getname_stub": "0x4c3680",
+   "factory": "0x4c35d8"
+  },
+  "Body_GetEmpShield": {
+   "message_id": 1013,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "float"
+   ],
+   "signature": "Body_GetEmpShield() -> float",
+   "lua_call": "Body_GetEmpShield(targetNode)",
+   "vtable": "0x5f969c",
+   "getname_stub": "0x4c3950",
+   "factory": "0x4c38a8"
+  },
+  "Body_GetKineticShield": {
+   "message_id": 1009,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "int16"
+   ],
+   "returns": [
+    "float"
+   ],
+   "signature": "Body_GetKineticShield(int16) -> float",
+   "lua_call": "Body_GetKineticShield(targetNode, int16)",
+   "vtable": "0x5f961c",
+   "getname_stub": "0x4c33b0",
+   "factory": "0x4c3308"
+  },
+  "Body_GetPosition": {
+   "message_id": 1002,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "MAT_Vector3"
+   ],
+   "signature": "Body_GetPosition() -> MAT_Vector3",
+   "lua_call": "Body_GetPosition(targetNode)",
+   "vtable": "0x5f953c",
+   "getname_stub": "0x4c2720",
+   "factory": "0x4c2678"
+  },
+  "Body_InformEnemies": {
+   "message_id": 1026,
+   "subsystem": "Body",
+   "argc": 5,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Body_InformEnemies(float, string, string, string, string)",
+   "lua_call": "Body_InformEnemies(targetNode, float, string, string, string, string)",
+   "vtable": "0x5f983c",
+   "getname_stub": "0x4c4a80",
+   "factory": "0x4c49d8"
+  },
+  "Body_InformEnemyPatrol": {
+   "message_id": 1029,
+   "subsystem": "Body",
+   "argc": 7,
+   "params": [
+    "uint32",
+    "float",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Body_InformEnemyPatrol(uint32, float, string, string, string, string, string)",
+   "lua_call": "Body_InformEnemyPatrol(targetNode, uint32, float, string, string, string, string, string)",
+   "vtable": "0x5f989c",
+   "getname_stub": "0x4c4ec0",
+   "factory": "0x4c4e18"
+  },
+  "Body_InformShotHit": {
+   "message_id": 1007,
+   "subsystem": "Body",
+   "argc": 2,
+   "params": [
+    "node",
+    "node"
+   ],
+   "returns": [],
+   "signature": "Body_InformShotHit(node, node)",
+   "lua_call": "Body_InformShotHit(targetNode, node, node)",
+   "vtable": "0x5f95dc",
+   "getname_stub": "0x4c3090",
+   "factory": "0x4c2fe8"
+  },
+  "Body_KinShieldBarrierReached": {
+   "message_id": 1019,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_KinShieldBarrierReached(float)",
+   "lua_call": "Body_KinShieldBarrierReached(targetNode, float)",
+   "vtable": "0x5f975c",
+   "getname_stub": "0x4c40f0",
+   "factory": "0x4c4048"
+  },
+  "Body_ObjectDestroyed": {
+   "message_id": 1016,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_ObjectDestroyed()",
+   "lua_call": "Body_ObjectDestroyed(targetNode)",
+   "vtable": "0x5f96fc",
+   "getname_stub": "0x4c3d40",
+   "factory": "0x4c3c98"
+  },
+  "Body_RejectBioInfo": {
+   "message_id": 1024,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RejectBioInfo()",
+   "lua_call": "Body_RejectBioInfo(targetNode)",
+   "vtable": "0x5f97fc",
+   "getname_stub": "0x4c47b0",
+   "factory": "0x4c4708"
+  },
+  "Body_RejectEmpInfo": {
+   "message_id": 1021,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RejectEmpInfo()",
+   "lua_call": "Body_RejectEmpInfo(targetNode)",
+   "vtable": "0x5f979c",
+   "getname_stub": "0x4c43c0",
+   "factory": "0x4c4318"
+  },
+  "Body_RejectEnemies": {
+   "message_id": 1027,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RejectEnemies()",
+   "lua_call": "Body_RejectEnemies(targetNode)",
+   "vtable": "0x5f985c",
+   "getname_stub": "0x4c4be0",
+   "factory": "0x4c4b38"
+  },
+  "Body_RejectEnemyPatrol": {
+   "message_id": 1030,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RejectEnemyPatrol()",
+   "lua_call": "Body_RejectEnemyPatrol(targetNode)",
+   "vtable": "0x5f98bc",
+   "getname_stub": "0x4c5100",
+   "factory": "0x4c5058"
+  },
+  "Body_RejectKinInfo": {
+   "message_id": 1018,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RejectKinInfo()",
+   "lua_call": "Body_RejectKinInfo(targetNode)",
+   "vtable": "0x5f973c",
+   "getname_stub": "0x4c3fd0",
+   "factory": "0x4c3f28"
+  },
+  "Body_RejectShotHits": {
+   "message_id": 1006,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RejectShotHits()",
+   "lua_call": "Body_RejectShotHits(targetNode)",
+   "vtable": "0x5f95bc",
+   "getname_stub": "0x4c2f70",
+   "factory": "0x4c2ec8"
+  },
+  "Body_RequestBioInfo": {
+   "message_id": 1023,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_RequestBioInfo(float)",
+   "lua_call": "Body_RequestBioInfo(targetNode, float)",
+   "vtable": "0x5f97dc",
+   "getname_stub": "0x4c4690",
+   "factory": "0x4c45e8"
+  },
+  "Body_RequestEmpInfo": {
+   "message_id": 1020,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_RequestEmpInfo(float)",
+   "lua_call": "Body_RequestEmpInfo(targetNode, float)",
+   "vtable": "0x5f977c",
+   "getname_stub": "0x4c42a0",
+   "factory": "0x4c41f8"
+  },
+  "Body_RequestKinInfo": {
+   "message_id": 1017,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_RequestKinInfo(float)",
+   "lua_call": "Body_RequestKinInfo(targetNode, float)",
+   "vtable": "0x5f971c",
+   "getname_stub": "0x4c3eb0",
+   "factory": "0x4c3e08"
+  },
+  "Body_RequestShotHits": {
+   "message_id": 1005,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_RequestShotHits()",
+   "lua_call": "Body_RequestShotHits(targetNode)",
+   "vtable": "0x5f959c",
+   "getname_stub": "0x4c2e50",
+   "factory": "0x4c2da8"
+  },
+  "Body_SetBioShield": {
+   "message_id": 1010,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_SetBioShield(float)",
+   "lua_call": "Body_SetBioShield(targetNode, float)",
+   "vtable": "0x5f963c",
+   "getname_stub": "0x4c3560",
+   "factory": "0x4c34b8"
+  },
+  "Body_SetCS": {
+   "message_id": 1004,
+   "subsystem": "Body",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Body_SetCS(MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Body_SetCS(targetNode, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x5f957c",
+   "getname_stub": "0x4c2a60",
+   "factory": "0x4c29b8"
+  },
+  "Body_SetCargoKey": {
+   "message_id": 1036,
+   "subsystem": "Body",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Body_SetCargoKey(uint32, int32)",
+   "lua_call": "Body_SetCargoKey(targetNode, uint32, int32)",
+   "vtable": "0x5f997c",
+   "getname_stub": "0x4c5a30",
+   "factory": "0x4c5988"
+  },
+  "Body_SetEmpShield": {
+   "message_id": 1012,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_SetEmpShield(float)",
+   "lua_call": "Body_SetEmpShield(targetNode, float)",
+   "vtable": "0x5f967c",
+   "getname_stub": "0x4c3830",
+   "factory": "0x4c3788"
+  },
+  "Body_SetFriendOrFoeID": {
+   "message_id": 1032,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "Body_SetFriendOrFoeID(uint32)",
+   "lua_call": "Body_SetFriendOrFoeID(targetNode, uint32)",
+   "vtable": "0x5f98fc",
+   "getname_stub": "0x4c53e0",
+   "factory": "0x4c5338"
+  },
+  "Body_SetKinEscapeBarrier": {
+   "message_id": 1044,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_SetKinEscapeBarrier(float)",
+   "lua_call": "Body_SetKinEscapeBarrier(targetNode, float)",
+   "vtable": "0x5f9a7c",
+   "getname_stub": "0x4c6420",
+   "factory": "0x4c6378"
+  },
+  "Body_SetKineticShield": {
+   "message_id": 1008,
+   "subsystem": "Body",
+   "argc": 2,
+   "params": [
+    "int16",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Body_SetKineticShield(int16, float)",
+   "lua_call": "Body_SetKineticShield(targetNode, int16, float)",
+   "vtable": "0x5f95fc",
+   "getname_stub": "0x4c3260",
+   "factory": "0x4c31b8"
+  },
+  "Body_SetMesh": {
+   "message_id": 1003,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Body_SetMesh(string)",
+   "lua_call": "Body_SetMesh(targetNode, string)",
+   "vtable": "0x5f955c",
+   "getname_stub": "0x4c2940",
+   "factory": "0x4c2898"
+  },
+  "Body_SetNameKey": {
+   "message_id": 1037,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "Body_SetNameKey(uint32)",
+   "lua_call": "Body_SetNameKey(targetNode, uint32)",
+   "vtable": "0x5f999c",
+   "getname_stub": "0x4c5bf0",
+   "factory": "0x4c5b48"
+  },
+  "Body_SetOrientation": {
+   "message_id": 1001,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Body_SetOrientation(MAT_Vector3)",
+   "lua_call": "Body_SetOrientation(targetNode, MAT_Vector3)",
+   "vtable": "0x5f951c",
+   "getname_stub": "0x4c2600",
+   "factory": "0x4c2558"
+  },
+  "Body_SetPosition": {
+   "message_id": 1000,
+   "subsystem": "Body",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Body_SetPosition(MAT_Vector3)",
+   "lua_call": "Body_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x5f94fc",
+   "getname_stub": "0x4c24e0",
+   "factory": "0x4c2438"
+  },
+  "Body_StartEscapeBehaviour": {
+   "message_id": 1042,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_StartEscapeBehaviour()",
+   "lua_call": "Body_StartEscapeBehaviour(targetNode)",
+   "vtable": "0x5f9a3c",
+   "getname_stub": "0x4c61e0",
+   "factory": "0x4c6138"
+  },
+  "Body_StopEscapeBehaviour": {
+   "message_id": 1043,
+   "subsystem": "Body",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Body_StopEscapeBehaviour()",
+   "lua_call": "Body_StopEscapeBehaviour(targetNode)",
+   "vtable": "0x5f9a5c",
+   "getname_stub": "0x4c6300",
+   "factory": "0x4c6258"
+  },
+  "Camera_Cut": {
+   "message_id": 7016,
+   "subsystem": "Camera",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_Cut(float)",
+   "lua_call": "Camera_Cut(targetNode, float)",
+   "vtable": "0x5f945c",
+   "getname_stub": "0x4c1950",
+   "factory": "0x4c18a8"
+  },
+  "Camera_LookAhead": {
+   "message_id": 7008,
+   "subsystem": "Camera",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_LookAhead(float, float)",
+   "lua_call": "Camera_LookAhead(targetNode, float, float)",
+   "vtable": "0x5f935c",
+   "getname_stub": "0x4c0aa0",
+   "factory": "0x4c09f8"
+  },
+  "Camera_LookAt": {
+   "message_id": 7005,
+   "subsystem": "Camera",
+   "argc": 4,
+   "params": [
+    "string",
+    "float",
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_LookAt(string, float, string, float)",
+   "lua_call": "Camera_LookAt(targetNode, string, float, string, float)",
+   "vtable": "0x5f92fc",
+   "getname_stub": "0x4c0470",
+   "factory": "0x4c03c8"
+  },
+  "Camera_LookFrom": {
+   "message_id": 7003,
+   "subsystem": "Camera",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Camera_LookFrom(string)",
+   "lua_call": "Camera_LookFrom(targetNode, string)",
+   "vtable": "0x5f92bc",
+   "getname_stub": "0x4c00e0",
+   "factory": "0x4c0038"
+  },
+  "Camera_MoveInto": {
+   "message_id": 7002,
+   "subsystem": "Camera",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Camera_MoveInto(string)",
+   "lua_call": "Camera_MoveInto(targetNode, string)",
+   "vtable": "0x5f929c",
+   "getname_stub": "0x4bff50",
+   "factory": "0x4bfea8"
+  },
+  "Camera_MoveTo": {
+   "message_id": 7004,
+   "subsystem": "Camera",
+   "argc": 4,
+   "params": [
+    "string",
+    "float",
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_MoveTo(string, float, string, float)",
+   "lua_call": "Camera_MoveTo(targetNode, string, float, string, float)",
+   "vtable": "0x5f92dc",
+   "getname_stub": "0x4c0270",
+   "factory": "0x4c01c8"
+  },
+  "Camera_MoveToAnglesAbs": {
+   "message_id": 7015,
+   "subsystem": "Camera",
+   "argc": 6,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_MoveToAnglesAbs(string, float, float, float, float, float)",
+   "lua_call": "Camera_MoveToAnglesAbs(targetNode, string, float, float, float, float, float)",
+   "vtable": "0x5f943c",
+   "getname_stub": "0x4c1680",
+   "factory": "0x4c15d8"
+  },
+  "Camera_MoveToAnglesRel": {
+   "message_id": 7014,
+   "subsystem": "Camera",
+   "argc": 6,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_MoveToAnglesRel(string, float, float, float, float, float)",
+   "lua_call": "Camera_MoveToAnglesRel(targetNode, string, float, float, float, float, float)",
+   "vtable": "0x5f941c",
+   "getname_stub": "0x4c13b0",
+   "factory": "0x4c1308"
+  },
+  "Camera_MoveToAnglesRelIgnoreBC": {
+   "message_id": 7019,
+   "subsystem": "Camera",
+   "argc": 6,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_MoveToAnglesRelIgnoreBC(string, float, float, float, float, float)",
+   "lua_call": "Camera_MoveToAnglesRelIgnoreBC(targetNode, string, float, float, float, float, float)",
+   "vtable": "0x5f94bc",
+   "getname_stub": "0x4c1cb0",
+   "factory": "0x4c1c08"
+  },
+  "Camera_RollAhead": {
+   "message_id": 7009,
+   "subsystem": "Camera",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_RollAhead(float, float, float, float)",
+   "lua_call": "Camera_RollAhead(targetNode, float, float, float, float)",
+   "vtable": "0x5f937c",
+   "getname_stub": "0x4c0bc0",
+   "factory": "0x4c0b18"
+  },
+  "Camera_RollFrom": {
+   "message_id": 7007,
+   "subsystem": "Camera",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Camera_RollFrom(string)",
+   "lua_call": "Camera_RollFrom(targetNode, string)",
+   "vtable": "0x5f933c",
+   "getname_stub": "0x4c08f0",
+   "factory": "0x4c0848"
+  },
+  "Camera_RollTo": {
+   "message_id": 7006,
+   "subsystem": "Camera",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Camera_RollTo(float, float, int32)",
+   "lua_call": "Camera_RollTo(targetNode, float, float, int32)",
+   "vtable": "0x5f931c",
+   "getname_stub": "0x4c06b0",
+   "factory": "0x4c0608"
+  },
+  "Camera_SetBackPlane": {
+   "message_id": 7000,
+   "subsystem": "Camera",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_SetBackPlane(float)",
+   "lua_call": "Camera_SetBackPlane(targetNode, float)",
+   "vtable": "0x5f925c",
+   "getname_stub": "0x4bfbf0",
+   "factory": "0x4bfb48"
+  },
+  "Camera_SetFrontPlane": {
+   "message_id": 7001,
+   "subsystem": "Camera",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_SetFrontPlane(float)",
+   "lua_call": "Camera_SetFrontPlane(targetNode, float)",
+   "vtable": "0x5f927c",
+   "getname_stub": "0x4bfda0",
+   "factory": "0x4bfcf8"
+  },
+  "Camera_ShakeHit": {
+   "message_id": 7010,
+   "subsystem": "Camera",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_ShakeHit(float, float, float, float)",
+   "lua_call": "Camera_ShakeHit(targetNode, float, float, float, float)",
+   "vtable": "0x5f939c",
+   "getname_stub": "0x4c0d10",
+   "factory": "0x4c0c68"
+  },
+  "Camera_ShakeTo": {
+   "message_id": 7011,
+   "subsystem": "Camera",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_ShakeTo(float, float, float, float)",
+   "lua_call": "Camera_ShakeTo(targetNode, float, float, float, float)",
+   "vtable": "0x5f93bc",
+   "getname_stub": "0x4c0e60",
+   "factory": "0x4c0db8"
+  },
+  "Camera_ShakeViewHit": {
+   "message_id": 7017,
+   "subsystem": "Camera",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_ShakeViewHit(float, float, float)",
+   "lua_call": "Camera_ShakeViewHit(targetNode, float, float, float)",
+   "vtable": "0x5f947c",
+   "getname_stub": "0x4c1a70",
+   "factory": "0x4c19c8"
+  },
+  "Camera_ShakeViewTo": {
+   "message_id": 7018,
+   "subsystem": "Camera",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_ShakeViewTo(float, float, float)",
+   "lua_call": "Camera_ShakeViewTo(targetNode, float, float, float)",
+   "vtable": "0x5f949c",
+   "getname_stub": "0x4c1b90",
+   "factory": "0x4c1ae8"
+  },
+  "Camera_SwingAtLissajous": {
+   "message_id": 7020,
+   "subsystem": "Camera",
+   "argc": 6,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Camera_SwingAtLissajous(MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Camera_SwingAtLissajous(targetNode, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x5f94dc",
+   "getname_stub": "0x4c20c0",
+   "factory": "0x4c2018"
+  },
+  "Camera_ZoomAt": {
+   "message_id": 7013,
+   "subsystem": "Camera",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_ZoomAt(string, float, float)",
+   "lua_call": "Camera_ZoomAt(targetNode, string, float, float)",
+   "vtable": "0x5f93fc",
+   "getname_stub": "0x4c1290",
+   "factory": "0x4c11e8"
+  },
+  "Camera_ZoomTo": {
+   "message_id": 7012,
+   "subsystem": "Camera",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Camera_ZoomTo(float, float, float)",
+   "lua_call": "Camera_ZoomTo(targetNode, float, float, float)",
+   "vtable": "0x5f93dc",
+   "getname_stub": "0x4c0fb0",
+   "factory": "0x4c0f08"
+  },
+  "Character_StartAnimation": {
+   "message_id": 22000,
+   "subsystem": "Character",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Character_StartAnimation(string)",
+   "lua_call": "Character_StartAnimation(targetNode, string)",
+   "vtable": "0x5f9df0",
+   "getname_stub": "0x4cd0c0",
+   "factory": "0x4cd018"
+  },
+  "Character_StopAnimation": {
+   "message_id": 22001,
+   "subsystem": "Character",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Character_StopAnimation()",
+   "lua_call": "Character_StopAnimation(targetNode)",
+   "vtable": "0x5f9e10",
+   "getname_stub": "0x4cd1e0",
+   "factory": "0x4cd138"
+  },
+  "Console_Activate": {
+   "message_id": 17001,
+   "subsystem": "Console",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Console_Activate()",
+   "lua_call": "Console_Activate(targetNode)",
+   "vtable": "0x5f921c",
+   "getname_stub": "0x4bf910",
+   "factory": "0x4bf868"
+  },
+  "Console_Deactivate": {
+   "message_id": 17002,
+   "subsystem": "Console",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Console_Deactivate()",
+   "lua_call": "Console_Deactivate(targetNode)",
+   "vtable": "0x5f923c",
+   "getname_stub": "0x4bfa80",
+   "factory": "0x4bf9d8"
+  },
+  "Console_Input": {
+   "message_id": 17000,
+   "subsystem": "Console",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Console_Input(int32)",
+   "lua_call": "Console_Input(targetNode, int32)",
+   "vtable": "0x5f91fc",
+   "getname_stub": "0x4bf770",
+   "factory": "0x4bf6c8"
+  },
+  "Director_BeginCutscene": {
+   "message_id": 41000,
+   "subsystem": "Director",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Director_BeginCutscene()",
+   "lua_call": "Director_BeginCutscene(targetNode)",
+   "vtable": "0x5f91bc",
+   "getname_stub": "0x4bf530",
+   "factory": "0x4bf488"
+  },
+  "Director_EndCutscene": {
+   "message_id": 41001,
+   "subsystem": "Director",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Director_EndCutscene()",
+   "lua_call": "Director_EndCutscene(targetNode)",
+   "vtable": "0x5f91dc",
+   "getname_stub": "0x4bf650",
+   "factory": "0x4bf5a8"
+  },
+  "Emitter_GetSoundEmissionLevel": {
+   "message_id": 21005,
+   "subsystem": "Emitter",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "string"
+   ],
+   "signature": "Emitter_GetSoundEmissionLevel() -> string",
+   "lua_call": "Emitter_GetSoundEmissionLevel(targetNode)",
+   "vtable": "0x5f919c",
+   "getname_stub": "0x4bf380",
+   "factory": "0x4bf2d8"
+  },
+  "Emitter_GetVisibilityBlockingStatus": {
+   "message_id": 21003,
+   "subsystem": "Emitter",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "int8"
+   ],
+   "signature": "Emitter_GetVisibilityBlockingStatus() -> int8",
+   "lua_call": "Emitter_GetVisibilityBlockingStatus(targetNode)",
+   "vtable": "0x5f915c",
+   "getname_stub": "0x4bf0b0",
+   "factory": "0x4bf008"
+  },
+  "Emitter_GetVisibilityStatus": {
+   "message_id": 21001,
+   "subsystem": "Emitter",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "int8"
+   ],
+   "signature": "Emitter_GetVisibilityStatus() -> int8",
+   "lua_call": "Emitter_GetVisibilityStatus(targetNode)",
+   "vtable": "0x5f911c",
+   "getname_stub": "0x4bede0",
+   "factory": "0x4bed38"
+  },
+  "Emitter_SetSoundEmissionLevel": {
+   "message_id": 21004,
+   "subsystem": "Emitter",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Emitter_SetSoundEmissionLevel(string)",
+   "lua_call": "Emitter_SetSoundEmissionLevel(targetNode, string)",
+   "vtable": "0x5f917c",
+   "getname_stub": "0x4bf260",
+   "factory": "0x4bf1b8"
+  },
+  "Emitter_SetVisibilityBlockingStatus": {
+   "message_id": 21002,
+   "subsystem": "Emitter",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Emitter_SetVisibilityBlockingStatus(int8)",
+   "lua_call": "Emitter_SetVisibilityBlockingStatus(targetNode, int8)",
+   "vtable": "0x5f913c",
+   "getname_stub": "0x4bef90",
+   "factory": "0x4beee8"
+  },
+  "Emitter_SetVisibilityStatus": {
+   "message_id": 21000,
+   "subsystem": "Emitter",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Emitter_SetVisibilityStatus(int8)",
+   "lua_call": "Emitter_SetVisibilityStatus(targetNode, int8)",
+   "vtable": "0x5f90fc",
+   "getname_stub": "0x4bec80",
+   "factory": "0x4bebd8"
+  },
+  "FX_Plant_SetMap": {
+   "message_id": 36000,
+   "subsystem": "FX",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "FX_Plant_SetMap(string)",
+   "lua_call": "FX_Plant_SetMap(targetNode, string)",
+   "vtable": "0x5f90dc",
+   "getname_stub": "0x4beaf0",
+   "factory": "0x4bea48"
+  },
+  "Game_CreateClientScript": {
+   "message_id": 11024,
+   "subsystem": "Game",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Game_CreateClientScript()",
+   "lua_call": "Game_CreateClientScript(targetNode)",
+   "vtable": "0x5f4614",
+   "getname_stub": "0x44c6c0",
+   "factory": "0x44c618"
+  },
+  "Game_EndGame": {
+   "message_id": 11014,
+   "subsystem": "Game",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Game_EndGame()",
+   "lua_call": "Game_EndGame(targetNode)",
+   "vtable": "0x5f44f4",
+   "getname_stub": "0x44b870",
+   "factory": "0x44b7c8"
+  },
+  "Game_GetEnemyMatrixElement": {
+   "message_id": 11018,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "int8",
+    "int8"
+   ],
+   "returns": [
+    "int16"
+   ],
+   "signature": "Game_GetEnemyMatrixElement(int8, int8) -> int16",
+   "lua_call": "Game_GetEnemyMatrixElement(targetNode, int8, int8)",
+   "vtable": "0x5f4554",
+   "getname_stub": "0x44bd70",
+   "factory": "0x44bcc8"
+  },
+  "Game_LoadFog": {
+   "message_id": 11006,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_LoadFog(string)",
+   "lua_call": "Game_LoadFog(targetNode, string)",
+   "vtable": "0x5f4434",
+   "getname_stub": "0x44adb0",
+   "factory": "0x44ad08"
+  },
+  "Game_LoadMTake": {
+   "message_id": 11030,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_LoadMTake(string)",
+   "lua_call": "Game_LoadMTake(targetNode, string)",
+   "vtable": "0x5f46d4",
+   "getname_stub": "0x44cf80",
+   "factory": "0x44ced8"
+  },
+  "Game_LoadMusic": {
+   "message_id": 11029,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "string",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Game_LoadMusic(string, int32)",
+   "lua_call": "Game_LoadMusic(targetNode, string, int32)",
+   "vtable": "0x5f46b4",
+   "getname_stub": "0x44cd40",
+   "factory": "0x44cc98"
+  },
+  "Game_LoadProgress_Advance": {
+   "message_id": 11039,
+   "subsystem": "Game",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Game_LoadProgress_Advance()",
+   "lua_call": "Game_LoadProgress_Advance(targetNode)",
+   "vtable": "0x5f47b4",
+   "getname_stub": "0x44da60",
+   "factory": "0x44d9b8"
+  },
+  "Game_LoadProgress_Enter": {
+   "message_id": 11038,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "Game_LoadProgress_Enter(uint32)",
+   "lua_call": "Game_LoadProgress_Enter(targetNode, uint32)",
+   "vtable": "0x5f4794",
+   "getname_stub": "0x44d920",
+   "factory": "0x44d878"
+  },
+  "Game_LoadProgress_Leave": {
+   "message_id": 11040,
+   "subsystem": "Game",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Game_LoadProgress_Leave()",
+   "lua_call": "Game_LoadProgress_Leave(targetNode)",
+   "vtable": "0x5f47d4",
+   "getname_stub": "0x44db80",
+   "factory": "0x44dad8"
+  },
+  "Game_LoadScenario": {
+   "message_id": 11004,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_LoadScenario(string)",
+   "lua_call": "Game_LoadScenario(targetNode, string)",
+   "vtable": "0x5f43f4",
+   "getname_stub": "0x44ab20",
+   "factory": "0x44aa78"
+  },
+  "Game_LoadScript": {
+   "message_id": 11000,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_LoadScript(string)",
+   "lua_call": "Game_LoadScript(targetNode, string)",
+   "vtable": "0x5f43c8",
+   "getname_stub": "0x44a960",
+   "factory": "0x44a8b8"
+  },
+  "Game_LoadServerScript": {
+   "message_id": 11031,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_LoadServerScript(string)",
+   "lua_call": "Game_LoadServerScript(targetNode, string)",
+   "vtable": "0x5f46f4",
+   "getname_stub": "0x44d0a0",
+   "factory": "0x44cff8"
+  },
+  "Game_LoadTextTable": {
+   "message_id": 11025,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_LoadTextTable(string)",
+   "lua_call": "Game_LoadTextTable(targetNode, string)",
+   "vtable": "0x5f4634",
+   "getname_stub": "0x44c830",
+   "factory": "0x44c788"
+  },
+  "Game_LoadTextures": {
+   "message_id": 11005,
+   "subsystem": "Game",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Game_LoadTextures()",
+   "lua_call": "Game_LoadTextures(targetNode)",
+   "vtable": "0x5f4414",
+   "getname_stub": "0x44ac40",
+   "factory": "0x44ab98"
+  },
+  "Game_MissionEnd": {
+   "message_id": 11036,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Game_MissionEnd(int32)",
+   "lua_call": "Game_MissionEnd(targetNode, int32)",
+   "vtable": "0x5f4754",
+   "getname_stub": "0x44d640",
+   "factory": "0x44d598"
+  },
+  "Game_PlayMusic": {
+   "message_id": 11009,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_PlayMusic(string)",
+   "lua_call": "Game_PlayMusic(targetNode, string)",
+   "vtable": "0x5f4454",
+   "getname_stub": "0x44af60",
+   "factory": "0x44aeb8"
+  },
+  "Game_ResetEnemyMatrix": {
+   "message_id": 11019,
+   "subsystem": "Game",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Game_ResetEnemyMatrix()",
+   "lua_call": "Game_ResetEnemyMatrix(targetNode)",
+   "vtable": "0x5f4574",
+   "getname_stub": "0x44bfd0",
+   "factory": "0x44bf28"
+  },
+  "Game_SendRadioMessageTake": {
+   "message_id": 11020,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "node",
+    "node",
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Game_SendRadioMessageTake(node, node, int32)",
+   "lua_call": "Game_SendRadioMessageTake(targetNode, node, node, int32)",
+   "vtable": "0x5f4594",
+   "getname_stub": "0x44c0f0",
+   "factory": "0x44c048"
+  },
+  "Game_SetAmbientLight": {
+   "message_id": 11026,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetAmbientLight(float, float, float)",
+   "lua_call": "Game_SetAmbientLight(targetNode, float, float, float)",
+   "vtable": "0x5f4654",
+   "getname_stub": "0x44c9e0",
+   "factory": "0x44c938"
+  },
+  "Game_SetCameraValues": {
+   "message_id": 11035,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetCameraValues(float, float)",
+   "lua_call": "Game_SetCameraValues(targetNode, float, float)",
+   "vtable": "0x5f4734",
+   "getname_stub": "0x44d460",
+   "factory": "0x44d3b8"
+  },
+  "Game_SetCausticBuilding": {
+   "message_id": 11012,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetCausticBuilding(float, float)",
+   "lua_call": "Game_SetCausticBuilding(targetNode, float, float)",
+   "vtable": "0x5f44b4",
+   "getname_stub": "0x44b4b0",
+   "factory": "0x44b408"
+  },
+  "Game_SetCausticObject": {
+   "message_id": 11011,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetCausticObject(float, float)",
+   "lua_call": "Game_SetCausticObject(targetNode, float, float)",
+   "vtable": "0x5f4494",
+   "getname_stub": "0x44b2d0",
+   "factory": "0x44b228"
+  },
+  "Game_SetCausticTerrain": {
+   "message_id": 11010,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetCausticTerrain(float, float)",
+   "lua_call": "Game_SetCausticTerrain(targetNode, float, float)",
+   "vtable": "0x5f4474",
+   "getname_stub": "0x44b0f0",
+   "factory": "0x44b048"
+  },
+  "Game_SetDecompressionHeight": {
+   "message_id": 11021,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetDecompressionHeight(float)",
+   "lua_call": "Game_SetDecompressionHeight(targetNode, float)",
+   "vtable": "0x5f45b4",
+   "getname_stub": "0x44c240",
+   "factory": "0x44c198"
+  },
+  "Game_SetEnemyMatrixElement": {
+   "message_id": 11017,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "int8",
+    "int8",
+    "int16"
+   ],
+   "returns": [],
+   "signature": "Game_SetEnemyMatrixElement(int8, int8, int16)",
+   "lua_call": "Game_SetEnemyMatrixElement(targetNode, int8, int8, int16)",
+   "vtable": "0x5f4534",
+   "getname_stub": "0x44bb70",
+   "factory": "0x44bac8"
+  },
+  "Game_SetFog": {
+   "message_id": 11013,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetFog(float, float)",
+   "lua_call": "Game_SetFog(targetNode, float, float)",
+   "vtable": "0x5f44d4",
+   "getname_stub": "0x44b690",
+   "factory": "0x44b5e8"
+  },
+  "Game_SetLightCache": {
+   "message_id": 11016,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_SetLightCache(string, string)",
+   "lua_call": "Game_SetLightCache(targetNode, string, string)",
+   "vtable": "0x5f4514",
+   "getname_stub": "0x44b990",
+   "factory": "0x44b8e8"
+  },
+  "Game_SetParallelLightB": {
+   "message_id": 11028,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetParallelLightB(float, float, float)",
+   "lua_call": "Game_SetParallelLightB(targetNode, float, float, float)",
+   "vtable": "0x5f4694",
+   "getname_stub": "0x44cc20",
+   "factory": "0x44cb78"
+  },
+  "Game_SetParallelLightT": {
+   "message_id": 11027,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetParallelLightT(float, float, float)",
+   "lua_call": "Game_SetParallelLightT(targetNode, float, float, float)",
+   "vtable": "0x5f4674",
+   "getname_stub": "0x44cb00",
+   "factory": "0x44ca58"
+  },
+  "Game_SetPlayBackFile": {
+   "message_id": 11037,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_SetPlayBackFile(string)",
+   "lua_call": "Game_SetPlayBackFile(targetNode, string)",
+   "vtable": "0x5f4774",
+   "getname_stub": "0x44d800",
+   "factory": "0x44d758"
+  },
+  "Game_SetTaskTextKey": {
+   "message_id": 11041,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "int32",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetTaskTextKey(int32, float, float)",
+   "lua_call": "Game_SetTaskTextKey(targetNode, int32, float, float)",
+   "vtable": "0x5f47f4",
+   "getname_stub": "0x44dca0",
+   "factory": "0x44dbf8"
+  },
+  "Game_SetTerrainDepth": {
+   "message_id": 11022,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Game_SetTerrainDepth(float)",
+   "lua_call": "Game_SetTerrainDepth(targetNode, float)",
+   "vtable": "0x5f45d4",
+   "getname_stub": "0x44c3f0",
+   "factory": "0x44c348"
+  },
+  "Game_SetWayPoint": {
+   "message_id": 11023,
+   "subsystem": "Game",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Game_SetWayPoint(node)",
+   "lua_call": "Game_SetWayPoint(targetNode, node)",
+   "vtable": "0x5f45f4",
+   "getname_stub": "0x44c5a0",
+   "factory": "0x44c4f8"
+  },
+  "Game_TextMessage": {
+   "message_id": 11034,
+   "subsystem": "Game",
+   "argc": 2,
+   "params": [
+    "int8",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Game_TextMessage(int8, string)",
+   "lua_call": "Game_TextMessage(targetNode, int8, string)",
+   "vtable": "0x5f4714",
+   "getname_stub": "0x44d230",
+   "factory": "0x44d188"
+  },
+  "Game_VocalMessage": {
+   "message_id": 11042,
+   "subsystem": "Game",
+   "argc": 3,
+   "params": [
+    "int8",
+    "int8",
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Game_VocalMessage(int8, int8, int8)",
+   "lua_call": "Game_VocalMessage(targetNode, int8, int8, int8)",
+   "vtable": "0x5f4814",
+   "getname_stub": "0x44ddf0",
+   "factory": "0x44dd48"
+  },
+  "Gun_AddPhase": {
+   "message_id": 43002,
+   "subsystem": "Gun",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Gun_AddPhase(uint32, float)",
+   "lua_call": "Gun_AddPhase(targetNode, uint32, float)",
+   "vtable": "0x5f8cdc",
+   "getname_stub": "0x4bbdf0",
+   "factory": "0x4bbd48"
+  },
+  "Gun_FlushPhases": {
+   "message_id": 43001,
+   "subsystem": "Gun",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Gun_FlushPhases()",
+   "lua_call": "Gun_FlushPhases(targetNode)",
+   "vtable": "0x5f8cbc",
+   "getname_stub": "0x4bbcd0",
+   "factory": "0x4bbc28"
+  },
+  "Gun_SetBullet": {
+   "message_id": 43000,
+   "subsystem": "Gun",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Gun_SetBullet(string, float)",
+   "lua_call": "Gun_SetBullet(targetNode, string, float)",
+   "vtable": "0x5f8c9c",
+   "getname_stub": "0x4bbb50",
+   "factory": "0x4bbaa8"
+  },
+  "Gun_SetDogBullet": {
+   "message_id": 43004,
+   "subsystem": "Gun",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Gun_SetDogBullet(string, float)",
+   "lua_call": "Gun_SetDogBullet(targetNode, string, float)",
+   "vtable": "0x5f8d1c",
+   "getname_stub": "0x4bc060",
+   "factory": "0x4bbfb8"
+  },
+  "Gun_SetSniperBullet": {
+   "message_id": 43003,
+   "subsystem": "Gun",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Gun_SetSniperBullet(string, float)",
+   "lua_call": "Gun_SetSniperBullet(targetNode, string, float)",
+   "vtable": "0x5f8cfc",
+   "getname_stub": "0x4bbf10",
+   "factory": "0x4bbe68"
+  },
+  "ItemBox_PlayRespawnSound": {
+   "message_id": 34002,
+   "subsystem": "ItemBox",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ItemBox_PlayRespawnSound()",
+   "lua_call": "ItemBox_PlayRespawnSound(targetNode)",
+   "vtable": "0x5f905c",
+   "getname_stub": "0x4be620",
+   "factory": "0x4be578"
+  },
+  "ItemBox_SetItemCount": {
+   "message_id": 34003,
+   "subsystem": "ItemBox",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "ItemBox_SetItemCount(uint32)",
+   "lua_call": "ItemBox_SetItemCount(targetNode, uint32)",
+   "vtable": "0x5f907c",
+   "getname_stub": "0x4be790",
+   "factory": "0x4be6e8"
+  },
+  "ItemBox_SetRespawnCount": {
+   "message_id": 34001,
+   "subsystem": "ItemBox",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "ItemBox_SetRespawnCount(uint32)",
+   "lua_call": "ItemBox_SetRespawnCount(targetNode, uint32)",
+   "vtable": "0x5f903c",
+   "getname_stub": "0x4be500",
+   "factory": "0x4be458"
+  },
+  "ItemBox_SetRespawnDelay": {
+   "message_id": 34000,
+   "subsystem": "ItemBox",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "ItemBox_SetRespawnDelay(float)",
+   "lua_call": "ItemBox_SetRespawnDelay(targetNode, float)",
+   "vtable": "0x5f901c",
+   "getname_stub": "0x4be3e0",
+   "factory": "0x4be338"
+  },
+  "LaserWall_SetWallExtensionX": {
+   "message_id": 4000,
+   "subsystem": "LaserWall",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "LaserWall_SetWallExtensionX(float)",
+   "lua_call": "LaserWall_SetWallExtensionX(targetNode, float)",
+   "vtable": "0x5f9e30",
+   "getname_stub": "0x4cd300",
+   "factory": "0x4cd258"
+  },
+  "LaserWall_SetWallExtensionZ": {
+   "message_id": 4001,
+   "subsystem": "LaserWall",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "LaserWall_SetWallExtensionZ(float)",
+   "lua_call": "LaserWall_SetWallExtensionZ(targetNode, float)",
+   "vtable": "0x5f9e50",
+   "getname_stub": "0x4cd4b0",
+   "factory": "0x4cd408"
+  },
+  "Light_SetColor": {
+   "message_id": 12005,
+   "subsystem": "Light",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Light_SetColor(MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Light_SetColor(targetNode, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x5f8ffc",
+   "getname_stub": "0x4be2c0",
+   "factory": "0x4be218"
+  },
+  "Light_SetCone": {
+   "message_id": 12001,
+   "subsystem": "Light",
+   "argc": 4,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Light_SetCone(MAT_Vector3, MAT_Vector3, float, float)",
+   "lua_call": "Light_SetCone(targetNode, MAT_Vector3, MAT_Vector3, float, float)",
+   "vtable": "0x5f8f7c",
+   "getname_stub": "0x4bdc30",
+   "factory": "0x4bdb88"
+  },
+  "Light_SetMode": {
+   "message_id": 12004,
+   "subsystem": "Light",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Light_SetMode(string)",
+   "lua_call": "Light_SetMode(targetNode, string)",
+   "vtable": "0x5f8fdc",
+   "getname_stub": "0x4be180",
+   "factory": "0x4be0d8"
+  },
+  "Light_SetR1": {
+   "message_id": 12002,
+   "subsystem": "Light",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Light_SetR1(float)",
+   "lua_call": "Light_SetR1(targetNode, float)",
+   "vtable": "0x5f8f9c",
+   "getname_stub": "0x4bdf40",
+   "factory": "0x4bde98"
+  },
+  "Light_SetR2": {
+   "message_id": 12003,
+   "subsystem": "Light",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Light_SetR2(float)",
+   "lua_call": "Light_SetR2(targetNode, float)",
+   "vtable": "0x5f8fbc",
+   "getname_stub": "0x4be060",
+   "factory": "0x4bdfb8"
+  },
+  "Light_Switch": {
+   "message_id": 12000,
+   "subsystem": "Light",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Light_Switch(int8)",
+   "lua_call": "Light_Switch(targetNode, int8)",
+   "vtable": "0x5f8f5c",
+   "getname_stub": "0x4bdb10",
+   "factory": "0x4bda68"
+  },
+  "Mine_Activate": {
+   "message_id": 27001,
+   "subsystem": "Mine",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Mine_Activate()",
+   "lua_call": "Mine_Activate(targetNode)",
+   "vtable": "0x5f8efc",
+   "getname_stub": "0x4bd720",
+   "factory": "0x4bd678"
+  },
+  "Mine_Deactivate": {
+   "message_id": 27002,
+   "subsystem": "Mine",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Mine_Deactivate()",
+   "lua_call": "Mine_Deactivate(targetNode)",
+   "vtable": "0x5f8f1c",
+   "getname_stub": "0x4bd840",
+   "factory": "0x4bd798"
+  },
+  "Mine_IsActive": {
+   "message_id": 27003,
+   "subsystem": "Mine",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "int8"
+   ],
+   "signature": "Mine_IsActive() -> int8",
+   "lua_call": "Mine_IsActive(targetNode)",
+   "vtable": "0x5f8f3c",
+   "getname_stub": "0x4bd960",
+   "factory": "0x4bd8b8"
+  },
+  "Node_AddSon": {
+   "message_id": 5004,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Node_AddSon(node)",
+   "lua_call": "Node_AddSon(targetNode, node)",
+   "vtable": "0x5f8dbc",
+   "getname_stub": "0x4bc650",
+   "factory": "0x4bc5a8"
+  },
+  "Node_CreateNode": {
+   "message_id": 5005,
+   "subsystem": "Node",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [
+    "node"
+   ],
+   "signature": "Node_CreateNode(string, string) -> node",
+   "lua_call": "Node_CreateNode(targetNode, string, string)",
+   "vtable": "0x5f8ddc",
+   "getname_stub": "0x4bc770",
+   "factory": "0x4bc6c8"
+  },
+  "Node_EnterSimulation": {
+   "message_id": 5002,
+   "subsystem": "Node",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Node_EnterSimulation()",
+   "lua_call": "Node_EnterSimulation(targetNode)",
+   "vtable": "0x5f8d7c",
+   "getname_stub": "0x4bc3c0",
+   "factory": "0x4bc318"
+  },
+  "Node_Find": {
+   "message_id": 5007,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [
+    "node"
+   ],
+   "signature": "Node_Find(string) -> node",
+   "lua_call": "Node_Find(targetNode, string)",
+   "vtable": "0x5f8e1c",
+   "getname_stub": "0x4bcb30",
+   "factory": "0x4bca88"
+  },
+  "Node_GetName": {
+   "message_id": 5006,
+   "subsystem": "Node",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "string"
+   ],
+   "signature": "Node_GetName() -> string",
+   "lua_call": "Node_GetName(targetNode)",
+   "vtable": "0x5f8dfc",
+   "getname_stub": "0x4bc980",
+   "factory": "0x4bc8d8"
+  },
+  "Node_GetNumOfSons": {
+   "message_id": 5009,
+   "subsystem": "Node",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "uint16"
+   ],
+   "signature": "Node_GetNumOfSons() -> uint16",
+   "lua_call": "Node_GetNumOfSons(targetNode)",
+   "vtable": "0x5f8e5c",
+   "getname_stub": "0x4bce90",
+   "factory": "0x4bcde8"
+  },
+  "Node_GetPath": {
+   "message_id": 5008,
+   "subsystem": "Node",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "string"
+   ],
+   "signature": "Node_GetPath() -> string",
+   "lua_call": "Node_GetPath(targetNode)",
+   "vtable": "0x5f8e3c",
+   "getname_stub": "0x4bcce0",
+   "factory": "0x4bcc38"
+  },
+  "Node_GetSon": {
+   "message_id": 5011,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [
+    "node"
+   ],
+   "signature": "Node_GetSon(uint32) -> node",
+   "lua_call": "Node_GetSon(targetNode, uint32)",
+   "vtable": "0x5f8e9c",
+   "getname_stub": "0x4bd210",
+   "factory": "0x4bd168"
+  },
+  "Node_GetSonName": {
+   "message_id": 5012,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [
+    "string"
+   ],
+   "signature": "Node_GetSonName(uint32) -> string",
+   "lua_call": "Node_GetSonName(targetNode, uint32)",
+   "vtable": "0x5f8ebc",
+   "getname_stub": "0x4bd3c0",
+   "factory": "0x4bd318"
+  },
+  "Node_GetTime": {
+   "message_id": 5013,
+   "subsystem": "Node",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "float"
+   ],
+   "signature": "Node_GetTime() -> float",
+   "lua_call": "Node_GetTime(targetNode)",
+   "vtable": "0x5f8edc",
+   "getname_stub": "0x4bd570",
+   "factory": "0x4bd4c8"
+  },
+  "Node_LeaveSimulation": {
+   "message_id": 5003,
+   "subsystem": "Node",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Node_LeaveSimulation()",
+   "lua_call": "Node_LeaveSimulation(targetNode)",
+   "vtable": "0x5f8d9c",
+   "getname_stub": "0x4bc530",
+   "factory": "0x4bc488"
+  },
+  "Node_ParseIniFile": {
+   "message_id": 5001,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Node_ParseIniFile(string)",
+   "lua_call": "Node_ParseIniFile(targetNode, string)",
+   "vtable": "0x5f8d5c",
+   "getname_stub": "0x4bc2a0",
+   "factory": "0x4bc1f8"
+  },
+  "Node_SetName": {
+   "message_id": 5000,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Node_SetName(string)",
+   "lua_call": "Node_SetName(targetNode, string)",
+   "vtable": "0x5f8d3c",
+   "getname_stub": "0x4bc180",
+   "factory": "0x4bc0d8"
+  },
+  "Node_SubSon": {
+   "message_id": 5010,
+   "subsystem": "Node",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [
+    "node"
+   ],
+   "signature": "Node_SubSon(node) -> node",
+   "lua_call": "Node_SubSon(targetNode, node)",
+   "vtable": "0x5f8e7c",
+   "getname_stub": "0x4bd060",
+   "factory": "0x4bcfb8"
+  },
+  "ParticleEmitter_SetAccelerationOffset": {
+   "message_id": 3001,
+   "subsystem": "ParticleEmitter",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetAccelerationOffset(MAT_Vector3)",
+   "lua_call": "ParticleEmitter_SetAccelerationOffset(targetNode, MAT_Vector3)",
+   "vtable": "0x5f8bdc",
+   "getname_stub": "0x4bb430",
+   "factory": "0x4bb388"
+  },
+  "ParticleEmitter_SetCone": {
+   "message_id": 3008,
+   "subsystem": "ParticleEmitter",
+   "argc": 4,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetCone(MAT_Vector3, MAT_Vector3, float, float)",
+   "lua_call": "ParticleEmitter_SetCone(targetNode, MAT_Vector3, MAT_Vector3, float, float)",
+   "vtable": "0x5f8c7c",
+   "getname_stub": "0x4bb9f0",
+   "factory": "0x4bb948"
+  },
+  "ParticleEmitter_SetConeAngle": {
+   "message_id": 3004,
+   "subsystem": "ParticleEmitter",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetConeAngle(float)",
+   "lua_call": "ParticleEmitter_SetConeAngle(targetNode, float)",
+   "vtable": "0x5f8c3c",
+   "getname_stub": "0x4bb790",
+   "factory": "0x4bb6e8"
+  },
+  "ParticleEmitter_SetFriction": {
+   "message_id": 3002,
+   "subsystem": "ParticleEmitter",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetFriction(MAT_Vector3)",
+   "lua_call": "ParticleEmitter_SetFriction(targetNode, MAT_Vector3)",
+   "vtable": "0x5f8bfc",
+   "getname_stub": "0x4bb550",
+   "factory": "0x4bb4a8"
+  },
+  "ParticleEmitter_SetLifeTime": {
+   "message_id": 3000,
+   "subsystem": "ParticleEmitter",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetLifeTime(float)",
+   "lua_call": "ParticleEmitter_SetLifeTime(targetNode, float)",
+   "vtable": "0x5f8bbc",
+   "getname_stub": "0x4bb310",
+   "factory": "0x4bb268"
+  },
+  "ParticleEmitter_SetPPS": {
+   "message_id": 3003,
+   "subsystem": "ParticleEmitter",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetPPS(float)",
+   "lua_call": "ParticleEmitter_SetPPS(targetNode, float)",
+   "vtable": "0x5f8c1c",
+   "getname_stub": "0x4bb670",
+   "factory": "0x4bb5c8"
+  },
+  "ParticleEmitter_SetVelocity": {
+   "message_id": 3005,
+   "subsystem": "ParticleEmitter",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "ParticleEmitter_SetVelocity(float, float)",
+   "lua_call": "ParticleEmitter_SetVelocity(targetNode, float, float)",
+   "vtable": "0x5f8c5c",
+   "getname_stub": "0x4bb8d0",
+   "factory": "0x4bb828"
+  },
+  "Path_GetPositionOrientation": {
+   "message_id": 13000,
+   "subsystem": "Path",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "signature": "Path_GetPositionOrientation(MAT_Vector3) -> MAT_Vector3, MAT_Vector3",
+   "lua_call": "Path_GetPositionOrientation(targetNode, MAT_Vector3)",
+   "vtable": "0x5f8b9c",
+   "getname_stub": "0x4baf80",
+   "factory": "0x4baed8"
+  },
+  "PatrolArea_BindNode": {
+   "message_id": 24005,
+   "subsystem": "PatrolArea",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "PatrolArea_BindNode(node)",
+   "lua_call": "PatrolArea_BindNode(targetNode, node)",
+   "vtable": "0x5f8b7c",
+   "getname_stub": "0x4bae60",
+   "factory": "0x4badb8"
+  },
+  "PatrolArea_GetDiameter": {
+   "message_id": 24004,
+   "subsystem": "PatrolArea",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "float"
+   ],
+   "signature": "PatrolArea_GetDiameter() -> float",
+   "lua_call": "PatrolArea_GetDiameter(targetNode)",
+   "vtable": "0x5f8b5c",
+   "getname_stub": "0x4bacb0",
+   "factory": "0x4bac08"
+  },
+  "PatrolArea_SetMaxZ": {
+   "message_id": 24003,
+   "subsystem": "PatrolArea",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "PatrolArea_SetMaxZ(float)",
+   "lua_call": "PatrolArea_SetMaxZ(targetNode, float)",
+   "vtable": "0x5f8b3c",
+   "getname_stub": "0x4bab90",
+   "factory": "0x4baae8"
+  },
+  "PatrolArea_SetMinZ": {
+   "message_id": 24002,
+   "subsystem": "PatrolArea",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "PatrolArea_SetMinZ(float)",
+   "lua_call": "PatrolArea_SetMinZ(targetNode, float)",
+   "vtable": "0x5f8b1c",
+   "getname_stub": "0x4baa70",
+   "factory": "0x4ba9c8"
+  },
+  "PatrolArea_SetPosition": {
+   "message_id": 24000,
+   "subsystem": "PatrolArea",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "PatrolArea_SetPosition(MAT_Vector3)",
+   "lua_call": "PatrolArea_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x5f8adc",
+   "getname_stub": "0x4ba830",
+   "factory": "0x4ba788"
+  },
+  "PatrolArea_SetRadius": {
+   "message_id": 24001,
+   "subsystem": "PatrolArea",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "PatrolArea_SetRadius(float)",
+   "lua_call": "PatrolArea_SetRadius(targetNode, float)",
+   "vtable": "0x5f8afc",
+   "getname_stub": "0x4ba950",
+   "factory": "0x4ba8a8"
+  },
+  "PhysicalCharacter_Attack": {
+   "message_id": 23018,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "node",
+    "string"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_Attack(node, string)",
+   "lua_call": "PhysicalCharacter_Attack(targetNode, node, string)",
+   "vtable": "0x5f8a3c",
+   "getname_stub": "0x4ba130",
+   "factory": "0x4ba088"
+  },
+  "PhysicalCharacter_AttackCompleted": {
+   "message_id": 23019,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_AttackCompleted()",
+   "lua_call": "PhysicalCharacter_AttackCompleted(targetNode)",
+   "vtable": "0x5f8a5c",
+   "getname_stub": "0x4ba2d0",
+   "factory": "0x4ba228"
+  },
+  "PhysicalCharacter_AttackTurrets": {
+   "message_id": 23012,
+   "subsystem": "PhysicalCharacter",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_AttackTurrets(string, string, string, string, string)",
+   "lua_call": "PhysicalCharacter_AttackTurrets(targetNode, string, string, string, string, string)",
+   "vtable": "0x5f897c",
+   "getname_stub": "0x4b98f0",
+   "factory": "0x4b9848"
+  },
+  "PhysicalCharacter_AttackTurretsStop": {
+   "message_id": 23013,
+   "subsystem": "PhysicalCharacter",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_AttackTurretsStop(string)",
+   "lua_call": "PhysicalCharacter_AttackTurretsStop(targetNode, string)",
+   "vtable": "0x5f899c",
+   "getname_stub": "0x4b9aa0",
+   "factory": "0x4b99f8"
+  },
+  "PhysicalCharacter_GotoArrived": {
+   "message_id": 23004,
+   "subsystem": "PhysicalCharacter",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoArrived(string)",
+   "lua_call": "PhysicalCharacter_GotoArrived(targetNode, string)",
+   "vtable": "0x5f887c",
+   "getname_stub": "0x4b8c00",
+   "factory": "0x4b8b58"
+  },
+  "PhysicalCharacter_GotoOverride": {
+   "message_id": 23006,
+   "subsystem": "PhysicalCharacter",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoOverride(string, string, string)",
+   "lua_call": "PhysicalCharacter_GotoOverride(targetNode, string, string, string)",
+   "vtable": "0x5f88bc",
+   "getname_stub": "0x4b8f20",
+   "factory": "0x4b8e78"
+  },
+  "PhysicalCharacter_GotoPosReached": {
+   "message_id": 23005,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoPosReached(string, string)",
+   "lua_call": "PhysicalCharacter_GotoPosReached(targetNode, string, string)",
+   "vtable": "0x5f889c",
+   "getname_stub": "0x4b8d90",
+   "factory": "0x4b8ce8"
+  },
+  "PhysicalCharacter_GotoStart": {
+   "message_id": 23002,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoStart(string, float)",
+   "lua_call": "PhysicalCharacter_GotoStart(targetNode, string, float)",
+   "vtable": "0x5f883c",
+   "getname_stub": "0x4b8960",
+   "factory": "0x4b88b8"
+  },
+  "PhysicalCharacter_GotoStartFromPosition": {
+   "message_id": 23007,
+   "subsystem": "PhysicalCharacter",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoStartFromPosition(string, string, float)",
+   "lua_call": "PhysicalCharacter_GotoStartFromPosition(targetNode, string, string, float)",
+   "vtable": "0x5f88dc",
+   "getname_stub": "0x4b90b0",
+   "factory": "0x4b9008"
+  },
+  "PhysicalCharacter_GotoStartFromTo": {
+   "message_id": 23008,
+   "subsystem": "PhysicalCharacter",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoStartFromTo(string, string, string, float)",
+   "lua_call": "PhysicalCharacter_GotoStartFromTo(targetNode, string, string, string, float)",
+   "vtable": "0x5f88fc",
+   "getname_stub": "0x4b9260",
+   "factory": "0x4b91b8"
+  },
+  "PhysicalCharacter_GotoStop": {
+   "message_id": 23003,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_GotoStop()",
+   "lua_call": "PhysicalCharacter_GotoStop(targetNode)",
+   "vtable": "0x5f885c",
+   "getname_stub": "0x4b8ae0",
+   "factory": "0x4b8a38"
+  },
+  "PhysicalCharacter_LookTo": {
+   "message_id": 23009,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "int8"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_LookTo(MAT_Vector3, int8)",
+   "lua_call": "PhysicalCharacter_LookTo(targetNode, MAT_Vector3, int8)",
+   "vtable": "0x5f891c",
+   "getname_stub": "0x4b9430",
+   "factory": "0x4b9388"
+  },
+  "PhysicalCharacter_LookToObject": {
+   "message_id": 23016,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "node",
+    "int8"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_LookToObject(node, int8)",
+   "lua_call": "PhysicalCharacter_LookToObject(targetNode, node, int8)",
+   "vtable": "0x5f89fc",
+   "getname_stub": "0x4b9e00",
+   "factory": "0x4b9d58"
+  },
+  "PhysicalCharacter_LookToOverride": {
+   "message_id": 23010,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_LookToOverride()",
+   "lua_call": "PhysicalCharacter_LookToOverride(targetNode)",
+   "vtable": "0x5f893c",
+   "getname_stub": "0x4b9660",
+   "factory": "0x4b95b8"
+  },
+  "PhysicalCharacter_SensorActivated": {
+   "message_id": 23011,
+   "subsystem": "PhysicalCharacter",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_SensorActivated(uint32)",
+   "lua_call": "PhysicalCharacter_SensorActivated(targetNode, uint32)",
+   "vtable": "0x5f895c",
+   "getname_stub": "0x4b97d0",
+   "factory": "0x4b9728"
+  },
+  "PhysicalCharacter_SetHitPropability": {
+   "message_id": 23022,
+   "subsystem": "PhysicalCharacter",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_SetHitPropability(float)",
+   "lua_call": "PhysicalCharacter_SetHitPropability(targetNode, float)",
+   "vtable": "0x5f8a9c",
+   "getname_stub": "0x4ba5b0",
+   "factory": "0x4ba508"
+  },
+  "PhysicalCharacter_SetSpecialCollisionPartner": {
+   "message_id": 23023,
+   "subsystem": "PhysicalCharacter",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_SetSpecialCollisionPartner(node)",
+   "lua_call": "PhysicalCharacter_SetSpecialCollisionPartner(targetNode, node)",
+   "vtable": "0x5f8abc",
+   "getname_stub": "0x4ba6d0",
+   "factory": "0x4ba628"
+  },
+  "PhysicalCharacter_SonarDestroyed": {
+   "message_id": 23017,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_SonarDestroyed()",
+   "lua_call": "PhysicalCharacter_SonarDestroyed(targetNode)",
+   "vtable": "0x5f8a1c",
+   "getname_stub": "0x4b9fc0",
+   "factory": "0x4b9f18"
+  },
+  "PhysicalCharacter_StartAnimation": {
+   "message_id": 23000,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "int32",
+    "float"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_StartAnimation(int32, float)",
+   "lua_call": "PhysicalCharacter_StartAnimation(targetNode, int32, float)",
+   "vtable": "0x5f87fc",
+   "getname_stub": "0x4b86f0",
+   "factory": "0x4b8648"
+  },
+  "PhysicalCharacter_StopAnimation": {
+   "message_id": 23001,
+   "subsystem": "PhysicalCharacter",
+   "argc": 2,
+   "params": [
+    "int32",
+    "float"
+   ],
+   "returns": [],
+   "signature": "PhysicalCharacter_StopAnimation(int32, float)",
+   "lua_call": "PhysicalCharacter_StopAnimation(targetNode, int32, float)",
+   "vtable": "0x5f881c",
+   "getname_stub": "0x4b8840",
+   "factory": "0x4b8798"
+  },
+  "PhysicalCharacter_Stripped": {
+   "message_id": 23020,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_Stripped()",
+   "lua_call": "PhysicalCharacter_Stripped(targetNode)",
+   "vtable": "0x5f8a7c",
+   "getname_stub": "0x4ba440",
+   "factory": "0x4ba398"
+  },
+  "PhysicalCharacter_SwitchToGoing": {
+   "message_id": 23015,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_SwitchToGoing()",
+   "lua_call": "PhysicalCharacter_SwitchToGoing(targetNode)",
+   "vtable": "0x5f89dc",
+   "getname_stub": "0x4b9ce0",
+   "factory": "0x4b9c38"
+  },
+  "PhysicalCharacter_SwitchToStanding": {
+   "message_id": 23014,
+   "subsystem": "PhysicalCharacter",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "PhysicalCharacter_SwitchToStanding()",
+   "lua_call": "PhysicalCharacter_SwitchToStanding(targetNode)",
+   "vtable": "0x5f89bc",
+   "getname_stub": "0x4b9bc0",
+   "factory": "0x4b9b18"
+  },
+  "Player_ActivateFF": {
+   "message_id": 16011,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_ActivateFF()",
+   "lua_call": "Player_ActivateFF(targetNode)",
+   "vtable": "0x5f87bc",
+   "getname_stub": "0x4b8430",
+   "factory": "0x4b8388"
+  },
+  "Player_FirstWarning": {
+   "message_id": 16002,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_FirstWarning()",
+   "lua_call": "Player_FirstWarning(targetNode)",
+   "vtable": "0x5f869c",
+   "getname_stub": "0x4b7760",
+   "factory": "0x4b76b8"
+  },
+  "Player_ImportInventoryInteger": {
+   "message_id": 16009,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_ImportInventoryInteger()",
+   "lua_call": "Player_ImportInventoryInteger(targetNode)",
+   "vtable": "0x5f877c",
+   "getname_stub": "0x4b81a0",
+   "factory": "0x4b80f8"
+  },
+  "Player_LeftAttack": {
+   "message_id": 16006,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_LeftAttack()",
+   "lua_call": "Player_LeftAttack(targetNode)",
+   "vtable": "0x5f871c",
+   "getname_stub": "0x4b7d20",
+   "factory": "0x4b7c78"
+  },
+  "Player_PlunderItems": {
+   "message_id": 16007,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_PlunderItems()",
+   "lua_call": "Player_PlunderItems(targetNode)",
+   "vtable": "0x5f873c",
+   "getname_stub": "0x4b7e90",
+   "factory": "0x4b7de8"
+  },
+  "Player_RefreshPickupState": {
+   "message_id": 16012,
+   "subsystem": "Player",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Player_RefreshPickupState(int8)",
+   "lua_call": "Player_RefreshPickupState(targetNode, int8)",
+   "vtable": "0x5f87dc",
+   "getname_stub": "0x4b8550",
+   "factory": "0x4b84a8"
+  },
+  "Player_SecondWarning": {
+   "message_id": 16003,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_SecondWarning()",
+   "lua_call": "Player_SecondWarning(targetNode)",
+   "vtable": "0x5f86bc",
+   "getname_stub": "0x4b78d0",
+   "factory": "0x4b7828"
+  },
+  "Player_SuppressFF": {
+   "message_id": 16010,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_SuppressFF()",
+   "lua_call": "Player_SuppressFF(targetNode)",
+   "vtable": "0x5f879c",
+   "getname_stub": "0x4b8310",
+   "factory": "0x4b8268"
+  },
+  "Player_ThirdWarning": {
+   "message_id": 16004,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_ThirdWarning()",
+   "lua_call": "Player_ThirdWarning(targetNode)",
+   "vtable": "0x5f86dc",
+   "getname_stub": "0x4b7a40",
+   "factory": "0x4b7998"
+  },
+  "Player_TorpedoAlarm": {
+   "message_id": 16008,
+   "subsystem": "Player",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Player_TorpedoAlarm(int8)",
+   "lua_call": "Player_TorpedoAlarm(targetNode, int8)",
+   "vtable": "0x5f875c",
+   "getname_stub": "0x4b8000",
+   "factory": "0x4b7f58"
+  },
+  "Player_UnderAttack": {
+   "message_id": 16005,
+   "subsystem": "Player",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Player_UnderAttack()",
+   "lua_call": "Player_UnderAttack(targetNode)",
+   "vtable": "0x5f86fc",
+   "getname_stub": "0x4b7bb0",
+   "factory": "0x4b7b08"
+  },
+  "Position_GetPosition": {
+   "message_id": 19002,
+   "subsystem": "Position",
+   "argc": 0,
+   "params": [],
+   "returns": [
+    "MAT_Vector3"
+   ],
+   "signature": "Position_GetPosition() -> MAT_Vector3",
+   "lua_call": "Position_GetPosition(targetNode)",
+   "vtable": "0x5f865c",
+   "getname_stub": "0x4b7420",
+   "factory": "0x4b7378"
+  },
+  "Position_SetCS": {
+   "message_id": 19003,
+   "subsystem": "Position",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Position_SetCS(MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Position_SetCS(targetNode, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x5f867c",
+   "getname_stub": "0x4b7640",
+   "factory": "0x4b7598"
+  },
+  "Position_SetPosition": {
+   "message_id": 31000,
+   "subsystem": "Position",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Position_SetPosition(MAT_Vector3)",
+   "lua_call": "Position_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x5f909c",
+   "getname_stub": "0x4be8b0",
+   "factory": "0x4be808"
+  },
+  "Position_SetRadius": {
+   "message_id": 31001,
+   "subsystem": "Position",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Position_SetRadius(float)",
+   "lua_call": "Position_SetRadius(targetNode, float)",
+   "vtable": "0x5f90bc",
+   "getname_stub": "0x4be9d0",
+   "factory": "0x4be928"
+  },
+  "Script_BindThread": {
+   "message_id": 2001,
+   "subsystem": "Script",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [
+    "uint32"
+   ],
+   "signature": "Script_BindThread(node) -> uint32",
+   "lua_call": "Script_BindThread(targetNode, node)",
+   "vtable": "0x5f859c",
+   "getname_stub": "0x4b6c70",
+   "factory": "0x4b6bc8"
+  },
+  "Script_SetScript": {
+   "message_id": 2000,
+   "subsystem": "Script",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Script_SetScript(string)",
+   "lua_call": "Script_SetScript(targetNode, string)",
+   "vtable": "0x5f857c",
+   "getname_stub": "0x4b6ae0",
+   "factory": "0x4b6a38"
+  },
+  "Script_SetTimer": {
+   "message_id": 2002,
+   "subsystem": "Script",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "float"
+   ],
+   "returns": [
+    "uint32"
+   ],
+   "signature": "Script_SetTimer(uint32, float) -> uint32",
+   "lua_call": "Script_SetTimer(targetNode, uint32, float)",
+   "vtable": "0x5f85bc",
+   "getname_stub": "0x4b6e20",
+   "factory": "0x4b6d78"
+  },
+  "Script_StopTimer": {
+   "message_id": 2004,
+   "subsystem": "Script",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "Script_StopTimer(uint32, uint32)",
+   "lua_call": "Script_StopTimer(targetNode, uint32, uint32)",
+   "vtable": "0x5f85fc",
+   "getname_stub": "0x4b70c0",
+   "factory": "0x4b7018"
+  },
+  "Script_UnBindThread": {
+   "message_id": 2003,
+   "subsystem": "Script",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "node"
+   ],
+   "returns": [],
+   "signature": "Script_UnBindThread(uint32, node)",
+   "lua_call": "Script_UnBindThread(targetNode, uint32, node)",
+   "vtable": "0x5f85dc",
+   "getname_stub": "0x4b6f70",
+   "factory": "0x4b6ec8"
+  },
+  "ShieldedBody_CoupleFather": {
+   "message_id": 33007,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_CoupleFather()",
+   "lua_call": "ShieldedBody_CoupleFather(targetNode)",
+   "vtable": "0x5f855c",
+   "getname_stub": "0x4b69c0",
+   "factory": "0x4b6918"
+  },
+  "ShieldedBody_DeactivateSelectiveVulnerability": {
+   "message_id": 33003,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_DeactivateSelectiveVulnerability()",
+   "lua_call": "ShieldedBody_DeactivateSelectiveVulnerability(targetNode)",
+   "vtable": "0x5f84dc",
+   "getname_stub": "0x4b6540",
+   "factory": "0x4b6498"
+  },
+  "ShieldedBody_DeepDestruct": {
+   "message_id": 33006,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_DeepDestruct()",
+   "lua_call": "ShieldedBody_DeepDestruct(targetNode)",
+   "vtable": "0x5f853c",
+   "getname_stub": "0x4b68a0",
+   "factory": "0x4b67f8"
+  },
+  "ShieldedBody_MakeInvulnerable": {
+   "message_id": 33000,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_MakeInvulnerable()",
+   "lua_call": "ShieldedBody_MakeInvulnerable(targetNode)",
+   "vtable": "0x5f847c",
+   "getname_stub": "0x4b61e0",
+   "factory": "0x4b6138"
+  },
+  "ShieldedBody_MakeSelectiveVulnerableAgainst": {
+   "message_id": 33002,
+   "subsystem": "ShieldedBody",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "ShieldedBody_MakeSelectiveVulnerableAgainst(node)",
+   "lua_call": "ShieldedBody_MakeSelectiveVulnerableAgainst(targetNode, node)",
+   "vtable": "0x5f84bc",
+   "getname_stub": "0x4b6420",
+   "factory": "0x4b6378"
+  },
+  "ShieldedBody_MakeVulnerable": {
+   "message_id": 33001,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_MakeVulnerable()",
+   "lua_call": "ShieldedBody_MakeVulnerable(targetNode)",
+   "vtable": "0x5f849c",
+   "getname_stub": "0x4b6300",
+   "factory": "0x4b6258"
+  },
+  "ShieldedBody_SetLogarithmicMode": {
+   "message_id": 33004,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_SetLogarithmicMode()",
+   "lua_call": "ShieldedBody_SetLogarithmicMode(targetNode)",
+   "vtable": "0x5f84fc",
+   "getname_stub": "0x4b6660",
+   "factory": "0x4b65b8"
+  },
+  "ShieldedBody_SetLogarithmicModeStop": {
+   "message_id": 33005,
+   "subsystem": "ShieldedBody",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "ShieldedBody_SetLogarithmicModeStop()",
+   "lua_call": "ShieldedBody_SetLogarithmicModeStop(targetNode)",
+   "vtable": "0x5f851c",
+   "getname_stub": "0x4b6780",
+   "factory": "0x4b66d8"
+  },
+  "Stream_SetBoxExtension": {
+   "message_id": 42001,
+   "subsystem": "Stream",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Stream_SetBoxExtension(float, float, float)",
+   "lua_call": "Stream_SetBoxExtension(targetNode, float, float, float)",
+   "vtable": "0x5f9e70",
+   "getname_stub": "0x4cd660",
+   "factory": "0x4cd5b8"
+  },
+  "Stream_SetCurrentDirection": {
+   "message_id": 42002,
+   "subsystem": "Stream",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Stream_SetCurrentDirection(MAT_Vector3)",
+   "lua_call": "Stream_SetCurrentDirection(targetNode, MAT_Vector3)",
+   "vtable": "0x5f9e90",
+   "getname_stub": "0x4cd870",
+   "factory": "0x4cd7c8"
+  },
+  "Stream_SetCurrentDirectionNetwork": {
+   "message_id": 42005,
+   "subsystem": "Stream",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "returns": [],
+   "signature": "Stream_SetCurrentDirectionNetwork(MAT_Vector3)",
+   "lua_call": "Stream_SetCurrentDirectionNetwork(targetNode, MAT_Vector3)",
+   "vtable": "0x5f9ef0",
+   "getname_stub": "0x4cdd40",
+   "factory": "0x4cdc98"
+  },
+  "Stream_SetCurrentSpeed": {
+   "message_id": 42004,
+   "subsystem": "Stream",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Stream_SetCurrentSpeed(float, float)",
+   "lua_call": "Stream_SetCurrentSpeed(targetNode, float, float)",
+   "vtable": "0x5f9ed0",
+   "getname_stub": "0x4cdb40",
+   "factory": "0x4cda98"
+  },
+  "Stream_SetTurbulenceFrequency": {
+   "message_id": 42003,
+   "subsystem": "Stream",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Stream_SetTurbulenceFrequency(float)",
+   "lua_call": "Stream_SetTurbulenceFrequency(targetNode, float)",
+   "vtable": "0x5f9eb0",
+   "getname_stub": "0x4cd990",
+   "factory": "0x4cd8e8"
+  },
+  "Terrain_LoadTerrain": {
+   "message_id": 9003,
+   "subsystem": "Terrain",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Terrain_LoadTerrain(string)",
+   "lua_call": "Terrain_LoadTerrain(targetNode, string)",
+   "vtable": "0x5f845c",
+   "getname_stub": "0x4b6050",
+   "factory": "0x4b5fa8"
+  },
+  "Terrain_SetPoly": {
+   "message_id": 9001,
+   "subsystem": "Terrain",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "returns": [],
+   "signature": "Terrain_SetPoly(int32)",
+   "lua_call": "Terrain_SetPoly(targetNode, int32)",
+   "vtable": "0x5f843c",
+   "getname_stub": "0x4b5f30",
+   "factory": "0x4b5e88"
+  },
+  "Trigger_ActivateSensor": {
+   "message_id": 20006,
+   "subsystem": "Trigger",
+   "argc": 3,
+   "params": [
+    "int8",
+    "int8",
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Trigger_ActivateSensor(int8, int8, int8)",
+   "lua_call": "Trigger_ActivateSensor(targetNode, int8, int8, int8)",
+   "vtable": "0x5f82fc",
+   "getname_stub": "0x4b5080",
+   "factory": "0x4b4fd8"
+  },
+  "Trigger_EnterAcoustic": {
+   "message_id": 20011,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Trigger_EnterAcoustic(node)",
+   "lua_call": "Trigger_EnterAcoustic(targetNode, node)",
+   "vtable": "0x5f839c",
+   "getname_stub": "0x4b5790",
+   "factory": "0x4b56e8"
+  },
+  "Trigger_EnterPresence": {
+   "message_id": 20009,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Trigger_EnterPresence(node)",
+   "lua_call": "Trigger_EnterPresence(targetNode, node)",
+   "vtable": "0x5f835c",
+   "getname_stub": "0x4b5450",
+   "factory": "0x4b53a8"
+  },
+  "Trigger_EnterVisible": {
+   "message_id": 20013,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Trigger_EnterVisible(node)",
+   "lua_call": "Trigger_EnterVisible(targetNode, node)",
+   "vtable": "0x5f83dc",
+   "getname_stub": "0x4b5ad0",
+   "factory": "0x4b5a28"
+  },
+  "Trigger_LeaveAcoustic": {
+   "message_id": 20012,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Trigger_LeaveAcoustic(node)",
+   "lua_call": "Trigger_LeaveAcoustic(targetNode, node)",
+   "vtable": "0x5f83bc",
+   "getname_stub": "0x4b5930",
+   "factory": "0x4b5888"
+  },
+  "Trigger_LeavePresence": {
+   "message_id": 20010,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Trigger_LeavePresence(node)",
+   "lua_call": "Trigger_LeavePresence(targetNode, node)",
+   "vtable": "0x5f837c",
+   "getname_stub": "0x4b55f0",
+   "factory": "0x4b5548"
+  },
+  "Trigger_LeaveVisible": {
+   "message_id": 20014,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Trigger_LeaveVisible(node)",
+   "lua_call": "Trigger_LeaveVisible(targetNode, node)",
+   "vtable": "0x5f83fc",
+   "getname_stub": "0x4b5c70",
+   "factory": "0x4b5bc8"
+  },
+  "Trigger_SetAcousticSensibility": {
+   "message_id": 20001,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetAcousticSensibility(string)",
+   "lua_call": "Trigger_SetAcousticSensibility(targetNode, string)",
+   "vtable": "0x5f825c",
+   "getname_stub": "0x4b49a0",
+   "factory": "0x4b48f8"
+  },
+  "Trigger_SetAcousticSphere": {
+   "message_id": 20000,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetAcousticSphere(float)",
+   "lua_call": "Trigger_SetAcousticSphere(targetNode, float)",
+   "vtable": "0x5f823c",
+   "getname_stub": "0x4b4880",
+   "factory": "0x4b47d8"
+  },
+  "Trigger_SetBoxMode": {
+   "message_id": 20015,
+   "subsystem": "Trigger",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetBoxMode(float, float, float)",
+   "lua_call": "Trigger_SetBoxMode(targetNode, float, float, float)",
+   "vtable": "0x5f841c",
+   "getname_stub": "0x4b5e10",
+   "factory": "0x4b5d68"
+  },
+  "Trigger_SetInterestList": {
+   "message_id": 20008,
+   "subsystem": "Trigger",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetInterestList(string, string, string, string)",
+   "lua_call": "Trigger_SetInterestList(targetNode, string, string, string, string)",
+   "vtable": "0x5f833c",
+   "getname_stub": "0x4b52c0",
+   "factory": "0x4b5218"
+  },
+  "Trigger_SetPresenceSphere": {
+   "message_id": 20002,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetPresenceSphere(float)",
+   "lua_call": "Trigger_SetPresenceSphere(targetNode, float)",
+   "vtable": "0x5f827c",
+   "getname_stub": "0x4b4ac0",
+   "factory": "0x4b4a18"
+  },
+  "Trigger_SetVisibilityBlockingStatus": {
+   "message_id": 20005,
+   "subsystem": "Trigger",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetVisibilityBlockingStatus(int8)",
+   "lua_call": "Trigger_SetVisibilityBlockingStatus(targetNode, int8)",
+   "vtable": "0x5f82dc",
+   "getname_stub": "0x4b4f60",
+   "factory": "0x4b4eb8"
+  },
+  "Trigger_SetVisibilityCone": {
+   "message_id": 20003,
+   "subsystem": "Trigger",
+   "argc": 3,
+   "params": [
+    "MAT_Vector3",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetVisibilityCone(MAT_Vector3, float, float)",
+   "lua_call": "Trigger_SetVisibilityCone(targetNode, MAT_Vector3, float, float)",
+   "vtable": "0x5f829c",
+   "getname_stub": "0x4b4be0",
+   "factory": "0x4b4b38"
+  },
+  "Trigger_SetVisibilityConeRelative": {
+   "message_id": 20004,
+   "subsystem": "Trigger",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Trigger_SetVisibilityConeRelative(float, float)",
+   "lua_call": "Trigger_SetVisibilityConeRelative(targetNode, float, float)",
+   "vtable": "0x5f82bc",
+   "getname_stub": "0x4b4e40",
+   "factory": "0x4b4d98"
+  },
+  "Trigger_StopSensor": {
+   "message_id": 20007,
+   "subsystem": "Trigger",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Trigger_StopSensor()",
+   "lua_call": "Trigger_StopSensor(targetNode)",
+   "vtable": "0x5f831c",
+   "getname_stub": "0x4b51a0",
+   "factory": "0x4b50f8"
+  },
+  "Turret_ComplexAttack": {
+   "message_id": 25007,
+   "subsystem": "Turret",
+   "argc": 5,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [
+    "int8"
+   ],
+   "signature": "Turret_ComplexAttack(float, string, string, string, string) -> int8",
+   "lua_call": "Turret_ComplexAttack(targetNode, float, string, string, string, string)",
+   "vtable": "0x5f80fc",
+   "getname_stub": "0x4b3a30",
+   "factory": "0x4b3988"
+  },
+  "Turret_ComplexAttackOver": {
+   "message_id": 25008,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_ComplexAttackOver()",
+   "lua_call": "Turret_ComplexAttackOver(targetNode)",
+   "vtable": "0x5f811c",
+   "getname_stub": "0x4b3c00",
+   "factory": "0x4b3b58"
+  },
+  "Turret_ComplexAttackOverride": {
+   "message_id": 25009,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_ComplexAttackOverride()",
+   "lua_call": "Turret_ComplexAttackOverride(targetNode)",
+   "vtable": "0x5f813c",
+   "getname_stub": "0x4b3d70",
+   "factory": "0x4b3cc8"
+  },
+  "Turret_DirectAttack": {
+   "message_id": 25014,
+   "subsystem": "Turret",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Turret_DirectAttack(string, string, string, string)",
+   "lua_call": "Turret_DirectAttack(targetNode, string, string, string, string)",
+   "vtable": "0x5f81dc",
+   "getname_stub": "0x4b4420",
+   "factory": "0x4b4378"
+  },
+  "Turret_DirectAttackStop": {
+   "message_id": 25015,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_DirectAttackStop()",
+   "lua_call": "Turret_DirectAttackStop(targetNode)",
+   "vtable": "0x5f81fc",
+   "getname_stub": "0x4b45f0",
+   "factory": "0x4b4548"
+  },
+  "Turret_EnteringCastratedMode": {
+   "message_id": 25011,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_EnteringCastratedMode()",
+   "lua_call": "Turret_EnteringCastratedMode(targetNode)",
+   "vtable": "0x5f817c",
+   "getname_stub": "0x4b4000",
+   "factory": "0x4b3f58"
+  },
+  "Turret_Follow": {
+   "message_id": 25000,
+   "subsystem": "Turret",
+   "argc": 2,
+   "params": [
+    "node",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Turret_Follow(node, float)",
+   "lua_call": "Turret_Follow(targetNode, node, float)",
+   "vtable": "0x5f801c",
+   "getname_stub": "0x4b30e0",
+   "factory": "0x4b3038"
+  },
+  "Turret_FollowFinished": {
+   "message_id": 25002,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_FollowFinished()",
+   "lua_call": "Turret_FollowFinished(targetNode)",
+   "vtable": "0x5f805c",
+   "getname_stub": "0x4b33a0",
+   "factory": "0x4b32f8"
+  },
+  "Turret_FollowOverride": {
+   "message_id": 25001,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_FollowOverride()",
+   "lua_call": "Turret_FollowOverride(targetNode)",
+   "vtable": "0x5f803c",
+   "getname_stub": "0x4b3230",
+   "factory": "0x4b3188"
+  },
+  "Turret_LeavingCastratedMode": {
+   "message_id": 25012,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_LeavingCastratedMode()",
+   "lua_call": "Turret_LeavingCastratedMode(targetNode)",
+   "vtable": "0x5f819c",
+   "getname_stub": "0x4b4170",
+   "factory": "0x4b40c8"
+  },
+  "Turret_Patrol": {
+   "message_id": 25004,
+   "subsystem": "Turret",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Turret_Patrol(float)",
+   "lua_call": "Turret_Patrol(targetNode, float)",
+   "vtable": "0x5f809c",
+   "getname_stub": "0x4b3680",
+   "factory": "0x4b35d8"
+  },
+  "Turret_PatrolFinished": {
+   "message_id": 25005,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_PatrolFinished()",
+   "lua_call": "Turret_PatrolFinished(targetNode)",
+   "vtable": "0x5f80bc",
+   "getname_stub": "0x4b37a0",
+   "factory": "0x4b36f8"
+  },
+  "Turret_PatrolOverride": {
+   "message_id": 25006,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_PatrolOverride()",
+   "lua_call": "Turret_PatrolOverride(targetNode)",
+   "vtable": "0x5f80dc",
+   "getname_stub": "0x4b3910",
+   "factory": "0x4b3868"
+  },
+  "Turret_SetAcousticMode": {
+   "message_id": 25016,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_SetAcousticMode()",
+   "lua_call": "Turret_SetAcousticMode(targetNode)",
+   "vtable": "0x5f821c",
+   "getname_stub": "0x4b4760",
+   "factory": "0x4b46b8"
+  },
+  "Turret_SetAngleArea": {
+   "message_id": 25010,
+   "subsystem": "Turret",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Turret_SetAngleArea(float, float, float)",
+   "lua_call": "Turret_SetAngleArea(targetNode, float, float, float)",
+   "vtable": "0x5f815c",
+   "getname_stub": "0x4b3ee0",
+   "factory": "0x4b3e38"
+  },
+  "Turret_SetPrimaryTarget": {
+   "message_id": 25013,
+   "subsystem": "Turret",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Turret_SetPrimaryTarget(node)",
+   "lua_call": "Turret_SetPrimaryTarget(targetNode, node)",
+   "vtable": "0x5f81bc",
+   "getname_stub": "0x4b42e0",
+   "factory": "0x4b4238"
+  },
+  "Turret_TargetLost": {
+   "message_id": 25003,
+   "subsystem": "Turret",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Turret_TargetLost()",
+   "lua_call": "Turret_TargetLost(targetNode)",
+   "vtable": "0x5f807c",
+   "getname_stub": "0x4b3510",
+   "factory": "0x4b3468"
+  },
+  "Vehicle_AttackOver": {
+   "message_id": 14018,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_AttackOver()",
+   "lua_call": "Vehicle_AttackOver(targetNode)",
+   "vtable": "0x5f7ebc",
+   "getname_stub": "0x4b2270",
+   "factory": "0x4b21c8"
+  },
+  "Vehicle_AttackOverride": {
+   "message_id": 14019,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_AttackOverride()",
+   "lua_call": "Vehicle_AttackOverride(targetNode)",
+   "vtable": "0x5f7edc",
+   "getname_stub": "0x4b23e0",
+   "factory": "0x4b2338"
+  },
+  "Vehicle_AttackPatrol": {
+   "message_id": 14017,
+   "subsystem": "Vehicle",
+   "argc": 6,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vehicle_AttackPatrol(float, string, string, string, string, string)",
+   "lua_call": "Vehicle_AttackPatrol(targetNode, float, string, string, string, string, string)",
+   "vtable": "0x5f7e9c",
+   "getname_stub": "0x4b2100",
+   "factory": "0x4b2058"
+  },
+  "Vehicle_AvoidanceObjects": {
+   "message_id": 14003,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vehicle_AvoidanceObjects(int8)",
+   "lua_call": "Vehicle_AvoidanceObjects(targetNode, int8)",
+   "vtable": "0x5f7cdc",
+   "getname_stub": "0x4b0e60",
+   "factory": "0x4b0db8"
+  },
+  "Vehicle_AvoidanceTerrain": {
+   "message_id": 14004,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vehicle_AvoidanceTerrain(int8)",
+   "lua_call": "Vehicle_AvoidanceTerrain(targetNode, int8)",
+   "vtable": "0x5f7cfc",
+   "getname_stub": "0x4b0f80",
+   "factory": "0x4b0ed8"
+  },
+  "Vehicle_CollisionObjects": {
+   "message_id": 14001,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vehicle_CollisionObjects(int8)",
+   "lua_call": "Vehicle_CollisionObjects(targetNode, int8)",
+   "vtable": "0x5f7c9c",
+   "getname_stub": "0x4b0c00",
+   "factory": "0x4b0b58"
+  },
+  "Vehicle_CollisionTerrain": {
+   "message_id": 14002,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vehicle_CollisionTerrain(int8)",
+   "lua_call": "Vehicle_CollisionTerrain(targetNode, int8)",
+   "vtable": "0x5f7cbc",
+   "getname_stub": "0x4b0d40",
+   "factory": "0x4b0c98"
+  },
+  "Vehicle_DipolIn": {
+   "message_id": 14026,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_DipolIn()",
+   "lua_call": "Vehicle_DipolIn(targetNode)",
+   "vtable": "0x5f7fbc",
+   "getname_stub": "0x4b2cd0",
+   "factory": "0x4b2c28"
+  },
+  "Vehicle_DipolInFinished": {
+   "message_id": 14027,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_DipolInFinished()",
+   "lua_call": "Vehicle_DipolInFinished(targetNode)",
+   "vtable": "0x5f7fdc",
+   "getname_stub": "0x4b2df0",
+   "factory": "0x4b2d48"
+  },
+  "Vehicle_EnteringCastratedMode": {
+   "message_id": 14020,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_EnteringCastratedMode()",
+   "lua_call": "Vehicle_EnteringCastratedMode(targetNode)",
+   "vtable": "0x5f7efc",
+   "getname_stub": "0x4b2550",
+   "factory": "0x4b24a8"
+  },
+  "Vehicle_Goto": {
+   "message_id": 14006,
+   "subsystem": "Vehicle",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vehicle_Goto(string, float, float)",
+   "lua_call": "Vehicle_Goto(targetNode, string, float, float)",
+   "vtable": "0x5f7d3c",
+   "getname_stub": "0x4b11d0",
+   "factory": "0x4b1128"
+  },
+  "Vehicle_GotoArrived": {
+   "message_id": 14008,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vehicle_GotoArrived(string)",
+   "lua_call": "Vehicle_GotoArrived(targetNode, string)",
+   "vtable": "0x5f7d7c",
+   "getname_stub": "0x4b1450",
+   "factory": "0x4b13a8"
+  },
+  "Vehicle_GotoFromPosition": {
+   "message_id": 14011,
+   "subsystem": "Vehicle",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vehicle_GotoFromPosition(string, string, float, float)",
+   "lua_call": "Vehicle_GotoFromPosition(targetNode, string, string, float, float)",
+   "vtable": "0x5f7ddc",
+   "getname_stub": "0x4b1900",
+   "factory": "0x4b1858"
+  },
+  "Vehicle_GotoFromTo": {
+   "message_id": 14012,
+   "subsystem": "Vehicle",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vehicle_GotoFromTo(string, string, string, float, float)",
+   "lua_call": "Vehicle_GotoFromTo(targetNode, string, string, string, float, float)",
+   "vtable": "0x5f7dfc",
+   "getname_stub": "0x4b1a60",
+   "factory": "0x4b19b8"
+  },
+  "Vehicle_GotoOverride": {
+   "message_id": 14010,
+   "subsystem": "Vehicle",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vehicle_GotoOverride(string, string, string)",
+   "lua_call": "Vehicle_GotoOverride(targetNode, string, string, string)",
+   "vtable": "0x5f7dbc",
+   "getname_stub": "0x4b1770",
+   "factory": "0x4b16c8"
+  },
+  "Vehicle_GotoPosReached": {
+   "message_id": 14009,
+   "subsystem": "Vehicle",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vehicle_GotoPosReached(string, string)",
+   "lua_call": "Vehicle_GotoPosReached(targetNode, string, string)",
+   "vtable": "0x5f7d9c",
+   "getname_stub": "0x4b15e0",
+   "factory": "0x4b1538"
+  },
+  "Vehicle_GotoStop": {
+   "message_id": 14007,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_GotoStop()",
+   "lua_call": "Vehicle_GotoStop(targetNode)",
+   "vtable": "0x5f7d5c",
+   "getname_stub": "0x4b1330",
+   "factory": "0x4b1288"
+  },
+  "Vehicle_LeavingCastratedMode": {
+   "message_id": 14021,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_LeavingCastratedMode()",
+   "lua_call": "Vehicle_LeavingCastratedMode(targetNode)",
+   "vtable": "0x5f7f1c",
+   "getname_stub": "0x4b2670",
+   "factory": "0x4b25c8"
+  },
+  "Vehicle_NonCollideAvoid": {
+   "message_id": 14005,
+   "subsystem": "Vehicle",
+   "argc": 2,
+   "params": [
+    "node",
+    "node"
+   ],
+   "returns": [],
+   "signature": "Vehicle_NonCollideAvoid(node, node)",
+   "lua_call": "Vehicle_NonCollideAvoid(targetNode, node, node)",
+   "vtable": "0x5f7d1c",
+   "getname_stub": "0x4b10a0",
+   "factory": "0x4b0ff8"
+  },
+  "Vehicle_ParkPatrol": {
+   "message_id": 14023,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vehicle_ParkPatrol(string)",
+   "lua_call": "Vehicle_ParkPatrol(targetNode, string)",
+   "vtable": "0x5f7f5c",
+   "getname_stub": "0x4b28b0",
+   "factory": "0x4b2808"
+  },
+  "Vehicle_ParkPatrolFinished": {
+   "message_id": 14024,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_ParkPatrolFinished()",
+   "lua_call": "Vehicle_ParkPatrolFinished(targetNode)",
+   "vtable": "0x5f7f7c",
+   "getname_stub": "0x4b29f0",
+   "factory": "0x4b2948"
+  },
+  "Vehicle_ParkPatrolOverride": {
+   "message_id": 14025,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_ParkPatrolOverride()",
+   "lua_call": "Vehicle_ParkPatrolOverride(targetNode)",
+   "vtable": "0x5f7f9c",
+   "getname_stub": "0x4b2b60",
+   "factory": "0x4b2ab8"
+  },
+  "Vehicle_Patrol": {
+   "message_id": 14014,
+   "subsystem": "Vehicle",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vehicle_Patrol(string, float)",
+   "lua_call": "Vehicle_Patrol(targetNode, string, float)",
+   "vtable": "0x5f7e3c",
+   "getname_stub": "0x4b1d00",
+   "factory": "0x4b1c58"
+  },
+  "Vehicle_PatrolFinished": {
+   "message_id": 14016,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_PatrolFinished()",
+   "lua_call": "Vehicle_PatrolFinished(targetNode)",
+   "vtable": "0x5f7e7c",
+   "getname_stub": "0x4b1f90",
+   "factory": "0x4b1ee8"
+  },
+  "Vehicle_PatrolOverride": {
+   "message_id": 14015,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_PatrolOverride()",
+   "lua_call": "Vehicle_PatrolOverride(targetNode)",
+   "vtable": "0x5f7e5c",
+   "getname_stub": "0x4b1e20",
+   "factory": "0x4b1d78"
+  },
+  "Vehicle_SetPrimaryTarget": {
+   "message_id": 14022,
+   "subsystem": "Vehicle",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Vehicle_SetPrimaryTarget(node)",
+   "lua_call": "Vehicle_SetPrimaryTarget(targetNode, node)",
+   "vtable": "0x5f7f3c",
+   "getname_stub": "0x4b2790",
+   "factory": "0x4b26e8"
+  },
+  "Vehicle_Stop": {
+   "message_id": 14013,
+   "subsystem": "Vehicle",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vehicle_Stop()",
+   "lua_call": "Vehicle_Stop(targetNode)",
+   "vtable": "0x5f7e1c",
+   "getname_stub": "0x4b1bd0",
+   "factory": "0x4b1b28"
+  },
+  "Vehicle_StopWithHeading": {
+   "message_id": 14028,
+   "subsystem": "Vehicle",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vehicle_StopWithHeading(string, string)",
+   "lua_call": "Vehicle_StopWithHeading(targetNode, string, string)",
+   "vtable": "0x5f7ffc",
+   "getname_stub": "0x4b2f60",
+   "factory": "0x4b2eb8"
+  },
+  "Vessel_AttackOver": {
+   "message_id": 15036,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_AttackOver()",
+   "lua_call": "Vessel_AttackOver(targetNode)",
+   "vtable": "0x5f79fc",
+   "getname_stub": "0x4af010",
+   "factory": "0x4aef68"
+  },
+  "Vessel_AttackOverride": {
+   "message_id": 15037,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_AttackOverride()",
+   "lua_call": "Vessel_AttackOverride(targetNode)",
+   "vtable": "0x5f7a1c",
+   "getname_stub": "0x4af180",
+   "factory": "0x4af0d8"
+  },
+  "Vessel_AttackPatrol": {
+   "message_id": 15035,
+   "subsystem": "Vessel",
+   "argc": 6,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_AttackPatrol(float, string, string, string, string, string)",
+   "lua_call": "Vessel_AttackPatrol(targetNode, float, string, string, string, string, string)",
+   "vtable": "0x5f79dc",
+   "getname_stub": "0x4aee10",
+   "factory": "0x4aed68"
+  },
+  "Vessel_AttackTurrets": {
+   "message_id": 15041,
+   "subsystem": "Vessel",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_AttackTurrets(string, string, string, string, string)",
+   "lua_call": "Vessel_AttackTurrets(targetNode, string, string, string, string, string)",
+   "vtable": "0x5f7a9c",
+   "getname_stub": "0x4af650",
+   "factory": "0x4af5a8"
+  },
+  "Vessel_AttackTurretsStop": {
+   "message_id": 15042,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_AttackTurretsStop(string)",
+   "lua_call": "Vessel_AttackTurretsStop(targetNode, string)",
+   "vtable": "0x5f7abc",
+   "getname_stub": "0x4af7b0",
+   "factory": "0x4af708"
+  },
+  "Vessel_AvoidanceObjects": {
+   "message_id": 15003,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vessel_AvoidanceObjects(int8)",
+   "lua_call": "Vessel_AvoidanceObjects(targetNode, int8)",
+   "vtable": "0x5f75dc",
+   "getname_stub": "0x4abde0",
+   "factory": "0x4abd38"
+  },
+  "Vessel_AvoidanceTerrain": {
+   "message_id": 15004,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vessel_AvoidanceTerrain(int8)",
+   "lua_call": "Vessel_AvoidanceTerrain(targetNode, int8)",
+   "vtable": "0x5f75fc",
+   "getname_stub": "0x4abf00",
+   "factory": "0x4abe58"
+  },
+  "Vessel_CollisionObjects": {
+   "message_id": 15001,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vessel_CollisionObjects(int8)",
+   "lua_call": "Vessel_CollisionObjects(targetNode, int8)",
+   "vtable": "0x5f759c",
+   "getname_stub": "0x4abba0",
+   "factory": "0x4abaf8"
+  },
+  "Vessel_CollisionTerrain": {
+   "message_id": 15002,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vessel_CollisionTerrain(int8)",
+   "lua_call": "Vessel_CollisionTerrain(targetNode, int8)",
+   "vtable": "0x5f75bc",
+   "getname_stub": "0x4abcc0",
+   "factory": "0x4abc18"
+  },
+  "Vessel_DeactivateTurningInEmp": {
+   "message_id": 15054,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_DeactivateTurningInEmp()",
+   "lua_call": "Vessel_DeactivateTurningInEmp(targetNode)",
+   "vtable": "0x5f7c3c",
+   "getname_stub": "0x4b08a0",
+   "factory": "0x4b07f8"
+  },
+  "Vessel_DipolIn": {
+   "message_id": 15044,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_DipolIn(float)",
+   "lua_call": "Vessel_DipolIn(targetNode, float)",
+   "vtable": "0x5f7afc",
+   "getname_stub": "0x4afa10",
+   "factory": "0x4af968"
+  },
+  "Vessel_DipolInFinished": {
+   "message_id": 15046,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_DipolInFinished()",
+   "lua_call": "Vessel_DipolInFinished(targetNode)",
+   "vtable": "0x5f7b3c",
+   "getname_stub": "0x4afca0",
+   "factory": "0x4afbf8"
+  },
+  "Vessel_DipolOut": {
+   "message_id": 15043,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_DipolOut()",
+   "lua_call": "Vessel_DipolOut(targetNode)",
+   "vtable": "0x5f7adc",
+   "getname_stub": "0x4af8f0",
+   "factory": "0x4af848"
+  },
+  "Vessel_DipolOutFinished": {
+   "message_id": 15045,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_DipolOutFinished()",
+   "lua_call": "Vessel_DipolOutFinished(targetNode)",
+   "vtable": "0x5f7b1c",
+   "getname_stub": "0x4afb30",
+   "factory": "0x4afa88"
+  },
+  "Vessel_Dock": {
+   "message_id": 15030,
+   "subsystem": "Vessel",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "node"
+   ],
+   "returns": [],
+   "signature": "Vessel_Dock(string, string, string, node)",
+   "lua_call": "Vessel_Dock(targetNode, string, string, string, node)",
+   "vtable": "0x5f793c",
+   "getname_stub": "0x4ae780",
+   "factory": "0x4ae6d8"
+  },
+  "Vessel_DockAndLeave": {
+   "message_id": 15032,
+   "subsystem": "Vessel",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "node",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_DockAndLeave(string, string, string, node, float)",
+   "lua_call": "Vessel_DockAndLeave(targetNode, string, string, string, node, float)",
+   "vtable": "0x5f797c",
+   "getname_stub": "0x4aea50",
+   "factory": "0x4ae9a8"
+  },
+  "Vessel_DockingFinished": {
+   "message_id": 15033,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_DockingFinished()",
+   "lua_call": "Vessel_DockingFinished(targetNode)",
+   "vtable": "0x5f799c",
+   "getname_stub": "0x4aebd0",
+   "factory": "0x4aeb28"
+  },
+  "Vessel_EnteringCastratedMode": {
+   "message_id": 15038,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_EnteringCastratedMode()",
+   "lua_call": "Vessel_EnteringCastratedMode(targetNode)",
+   "vtable": "0x5f7a3c",
+   "getname_stub": "0x4af2f0",
+   "factory": "0x4af248"
+  },
+  "Vessel_EscapeToPosSim": {
+   "message_id": 15029,
+   "subsystem": "Vessel",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_EscapeToPosSim(string, string, string, string)",
+   "lua_call": "Vessel_EscapeToPosSim(targetNode, string, string, string, string)",
+   "vtable": "0x5f791c",
+   "getname_stub": "0x4ae5f0",
+   "factory": "0x4ae548"
+  },
+  "Vessel_EscapeToPosition": {
+   "message_id": 15026,
+   "subsystem": "Vessel",
+   "argc": 11,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "string",
+    "string",
+    "string",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_EscapeToPosition(string, float, float, float, float, string, string, string, float, float, float)",
+   "lua_call": "Vessel_EscapeToPosition(targetNode, string, float, float, float, float, string, string, string, float, float, float)",
+   "vtable": "0x5f78bc",
+   "getname_stub": "0x4adfb0",
+   "factory": "0x4adf08"
+  },
+  "Vessel_EscapeToPositionFinished": {
+   "message_id": 15027,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_EscapeToPositionFinished()",
+   "lua_call": "Vessel_EscapeToPositionFinished(targetNode)",
+   "vtable": "0x5f78dc",
+   "getname_stub": "0x4ae310",
+   "factory": "0x4ae268"
+  },
+  "Vessel_EscapeToPositionOverride": {
+   "message_id": 15028,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_EscapeToPositionOverride()",
+   "lua_call": "Vessel_EscapeToPositionOverride(targetNode)",
+   "vtable": "0x5f78fc",
+   "getname_stub": "0x4ae480",
+   "factory": "0x4ae3d8"
+  },
+  "Vessel_Escort": {
+   "message_id": 15021,
+   "subsystem": "Vessel",
+   "argc": 3,
+   "params": [
+    "node",
+    "MAT_Vector3",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_Escort(node, MAT_Vector3, float)",
+   "lua_call": "Vessel_Escort(targetNode, node, MAT_Vector3, float)",
+   "vtable": "0x5f781c",
+   "getname_stub": "0x4ad7e0",
+   "factory": "0x4ad738"
+  },
+  "Vessel_EscortObjectLost": {
+   "message_id": 15022,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_EscortObjectLost()",
+   "lua_call": "Vessel_EscortObjectLost(targetNode)",
+   "vtable": "0x5f783c",
+   "getname_stub": "0x4ada40",
+   "factory": "0x4ad998"
+  },
+  "Vessel_EscortOverride": {
+   "message_id": 15023,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_EscortOverride()",
+   "lua_call": "Vessel_EscortOverride(targetNode)",
+   "vtable": "0x5f785c",
+   "getname_stub": "0x4adbb0",
+   "factory": "0x4adb08"
+  },
+  "Vessel_EscortPosReached": {
+   "message_id": 15024,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_EscortPosReached()",
+   "lua_call": "Vessel_EscortPosReached(targetNode)",
+   "vtable": "0x5f787c",
+   "getname_stub": "0x4add20",
+   "factory": "0x4adc78"
+  },
+  "Vessel_FinalizeInfiltrate": {
+   "message_id": 15052,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_FinalizeInfiltrate()",
+   "lua_call": "Vessel_FinalizeInfiltrate(targetNode)",
+   "vtable": "0x5f7bfc",
+   "getname_stub": "0x4b05f0",
+   "factory": "0x4b0548"
+  },
+  "Vessel_Goto": {
+   "message_id": 15006,
+   "subsystem": "Vessel",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_Goto(string, float, float)",
+   "lua_call": "Vessel_Goto(targetNode, string, float, float)",
+   "vtable": "0x5f763c",
+   "getname_stub": "0x4ac160",
+   "factory": "0x4ac0b8"
+  },
+  "Vessel_GotoArrived": {
+   "message_id": 15008,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_GotoArrived(string)",
+   "lua_call": "Vessel_GotoArrived(targetNode, string)",
+   "vtable": "0x5f767c",
+   "getname_stub": "0x4ac430",
+   "factory": "0x4ac388"
+  },
+  "Vessel_GotoFromPosition": {
+   "message_id": 15011,
+   "subsystem": "Vessel",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_GotoFromPosition(string, string, float, float)",
+   "lua_call": "Vessel_GotoFromPosition(targetNode, string, string, float, float)",
+   "vtable": "0x5f76dc",
+   "getname_stub": "0x4ac920",
+   "factory": "0x4ac878"
+  },
+  "Vessel_GotoFromTo": {
+   "message_id": 15012,
+   "subsystem": "Vessel",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_GotoFromTo(string, string, string, float, float)",
+   "lua_call": "Vessel_GotoFromTo(targetNode, string, string, string, float, float)",
+   "vtable": "0x5f76fc",
+   "getname_stub": "0x4acb20",
+   "factory": "0x4aca78"
+  },
+  "Vessel_GotoOverride": {
+   "message_id": 15010,
+   "subsystem": "Vessel",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_GotoOverride(string, string, string)",
+   "lua_call": "Vessel_GotoOverride(targetNode, string, string, string)",
+   "vtable": "0x5f76bc",
+   "getname_stub": "0x4ac770",
+   "factory": "0x4ac6c8"
+  },
+  "Vessel_GotoPosReached": {
+   "message_id": 15009,
+   "subsystem": "Vessel",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_GotoPosReached(string, string)",
+   "lua_call": "Vessel_GotoPosReached(targetNode, string, string)",
+   "vtable": "0x5f769c",
+   "getname_stub": "0x4ac5c0",
+   "factory": "0x4ac518"
+  },
+  "Vessel_GotoStop": {
+   "message_id": 15007,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_GotoStop()",
+   "lua_call": "Vessel_GotoStop(targetNode)",
+   "vtable": "0x5f765c",
+   "getname_stub": "0x4ac310",
+   "factory": "0x4ac268"
+  },
+  "Vessel_Infiltrate": {
+   "message_id": 15047,
+   "subsystem": "Vessel",
+   "argc": 6,
+   "params": [
+    "node",
+    "string",
+    "string",
+    "float",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_Infiltrate(node, string, string, float, float, float)",
+   "lua_call": "Vessel_Infiltrate(targetNode, node, string, string, float, float, float)",
+   "vtable": "0x5f7b5c",
+   "getname_stub": "0x4afe10",
+   "factory": "0x4afd68"
+  },
+  "Vessel_InfiltrateAborted": {
+   "message_id": 15049,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_InfiltrateAborted()",
+   "lua_call": "Vessel_InfiltrateAborted(targetNode)",
+   "vtable": "0x5f7b9c",
+   "getname_stub": "0x4b01f0",
+   "factory": "0x4b0148"
+  },
+  "Vessel_InfiltrateBegin": {
+   "message_id": 15053,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_InfiltrateBegin()",
+   "lua_call": "Vessel_InfiltrateBegin(targetNode)",
+   "vtable": "0x5f7c1c",
+   "getname_stub": "0x4b0730",
+   "factory": "0x4b0688"
+  },
+  "Vessel_InfiltrateFinished": {
+   "message_id": 15048,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_InfiltrateFinished()",
+   "lua_call": "Vessel_InfiltrateFinished(targetNode)",
+   "vtable": "0x5f7b7c",
+   "getname_stub": "0x4b0080",
+   "factory": "0x4affd8"
+  },
+  "Vessel_InfiltrateSuccess": {
+   "message_id": 15051,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_InfiltrateSuccess()",
+   "lua_call": "Vessel_InfiltrateSuccess(targetNode)",
+   "vtable": "0x5f7bdc",
+   "getname_stub": "0x4b0480",
+   "factory": "0x4b03d8"
+  },
+  "Vessel_LeavingCastratedMode": {
+   "message_id": 15039,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_LeavingCastratedMode()",
+   "lua_call": "Vessel_LeavingCastratedMode(targetNode)",
+   "vtable": "0x5f7a5c",
+   "getname_stub": "0x4af410",
+   "factory": "0x4af368"
+  },
+  "Vessel_NonCollideAvoid": {
+   "message_id": 15005,
+   "subsystem": "Vessel",
+   "argc": 2,
+   "params": [
+    "node",
+    "node"
+   ],
+   "returns": [],
+   "signature": "Vessel_NonCollideAvoid(node, node)",
+   "lua_call": "Vessel_NonCollideAvoid(targetNode, node, node)",
+   "vtable": "0x5f761c",
+   "getname_stub": "0x4ac020",
+   "factory": "0x4abf78"
+  },
+  "Vessel_Patrol": {
+   "message_id": 15015,
+   "subsystem": "Vessel",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_Patrol(string, float, float)",
+   "lua_call": "Vessel_Patrol(targetNode, string, float, float)",
+   "vtable": "0x5f775c",
+   "getname_stub": "0x4acf80",
+   "factory": "0x4aced8"
+  },
+  "Vessel_PatrolFinished": {
+   "message_id": 15017,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_PatrolFinished()",
+   "lua_call": "Vessel_PatrolFinished(targetNode)",
+   "vtable": "0x5f779c",
+   "getname_stub": "0x4ad210",
+   "factory": "0x4ad168"
+  },
+  "Vessel_PatrolOverride": {
+   "message_id": 15016,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_PatrolOverride()",
+   "lua_call": "Vessel_PatrolOverride(targetNode)",
+   "vtable": "0x5f777c",
+   "getname_stub": "0x4ad0a0",
+   "factory": "0x4acff8"
+  },
+  "Vessel_PseudoExplode": {
+   "message_id": 15050,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_PseudoExplode()",
+   "lua_call": "Vessel_PseudoExplode(targetNode)",
+   "vtable": "0x5f7bbc",
+   "getname_stub": "0x4b0360",
+   "factory": "0x4b02b8"
+  },
+  "Vessel_ReactivateCollisionReaction": {
+   "message_id": 15056,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_ReactivateCollisionReaction()",
+   "lua_call": "Vessel_ReactivateCollisionReaction(targetNode)",
+   "vtable": "0x5f7c7c",
+   "getname_stub": "0x4b0ae0",
+   "factory": "0x4b0a38"
+  },
+  "Vessel_SetPrimaryTarget": {
+   "message_id": 15040,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "Vessel_SetPrimaryTarget(node)",
+   "lua_call": "Vessel_SetPrimaryTarget(targetNode, node)",
+   "vtable": "0x5f7a7c",
+   "getname_stub": "0x4af530",
+   "factory": "0x4af488"
+  },
+  "Vessel_Sink": {
+   "message_id": 15018,
+   "subsystem": "Vessel",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_Sink(string, float)",
+   "lua_call": "Vessel_Sink(targetNode, string, float)",
+   "vtable": "0x5f77bc",
+   "getname_stub": "0x4ad380",
+   "factory": "0x4ad2d8"
+  },
+  "Vessel_SinkFinished": {
+   "message_id": 15019,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vessel_SinkFinished(int8)",
+   "lua_call": "Vessel_SinkFinished(targetNode, int8)",
+   "vtable": "0x5f77dc",
+   "getname_stub": "0x4ad4d0",
+   "factory": "0x4ad428"
+  },
+  "Vessel_SinkOverride": {
+   "message_id": 15020,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_SinkOverride()",
+   "lua_call": "Vessel_SinkOverride(targetNode)",
+   "vtable": "0x5f77fc",
+   "getname_stub": "0x4ad670",
+   "factory": "0x4ad5c8"
+  },
+  "Vessel_Stop": {
+   "message_id": 15013,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "returns": [],
+   "signature": "Vessel_Stop(int8)",
+   "lua_call": "Vessel_Stop(targetNode, int8)",
+   "vtable": "0x5f771c",
+   "getname_stub": "0x4acd40",
+   "factory": "0x4acc98"
+  },
+  "Vessel_StopWithHeading": {
+   "message_id": 15014,
+   "subsystem": "Vessel",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "returns": [],
+   "signature": "Vessel_StopWithHeading(string, string)",
+   "lua_call": "Vessel_StopWithHeading(targetNode, string, string)",
+   "vtable": "0x5f773c",
+   "getname_stub": "0x4ace60",
+   "factory": "0x4acdb8"
+  },
+  "Vessel_StopWithSinking": {
+   "message_id": 15025,
+   "subsystem": "Vessel",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "Vessel_StopWithSinking(float)",
+   "lua_call": "Vessel_StopWithSinking(targetNode, float)",
+   "vtable": "0x5f789c",
+   "getname_stub": "0x4ade90",
+   "factory": "0x4adde8"
+  },
+  "Vessel_SuspendCollisionReaction": {
+   "message_id": 15055,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_SuspendCollisionReaction()",
+   "lua_call": "Vessel_SuspendCollisionReaction(targetNode)",
+   "vtable": "0x5f7c5c",
+   "getname_stub": "0x4b09c0",
+   "factory": "0x4b0918"
+  },
+  "Vessel_Undock": {
+   "message_id": 15031,
+   "subsystem": "Vessel",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "node"
+   ],
+   "returns": [],
+   "signature": "Vessel_Undock(string, string, string, node)",
+   "lua_call": "Vessel_Undock(targetNode, string, string, string, node)",
+   "vtable": "0x5f795c",
+   "getname_stub": "0x4ae8e0",
+   "factory": "0x4ae838"
+  },
+  "Vessel_UndockingFinished": {
+   "message_id": 15034,
+   "subsystem": "Vessel",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "Vessel_UndockingFinished()",
+   "lua_call": "Vessel_UndockingFinished(targetNode)",
+   "vtable": "0x5f79bc",
+   "getname_stub": "0x4aecf0",
+   "factory": "0x4aec48"
+  },
+  "WayPoint_Attach": {
+   "message_id": 35006,
+   "subsystem": "WayPoint",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "returns": [],
+   "signature": "WayPoint_Attach(node)",
+   "lua_call": "WayPoint_Attach(targetNode, node)",
+   "vtable": "0x5f74fc",
+   "getname_stub": "0x4ab4c0",
+   "factory": "0x4ab418"
+  },
+  "WayPoint_InformActivated": {
+   "message_id": 35007,
+   "subsystem": "WayPoint",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "WayPoint_InformActivated()",
+   "lua_call": "WayPoint_InformActivated(targetNode)",
+   "vtable": "0x5f751c",
+   "getname_stub": "0x4ab5e0",
+   "factory": "0x4ab538"
+  },
+  "WayPoint_InformDeactivated": {
+   "message_id": 35008,
+   "subsystem": "WayPoint",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "WayPoint_InformDeactivated()",
+   "lua_call": "WayPoint_InformDeactivated(targetNode)",
+   "vtable": "0x5f753c",
+   "getname_stub": "0x4ab750",
+   "factory": "0x4ab6a8"
+  },
+  "WayPoint_InformEntered": {
+   "message_id": 35009,
+   "subsystem": "WayPoint",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "WayPoint_InformEntered()",
+   "lua_call": "WayPoint_InformEntered(targetNode)",
+   "vtable": "0x5f755c",
+   "getname_stub": "0x4ab8c0",
+   "factory": "0x4ab818"
+  },
+  "WayPoint_InformLeft": {
+   "message_id": 35010,
+   "subsystem": "WayPoint",
+   "argc": 0,
+   "params": [],
+   "returns": [],
+   "signature": "WayPoint_InformLeft()",
+   "lua_call": "WayPoint_InformLeft(targetNode)",
+   "vtable": "0x5f757c",
+   "getname_stub": "0x4aba30",
+   "factory": "0x4ab988"
+  },
+  "WayPoint_SetRadius": {
+   "message_id": 35000,
+   "subsystem": "WayPoint",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "returns": [],
+   "signature": "WayPoint_SetRadius(float)",
+   "lua_call": "WayPoint_SetRadius(targetNode, float)",
+   "vtable": "0x5f743c",
+   "getname_stub": "0x4aa9e0",
+   "factory": "0x4aa938"
+  },
+  "WayPoint_SetTakeKey_Activate": {
+   "message_id": 35001,
+   "subsystem": "WayPoint",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "WayPoint_SetTakeKey_Activate(node, uint32)",
+   "lua_call": "WayPoint_SetTakeKey_Activate(targetNode, node, uint32)",
+   "vtable": "0x5f745c",
+   "getname_stub": "0x4aab00",
+   "factory": "0x4aaa58"
+  },
+  "WayPoint_SetTakeKey_Enter": {
+   "message_id": 35004,
+   "subsystem": "WayPoint",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "WayPoint_SetTakeKey_Enter(node, uint32)",
+   "lua_call": "WayPoint_SetTakeKey_Enter(targetNode, node, uint32)",
+   "vtable": "0x5f74bc",
+   "getname_stub": "0x4ab280",
+   "factory": "0x4ab1d8"
+  },
+  "WayPoint_SetTakeKey_Inside": {
+   "message_id": 35002,
+   "subsystem": "WayPoint",
+   "argc": 18,
+   "params": [],
+   "returns": [],
+   "signature": "WayPoint_SetTakeKey_Inside()",
+   "lua_call": "WayPoint_SetTakeKey_Inside(targetNode)",
+   "vtable": "0x5f747c",
+   "getname_stub": "0x4aac50",
+   "factory": "0x4aaba8"
+  },
+  "WayPoint_SetTakeKey_Leave": {
+   "message_id": 35005,
+   "subsystem": "WayPoint",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "returns": [],
+   "signature": "WayPoint_SetTakeKey_Leave(node, uint32)",
+   "lua_call": "WayPoint_SetTakeKey_Leave(targetNode, node, uint32)",
+   "vtable": "0x5f74dc",
+   "getname_stub": "0x4ab3a0",
+   "factory": "0x4ab2f8"
+  },
+  "WayPoint_SetTakeKey_Outside": {
+   "message_id": 35003,
+   "subsystem": "WayPoint",
+   "argc": 18,
+   "params": [],
+   "returns": [],
+   "signature": "WayPoint_SetTakeKey_Outside()",
+   "lua_call": "WayPoint_SetTakeKey_Outside(targetNode)",
+   "vtable": "0x5f749c",
+   "getname_stub": "0x4ab0d0",
+   "factory": "0x4ab028"
+  }
+ },
+ "by_id": {
+  "38001": "ANT_Client_ConnectAborted",
+  "38000": "ANT_Client_ConnectCompleted",
+  "38003": "ANT_Client_DuplicationComplete",
+  "38004": "ANT_Client_MapChange",
+  "38002": "ANT_Client_SessionTerminated",
+  "39005": "ANT_Message_AskForPlayerRecreation",
+  "39029": "ANT_Message_AuthenticateFailure",
+  "39027": "ANT_Message_AuthenticateQuery",
+  "39028": "ANT_Message_AuthenticateReply",
+  "39019": "ANT_Message_BodyAnglesUpdate",
+  "39007": "ANT_Message_BodyUpdate",
+  "39004": "ANT_Message_ClientIsLeft",
+  "39018": "ANT_Message_CreateBuzzerOnServer",
+  "39000": "ANT_Message_CreateObject",
+  "39006": "ANT_Message_CreatePlayerOnClient",
+  "39011": "ANT_Message_CreateTorpedoOnServer",
+  "39013": "ANT_Message_DestroyNode",
+  "39002": "ANT_Message_ObjectStateChange",
+  "39016": "ANT_Message_ObjectWasKilled",
+  "39003": "ANT_Message_SendClientInfo",
+  "39025": "ANT_Message_SendGameInfo",
+  "39026": "ANT_Message_SendServerInfo",
+  "39021": "ANT_Message_SendVoice",
+  "39015": "ANT_Message_SetBandwidth",
+  "39020": "ANT_Message_SetClientInfo",
+  "39014": "ANT_Message_SetNodeFlags",
+  "39010": "ANT_Message_ShieldUpdateAbsolute",
+  "39009": "ANT_Message_ShieldUpdateRelative",
+  "39024": "ANT_Message_SimpleExplosion",
+  "39008": "ANT_Message_SpawnBullet",
+  "39017": "ANT_Message_SpawnBuzzerOnClient",
+  "39022": "ANT_Message_SpawnSplash",
+  "39012": "ANT_Message_SpawnTorpedoOnClient",
+  "39001": "ANT_Message_TimeStamp",
+  "39023": "ANT_Message_TorpedoImpactEffect",
+  "32006": "ANT_Rules_ChangeTeam",
+  "32000": "ANT_Rules_ConnectCompleted",
+  "32004": "ANT_Rules_EventCTF",
+  "32003": "ANT_Rules_RulesPlayerInfoUpdate",
+  "32002": "ANT_Rules_RulesPlayerUpdate",
+  "32001": "ANT_Rules_RulesTeamUpdate",
+  "32005": "ANT_Rules_StartTime",
+  "37005": "ANT_Server_RemoteConsole",
+  "37000": "ANT_Server_RemoteJoined",
+  "37001": "ANT_Server_RemoteLeft",
+  "37002": "ANT_Server_SessionTerminated",
+  "37003": "ANT_Server_StartScenegraphDuplication",
+  "37004": "ANT_Server_StartScenegraphSync",
+  "1038": "Body_ActivateEscapePod",
+  "1014": "Body_ActivateShieldGuard",
+  "1034": "Body_AddItem",
+  "1035": "Body_AddItemInteger",
+  "1025": "Body_BioShieldBarrierReached",
+  "1039": "Body_DeactivateEscapePod",
+  "1015": "Body_DeactivateShieldGuard",
+  "1033": "Body_EMPParalyzed",
+  "1022": "Body_EmpShieldBarrierReached",
+  "1028": "Body_EnemyArrival",
+  "1031": "Body_EnemyArrivalPatrol",
+  "1041": "Body_EscapePodEjected",
+  "1040": "Body_ForceEjection",
+  "1045": "Body_Freeze",
+  "1011": "Body_GetBioShield",
+  "1013": "Body_GetEmpShield",
+  "1009": "Body_GetKineticShield",
+  "1002": "Body_GetPosition",
+  "1026": "Body_InformEnemies",
+  "1029": "Body_InformEnemyPatrol",
+  "1007": "Body_InformShotHit",
+  "1019": "Body_KinShieldBarrierReached",
+  "1016": "Body_ObjectDestroyed",
+  "1024": "Body_RejectBioInfo",
+  "1021": "Body_RejectEmpInfo",
+  "1027": "Body_RejectEnemies",
+  "1030": "Body_RejectEnemyPatrol",
+  "1018": "Body_RejectKinInfo",
+  "1006": "Body_RejectShotHits",
+  "1023": "Body_RequestBioInfo",
+  "1020": "Body_RequestEmpInfo",
+  "1017": "Body_RequestKinInfo",
+  "1005": "Body_RequestShotHits",
+  "1010": "Body_SetBioShield",
+  "1004": "Body_SetCS",
+  "1036": "Body_SetCargoKey",
+  "1012": "Body_SetEmpShield",
+  "1032": "Body_SetFriendOrFoeID",
+  "1044": "Body_SetKinEscapeBarrier",
+  "1008": "Body_SetKineticShield",
+  "1003": "Body_SetMesh",
+  "1037": "Body_SetNameKey",
+  "1001": "Body_SetOrientation",
+  "1000": "Body_SetPosition",
+  "1042": "Body_StartEscapeBehaviour",
+  "1043": "Body_StopEscapeBehaviour",
+  "7016": "Camera_Cut",
+  "7008": "Camera_LookAhead",
+  "7005": "Camera_LookAt",
+  "7003": "Camera_LookFrom",
+  "7002": "Camera_MoveInto",
+  "7004": "Camera_MoveTo",
+  "7015": "Camera_MoveToAnglesAbs",
+  "7014": "Camera_MoveToAnglesRel",
+  "7019": "Camera_MoveToAnglesRelIgnoreBC",
+  "7009": "Camera_RollAhead",
+  "7007": "Camera_RollFrom",
+  "7006": "Camera_RollTo",
+  "7000": "Camera_SetBackPlane",
+  "7001": "Camera_SetFrontPlane",
+  "7010": "Camera_ShakeHit",
+  "7011": "Camera_ShakeTo",
+  "7017": "Camera_ShakeViewHit",
+  "7018": "Camera_ShakeViewTo",
+  "7020": "Camera_SwingAtLissajous",
+  "7013": "Camera_ZoomAt",
+  "7012": "Camera_ZoomTo",
+  "22000": "Character_StartAnimation",
+  "22001": "Character_StopAnimation",
+  "17001": "Console_Activate",
+  "17002": "Console_Deactivate",
+  "17000": "Console_Input",
+  "41000": "Director_BeginCutscene",
+  "41001": "Director_EndCutscene",
+  "21005": "Emitter_GetSoundEmissionLevel",
+  "21003": "Emitter_GetVisibilityBlockingStatus",
+  "21001": "Emitter_GetVisibilityStatus",
+  "21004": "Emitter_SetSoundEmissionLevel",
+  "21002": "Emitter_SetVisibilityBlockingStatus",
+  "21000": "Emitter_SetVisibilityStatus",
+  "36000": "FX_Plant_SetMap",
+  "11024": "Game_CreateClientScript",
+  "11014": "Game_EndGame",
+  "11018": "Game_GetEnemyMatrixElement",
+  "11006": "Game_LoadFog",
+  "11030": "Game_LoadMTake",
+  "11029": "Game_LoadMusic",
+  "11039": "Game_LoadProgress_Advance",
+  "11038": "Game_LoadProgress_Enter",
+  "11040": "Game_LoadProgress_Leave",
+  "11004": "Game_LoadScenario",
+  "11000": "Game_LoadScript",
+  "11031": "Game_LoadServerScript",
+  "11025": "Game_LoadTextTable",
+  "11005": "Game_LoadTextures",
+  "11036": "Game_MissionEnd",
+  "11009": "Game_PlayMusic",
+  "11019": "Game_ResetEnemyMatrix",
+  "11020": "Game_SendRadioMessageTake",
+  "11026": "Game_SetAmbientLight",
+  "11035": "Game_SetCameraValues",
+  "11012": "Game_SetCausticBuilding",
+  "11011": "Game_SetCausticObject",
+  "11010": "Game_SetCausticTerrain",
+  "11021": "Game_SetDecompressionHeight",
+  "11017": "Game_SetEnemyMatrixElement",
+  "11013": "Game_SetFog",
+  "11016": "Game_SetLightCache",
+  "11028": "Game_SetParallelLightB",
+  "11027": "Game_SetParallelLightT",
+  "11037": "Game_SetPlayBackFile",
+  "11041": "Game_SetTaskTextKey",
+  "11022": "Game_SetTerrainDepth",
+  "11023": "Game_SetWayPoint",
+  "11034": "Game_TextMessage",
+  "11042": "Game_VocalMessage",
+  "43002": "Gun_AddPhase",
+  "43001": "Gun_FlushPhases",
+  "43000": "Gun_SetBullet",
+  "43004": "Gun_SetDogBullet",
+  "43003": "Gun_SetSniperBullet",
+  "34002": "ItemBox_PlayRespawnSound",
+  "34003": "ItemBox_SetItemCount",
+  "34001": "ItemBox_SetRespawnCount",
+  "34000": "ItemBox_SetRespawnDelay",
+  "4000": "LaserWall_SetWallExtensionX",
+  "4001": "LaserWall_SetWallExtensionZ",
+  "12005": "Light_SetColor",
+  "12001": "Light_SetCone",
+  "12004": "Light_SetMode",
+  "12002": "Light_SetR1",
+  "12003": "Light_SetR2",
+  "12000": "Light_Switch",
+  "27001": "Mine_Activate",
+  "27002": "Mine_Deactivate",
+  "27003": "Mine_IsActive",
+  "5004": "Node_AddSon",
+  "5005": "Node_CreateNode",
+  "5002": "Node_EnterSimulation",
+  "5007": "Node_Find",
+  "5006": "Node_GetName",
+  "5009": "Node_GetNumOfSons",
+  "5008": "Node_GetPath",
+  "5011": "Node_GetSon",
+  "5012": "Node_GetSonName",
+  "5013": "Node_GetTime",
+  "5003": "Node_LeaveSimulation",
+  "5001": "Node_ParseIniFile",
+  "5000": "Node_SetName",
+  "5010": "Node_SubSon",
+  "3001": "ParticleEmitter_SetAccelerationOffset",
+  "3008": "ParticleEmitter_SetCone",
+  "3004": "ParticleEmitter_SetConeAngle",
+  "3002": "ParticleEmitter_SetFriction",
+  "3000": "ParticleEmitter_SetLifeTime",
+  "3003": "ParticleEmitter_SetPPS",
+  "3005": "ParticleEmitter_SetVelocity",
+  "13000": "Path_GetPositionOrientation",
+  "24005": "PatrolArea_BindNode",
+  "24004": "PatrolArea_GetDiameter",
+  "24003": "PatrolArea_SetMaxZ",
+  "24002": "PatrolArea_SetMinZ",
+  "24000": "PatrolArea_SetPosition",
+  "24001": "PatrolArea_SetRadius",
+  "23018": "PhysicalCharacter_Attack",
+  "23019": "PhysicalCharacter_AttackCompleted",
+  "23012": "PhysicalCharacter_AttackTurrets",
+  "23013": "PhysicalCharacter_AttackTurretsStop",
+  "23004": "PhysicalCharacter_GotoArrived",
+  "23006": "PhysicalCharacter_GotoOverride",
+  "23005": "PhysicalCharacter_GotoPosReached",
+  "23002": "PhysicalCharacter_GotoStart",
+  "23007": "PhysicalCharacter_GotoStartFromPosition",
+  "23008": "PhysicalCharacter_GotoStartFromTo",
+  "23003": "PhysicalCharacter_GotoStop",
+  "23009": "PhysicalCharacter_LookTo",
+  "23016": "PhysicalCharacter_LookToObject",
+  "23010": "PhysicalCharacter_LookToOverride",
+  "23011": "PhysicalCharacter_SensorActivated",
+  "23022": "PhysicalCharacter_SetHitPropability",
+  "23023": "PhysicalCharacter_SetSpecialCollisionPartner",
+  "23017": "PhysicalCharacter_SonarDestroyed",
+  "23000": "PhysicalCharacter_StartAnimation",
+  "23001": "PhysicalCharacter_StopAnimation",
+  "23020": "PhysicalCharacter_Stripped",
+  "23015": "PhysicalCharacter_SwitchToGoing",
+  "23014": "PhysicalCharacter_SwitchToStanding",
+  "16011": "Player_ActivateFF",
+  "16002": "Player_FirstWarning",
+  "16009": "Player_ImportInventoryInteger",
+  "16006": "Player_LeftAttack",
+  "16007": "Player_PlunderItems",
+  "16012": "Player_RefreshPickupState",
+  "16003": "Player_SecondWarning",
+  "16010": "Player_SuppressFF",
+  "16004": "Player_ThirdWarning",
+  "16008": "Player_TorpedoAlarm",
+  "16005": "Player_UnderAttack",
+  "19002": "Position_GetPosition",
+  "19003": "Position_SetCS",
+  "31000": "Position_SetPosition",
+  "31001": "Position_SetRadius",
+  "2001": "Script_BindThread",
+  "2000": "Script_SetScript",
+  "2002": "Script_SetTimer",
+  "2004": "Script_StopTimer",
+  "2003": "Script_UnBindThread",
+  "33007": "ShieldedBody_CoupleFather",
+  "33003": "ShieldedBody_DeactivateSelectiveVulnerability",
+  "33006": "ShieldedBody_DeepDestruct",
+  "33000": "ShieldedBody_MakeInvulnerable",
+  "33002": "ShieldedBody_MakeSelectiveVulnerableAgainst",
+  "33001": "ShieldedBody_MakeVulnerable",
+  "33004": "ShieldedBody_SetLogarithmicMode",
+  "33005": "ShieldedBody_SetLogarithmicModeStop",
+  "42001": "Stream_SetBoxExtension",
+  "42002": "Stream_SetCurrentDirection",
+  "42005": "Stream_SetCurrentDirectionNetwork",
+  "42004": "Stream_SetCurrentSpeed",
+  "42003": "Stream_SetTurbulenceFrequency",
+  "9003": "Terrain_LoadTerrain",
+  "9001": "Terrain_SetPoly",
+  "20006": "Trigger_ActivateSensor",
+  "20011": "Trigger_EnterAcoustic",
+  "20009": "Trigger_EnterPresence",
+  "20013": "Trigger_EnterVisible",
+  "20012": "Trigger_LeaveAcoustic",
+  "20010": "Trigger_LeavePresence",
+  "20014": "Trigger_LeaveVisible",
+  "20001": "Trigger_SetAcousticSensibility",
+  "20000": "Trigger_SetAcousticSphere",
+  "20015": "Trigger_SetBoxMode",
+  "20008": "Trigger_SetInterestList",
+  "20002": "Trigger_SetPresenceSphere",
+  "20005": "Trigger_SetVisibilityBlockingStatus",
+  "20003": "Trigger_SetVisibilityCone",
+  "20004": "Trigger_SetVisibilityConeRelative",
+  "20007": "Trigger_StopSensor",
+  "25007": "Turret_ComplexAttack",
+  "25008": "Turret_ComplexAttackOver",
+  "25009": "Turret_ComplexAttackOverride",
+  "25014": "Turret_DirectAttack",
+  "25015": "Turret_DirectAttackStop",
+  "25011": "Turret_EnteringCastratedMode",
+  "25000": "Turret_Follow",
+  "25002": "Turret_FollowFinished",
+  "25001": "Turret_FollowOverride",
+  "25012": "Turret_LeavingCastratedMode",
+  "25004": "Turret_Patrol",
+  "25005": "Turret_PatrolFinished",
+  "25006": "Turret_PatrolOverride",
+  "25016": "Turret_SetAcousticMode",
+  "25010": "Turret_SetAngleArea",
+  "25013": "Turret_SetPrimaryTarget",
+  "25003": "Turret_TargetLost",
+  "14018": "Vehicle_AttackOver",
+  "14019": "Vehicle_AttackOverride",
+  "14017": "Vehicle_AttackPatrol",
+  "14003": "Vehicle_AvoidanceObjects",
+  "14004": "Vehicle_AvoidanceTerrain",
+  "14001": "Vehicle_CollisionObjects",
+  "14002": "Vehicle_CollisionTerrain",
+  "14026": "Vehicle_DipolIn",
+  "14027": "Vehicle_DipolInFinished",
+  "14020": "Vehicle_EnteringCastratedMode",
+  "14006": "Vehicle_Goto",
+  "14008": "Vehicle_GotoArrived",
+  "14011": "Vehicle_GotoFromPosition",
+  "14012": "Vehicle_GotoFromTo",
+  "14010": "Vehicle_GotoOverride",
+  "14009": "Vehicle_GotoPosReached",
+  "14007": "Vehicle_GotoStop",
+  "14021": "Vehicle_LeavingCastratedMode",
+  "14005": "Vehicle_NonCollideAvoid",
+  "14023": "Vehicle_ParkPatrol",
+  "14024": "Vehicle_ParkPatrolFinished",
+  "14025": "Vehicle_ParkPatrolOverride",
+  "14014": "Vehicle_Patrol",
+  "14016": "Vehicle_PatrolFinished",
+  "14015": "Vehicle_PatrolOverride",
+  "14022": "Vehicle_SetPrimaryTarget",
+  "14013": "Vehicle_Stop",
+  "14028": "Vehicle_StopWithHeading",
+  "15036": "Vessel_AttackOver",
+  "15037": "Vessel_AttackOverride",
+  "15035": "Vessel_AttackPatrol",
+  "15041": "Vessel_AttackTurrets",
+  "15042": "Vessel_AttackTurretsStop",
+  "15003": "Vessel_AvoidanceObjects",
+  "15004": "Vessel_AvoidanceTerrain",
+  "15001": "Vessel_CollisionObjects",
+  "15002": "Vessel_CollisionTerrain",
+  "15054": "Vessel_DeactivateTurningInEmp",
+  "15044": "Vessel_DipolIn",
+  "15046": "Vessel_DipolInFinished",
+  "15043": "Vessel_DipolOut",
+  "15045": "Vessel_DipolOutFinished",
+  "15030": "Vessel_Dock",
+  "15032": "Vessel_DockAndLeave",
+  "15033": "Vessel_DockingFinished",
+  "15038": "Vessel_EnteringCastratedMode",
+  "15029": "Vessel_EscapeToPosSim",
+  "15026": "Vessel_EscapeToPosition",
+  "15027": "Vessel_EscapeToPositionFinished",
+  "15028": "Vessel_EscapeToPositionOverride",
+  "15021": "Vessel_Escort",
+  "15022": "Vessel_EscortObjectLost",
+  "15023": "Vessel_EscortOverride",
+  "15024": "Vessel_EscortPosReached",
+  "15052": "Vessel_FinalizeInfiltrate",
+  "15006": "Vessel_Goto",
+  "15008": "Vessel_GotoArrived",
+  "15011": "Vessel_GotoFromPosition",
+  "15012": "Vessel_GotoFromTo",
+  "15010": "Vessel_GotoOverride",
+  "15009": "Vessel_GotoPosReached",
+  "15007": "Vessel_GotoStop",
+  "15047": "Vessel_Infiltrate",
+  "15049": "Vessel_InfiltrateAborted",
+  "15053": "Vessel_InfiltrateBegin",
+  "15048": "Vessel_InfiltrateFinished",
+  "15051": "Vessel_InfiltrateSuccess",
+  "15039": "Vessel_LeavingCastratedMode",
+  "15005": "Vessel_NonCollideAvoid",
+  "15015": "Vessel_Patrol",
+  "15017": "Vessel_PatrolFinished",
+  "15016": "Vessel_PatrolOverride",
+  "15050": "Vessel_PseudoExplode",
+  "15056": "Vessel_ReactivateCollisionReaction",
+  "15040": "Vessel_SetPrimaryTarget",
+  "15018": "Vessel_Sink",
+  "15019": "Vessel_SinkFinished",
+  "15020": "Vessel_SinkOverride",
+  "15013": "Vessel_Stop",
+  "15014": "Vessel_StopWithHeading",
+  "15025": "Vessel_StopWithSinking",
+  "15055": "Vessel_SuspendCollisionReaction",
+  "15031": "Vessel_Undock",
+  "15034": "Vessel_UndockingFinished",
+  "35006": "WayPoint_Attach",
+  "35007": "WayPoint_InformActivated",
+  "35008": "WayPoint_InformDeactivated",
+  "35009": "WayPoint_InformEntered",
+  "35010": "WayPoint_InformLeft",
+  "35000": "WayPoint_SetRadius",
+  "35001": "WayPoint_SetTakeKey_Activate",
+  "35004": "WayPoint_SetTakeKey_Enter",
+  "35002": "WayPoint_SetTakeKey_Inside",
+  "35005": "WayPoint_SetTakeKey_Leave",
+  "35003": "WayPoint_SetTakeKey_Outside"
+ }
+}

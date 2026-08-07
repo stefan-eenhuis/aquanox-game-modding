@@ -1,0 +1,66 @@
+================================================================================
+DIE DEKOMPILIERTEN SKRIPTE VON AQUANOX 1
+================================================================================
+Erzeugt: 2026-07-27 mit mod_docu\tools\lua4dec.py
+
+WAS HIER LIEGT
+    88 Dateien, 346.125 Zeilen, 14,9 MB
+        74 Missionsskripte   aus map\<level>\script\*.sco
+        14 Bibliotheken      aus dat\script\lib\*.sco
+
+WARUM DAS ZAEHLT
+    Bis jetzt gab es GENAU EINEN Missionsquelltext im Klartext --
+    neopolis_neu.scr, und der stammt aus AquaNox 2. Alles, was wir
+    ueber den Missionsaufbau wussten, war daraus abgeleitet.
+    Jetzt liegen alle 74 Originalmissionen von AquaNox 1 lesbar vor,
+    dazu die 14 Bibliotheken in ihrer AN1-FASSUNG -- bisher kannten
+    wir nur AquaNox 2s Ausgabe davon.
+
+WIE ES ERZEUGT WURDE
+    Lua 4.0 ist eine Stackmaschine. lua4dec.py simuliert den Stack mit
+    AUSDRUECKEN statt Werten: PUSHSTRING legt '"text"' ab, GETGLOBAL
+    legt 'name' ab, CALL setzt 'name(arg1, arg2)' zusammen. Sobald ein
+    Ausdruck verbraucht wird, faellt eine Anweisung an.
+
+WIE GUT ES IST
+    187 problematische Stellen auf 346.125 Zeilen -- 0,05 Prozent.
+        173 ungeloeste Aufrufe (erscheinen als "?()" oder "nil(")
+         14 unstrukturierte Spruenge (als Kommentar mit Sprungziel)
+    Der Rest ist lesbares Lua.
+
+WAS ES NICHT IST
+    Wieder uebersetzbarer Quelltext. Lokale Namen sind im Bytecode
+    nicht immer erhalten -- dann heissen sie L0, L1, ... Die
+    Zeilenumbrueche und Kommentare des Originals sind verloren.
+    Wer eine Mission aendern will, aendert weiterhin den Bytecode
+    (sco_lua.py) oder haengt einen dostring-Block an.
+
+WORAUF MAN ACHTEN SOLLTE
+    Die Missionen sind aus Massives Editor SED erzeugt worden, nicht
+    von Hand geschrieben. Das sieht man: fortlaufend nummerierte
+    Knoten (o30, S_o64), immer dieselben Zustandsmuster (Code3, Code4,
+    Code5 ...), und eine Gleichfoermigkeit, die kein Mensch tippt.
+    Als VORBILD taugen sie trotzdem -- sie zeigen, was tatsaechlich
+    funktioniert.
+
+EIN BEISPIEL, das sofort etwas korrigiert hat
+    Aus 1n1.lua:
+        VesselAttackLib.GuardArea(L0, 0,
+            "/Scenario_Dynamic/Navigation/AttackArea",
+            "/Scenario_Dynamic/Navigation/AttackArea",
+            "/Scenario_Dynamic/Navigation/AttackArea",
+            "gen_transp_1", "gen_transp_1", "pla", "", 1, "Code5")
+    Die vier Zielprioritaeten sind OBJEKTNAMEN UND PRAEFIXE, keine
+    Zahlen. Die Levelvorlage hatte dort 0, 0, 0, 0 stehen -- falsch,
+    inzwischen berichtigt.
+
+DIE INTERESSANTESTEN DATEIEN
+    glue.lua           die Bindeschicht in AN1-Fassung
+    vesselattack.lua   GuardArea, ClearArea, GotoAttack im Original
+    sensor.lua         das AVP-Wahrnehmungssystem
+    formation.lua      die neun Formationen
+    misc.lua           MilkRun, ProtectedGoto, Infiltrate
+    1n1.lua            die kleinste Mission (2.008 Zeilen)
+    6h2.lua            die groesste (Krieg in Neopolis)
+
+================================================================================

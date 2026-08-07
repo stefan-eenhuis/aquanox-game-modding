@@ -1,0 +1,508 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the goto
+-- behaviour of a vessel.
+--------------------------------------------------------------------
+
+
+-- We need the synchronization lib
+LibSync = LoadLib("Synchronization")
+LibDipol = LoadLib("Dipol")
+
+
+ 
+--------------------------------------------------------------------
+-- Here comes the information for the cleararea/clearareafrom
+--------------------------------------------------------------------
+
+LVA_ClearArea =
+{
+	LVA_Activate = function(State)
+		Vessel_Patrol(State.Node, GetInnerValue(State, "VCA_Area"), 
+			GetInnerValue(State, "VCA_WaitingTime"), GetInnerValue(State, "VCA_Velocity"))
+		StartEnemyPatrol(State, GetInnerValue(State, "VCA_Mode"), GetInnerValue(State, "VCA_DefaultRad"),
+			GetInnerValue(State, "VCA_FirstPriority"), GetInnerValue(State, "VCA_SecondPriority"),
+			GetInnerValue(State, "VCA_ThirdPriority"), GetInnerValue(State, "VCA_FourthPriority"), GetInnerValue(State, "VCA_Area"))
+	end,
+	
+	Vessel_AttackOver = function(State)
+		Vessel_Patrol(State.Node, GetInnerValue(State, "VCA_Area"),
+			GetInnerValue(State, "VCA_WaitingTime"), GetInnerValue(State, "VCA_Velocity"))
+		Vessel_AttackTurretsStop(State.Node, "")
+		StartEnemyPatrol(State, GetInnerValue(State, "VCA_Mode"), GetInnerValue(State, "VCA_DefaultRad"),
+			GetInnerValue(State, "VCA_FirstPriority"), GetInnerValue(State, "VCA_SecondPriority"),
+			GetInnerValue(State, "VCA_ThirdPriority"), GetInnerValue(State, "VCA_FourthPriority"), GetInnerValue(State, "VCA_Area"))
+	end,
+	
+	Body_EnemyArrivalPatrol = function(State)
+		Vessel_AttackPatrol(State.Node, GetInnerValue(State, "VCA_DefaultRad"), GetInnerValue(State, "VCA_FirstPriority"), GetInnerValue(State, "VCA_SecondPriority"),
+			GetInnerValue(State, "VCA_ThirdPriority"), GetInnerValue(State, "VCA_FourthPriority"), GetInnerValue(State, "VCA_Area"))
+		Vessel_AttackTurrets(State.Node, "", GetInnerValue(State, "VCA_FirstPriority"), GetInnerValue(State, "VCA_SecondPriority"),
+			GetInnerValue(State, "VCA_ThirdPriority"), GetInnerValue(State, "VCA_FourthPriority"))
+	end,
+	
+	Vessel_PatrolFinished = function(State)
+		local callback, retValue
+		
+		callback = GetInnerValue(State, "VCA_Callback")
+		retValue = GetInnerValue(State, "VCA_Param")
+		-- In this case we return.
+		Vessel_AttackTurretsStop(State.Node, "")
+		StopEnemyPatrol(State)
+		RestoreModification(State, "LVA_ClearArea")
+		CallFunction(State.Thread, callback, retValue)
+	end,
+	
+	
+	StopBehavior = function(State)
+		LibList.VesselAttack_Basis.ClearAreaStop(State)
+	end,
+		
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the guard area
+--------------------------------------------------------------------
+LVA_GuardArea =
+{
+	LVA_Activate = function(State)
+		Vessel_Patrol(State.Node, GetInnerValue(State, "VGA_PatrolArea"),
+			-1.0, GetInnerValue(State, "VGA_Velocity"))
+		StartEnemyPatrol(State, GetInnerValue(State, "VGA_Mode"), GetInnerValue(State, "VGA_Diameter"),
+			GetInnerValue(State, "VGA_FirstPriority"), GetInnerValue(State, "VGA_SecondPriority"),
+			GetInnerValue(State, "VGA_ThirdPriority"), GetInnerValue(State, "VGA_FourthPriority"), GetInnerValue(State, "VGA_TriggerArea"))	
+	end,
+	
+	Vessel_AttackOver = function(State)
+		Vessel_Patrol(State.Node, GetInnerValue(State, "VGA_PatrolArea"),
+			-1.0, GetInnerValue(State, "VGA_Velocity"))
+		Vessel_AttackTurretsStop(State.Node, "")
+		StartEnemyPatrol(State, GetInnerValue(State, "VGA_Mode"), GetInnerValue(State, "VGA_Diameter"),
+			GetInnerValue(State, "VGA_FirstPriority"), GetInnerValue(State, "VGA_SecondPriority"),
+			GetInnerValue(State, "VGA_ThirdPriority"), GetInnerValue(State, "VGA_FourthPriority"), GetInnerValue(State, "VGA_TriggerArea"))	
+	end,
+	
+	Body_EnemyArrivalPatrol = function(State)
+			Vessel_AttackPatrol(State.Node, GetInnerValue(State, "VGA_Diameter"), GetInnerValue(State, "VGA_FirstPriority"), GetInnerValue(State, "VGA_SecondPriority"),
+				GetInnerValue(State, "VGA_ThirdPriority"), GetInnerValue(State, "VGA_FourthPriority"), GetInnerValue(State, "VGA_FollowArea"))
+			Vessel_AttackTurrets(State.Node, "", GetInnerValue(State, "VGA_FirstPriority"), GetInnerValue(State, "VGA_SecondPriority"),
+				GetInnerValue(State, "VGA_ThirdPriority"), GetInnerValue(State, "VGA_FourthPriority"))
+	end,	
+	
+	StopBehavior = function(State)
+		LibList.VesselAttack_Basis.GuardAreaStop(State)
+	end,
+		
+	
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the goto attack
+--------------------------------------------------------------------
+LVA_GotoAttack =
+{
+	LVA_Activate = function(State)
+		Vessel_Goto(State.Node, GetInnerValue(State, "VGG_GotoPath"),  GetInnerValue(State, "VGG_GotoSpeed"),  GetInnerValue(State, "VGG_GotoInfluence"))
+		StartEnemyPatrol(State, GetInnerValue(State, "VGG_Mode"),
+			GetInnerValue(State, "VGG_AttackSphere"), GetInnerValue(State, "VGG_FirstPri"), GetInnerValue(State, "VGG_SecondPri"),
+			GetInnerValue(State, "VGG_ThirdPri"), GetInnerValue(State, "VGG_FourthPri"), GetInnerValue(State, "VGG_AttackArea"))
+	end,
+	
+	Vessel_AttackOver = function(State)
+		Vessel_AttackTurretsStop(State.Node, "")
+		if (GetInnerValue(State, "VGG_OldPosition") == nil) then
+			Vessel_Goto(State.Node, GetInnerValue(State, "VGG_GotoPath"),  GetInnerValue(State, "VGG_GotoSpeed"),  GetInnerValue(State, "VGG_GotoInfluence"))
+		else
+			Vessel_GotoFromPosition(State.Node, GetInnerValue(State, "VGG_GotoPath"), GetInnerValue(State, "VGG_OldPosition"), GetInnerValue(State, "VGG_GotoSpeed"),  
+				GetInnerValue(State, "VGG_GotoInfluence"))
+		end
+		StartEnemyPatrol(State, GetInnerValue(State, "VGG_Mode"),
+			GetInnerValue(State, "VGG_AttackSphere"), GetInnerValue(State, "VGG_FirstPri"), GetInnerValue(State, "VGG_SecondPri"),
+			GetInnerValue(State, "VGG_ThirdPri"), GetInnerValue(State, "VGG_FourthPri"), GetInnerValue(State, "VGG_AttackArea"))
+	end,
+	
+	
+	Body_EnemyArrivalPatrol = function(State)
+		Vessel_AttackPatrol(State.Node, GetInnerValue(State, "VGG_Diameter"), GetInnerValue(State, "VGG_FirstPri"), GetInnerValue(State, "VGG_SecondPri"),
+				GetInnerValue(State, "VGG_ThirdPri"), GetInnerValue(State, "VGG_FourthPri"), GetInnerValue(State, "VGG_AttackArea"))
+		Vessel_AttackTurrets(State.Node, "", GetInnerValue(State, "VGG_FirstPri"), GetInnerValue(State, "VGG_SecondPri"),
+					GetInnerValue(State, "VGG_ThirdPri"), GetInnerValue(State, "VGG_FourthPri"))
+	end,
+	
+	Vessel_GotoPosReached = function(State, Path, Position)
+		StoreInnerValue(State, "VGG_OldPosition", Position)
+	end,	
+	
+	Vessel_GotoArrived = function(State, Path)
+		Vessel_Goto(State.Node, GetInnerValue(State, "VGG_GotoPath"),  GetInnerValue(State, "VGG_GotoSpeed"),  GetInnerValue(State, "VGG_GotoInfluence"))
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VesselAttack_Basis.GotoAttackStop(State)
+	end,
+		
+	
+}
+
+
+-- Here comes the information for the guard area.
+LVA_GuardAreaRespawn =
+{
+	LVA_Activate = function(State)
+		-- We simply start the patrol
+		LibList.VesselAttack_Basis.GuardArea
+		(
+			State,
+			GetInnerValue(State, "VGAR_Mode"),
+			GetInnerValue(State, "VGAR_PatrolArea"),
+			GetInnerValue(State, "VGAR_TriggerArea"),
+			GetInnerValue(State, "VGAR_FollowArea"),
+			GetInnerValue(State, "VGAR_FirstPriority"),
+			GetInnerValue(State, "VGAR_SecondPriority"),
+			GetInnerValue(State, "VGAR_ThirdPriority"),
+			GetInnerValue(State, "VGAR_FourthPriority"),
+			GetInnerValue(State, "VGAR_Velocity")
+		)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		LibList.VesselAttack_Basis.GuardAreaStop(State)
+		-- Do an explosion
+		Vessel_PseudoExplode(State.Node)
+		Node_LeaveSimulation(State.Node)
+		Body_SetKineticShield(State.Node, 0, 1.0)
+		Body_SetEmpShield(State.Node, 1.0)
+		Body_SetPosition(State.Node, GetInnerValue(State, "VGAR_Position"))
+		Vessel_DipolIn(State.Node, 0.1)
+	end,
+
+	
+	Vessel_DipolInFinished = function(State)
+		LibList.VesselAttack_Basis.GuardArea
+		(
+			State,
+			GetInnerValue(State, "VGAR_Mode"),
+			GetInnerValue(State, "VGAR_PatrolArea"),
+			GetInnerValue(State, "VGAR_TriggerArea"),
+			GetInnerValue(State, "VGAR_FollowArea"),
+			GetInnerValue(State, "VGAR_FirstPriority"),
+			GetInnerValue(State, "VGAR_SecondPriority"),
+			GetInnerValue(State, "VGAR_ThirdPriority"),
+			GetInnerValue(State, "VGAR_FourthPriority"),
+			GetInnerValue(State, "VGAR_Velocity")
+		)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VesselAttack_Basis.GuardAreaRespawnStop(State)	
+	end,
+}
+	
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the vessel attack.
+LibList.VesselAttack_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the clear area
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This method clears the area from an indictaed object (node refrence).
+	-- If the object has quit the area a patrol is perfomed for the indicated 
+	-- number of seconds. If nothing arrives in this time, the command is finished.
+	--------------------------------
+	-- Info ClearAreaFrom:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vessel_AttackOver, Vessel_PatrolFinished
+	--------------------------------
+	ClearAreaFrom = function
+	(
+	State, 
+	Mode,			-- Indicates the mode (0: simple , 1: avp, 2: avp with blocking)
+	Area,			-- The patrol area we should clear 		
+	TargetNode, 		-- The object we will attack.
+	WaitingTime, 		-- The time we wait until we finish the command.
+	Velocity,		-- The velocity during the patrol part.
+	Callback, 		-- The Callback we activate when we have reched the end.
+	Param			-- Some user data, that is handed back
+	)
+	
+	
+	
+		-- First we check if the node is valid, other wise it has
+		-- been already destroyed and we can return immediately.
+		if (not(Script_IsNodeRefValid(TargetNode))) then
+			CallFunction(State.Thread, Callback, Param)
+			return
+		end
+		
+		
+		ApplyModification(State, LVA_ClearArea, "LVA_ClearArea")
+		
+		
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "VCA_Mode", Mode)
+		StoreInnerValue(State, "VCA_Area", Area)
+		StoreInnerValue(State, "VCA_DefaultRad", PatrolArea_GetDiameter(Node_Find(State.Node, Area)))
+		StoreInnerValue(State, "VCA_WaitingTime", WaitingTime)
+		StoreInnerValue(State, "VCA_FirstPriority", Node_GetName(TargetNode))
+		StoreInnerValue(State, "VCA_SecondPriority", "")
+		StoreInnerValue(State, "VCA_ThirdPriority", "")
+		StoreInnerValue(State, "VCA_FourthPriority", "")
+		StoreInnerValue(State, "VCA_Velocity", Velocity)
+		StoreInnerValue(State, "VCA_Callback", Callback)
+		StoreInnerValue(State, "VCA_Param", Param)
+		CallFunction(State.Thread, "LVA_Activate", nil)
+	end, 
+	
+	-- PURPOSE
+	-- This method stops the ClearAreaFrom.
+	ClearAreaFromStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVA_ClearArea") then
+			return
+		end
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		Vessel_AttackTurretsStop(State.Node)
+		-- We restore the old command table.
+		RestoreModification(State, "LVA_ClearArea")
+	end,
+	
+	--------------------------------------------------------------------
+	-- Here come the clear area
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This method clears the area from the indicated priority list
+	-- If the object has quit the area a patrol is perfomed for the indicated 
+	-- number of seconds. If nothing arrives in this time, the command is finished.
+	--------------------------------
+	-- Info ClearAreaFrom:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vessel_AttackOver, Vessel_PatrolFinished
+	--------------------------------
+	ClearArea = function
+	(
+	State, 
+	Mode,			-- The mode we do oiur stuff in.
+	Area,			-- The patrol area we should clear 		
+	FirstPriority, 		-- The first priority we would like to attack.
+	SecondPriority,		-- The second priority we wopuld like to attack.
+	ThirdPriority,		-- The third priority we would like to attack.
+	FourthPriority,		-- The fourth priority, we would like to attack
+	WaitingTime, 		-- The time we wait until we finish the command.
+	Velocity,		-- The velocity during the patrol part.
+	Callback, 		-- The Callback we activate when we have reched the end.
+	Param			-- Some user data, that is handed back
+	)
+	
+		
+		ApplyModification(State, LVA_ClearArea, "LVA_ClearArea")
+		
+		
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "VCA_Area", Area)
+		StoreInnerValue(State, "VCA_Mode", Mode)
+		StoreInnerValue(State, "VCA_DefaultRad", PatrolArea_GetDiameter(Node_Find(State.Node, Area)))
+		StoreInnerValue(State, "VCA_FirstPriority",	FirstPriority)
+		StoreInnerValue(State, "VCA_SecondPriority", SecondPriority)
+		StoreInnerValue(State, "VCA_ThirdPriority", ThirdPriority)
+		StoreInnerValue(State, "VCA_FourthPriority", FourthPriority)
+		StoreInnerValue(State, "VCA_WaitingTime", WaitingTime)
+		StoreInnerValue(State, "VCA_Velocity", Velocity)
+		StoreInnerValue(State, "VCA_Callback", Callback)
+		StoreInnerValue(State, "VCA_Param", Param)
+		CallFunction(State.Thread, "LVA_Activate", nil)
+	end, 
+	
+	
+	-- PURPOSE
+	-- This method stops the ClearArea.
+	ClearAreaStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVA_ClearArea") then
+			return
+		end
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		Vessel_AttackTurretsStop(State.Node, "")
+		-- We restore the old command table.
+		RestoreModification(State, "LVA_ClearArea")
+	end,
+	
+	
+	-- PURPOSE
+	-- This command guards an area and prevents other ships from entering it. 
+	-- When a ship with the required attributes enters the Trigger Area, the attack is activated
+	-- until it leaves the follow area.
+	--------------------------------
+	-- Info GuardArea:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vessel_AttackOver, Vessel_PatrolFinished
+	--------------------------------
+	GuardArea = function
+	(
+	State,
+	Mode,				-- The mode we want to do our watching in.
+	PatrolArea,			-- The core area, where the patrol is perfomed.
+	TriggerArea,			-- The area, where the attack should start.
+	FollowArea,			-- The area until which we should follow the enemy.
+	FirstPriority, 			-- The first priority we would like to attack.
+	SecondPriority,			-- The second priority we wopuld like to attack.
+	ThirdPriority,			-- The third priority we would like to attack.
+	FourthPriority,			-- The fourth priority, we would like to attack
+	Velocity			-- The velocity during the patrol part.
+	)
+		
+		ApplyModification(State, LVA_GuardArea, "LVA_GuardArea")
+		
+		
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "VGA_Mode", Mode)
+		StoreInnerValue(State, "VGA_Diameter",  PatrolArea_GetDiameter(Node_Find(State.Node, TriggerArea)))
+		StoreInnerValue(State, "VGA_PatrolArea", PatrolArea)
+		StoreInnerValue(State, "VGA_TriggerArea", TriggerArea)
+		StoreInnerValue(State, "VGA_FollowArea", FollowArea)
+		StoreInnerValue(State, "VGA_FirstPriority",	FirstPriority)
+		StoreInnerValue(State, "VGA_SecondPriority", SecondPriority)
+		StoreInnerValue(State, "VGA_ThirdPriority", ThirdPriority)
+		StoreInnerValue(State, "VGA_FourthPriority", FourthPriority)
+		StoreInnerValue(State, "VGA_Velocity", Velocity)
+		CallFunction(State.Thread, "LVA_Activate", nil)
+	end, 
+	
+	
+	-- PURPOSE
+	-- This method stops the ClearArea.
+	GuardAreaStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVA_GuardArea") then
+			return
+		end
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		Vessel_AttackTurretsStop(State.Node, "")
+		-- We restore the old command table.
+		RestoreModification(State, "LVA_GuardArea")
+	end,
+	
+	--------------------------------------------------------------------
+	-- Here comes the goto attack
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This command makes a goto on a single goto trail,
+	-- if a vessel comes into the range of the enemy an attack is performed
+	-- in the indicated patrol area and the necessarry presence sphere.
+	--------------------------------
+	-- Info GotoAttack:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vessel_AttackOver, Vessel_GotoArrived, Vessel_GotoPosReached
+	--------------------------------
+	GotoAttack = function
+	(
+	State,
+	Mode,				-- The mode we want to apply for the sensors.
+	GotoPath,			-- The path where we go for the goto.
+	GotoSpeed,			-- The speed where we go for the goto.
+	GotoInfluence,			-- The last parameter in the goto command.
+	AttackArea,			-- The area, where to perform the attack.
+	AttackSphere,			-- The influence sphere for the attack.
+	FirstPri,			-- First priority for the attack.
+	SecondPri,			-- Second priority for the attack.
+	ThirdPri,			-- Third Priority for the attack.
+	FourthPri			-- Fourth Priority for attack.
+	)
+	
+		ApplyModification(State, LVA_GotoAttack, "LVA_GotoAttack")
+		StoreInnerValue(State, "VGG_Mode", Mode)
+		StoreInnerValue(State, "VGG_Diameter", PatrolArea_GetDiameter(Node_Find(State.Node, AttackArea)))
+		StoreInnerValue(State, "VGG_GotoSpeed", GotoSpeed)
+		StoreInnerValue(State, "VGG_GotoPath", GotoPath)
+		StoreInnerValue(State, "VGG_GotoInfluence", GotoInfluence)
+		StoreInnerValue(State, "VGG_AttackArea", AttackArea)
+		StoreInnerValue(State, "VGG_AttackSphere", AttackSphere)
+		StoreInnerValue(State, "VGG_FirstPri", FirstPri)
+		StoreInnerValue(State, "VGG_SecondPri", SecondPri)
+		StoreInnerValue(State, "VGG_ThirdPri", ThirdPri)
+		StoreInnerValue(State, "VGG_FourthPri", FourthPri)
+		
+		CallFunction(State.Thread, "LVA_Activate", nil)
+	end,
+	
+	-- PURPOSE
+	-- Stops the goto attack.
+	GotoAttackStop = function(State)
+	
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVA_GotoAttack") then
+			return
+		end
+		
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		Vessel_AttackTurretsStop(State.Node, "")
+		-- We restore the old command table.
+		RestoreModification(State, "LVA_GotoAttack")
+	end,
+	
+	
+	-- PURPOSE
+	-- This attack is a special attack, that combines a guard area with a respawn.
+	-- In the moment a ship would die, we do a fake explosion and take the vessel out to the new position.
+	
+	GuardAreaRespawn = function
+	(
+	State,
+	Mode,				-- The mode we want to do our watching in.
+	PatrolArea,			-- The core area, where the patrol is perfomed.
+	TriggerArea,			-- The area, where the attack should start.
+	FollowArea,			-- The area until which we should follow the enemy.
+	FirstPriority, 			-- The first priority we would like to attack.
+	SecondPriority,			-- The second priority we wopuld like to attack.
+	ThirdPriority,			-- The third priority we would like to attack.
+	FourthPriority,			-- The fourth priority, we would like to attack
+	Velocity,			-- The velocity during the patrol part.	
+	Position			-- The position node for the respawn.
+	)
+	
+		ApplyModification(State, LVA_GuardAreaRespawn, "LVA_GuardAreaRespawn")
+		
+		
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "VGAR_Mode", Mode)
+		StoreInnerValue(State, "VGAR_PatrolArea", PatrolArea)
+		StoreInnerValue(State, "VGAR_TriggerArea", TriggerArea)
+		StoreInnerValue(State, "VGAR_FollowArea", FollowArea)
+		StoreInnerValue(State, "VGAR_FirstPriority",	FirstPriority)
+		StoreInnerValue(State, "VGAR_SecondPriority", SecondPriority)
+		StoreInnerValue(State, "VGAR_ThirdPriority", ThirdPriority)
+		StoreInnerValue(State, "VGAR_FourthPriority", FourthPriority)
+		StoreInnerValue(State, "VGAR_Velocity", Velocity)
+		StoreInnerValue(State, "VGAR_Position", Position_GetPosition(Node_Find(State.Node, Position)) )
+		StartShieldGuard(State)
+		CallFunction(State.Thread, "LVA_Activate", nil)
+	end,	
+	
+	GuardAreaRespawnStop = function(State)
+		-- First we stop the guard area.
+		LibList.VesselAttack_Basis.GuardAreaStop(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVA_GuardAreaRespawn") then
+			return
+		end
+		StopShieldGuard(State)
+		RestoreModification(State, "LVA_GuardAreaRespawn")
+	end,
+		
+	
+}
+		 	 

@@ -1,0 +1,313 @@
+================================================================================
+AQUANOX 2: REVELATION -- ANALYSE FUER DAS MODDING VON TEIL 1
+Handoff-Datei, Version 3
+================================================================================
+Erstellt: 2026-07-27, Fortsetzung derselben Nachtarbeit
+Vorgaenger: aquanox2_analyse_handoff_v2.txt (gilt weiter)
+            aquanox2_analyse_handoff_v1.txt (Korrekturen stehen in v2)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+0. DER FUND DIESER RUNDE
+--------------------------------------------------------------------------------
+AN2 liefert die KOMMENTIERTEN LUA-QUELLTEXTE aller Skriptbibliotheken mit.
+15 Dateien mit der Endung .scr, 512 KB, unter dat\script\lib\ -- und ein
+komplettes Missionsskript (neopolis_neu.scr, 8.504 Zeilen).
+
+AquaNox 1 liefert nur die kompilierten .sco. Und weil SIEBEN dieser
+Bibliotheken zwischen AN1 und AN2 byte-identisch kompiliert sind (v2
+Abschnitt 4), ist das die Originaldokumentation zu AN1-Code, die es
+offiziell nie gab.
+
+    camera, misc, oldone, synchronization, turret,
+    vehicleattack, vesselattack          -> Quelltext gilt 1:1 fuer AN1
+
+    dipol, dock, formation, glue,
+    sensor, vehiclegoto, vesselgoto      -> in AN2 ueberarbeitet, sehr nahe
+                                            Entsprechung, siehe Abschnitt 3
+
+GESICHERT UNTER:
+    mod_docu\an2_script_sources\        die 15 Quelltexte im Original
+    mod_docu\aquanox_lua_api_referenz.txt   daraus erzeugte Uebersicht
+
+--------------------------------------------------------------------------------
+1. WAS IN glue.scr STEHT -- die Schnittstelle, die wir bisher geraten haben
+--------------------------------------------------------------------------------
+1.317 Zeilen, 57 dokumentierte globale Funktionen. Kopfkommentar der Autoren:
+    "This script provides functions that glue LUA and the engine.
+     The functions reside in the global namespace of each LUA script.
+     ONLY THE WISE(!) MAY CHANGE THIS SOURCE(!)"
+
+DIE WICHTIGSTEN, die wir bisher nicht oder falsch kannten:
+
+  BindEasy(Scenario, NodeName, CommandTable)
+      "Creates a new thread and jumps to the first state indicated.
+       The created thread is returned."
+  BindPlayer(CommandTable)
+      "Creates a thread for the player"
+      => Wir haben immer BindEasy(Node_Find(OBJ), "player1", T) benutzt.
+         Dafuer gibt es eine eigene Funktion.
+  BindBlock(Scenario, NodePrefix, NodeSuffix, CommandTable)
+      Bindet eine ganze GRUPPE von Knoten mit gemeinsamem Praefix/Suffix
+      an EINE Zustandstabelle. Fuer mehrere gleichartige Gegner gedacht.
+  MacroFuse(ThreadBlocks)
+      Fuegt mehrere Threads/Bloecke zusammen.
+
+  DelayedFunction(Seconds, ThreadOrBlock, FunctionName, Param)
+      => VIER Parameter. Wir haben immer nur drei benutzt und den
+         Nutzdatenparameter nie gekannt.
+  DelayedFunctionStop(Handle)
+  CallFunction(ThreadOrBlock, FunctionName, Param)
+  SetTimer(Thread, Delay) / StopTimer(Thread, TimerHandle)
+
+  StoreInnerValue(State, Name, Value) / GetInnerValue(State, Name)
+      Zustandsbehafteter Speicher pro Thread -- sauberer als unsere
+      globalen G_*-Tabellen.
+  ApplyModification(State, NewCommandTable, ModificationName)
+  ForceModification(State, NewCommandTable, ModificationName)
+  RestoreModification(State, ModificationName)
+  IsNotLastModification(State, Modification)
+      Ein Zustandsstapel: ein Verhalten voruebergehend ueberlagern und
+      danach den vorherigen Zustand zurueckholen. Genau das Muster, mit
+      dem die Engine ComplexGoto ueber ein laufendes Verhalten legt.
+  GotoState(Thread, CommandTable)
+
+  StartEnemy(State, Distance, P1, P2, P3, P4) / StopEnemy(State)
+  StartEnemyPatrol(State, Mode, Distance, P1..P4, PatrolArea)
+  StartShotHit(State) / StopShotHit(State)
+  StartShieldGuard(State) / StopShieldGuard(State)
+      Diese Paare melden Ereignisse AN und WIEDER AB, mit Zaehler --
+      deshalb "Rejects ... and deactivates it, if we are the last function
+      that called it". Wer sie nicht abmeldet, laesst sie laufen.
+
+  InsertSensorBehaviour(State, Name, Behaviour)
+  RemoveSensorBehaviour(State, Name)
+  CheckSensorBehaviour(State, Behaviour)
+  StopAllActiveBehaviours(State)
+  StopAllActiveBehaviours_AndCall(State, CallBack)
+
+  SetPlayerToPosition(Scenario, PositionName, OffsetVector)
+  SetPlayerPosition(Position) / SetPlayerPositionVector / SetPlayerCS
+  GetGameNode() / GetCameraNode() / GetPlayerNode()
+  SendRadioMessageTake(Sender, Receiver, Key)     <- Funkverkehr
+  SetEnemyMatrixElement(I, J, Value) / GetEnemyMatrixElement(I, J)
+  LoadTerrain(TerrainName) / LoadTextures()
+  Boot(TerrainName, FogName, PlayerOsdName)       <- die Standard-Startfolge
+
+--------------------------------------------------------------------------------
+2. DIE EREIGNIS-CALLBACKS -- vollstaendige Liste
+--------------------------------------------------------------------------------
+Das sind die Namen, die eine Zustandstabelle implementieren kann. Die Engine
+ruft sie auf. Aus glue.scr, 29 Stueck:
+
+  Start(State)                                beim Binden
+  Timer(State, TimerHandle)
+  Body_InformShotHit(State, Agressor, Shot)   WER geschossen hat
+  Body_ObjectDestroyed(State)
+  Body_ObjectDestroyedBy(State, DestroyerID)  (AN2)
+  Body_KinShieldBarrierReached(State, Barrier)
+  Body_EmpShieldBarrierReached(State, Barrier)
+  Body_EscapePodEjected(State)
+  Body_EnemyArrival(State) / Body_EnemyArrivalPatrol(State)
+  Body_EMPParalyzed(State)
+  Trigger_EnterPresence(State, Object)  / Trigger_LeavePresence(State, Object)
+  Trigger_EnterAcoustic(State, Object)  / Trigger_LeaveAcoustic(State, Object)
+  Trigger_EnterVisible(State, Object)   / Trigger_LeaveVisible(State, Object)
+  WayPoint_InformActivated(State)   / WayPoint_InformDeactivated(State)
+  WayPoint_InformEntered(State)     / WayPoint_InformLeft(State)
+  Player_UnderAttack(State) / Player_LeftAttack(State)
+  PhysicalCharacter_SonarDestroyed(State) / PhysicalCharacter_Stripped(State)
+  nur AN2: Player_InformShipID, Player_InformKeyUsed, Player_KinShieldBelow,
+           ShieldedBody_InformEmpShieldBelow
+
+FUER NACHTSCHICHT BESONDERS RELEVANT:
+  * Die sechs Trigger_-Callbacks sind ein fertiges Zonensystem mit drei
+    Sinneskanaelen: Praesenz, SICHT und AKUSTIK. Zusammen mit
+    Trigger_SetAcousticSphere/-Sensibility und dem OSD-Feld
+    soundemissionlevel ("silent") ist Schleichen skriptbar.
+  * Die vier WayPoint_-Callbacks machen sichtbare Renn-Tore trivial:
+    Tor erzeugen, WayPoint_Attach, und WayPoint_InformEntered feuert.
+    Kein Abstandsmessen im Takt mehr noetig (v2 Abschnitt 11b).
+
+--------------------------------------------------------------------------------
+3. WAS AN2 AN DEN BIBLIOTHEKEN GEAENDERT HAT
+--------------------------------------------------------------------------------
+  dipol.sco       5.290 -> 4.666 B   neu: Turret_DipolIn/-Out/-JumpOut
+  dock.sco       14.911 -> 15.015 B  neu: DockedOn, SetEngineValue
+  formation.sco  22.240 -> 15.249 B  deutlich kompakter, neu: TriangleUpper
+  glue.sco       21.905 -> 23.359 B  25 neue Namen, v.a. Schildschwellen
+                                     (KineticShield10/25/50/75, EmpShield...)
+                                     und Player_InformShipID/KeyUsed
+  sensor.sco     13.455 ->  9.343 B  stark verschlankt
+  vehiclegoto    11.157 -> 11.137 B  praktisch unveraendert
+  vesselgoto     12.229 -> 12.297 B  EINE neue Konstante:
+                                         Vessel_AvoidanceTerrain
+
+RUECKPORTIERBARKEIT: geprueft, welche Engine-Kommandos AN2s Bibliotheken
+benutzen und ob AN1 sie kennt. Ergebnis:
+    formation, sensor, misc, oldone   -> benutzen NUR AN1-bekannte Kommandos
+    alle uebrigen                     -> brauchen Kommandos, die AN1 fehlen
+                                         (Turret_Dipol*, Player_Inform*,
+                                          Body_ObjectDestroyedBy,
+                                          ShieldedBody_InformEmpShieldBelow)
+=> AN2s formation.sco und sensor.sco waeren technisch in AN1 einsetzbar.
+   Ungetestet, und der Nutzen ist unklar -- nur als Option vermerkt.
+
+--------------------------------------------------------------------------------
+4. KORREKTUR: DIE 398er-REGISTRY IST UNVOLLSTAENDIG
+--------------------------------------------------------------------------------
+mod_docu\aquanox1_message_ids.json enthaelt 398 Kommandos. Das sind die
+Message-PROTOTYPEN. Daneben registriert Aqua.exe weitere Lua-Globals ueber
+einen anderen Weg; sie fehlen in der Registry, existieren aber:
+
+    Script_AssertFile     Script_DoFile        Script_Error
+    Script_GetFunctionName Script_GetLineNumber Script_GetTime
+    Script_IsNodeRefValid Script_Log           Script_LogRaw
+    Script_SnoopOn        Script_SnoopOff
+
+Alle als Strings in Aqua.exe belegt (Tabelle ab 0x612e8c) und von AN1s
+eigenen Bibliotheken benutzt.
+
+BESONDERS: Script_SnoopOn / Script_SnoopOff ist ein SKRIPT-TRACER. AN2 hat
+dafuer den Startschalter -scriptsnoop; in AN1 ist es als Lua-Funktion
+aufrufbar. Fuer die Fehlersuche in eigenen Missionen sehr nuetzlich.
+NICHT GETESTET.
+
+Merke fuer kuenftige Auswertungen: "steht nicht in der 398er-Registry"
+heisst NICHT "gibt es in AN1 nicht".
+
+--------------------------------------------------------------------------------
+5. VERGLEICH DER MISSIONSTECHNIK -- AN1 ist nicht der aermere Teil
+--------------------------------------------------------------------------------
+Ueber alle 74 AN1- und 50 AN2-Missionsskripte ausgezaehlt:
+    AN1: 170 verschiedene Engine-Kommandos benutzt
+    AN2: 145
+
+AN1 hat sogar MEHR Kamerakommandos im Einsatz. Das vollstaendige
+AN1-Regievokabular umfasst 21 Camera_-Kommandos, darunter
+    Camera_MoveToAnglesAbs/-Rel/-RelIgnoreBC
+    Camera_ShakeHit/-ShakeTo/-ShakeViewHit/-ShakeViewTo
+    Camera_SwingAtLissajous(6x MAT_Vector3)
+    Camera_LookAhead/-LookFrom/-MoveInto/-RollAhead/-RollFrom
+und 31 der 74 AN1-Missionen benutzen bereits Director_BeginCutscene.
+=> Zwischensequenzen sind in AN1 vollstaendig moeglich und wurden im
+   Original ausgiebig genutzt.
+
+WAS AN2 HAEUFIGER NUTZT: nur ein einziges Kommando faellt auf --
+    Trigger_SetBoxMode   AN1 15/74 Missionen, AN2 29/50
+    Signatur: Trigger_SetBoxMode(targetNode, float, float, float)
+    Quadertrigger statt Kugel. Fuer rechteckige Zonen (Korridore, Hallen)
+    genauer als Trigger_SetPresenceSphere.
+
+WAS AN2 MEHR TUT: Pfade. AN2-Missionen nutzen Path_1 bis Path_10,
+AN1-Missionen nur Path_1 und Path_2.
+=> Bestaetigt die offene Empfehlung aus der AN1-Hauptreihe: fuer mehrere
+   Renner je einen eigenen NOD_Path anlegen. AN2 macht genau das.
+
+DER AUFBAU EINER MISSION (aus AN1s 1h1.sco, Proto main.f1):
+    NOD_Scenario / NOD_Directory / NOD_Position / NOD_Path /
+    NOD_PatrolArea / NOD_Trigger / NOD_Camera / NOD_Director
+    Node_CreateNode -> Node_AddSon -> Node_ParseIniFile ->
+    Node_EnterSimulation
+    Body_SetCS / Body_SetPosition / Body_SetNameKey / Body_SetCargoKey /
+    Body_SetFriendOrFoeID
+    Position_SetPosition / Position_SetRadius
+    Trigger_SetBoxMode / Trigger_SetPresenceSphere
+
+UNGENUTZTES POTENTIAL: Unser Rennskript verwendet 61 der 398 Kommandos.
+Ungenutzt und fuer Nachtschicht interessant:
+    Game_VocalMessage(targetNode, int8, int8, int8)
+    Game_SendRadioMessageTake(targetNode, node, node, int32)
+    Game_SetAmbientLight / Game_SetParallelLightT / -LightB
+    Game_SetTaskTextKey(targetNode, int32, float, float)
+    Vessel_Dock / Vessel_AttackPatrol / Vessel_AttackTurrets
+    Body_ActivateEscapePod / Body_ForceEjection / Body_EMPParalyzed
+    die 16 Trigger_-Kommandos und 17 der 21 Camera_-Kommandos
+
+--------------------------------------------------------------------------------
+6. RENN-KI: UMGESTELLT UND EINGESPIELT
+--------------------------------------------------------------------------------
+Aufbauend auf v2 Abschnitt 11a. AN2s Rennprofil ist jetzt vollstaendig
+uebernommen -- nicht nur MoveFriction, sondern auch die Avoidance-Werte:
+
+                       gen_phobocaster   gen_toiler     AN2-Rennprofil
+    MoveFriction       0.09/0.04/0.12    0.04/0.03/0.06   10.0 (alle)
+    AvoidanceRatio     -0.55             -0.65            0.0
+    AvoidanceRadius    1.4               1.2              3.0
+    LookAheadDistance  300               250              300
+
+Ein NEGATIVER AvoidanceRatio bei kleinem Radius und ohne Bewegungsdaempfung
+ist eine plausible Erklaerung fuer das beobachtete Torkeln und Kreisen.
+Terrainvermeidung war in beiden bereits aktiv (terrainavoidanceactive = 1),
+daran lag es nicht.
+
+EINGESPIELT (aquanox6.pak):
+    vfx\osd\gen\gen_phobocaster_race~.osd
+    vfx\osd\gen\gen_toiler_race~.osd
+        MoveFriction 10,10,10   AvoidanceRatio 0   AvoidanceRadius 3
+        sonst identisch zum Original
+    map\1n1\script\sp_1n1race.sco
+        G_AIShips zeigt jetzt auf die _race-OSDs
+        zusaetzlich Vessel_AvoidanceTerrain(v,1) und
+                    Vessel_AvoidanceObjects(v,1) explizit gesetzt
+        Logzeile kennzeichnet die Fassung: "(AN2-Rennprofil)"
+
+Die Original-OSDs (_inst) sind unveraendert -- Rueckweg ist ein
+Einzeiler im Skript.
+ERGEBNIS OFFEN, muss gefahren werden.
+Falls 10.0 zu zaeh wirkt: Zwischenwerte 1.0/3.0 probieren, und
+TurnPV 270 -> 90 beim Phobocaster (AN2s Rennschiffe nutzen 90).
+
+--------------------------------------------------------------------------------
+7. DIE LETZTEN UNBEKANNTEN AN2-FORMATE
+--------------------------------------------------------------------------------
+  .scr  15 Dateien   Lua-QUELLTEXT, Klartext, kommentiert -- Abschnitt 0
+  .ssc   1 Datei     map\5h1\script\neopolis_neu.ssc, 5,56 MB
+                     Binaerer SED-Szenengraph. Kopf: "BINARY", dann
+                     SED_NodeRoot, NotSortChildren, Visible, NOD_Game,
+                     SED_SetState. Das ist der gespeicherte Levelbaum des
+                     Editors -- also ein Beleg, dass Massive einen
+                     Szeneneditor hatte, dessen Ausgabe hier mitliegt.
+                     Zu neopolis_neu.ssc gehoert neopolis_neu.scr mit
+                     8.504 Zeilen Missionsquelltext.
+  .loc 232 Dateien   Lokalisierung, UTF-16 mit BOM, Struktur
+                     [Table]{[Acknowledge0]{Key=1 Text="..."}}
+  .usi.bin 131       kompiliertes GUI, aus .usi per -compileusi
+  .fnt  87           Schriften
+  .vid  26 / .bik 6  Video
+
+AN1-EIGENE ENDUNGEN, die AN2 nicht hat: .bmp .boa .bop .bor .zip
+
+--------------------------------------------------------------------------------
+8. EMPFEHLUNG
+--------------------------------------------------------------------------------
+(1) DIE API-REFERENZ LESEN, bevor die naechste Mission gebaut wird:
+    mod_docu\aquanox_lua_api_referenz.txt
+    Vor allem BindBlock, DelayedFunction mit Param, StoreInnerValue und
+    die sechs Trigger_-Callbacks. Das ersetzt einen guten Teil dessen,
+    was wir uns bisher selbst gebaut haben.
+
+(2) RENNEN FAHREN und sehen, ob das AN2-Rennprofil das Torkeln behebt.
+
+(3) SICHTBARE TORE ueber WayPoint_InformEntered statt Abstandsmessung
+    (v2 Abschnitt 11b, Callbacks in Abschnitt 2 dieser Datei).
+
+(4) NACHTSCHICHT: Das Zonensystem mit Sicht und Akustik ist der
+    interessanteste ungenutzte Baustein. Eine Noir-Mission, in der man
+    an Patrouillen vorbeischleicht, ist mit Bordmitteln skriptbar.
+
+(5) LEVELPORTIERUNG AN1 -> AN2 bleibt der lohnendste Grossversuch
+    (v2 Abschnitt 5 und 12); Werkzeug liegt bereit, ausgefuehrt wurde es
+    nicht.
+
+OFFEN GEBLIEBEN:
+    * Das Mesh-Rendering (v2 Abschnitt 1-3). "AN2 REPARIERT" wartet
+      weiterhin auf einen Durchlauf.
+    * Ob AN2s formation/sensor in AN1 laufen.
+    * Script_SnoopOn als Debugwerkzeug.
+    * .ssc-Format (Szenengraph) -- nur oberflaechlich angesehen.
+
+================================================================================
+ENDE -- Version 3
+================================================================================

@@ -1,0 +1,46 @@
+-- =====================================================================
+--  live.lua -- wird bei JEDEM Speichern im laufenden Spiel ausgefuehrt.
+--
+--  Die Proxy-DLL beobachtet diese Datei viermal je Sekunde und schickt sie
+--  bei einer Aenderung durch lua_dobuffer in den laufenden Lua-Zustand.
+--  Kein Neustart, kein PAK-Bau, kein Levelneuladen.
+--
+--  Laeuft nur, solange ein Level aktiv ist (der Haken haengt an
+--  NOD_Script::HeartBeat). Im Menue passiert nichts.
+--
+--  ZU BEACHTEN (alles im Spiel bestaetigt, Handoff v89):
+--    * Lua 4.0: Bibliotheksfunktionen sind GLOBAL -- format(), sqrt(),
+--      getn(), tinsert(). Kein string.format, kein math.sqrt.
+--    * Trigonometrie rechnet in GRAD. atan2 liefert Grad; kein deg() darauf.
+--    * Game_TextMessage braucht Absender-ID 255, sonst stirbt die Sitzung.
+--    * MAT_Vector3-Komponenten heissen .X .Y .Z (GROSS).
+--    * Fehler landen als [SCRIPTERROR] in log.txt des Spiels, mit
+--      Zeilennummer und dem Chunknamen "live.lua".
+-- =====================================================================
+
+Script_Log("[LIVE] live.lua ausgefuehrt")
+Game_TextMessage(GetGameNode(), 255, "live.lua neu geladen!!!")
+
+-- ---------------------------------------------------------------------
+-- Ab hier eigener Code. Beispiele zum Ausprobieren:
+--
+-- Wo stehe ich gerade?  (Koordinaten fuer Tore, Spawns, Zonen ablesen)
+--   p = Body_GetPosition(Node_Find("/Scenario_Dynamic/Object/player1"))
+--   Script_Log(format("[LIVE] Position %.1f / %.1f / %.1f", p.X, p.Y, p.Z))
+--
+-- Atmosphaere im Flug umstellen:
+--   Game_SetAmbientLight(GetGameNode(), 0.02, 0.09, 0.14)
+--   Game_SetFog(GetGameNode(), 0.7, 0.36)
+--
+-- Alles neutral schalten (Ruhe zum Erkunden):
+--   Game_ResetEnemyMatrix(GetGameNode())
+--
+-- Ein Objekt an der eigenen Position absetzen:
+--   d = Node_Find("/Scenario_Dynamic/Object")
+--   n = Node_CreateNode("NOD_Position", "probe_1")
+--   Node_AddSon(d, n)
+--   Position_SetPosition(n, Body_GetPosition(Node_Find(
+--       "/Scenario_Dynamic/Object/player1")))
+--   Node_EnterSimulation(n)
+--   Game_SetWayPoint(GetGameNode(), n)
+-- ---------------------------------------------------------------------

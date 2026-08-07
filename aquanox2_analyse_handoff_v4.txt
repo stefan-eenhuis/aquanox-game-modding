@@ -1,0 +1,257 @@
+================================================================================
+AQUANOX 2: REVELATION -- ANALYSE FUER DAS MODDING VON TEIL 1
+Handoff-Datei, Version 4
+================================================================================
+Erstellt: 2026-07-27, Fortsetzung derselben Nachtarbeit
+Vorgaenger: v3 (Lua-Quelltexte entdeckt), v2 (Levelportierung), v1 (Bestand)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+0. WORUM ES IN DIESER RUNDE GING
+--------------------------------------------------------------------------------
+v3 hat die .scr-Quelltexte entdeckt. Diese Runde wertet sie aus -- vor allem
+neopolis_neu.scr, ein KOMPLETTES Missionsskript mit 8.504 Zeilen im Klartext.
+
+ERGEBNIS: Der Aufbau einer AquaNox-Mission ist jetzt vollstaendig bekannt.
+Und weil AN1 alle dafuer noetigen Kommandos hat (geprueft, Abschnitt 2),
+ist das die Bauanleitung fuer Nachtschicht.
+
+NEU ANGELEGT:
+    mod_docu\nachtschicht_level_vorlage.lua
+        Kommentierte Vorlage mit Bausteinen fuer Objekte, Schiffe, Pfade,
+        Zonen und Tore. Jeder darin benutzte Name wurde gegen AN1 geprueft.
+
+--------------------------------------------------------------------------------
+1. *** DER KNOTENBAUM EINER MISSION ***
+--------------------------------------------------------------------------------
+Aus neopolis_neu.scr rekonstruiert und gegen AN1s sp_narrow.sco und 1h1.sco
+gegengeprueft -- in AN1 identisch:
+
+    /
+    +-- Terrain                          nod_terrain
+    +-- Scenario_Static                  NOD_Scenario
+    |   +-- Light                        NOD_Directory
+    |   +-- Navigation                   NOD_Directory
+    |   |   +-- Path_1                   NOD_Path
+    |   |   |   +-- pos_1                NOD_Position
+    |   |   +-- <PatrolArea>             NOD_PatrolArea
+    |   +-- Director                     NOD_Directory
+    |   +-- Trigger                      NOD_Directory
+    |   +-- Object                       NOD_Directory
+    |       +-- BLOCK_1                  NOD_Directory
+    |       |   +-- atl_ec_triumph_1     nod_generic
+    |       +-- BLOCK_2 ...
+    +-- Scenario_Dynamic
+        +-- Object                       Schiffe, Effekte, alles Bewegliche
+
+Die BLOCK_n-Ebene gruppiert statische Kulisse. neopolis hat 392 Objekte in
+mehreren Bloecken; AN1s Level nutzen dieselbe Ebene (z.B. "OuterWalls" in
+sp_narrow). Vermutlich Sichtbarkeits-/Ladegruppen.
+
+--------------------------------------------------------------------------------
+2. DER LEVELAUFBAU IM ORIGINAL -- und was AN1 davon kann
+--------------------------------------------------------------------------------
+__InitLayout() aus neopolis_neu.scr, gekuerzt:
+
+    node0 = Node_Find("/")
+    Game_LoadProgress_Advance(node0)
+    node1 = Node_CreateNode("nod_terrain","Terrain")
+    Node_AddSon(node0, node1)
+        Terrain_LoadTerrain(node1, "map/5H1/Terrain/")
+        Node_EnterSimulation(node1)
+    Game_LoadFog(node0, "map/5H1/Fog/fog.fog")
+    Game_SetFog(node0, 0.99, 1.0)
+    Game_SetCaustic*(...)
+    Game_SetLightCache(node0, "map/5H1/Lmsh/", "map/5H1/Ltex/")
+    Game_SetTerrainDepth(node0, 2728.0)
+    Game_SetDecompressionHeight(node0, 400.0)
+    Game_SetAmbientLight(node0, 0.094118, 0.105882, 0.129412)
+    Game_SetParallelLightT(node0, 0.184314, 0.215686, 0.258824)
+    Game_SetParallelLightB(node0, 0.094118, 0.105882, 0.129412)
+    Game_LoadTextTable(node0, "dat/sty/de/pilot.loc")
+    Game_LoadMTake(node0, "dat/sty/mtake_5H1.des")
+
+__StartUp():
+    Game_LoadProgress_Enter(Node_Find("/"), 392)   -- 392 = Zahl der Schritte
+    __InitLayout()
+    __InitLayout = nil                             -- Speicher freigeben
+    G_ScriptTimerThread = BindEasy(Node_Find("/"), "/script", C_ScriptTimer)
+    o30 = BindEasy(Node_Find("/Scenario_Static/Object/BLOCK_1"),
+                   "atl_ec_triumph_1", S_o30)
+    ... je Objekt ein BindEasy
+
+VERFUEGBARKEIT IN AN1 (gegen die Registry geprueft):
+    vorhanden:  Game_LoadProgress_Enter / _Advance, Game_SetLightCache,
+                Game_LoadFog, Game_SetFog, Game_SetTerrainDepth,
+                Game_SetDecompressionHeight, Game_SetAmbientLight,
+                Game_SetParallelLightT / _B, Game_LoadTextTable,
+                Game_LoadMTake, Terrain_LoadTerrain,
+                Game_SetCausticTerrain / _Object / _Building
+    fehlt AN1:  Game_SetNPCHitFactor, Game_SetEnvironmentCubeMap,
+                Game_SetDecompressionRange   (die drei AN2-Neuerungen)
+
+Und ALLE 74 AN1-Missionsskripte benutzen diese Kommandos bereits --
+Game_LoadProgress_Enter/Advance, SetLightCache, SetFog, die Caustics und
+die drei Lichtkommandos in 74 von 74 Faellen.
+
+=> Ein eigenes Level ist in AN1 skriptseitig vollstaendig baubar. Was fehlt,
+   sind nur die Datendateien (Terrain, Fog, Lmsh, Ltex) -- siehe v2 Abschnitt 6.
+
+--------------------------------------------------------------------------------
+3. DIE BAUSTEINE IM EINZELNEN
+--------------------------------------------------------------------------------
+STATISCHES OBJEKT (Kulisse):
+    node11 = Node_CreateNode("nod_generic","atl_ec_triumph_1")
+    Node_AddSon(node10, node11)
+        Body_SetCS(node11, MAT_Vector3(3054.769, 2459.933, 118.0),
+                           MAT_Vector3(0.0, 0.0, 0.0))
+        Node_ParseIniFile(node11, "osd/atl/atl_ec_triumph.osd")
+        Body_SetFriendOrFoeID(node11, 0)
+        Body_SetNameKey(node11, -1)
+        Body_SetCargoKey(node11, -1, 0)
+        Body_SetCargoKey(node11, -1, 1)
+        Body_SetCargoKey(node11, -1, 2)
+        Node_EnterSimulation(node11)
+
+PFAD MIT STUETZPUNKTEN:
+    node5 = Node_CreateNode("NOD_Path","Path_1")
+    Node_AddSon(node4, node5)
+        node6 = Node_CreateNode("NOD_Position","pos_1")
+        Node_AddSon(node5, node6)
+            Position_SetPosition(node6, MAT_Vector3(997.2, 4961.1, 203.0))
+            Position_SetRadius(node6, 5.0)
+
+WICHTIG: pro Schiff einen EIGENEN Pfad. AN2-Missionen legen Path_1 bis
+Path_10 an, AN1-Originale nur Path_1 und Path_2. Das erklaert unser altes
+Problem, dass bei zwei Rennern auf einem gemeinsamen NOD_Path nur einer
+losfuhr.
+
+--------------------------------------------------------------------------------
+4. *** DIE ANGRIFFS-API -- korrigiert ***
+--------------------------------------------------------------------------------
+Eine Fehlannahme aus der Vorlagenarbeit, hier richtiggestellt:
+Es gibt KEIN VesselAttackLib.Attack. Die tatsaechlichen Verhalten
+(aus vesselattack.scr, das in AN1 BYTE-IDENTISCH vorliegt) sind:
+
+  GuardArea(State, Mode, PatrolArea, TriggerArea, FollowArea,
+            FirstPriority, SecondPriority, ThirdPriority, FourthPriority,
+            Velocity)
+      Mode         Sensormodus
+      PatrolArea   Kernzone, in der patrouilliert wird
+      TriggerArea  Zone, deren Betreten den Angriff ausloest
+      FollowArea   Zone, bis zu der ein Feind verfolgt wird
+      P1..P4       Zielprioritaeten
+      Velocity     Patrouillentempo
+      => Das meistgenutzte Verhalten ueberhaupt: 903 Vorkommen in AN1s
+         Originalmissionen.
+
+  ClearArea(State, Mode, Area, P1..P4, WaitingTime, Velocity,
+            Callback, Param)          Zone saeubern, dann Rueckruf   (39x)
+  GuardAreaRespawn(..., Position)     wie GuardArea, mit Wiederbelebung (64x)
+  GotoAttack(State, Mode, GotoPath, GotoSpeed, GotoInfluence,
+             AttackArea, AttackSphere, P1..P4)                        (6x)
+
+Die drei Zonen sind NOD_PatrolArea-Knoten unter Navigation. Ein Wachschiff
+mit gestaffelten Zonen (klein patrouillieren, mittel angreifen, weit
+verfolgen) ist damit eine Zeile Skript.
+
+--------------------------------------------------------------------------------
+5. WAS DIE VORLAGE ENTHAELT
+--------------------------------------------------------------------------------
+mod_docu\nachtschicht_level_vorlage.lua
+
+  NS_Prop(parent, name, osd, x,y,z, rx,ry,rz)   statische Kulisse
+  NS_Ship(name, osd, x,y,z, heading, fof, namekey)
+       setzt Vessel_CollisionTerrain, _AvoidanceTerrain, _AvoidanceObjects
+       und laesst Node_EnterSimulation BEWUSST aus -- erst binden, dann
+       in die Simulation (Reihenfolge aus Handoff-Hauptreihe Abschnitt 70)
+  NS_Path(name, pts, radius)                    Pfad aus Stuetzpunkten
+  NS_Area(name, x,y,z, radius, minz, maxz)      NOD_PatrolArea
+  NS_Zone(name, x,y,z, a,b,c, mode)             Trigger: sphere|box|acoustic
+  NS_Gate(name, osd, x,y,z, radius)             sichtbares Wegpunkt-Tor
+  NS_Say(txt) / NS_Dist(p, q)
+
+  S_WACHE   Beispiel mit VesselAttackLib.GuardArea
+  S_ZONE    Beispiel fuer eine einmalig ausloesende Zone
+  S_MAIN    Hauptablauf mit Takt
+
+PRUEFUNG: Jeder in der Vorlage benutzte Name wurde gegen die AN1-Registry,
+gegen AN1s eigene Bibliotheken und gegen die Strings in Aqua.exe geprueft.
+Alle nachweisbar. Die Vorlage ist aber NICHT IM SPIEL GETESTET.
+
+--------------------------------------------------------------------------------
+6. NACHTSCHICHT: DAS SCHLEICH-GERUEST STEHT BEREIT
+--------------------------------------------------------------------------------
+Die interessanteste ungenutzte Faehigkeit fuer eine Noir-Kampagne ist das
+dreikanalige Zonensystem. Alle Teile sind in AN1 vorhanden:
+
+  Zonen setzen:
+      Trigger_SetPresenceSphere(node, radius)        blosse Anwesenheit
+      Trigger_SetBoxMode(node, dx, dy, dz)           Quader statt Kugel
+      Trigger_SetVisibilityCone(node, richtung, a, b) Sichtkegel
+      Trigger_SetVisibilityConeRelative(node, a, b)
+      Trigger_SetVisibilityBlockingStatus(node, an)   Sichtblockade durch
+                                                      Geometrie
+      Trigger_SetAcousticSphere(node, radius)         Hoerweite
+      Trigger_SetAcousticSensibility(node, stufe)     Empfindlichkeit
+      Trigger_SetInterestList(node, a, b, c, d)       worauf reagiert wird
+      Trigger_ActivateSensor / Trigger_StopSensor
+
+  Callbacks in der Zustandstabelle:
+      Trigger_EnterPresence(State, Object)  Trigger_LeavePresence
+      Trigger_EnterVisible(State, Object)   Trigger_LeaveVisible
+      Trigger_EnterAcoustic(State, Object)  Trigger_LeaveAcoustic
+
+  Gegenstueck beim Spieler: das OSD-Feld
+      [emitter] soundemissionlevel = "silent"
+  und Emitter_SetSoundEmissionLevel zur Laufzeit.
+
+=> Eine Mission, in der man an Patrouillen vorbeischleicht, an Sichtkegeln
+   vorbei und leise fahren muss, ist mit Bordmitteln skriptbar. Nichts davon
+   nutzt eine der 74 Originalmissionen in dieser Kombination.
+
+--------------------------------------------------------------------------------
+7. KLEINERE BEFUNDE
+--------------------------------------------------------------------------------
+* Die 357 Zustandstabellen in neopolis_neu.scr heissen S_o30, S_o76, S_o122
+  (Abstand jeweils 46) und haben alle dieselben Felder Start, Code0..Code4.
+  Das ist GENERIERTER Code aus einem Missionseditor, nicht handgeschrieben.
+  Zusammen mit der .ssc-Datei (binaerer SED-Szenengraph, 5,56 MB, Kopf
+  "BINARY" + SED_NodeRoot) belegt das: Massive hatte einen Szeneneditor,
+  dessen Ausgabe hier mitliegt.
+
+* neopolis_neu.scr laedt zwoelf Bibliotheken:
+      VesselGoto, VesselAttack, Sensor, Misc, Turret, VehicleGoto,
+      VehicleAttack, Dock, Formation, Camera, Dipol, OldOne
+  Die Konstanten am Dateikopf: True=1 False=0 und F=1 N=2 U=3 E=4
+  (vermutlich Fraktionskennungen).
+
+* Haeufigkeiten in neopolis_neu.scr: Body_SetCargoKey 939x,
+  Node_CreateNode 392x, Node_ParseIniFile 360x, Body_SetCS 356x.
+  Ein Level besteht also fast vollstaendig aus platzierten OSD-Instanzen.
+
+* ComplexGoto im Quelltext (vesselgoto.scr): der Dispatcher setzt
+  {"Goto", pfad, a, b} nach Vessel_Goto(State.Node, pfad, a, b) um; mit
+  gesetztem LGU_OldPosition stattdessen Vessel_GotoFromPosition. Weitere
+  Listenbefehle: "GotoFrom", "GotoFromTo", "Sink".
+
+--------------------------------------------------------------------------------
+8. EMPFEHLUNG
+--------------------------------------------------------------------------------
+(1) Die Vorlage einmal im Spiel gegenprobieren -- ein Wachschiff mit
+    GuardArea auf einer Instant-Fight-Karte. Damit ist geklaert, ob die
+    aus AN2-Quelltext abgeleiteten Aufrufe in AN1 tatsaechlich greifen.
+
+(2) Danach die erste Nachtschicht-Mission auf dieser Grundlage bauen.
+    Das Schleich-Geruest aus Abschnitt 6 ist der Bausteinkasten, der die
+    Kampagne von einem gewoehnlichen Shooter unterscheiden wuerde.
+
+(3) Weiterhin offen aus v2/v3:
+    * Mesh-Rendering AN2 -> AN1 ("AN2 REPARIERT" ungetestet)
+    * Levelportierung AN1 -> AN2 (Werkzeug liegt bereit)
+    * Renn-KI mit AN2-Rennprofil (eingespielt, ungefahren)
+
+================================================================================
+ENDE -- Version 4
+================================================================================

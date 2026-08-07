@@ -1,0 +1,338 @@
+================================================================================
+AQUANOX 2: REVELATION -- ANALYSE FUER DAS MODDING VON TEIL 1
+Handoff-Datei, Version 1
+================================================================================
+Erstellt: 2026-07-27, Analyse-Session 5 (Nachtarbeit)
+Untersucht: <Spielordner>\Aquanox2Relevation\  (GOG-Fassung, 1,48 GB)
+Bezug: aquanox_modding_handoff_v90.txt -- dort ist Abschnitt 11 die bisherige
+       AN2-Notiz. Dieses Dokument ergaenzt und korrigiert sie an mehreren Stellen.
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen
+(aquanox2_analyse_handoff_v2.txt usw.), nicht diese hier ueberschreiben.
+
+--------------------------------------------------------------------------------
+0. DIE KURZANTWORT
+--------------------------------------------------------------------------------
+AN2 ist fuer unser AN1-Modding WERTVOLLER als erwartet -- aber nicht wegen der
+Engine, sondern wegen dreier Dinge:
+
+  1. ES IST DIESELBE ENGINE MIT DENSELBEN FORMATEN. Lua-4.0-Skripte laden
+     byte-identisch mit unserem AN1-Werkzeug. Alles, was wir ueber Missions-
+     skripting gelernt haben, gilt dort ebenso -- und umgekehrt sind AN2s
+     64 Skripte (10,6 MB) lesbare Referenz fuer Techniken, die AN1 nicht zeigt.
+
+  2. AN2 LIEFERT SEINE DATEN IM KLARTEXT AUS. Die .osd-Objektdefinitionen sind
+     unkompiliert -- MIT DEN BALANCE-KOMMENTAREN DER ENTWICKLER auf Deutsch.
+     Das ist Designdokumentation aus erster Hand, die es fuer AN1 nirgends gibt.
+
+  3. AN2 HATTE EINEN RENNMODUS. map\instant2\script\instant2.sco ist ein Rennen
+     mit sichtbaren Wegpunkt-Toren und eigens abgestimmten Renn-Schiffen. Genau
+     das, was wir gerade selbst gebaut haben -- und AN1 hat die noetigen Assets
+     bereits an Bord. Siehe Abschnitt 6, das ist der praktischste Fund.
+
+Was NICHT geht: AN2s neue Engine-Kommandos (Zielsystem, Cubemaps, Kaustik-Stufen)
+sind in AN1s Exe schlicht nicht vorhanden.
+
+--------------------------------------------------------------------------------
+1. BESTAND
+--------------------------------------------------------------------------------
+Aquanox2Relevation\
+    AN2.dat                     3,7 MB   das eigentliche Programm (PE, DRM-frei)
+    AquaNox 2 Revelation.exe     40 KB   nur ein Starter
+    fmod.dll, binkw32.dll                Audio (FMOD statt Miles) und Video
+    pak\data0..4.pak            1,47 GB  5 Archive
+ANMERKUNG: Handoff-Abschnitt 11a nennt AN2.dat mit 2,5 MB. Diese GOG-Fassung hat
+3,7 MB -- also ein anderer Build. Adressen aus fremden AN2-Analysen nicht
+ungeprueft uebernehmen.
+
+PAK-INHALT, 16.942 Dateien:
+    .msb  4757 (62,5 MB)   Meshes          .ogg  2468 (151,9 MB)  Audio
+    .vc   4233 (26,2 MB)   Vertexfarben    .dds  1685 (414,4 MB)  Texturen
+    .tga  1295 (311,7 MB)  Texturen/GUI    .osd  1049 (3,8 MB)    Objektdefinitionen
+    .col   362             Kollision       .loc   232             Lokalisierung
+    .des   216             Datentabellen   .wav   171 (30,5 MB)   Klaenge
+    .bin   131             GUI (.usi.bin)  .sco    64 (10,6 MB)   Skripte
+    .fog    32 (32 MB)     Nebelgitter     .vid    26 (88,9 MB)   Video
+    .bik     6 (317,6 MB)  Bink-Video      .mp3    13
+    .fnt    87  Schriften  .sam  76  Klangdeskriptoren  .scr 15  .tse 6  .ssc 1
+Verzeichnisse: map 10093, vfx 3000, sfx 2647, gui 991, dat 185, ini 26
+
+--------------------------------------------------------------------------------
+2. WERKZEUG: unser PAK-Leser kann jetzt BEIDE FORMATE
+--------------------------------------------------------------------------------
+mod_docu\tools\pak_tool.py erkennt AN1 und AN2 automatisch. Unterscheidungs-
+merkmal: die 4 Byte nach dem Magic sind bei AN1 eine glatte uint32 = 3, bei AN2
+version(uint16)=3 + subversion(uint16)=2.
+    Namenschiffre AN2 : dec[i] = enc[i] - KEY[((n-3)+i) % 64]
+    Groessenchiffre AN2: size = size_enc - u32(KEY[((n-3)+0x68) % 60])
+    (AN1: (n+i) % 64 bzw. abs(u32(KEY[n%60]) - size_enc))
+Derselbe 64-Byte-Schluessel wie AN1.
+GEPRUEFT: alle fuenf AN2-PAKs gehen in der Pruefsumme exakt auf
+(Datenanfang + Summe aller Groessen == Dateigroesse), und die AN1-Gegenprobe
+(aquanox6.pak) liest weiterhin fehlerfrei.
+
+--------------------------------------------------------------------------------
+3. FORMATVERTRAEGLICHKEIT -- was unsere AN1-Werkzeuge direkt lesen
+--------------------------------------------------------------------------------
+*** .sco -- VOLLSTAENDIG KOMPATIBEL ***
+map\1n1\script\1n1.sco (409 KB) mit lua4dis geladen:
+    Kopf byte-identisch mit AN1: 1b 4c 75 61 40 01 04 04 04 20 06 09 08 ...
+    1592 Protos, Roundtrip BYTE-IDENTISCH.
+Dieselben 13 Bibliotheken wie AN1: CameraLib, DipolLib, DockLib, FormationLib,
+MiscLib, OldOneLib, SensorLib, TurretLib, VehicleAttackLib, VehicleGotoLib,
+VesselAttackLib, VesselGotoLib (+ LoadLib).
+=> AN2s 64 Missionsskripte sind fuer uns LESBARE REFERENZ. Die groessten:
+   5h3 707 KB, 4h3 642 KB, 5h1 469 KB, 3n2 450 KB, 1n1 409 KB, 5h2 392 KB.
+   Zum Vergleich: AN1s groesstes Kampagnenskript ist deutlich kleiner. Wer
+   wissen will, wie ein aufwaendiges Setpiece aufgebaut wird, findet es hier.
+
+*** .osd -- KLARTEXT STATT GEKOCHT (der Unterschied zu AN1) ***
+AN1 liefert .osd als gekochtes DES (descook noetig). AN2 liefert sie als
+lesbaren Text mit Copyright-Kopf. Beispiel vfx\osd\pla\pla_ship1.osd (17 KB).
+ABSCHNITTSVERGLEICH gegen AN1s pla_phobocaster~.osd:
+    In AN1 vorhanden, in AN2 EBENFALLS: sed, class, visual, collision, property,
+      playercontrol, control, stream, dipolbehaviour, avoidance, emitter, dying,
+      shield, sound, child0..child10
+    NUR in AN1: (keine)
+    Nur in AN2 (Auswahl): FPS_POS, FPS_VEL, SIM_POS, SIM_VEL, Armor, Booster,
+      CycleGun, Multiplayer, Obstacle, Metal, Concrete, Rock, Rubber, Ground,
+      pickup_ammo_energy, pickup_ammo_shell, pickup_ammo_emp, pickup_...
+=> AN2s .osd ist ein ECHTES SUPERSET von AN1s. Ein AN2-Schiff nach AN1 zu
+   portieren heisst: die AN2-eigenen Abschnitte streichen, der Rest passt.
+=> UND: AN1s Engine kann unkompiliertes DES lesen (DES_File::ParseUncompiled,
+   Handoff Abschnitt 86/90). Ein AN2-.osd koennte also nach dem Streichen
+   DIREKT ALS TEXT funktionieren, ohne Kochen. NICHT GETESTET -- das waere der
+   erste Versuch bei einem Portierungsanlauf.
+
+*** .msb -- GLEICHES FORMAT ***
+    AN1 pla_phobocaster.msb: Kopf 00 02 10 00 00 00 00 02, laengster
+        Vertexlauf 277 Punkte ab Offset 4968
+    AN2 pla_deimos.msb:      Kopf 00 02 0a 00 00 00 00 02, 283 Punkte ab 25416
+    AN2 mer_bomber.msb:      Kopf 00 02 0f 00 00 00 00 02, 320 Punkte ab 8200
+Gleiche 40-Byte-Vertexstruktur (Farbe 0xFFFFFFFF an +24, Einheitsnormale). Das
+dritte Byte unterscheidet sich je Datei -- vermutlich die Anzahl Untermeshes,
+NICHT die Version.
+WICHTIG ZUR METHODE: der Vertexlauf faengt NICHT bei Offset 8 an, sondern
+irgendwo in der Datei (bei AN1 wie bei AN2). Der inhaltsbasierte Scan aus
+Handoff Abschnitt 6e ist also zwingend; ein fester Offset schlaegt fehl.
+
+*** .sam -- GLEICHE STRUKTUR, ebenfalls Klartext ***
+AN2: "[SampleInfo] { name = "gui\movie\sound\logo_massive.wav" ... }"
+Identisch zu AN1s gekochtem Aufbau (Handoff Abschnitt 118), nur unkompiliert.
+
+*** .des -- Klartext wie in AN1 ***
+dat\sav\player_start.des (743 B) zeigt AN2s Startzustand mit
+Entwicklerkommentaren zu RETAIL/DEMO-Varianten:
+    SaveName = "Start game", GameDifficulty = 1, Station = 1, Ship = 1,
+    Credits = 1205, CurrentOptionKey0 = 5000
+Zum Vergleich AN1 (Handoff Abschnitt 103): Credits 240, Station 2, Ship 1.
+
+--------------------------------------------------------------------------------
+4. *** DIE ENTWICKLER-BALANCE-NOTIZEN -- Designdokumentation aus erster Hand ***
+--------------------------------------------------------------------------------
+Der ueberraschendste Fund. In jedem AN2-Spielerschiff-.osd steht oben ein
+Kommentarblock auf Deutsch, in dem die Entwickler das Schiff charakterisieren.
+Vollstaendig, alle vier Spielerschiffe:
+
+  pla_ship1 (pla_ship1.msh)
+      Endgeschwindigkeit: mittel        Beschleunigung: gut
+      Kurvenverhalten (Friction): erde  Torpedos: wenig    Buzzer: wenig
+      Shield kin: niedrig               Shield EMP: hoch*
+      Besonderheit: sehr klein*
+  pla_ship2 (pla_mightymaggie.msh)
+      Endgeschwindigkeit: langsam       Beschleunigung: schlecht
+      Kurvenverhalten (Friction): eis   Torpedos: viel*    Buzzer: viel*
+      Shield kin: hoch*                 Shield EMP: hoch
+      Besonderheit: sehr gross
+  pla_ship3 (pla_lacewing.msh)
+      Endgeschwindigkeit: schnell*      Beschleunigung: mittel
+      Kurvenverhalten (Friction): erde  Torpedos: mittel   Buzzer: mittel
+      Shield kin: mittel                Shield EMP: mittel
+      Besonderheit: crawler*
+  pla_ship4 (pla_deimos.msh)
+      Endgeschwindigkeit: mittel        Beschleunigung: gut*
+      Kurvenverhalten (Friction): schiene*  Torpedos: mittel  Buzzer: mittel
+      Shield kin: hoch                  Shield EMP: mittel
+      Besonderheit: COOOL!!!
+
+WARUM DAS NUETZT: es benennt die Entwurfsachsen, nach denen Massive Schiffe
+ausbalanciert hat -- Endgeschwindigkeit, Beschleunigung, "Kurvenverhalten
+(Friction)" mit den Stufen erde/eis/schiene, Torpedo- und Buzzerkapazitaet,
+KIN- und EMP-Schild, plus ein Alleinstellungsmerkmal. Der Stern markiert
+offenbar den jeweiligen Spitzenwert im Feld. Genau diese Achsen sind in AN1 die
+[Control]- und [Shield]-Felder (Handoff Abschnitt 73/85). Wer fuer Nachtschicht
+neue Schiffe abstimmen will, hat hier das Raster der Originalautoren.
+"Kurvenverhalten: eis/erde/schiene" ist dabei die anschauliche Uebersetzung von
+MoveFriction/TurnFriction.
+
+--------------------------------------------------------------------------------
+5. NEUE ENGINE-KOMMANDOS IN AN2 (nicht portierbar, aber aufschlussreich)
+--------------------------------------------------------------------------------
+Aus 20 AN2-Skripten gegen unsere verifizierte 398er-AN1-Registry abgeglichen.
+15 echte Kommandos, die AN1 NICHT hat:
+    Game_PrimaryObjectiveReached / _Failed      <- ein echtes Zielsystem
+    Game_BonusObjectiveReached  / _Failed          (AN1 hat nur SetTaskTextKey)
+    Game_SetCausticTerrainNormal / _Micro       <- Kaustik in zwei Detailstufen
+    Game_SetCausticBuildingNormal / _Micro
+    Game_SetCausticObjectNormal
+    Game_SetDecompressionRange
+    Game_SetEnvironmentCubeMap                  <- die Spiegelungen von AN2
+    Game_SetNPCHitFactor                        <- Trefferwahrscheinlichkeit
+                                                   der Gegner = Schwierigkeit
+    ShieldedBody_SetFriendlyFireMode
+    ShieldedBody_SetShieldBarrier
+    Body_SetObservedDestroyer
+    Vehicle_AttackTurrets
+Der Zuwachs ist also klein und gezielt: Missionsziele, Optik, Schwierigkeit.
+Die AI-, Node-, Trigger- und WayPoint-Vokabulare sind IDENTISCH -- was erneut
+belegt, dass unser AN1-Wissen vollstaendig auf AN2 uebertragbar ist und
+umgekehrt.
+
+--------------------------------------------------------------------------------
+6. *** DER PRAKTISCHSTE FUND: AN2 HATTE EIN RENNEN ***
+--------------------------------------------------------------------------------
+map\instant2\script\instant2.sco (186 KB, 497 Protos) ist eine Instant-Action-
+Mission mit RENNBETRIEB. Belege:
+  * Drei eigens abgestimmte Renn-Schiffe mit eigenen Objektdefinitionen:
+        vfx\osd\atl\atl_scout2_race.osd   (9,8 KB)   -> "Scout2_race"
+        vfx\osd\gen\gen_avenger_race.osd  (5,3 KB)   -> "Avenger_race"
+        vfx\osd\gen\gen_toiler_race.osd   (8,1 KB)   -> "Toiler_race"
+    plus vfx\osd\inc_control\control_scout_race.osd -- eine eingebundene
+    Steuerungsdatei, die NUR einen [Control]-Block enthaelt:
+        MovePV 41.0  MoveNV 30.0  MoveT 1.0
+        StrafeHorrVel 5.0  StrafeHorrT 2.0  StrafeVertVel 5.0 ...
+    => Massive hat fuer das Rennen eigene Flugmodelle gebaut und sie ueber eine
+       gemeinsame Include-Datei geteilt. Genau die Technik, die wir bei unserem
+       Rennen von Hand mit verschiedenen Schiffstypen nachgebaut haben.
+  * SICHTBARE TORE als Wegpunktobjekte:
+        'nod_waypoint'                     Knotenklasse
+        'osd/nav/nav_waypoint.osd'         Tor
+        'osd/nav/nav_nextwaypoint.osd'     das jeweils naechste Tor
+        Knotennamen: nav_waypoint_1, nav_nextwaypoint_1 .. _6,
+                     nav_nextwaypoint_finish
+    => Es gibt ZWEI Darstellungen: das normale Tor und eine hervorgehobene
+       Variante fuer das aktuelle Ziel. Der Wechsel zwischen beiden ist die
+       Fuehrung durch die Strecke.
+  * Dazu: WayPoint_Attach, WayPoint_SetRadius und alle fuenf
+    WayPoint_SetTakeKey_* (Enter/Inside/Leave/Outside/Activate) fuer Meldungen,
+    sowie Game_SetWayPoint fuer die HUD-Marke.
+
+*** UND AN1 HAT DAS ALLES BEREITS *** (im eigenen Bestand geprueft):
+    Klasse NOD_WayPoint, 1248 B, Basis NOD_Body, Factory 0x482fb0
+    Alle 11 WayPoint_-Kommandos in der 398er-Registry (+ Game_SetWayPoint)
+    14 fertige Torgrafiken in vfx\osd\nav\, je 1275 B:
+        nav_waypoint_01~.osd .. nav_waypoint_10~.osd   zehn durchnummerierte
+        nav_waypoint_attack~.osd    nav_waypoint_follow~.osd
+        nav_waypoint_mark~.osd      nav_waypoint_scan~.osd
+    Die vier benannten sind ROLLENTORE -- AN1 unterscheidet also bereits
+    optisch, wozu ein Wegpunkt auffordert. Fuer ein Rennen liegt nahe:
+    die durchnummerierten als Streckentore, "mark" als aktuelles Ziel
+    (das waere AN1s Entsprechung zu AN2s nav_nextwaypoint).
+    (dazu vfx\msh\hud_waypoint.msb und hud_waypoint_direction.msb fuer das HUD)
+=> UNSER RENNEN LAESST SICH SOFORT VERBESSERN: statt unsichtbarer
+   NOD_Position-Tore echte nod_waypoint-Objekte mit nav_waypoint_NN.osd setzen.
+   Dann SIEHT man die Tore im Wasser stehen, statt nur der HUD-Marke zu folgen.
+   Zusaetzlich die SetTakeKey_Enter-Meldungen statt unserer Abstandsabfrage --
+   das waere der von der Engine vorgesehene Weg.
+   Kein Import aus AN2 noetig, nur die richtige Klasse und die vorhandenen OSDs.
+
+--------------------------------------------------------------------------------
+7. WAS SICH KONKRET UEBERNEHMEN LAESST -- nach Aufwand sortiert
+--------------------------------------------------------------------------------
+(A) MUSIK -- geringster Aufwand, sofort einsetzbar
+    sfx\sample\music\ enthaelt 26 Stuecke (37,9 MB), davon 15 als Ogg Vorbis,
+    44100 Hz, stereo -- exakt die Abtastrate, die AN1 braucht (Abschnitt 118).
+    Umwandlung Ogg -> mp3 mit unserem ffmpeg ist ein Einzeiler.
+        music_ambient1 (4,33 MB)  music_tears (3,40)   music_mystery (2,92)
+        music_guit3 (2,79)  music_guit4 (2,53)  music_orden (2,40)
+        music_grabsuche (2,22)  music_hektik (2,19)  music_unhancy1/2/3
+        music_guit1/2  music_ambient2 (1,67)  music_biontenduell (1,09)
+        music_tension1/2/3 (je ~0,06, kurze Stinger)
+    Die sieben music_sfx_*.mp3 hat AN1 bereits -- nicht doppelt einbauen.
+    HINWEIS: das sind die Arbeitstitel der Entwickler ("grabsuche", "hektik",
+    "unhancy", "orden") -- sie verraten die vorgesehene Stimmung.
+    RECHTLICHES: nur fuer den privaten Gebrauch mit legal erworbenen Spielen.
+
+(B) SCHIFFE -- mittlerer Aufwand, grosser Gewinn fuer Nachtschicht
+    96 nod_vessel-Definitionen mit vorhandenem Mesh, deren Name in AN1 fehlt.
+    Interessante Kandidaten:
+        atl_frigate        73,6 KB Mesh   grosses Kriegsschiff
+        atl_police         37,0 KB        Polizei (passt zu Mission 3!)
+        bio_sphere         67,8 KB        der Bionten-Kugelboss
+        mer_bomber         59,1 KB        Soeldnerbomber
+        ent_bomber_at_big  75,7 KB        EnTrOx-Bomber
+        mac_finch          63,0 KB        benanntes Einzelschiff
+        gen_freighter      81,9 KB        Frachter (Konvoi-Mission!)
+        gen_transporter    79,9 KB        Transporter
+        gen_mightymaggie   88,3 KB        das schwere Spielerschiff aus AN2
+    PORTIERUNGSWEG (Handoff Abschnitt 11h, jetzt praezisiert):
+        1. .msb + zugehoerige .dds aus der AN2-PAK ziehen
+        2. das AN2-.osd als Text oeffnen, die AN2-eigenen Abschnitte streichen
+           (FPS_*, SIM_*, Armor, Booster, CycleGun, Multiplayer, pickup_*,
+            Material-Abschnitte Metal/Concrete/Rock/Rubber/Ground/Obstacle)
+        3. Mesh- und Texturnamen pruefen
+        4. ERST als Klartext-.osd versuchen (ParseUncompiled), erst wenn das
+           scheitert, mit descook kochen
+        5. in aquanox6.pak legen und per Node_ParseIniFile benutzen
+    NICHT GETESTET -- das ist der naechste konkrete Versuch.
+
+(C) TECHNIKEN AUS DEN SKRIPTEN -- kein Import, nur Lesen
+    64 Skripte, bis 707 KB. Weil das Vokabular identisch ist, sind sie
+    unmittelbar verwertbare Beispiele fuer aufwaendige Inszenierung. Besonders
+    relevant fuer Nachtschicht: instant2 (Rennen), die 5h*-Missionen (die
+    groessten Setpieces), 4h4 (Armada-Anflug mit mehreren Pfaden).
+
+(D) SPRACHAUSGABE -- eingeschraenkt brauchbar
+    2435 Dateien unter sfx\speech, aber NUR ENGLISCH (sfx\speech\en\mtake\
+    d0001.ogg ...). Fuer eine deutsche Nachtschicht-Operatorstimme also nicht
+    direkt nutzbar. Die elf_dummy*.mp3 (Platzhalter unterschiedlicher Laenge)
+    sind allerdings praktisch, wenn man ein MTake ohne echte Stimme testen will
+    -- AN1s Entsprechung ist unser "ff_dummy".
+
+(E) TEXTUREN -- ungeprueft
+    1685 .dds (414 MB) und 1295 .tga (312 MB). Ob AN2 hoeher aufgeloeste
+    Fassungen gemeinsamer Assets hat, wurde NICHT verglichen. Falls ja, waere
+    das ein billiger Optikgewinn (Regeln in Handoff Abschnitt 80: quadratisch,
+    Mipmaps, DXT beibehalten).
+
+--------------------------------------------------------------------------------
+8. WAS NICHT UNTERSUCHT WURDE
+--------------------------------------------------------------------------------
+  * AN2.dat selbst -- keine Adressanalyse. Sie waere moeglich (DRM-frei, gleiche
+    Klassenfamilie), lohnt aber nur, wenn man AN2 selbst modden will.
+  * .usi.bin (131 Dateien) -- das animierte 2D-GUI von AN2. Fuer AN1 nutzlos,
+    da AN1s Frontend fest verdrahtet ist (Handoff Abschnitt 101).
+  * .vid (26, 88,9 MB) und .bik (6, 317,6 MB) -- Videoformate.
+  * .vc (4233) -- Vertexfarben fuer statische Levelgeometrie. Laut Handoff
+    Abschnitt 11d fuer Schiffsportierung irrelevant; bestaetigt (0 % der
+    vfx\msh-Meshes haben welche).
+  * .ssc (1 Datei, 5,3 MB), .scr (15), .tse (6), .fnt (87) -- unbekannt.
+  * Ob ein portiertes AN2-Schiff in AN1 tatsaechlich laedt -- der eigentliche
+    Test steht aus.
+
+--------------------------------------------------------------------------------
+9. EMPFEHLUNG
+--------------------------------------------------------------------------------
+Drei Dinge, in dieser Reihenfolge:
+
+  1. SICHTBARE TORE INS RENNEN (Abschnitt 6). Kostet fast nichts, braucht
+     keinen AN2-Import, und macht aus der HUD-Marke eine echte Strecke. Mit dem
+     Hot-Reload aus Handoff Abschnitt 119 in Minuten auszuprobieren.
+
+  2. EIN AN2-SCHIFF PORTIEREN (Abschnitt 7B). Vorschlag: atl_police -- klein,
+     thematisch genau richtig fuer Nachtschicht Mission 3 "Neon unter Glas",
+     und AN1 hat mit nv_pscout bereits ein repariertes Polizeischiff als
+     Vergleichsobjekt. Wenn der Weg einmal funktioniert, sind die anderen 95
+     Routine.
+
+  3. MUSIK ERGAENZEN (Abschnitt 7A). Die Stuecke mit den Arbeitstiteln
+     "grabsuche", "mystery", "tears" und "ambient1/2" passen zur geplanten
+     Noir-Stimmung von Nachtschicht besser als AN1s Kampfmusik.
+
+Was ich NICHT empfehle: AN2.dat zu analysieren oder die neuen Engine-Kommandos
+nachbauen zu wollen. Der Aufwand steht in keinem Verhaeltnis -- AN1 kann mit dem,
+was jetzt dokumentiert ist, alles, was Nachtschicht braucht.
+
+================================================================================
+ENDE -- Version 1
+================================================================================

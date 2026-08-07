@@ -1,0 +1,286 @@
+================================================================================
+AQUANOX 1 + 2 -- BINAERFORMATE
+================================================================================
+Stand: 2026-07-27
+Alle Angaben an echten Dateien beider Spiele geprueft; Belege jeweils dabei.
+Ergaenzt die AN1-Hauptreihe (PAK, DES, SCO) um die bis dahin offenen Formate.
+
+--------------------------------------------------------------------------------
+1. .msb -- MESH
+--------------------------------------------------------------------------------
+    Datei : 00 02 | nBlocks(u16) | 00 00 | <Block>*
+    Block : 00 02 | vCount(u32) | tCount(u32)
+            | Vertex[vCount]   je 40 B
+            | Tri[tCount]      je  8 B
+            | Material[2]      je 80 B
+            | Abschluss        46 B
+
+    VERTEX (40 B)
+        +0   3x f32   Position
+        +12  3x f32   Normale (immer exakt Laenge 1.0)
+        +24  u32      Diffusfarbe (in allen geprueften Meshes 0xffffffff)
+        +28  2x f32   UV
+        +36  u32      Index der eindeutigen Position
+                      (atl_pscout: 716 Vertices, nur 304 verschiedene Werte --
+                       die Differenz sind an UV-Naehten aufgetrennte Vertices)
+
+    DREIECK (8 B)
+        +0  u16 i0    +2 u16 i1    +4 u16 i2
+        +6  u16 Flags:  lo-Byte = Block-ID (pro Block konstant, zwischen AN1
+                                  und AN2 IDENTISCH -- damit lassen sich die
+                                  Bloecke beider Fassungen zuordnen)
+                        hi-Byte = vermutlich Glaettungsgruppe (unbewiesen)
+
+    MATERIALSLOT (80 B, zwei je Block)
+        +0  u16 Flags (Slot 1: 0x0200, Slot 2: 0x0000)
+        +2  u32 0xffffffff      +6  u16 0
+        +8  u16 0 (AN1) / teils 50 (AN2)
+        +10 u16 0xff00          +12 u16 7        +14 f32 1.0
+        +18 char[62] Texturname ohne Endung -> vfx\tex\<name>.dds
+
+    ABSCHLUSS (46 B)
+        +0  14 B Kopf
+        +14 6x f32 Bounding Box (min xyz, max xyz)
+        +38 8 B ACHTFELD:
+              AN1  00 00 00 00 00 00 f0 3f   = double 1.0, ausnahmslos
+                   (101 von 101 Bloecken in 25 Meshes)
+              AN2  00 00 80 3f XX 00 00 00   = float 1.0 + neues u32 (10..80)
+            AN2 hat den double auf float verkuerzt. NICHT die Ursache des
+            Renderfehlers -- Umstellen aendert nichts, und AN1s eigenes
+            mp_06_dm enthaelt selbst 3 Meshes mit AN2-Trailer.
+
+    Werkzeug: mod_docu\tools\msb_an2_to_an1.py
+
+--------------------------------------------------------------------------------
+2. .col -- KOLLISIONSNETZ   *** in dieser Runde entschluesselt ***
+--------------------------------------------------------------------------------
+    +0             u32  nTri
+    +4             Tri[nTri]  je 8 B -- IDENTISCHES LAYOUT wie im .msb
+                                       (3x u16 Index + u16 Flags)
+    +4+8*nTri      u32  nVert
+    +8+8*nTri      Vertex[nVert] je 12 B (nur Position, 3x f32)
+    danach         Beschleunigungsstruktur, variable Groesse (ungeklaert)
+
+    BELEGE an atl_pscout.col (25.628 B):
+        nTri  = 413  = exakt die Dreieckszahl von atl_pscout.msb
+        nVert = 716  = exakt die Vertexzahl von atl_pscout.msb
+        Die ersten sechs Vertices sind BYTE-IDENTISCH mit den Mesh-Vertices.
+    Gegenproben:
+        gen_clunker01.col      nTri=220, Mesh 220 Dreiecke / 277 Vertices
+        atl_bomber_tur01b.col  nTri=10,  Mesh 10 Dreiecke  /  18 Vertices
+
+    Der Rest (bei atl_pscout 13.724 B) ist pro Datei unterschiedlich gross und
+    nicht proportional zu nTri oder nVert -- vermutlich ein BSP- oder
+    Gitterbaum. Fuer eigene Objekte deshalb eine vorhandene .col
+    weiterverwenden, statt eine neue zu erzeugen (so gemacht bei atl_police).
+
+--------------------------------------------------------------------------------
+3. .fog -- NEBELTABELLE   *** in dieser Runde entschluesselt ***
+--------------------------------------------------------------------------------
+    +0   u32  64          Breite
+    +4   u32  64          Hoehe
+    +8   u32  0
+    +12  f32  7.8125      (AN1 1h1)  /  4.0 (AN2 1n1)
+    +16  f32  16.0
+    +20  1.048.576 B Daten = 64 * 64 Zellen a 256 B = je 64 RGBA-Werte
+
+    Alle 29 AN1-Dateien und alle AN2-Dateien sind exakt 1.048.596 B gross.
+    Die Werte bilden eine Verlaufstabelle: R=G steigen linear, B langsamer,
+    A von 0 aufwaerts -- also Nebelfarbe und -dichte ueber Entfernung/Tiefe.
+        [0] R=0  G=0  B=0 A=0      [1] R=2  G=2  B=0 A=8
+        [2] R=4  G=4  B=0 A=18     [3] R=6  G=6  B=1 A=27 ...
+    Das Muster wiederholt sich mit Periode 4096 B.
+
+    ERZEUGT WIRD SIE AUS fog.tga (300 B) -- so steht es in fog.des:
+        InputFile = "fog"   // "This is the tga input file without extension"
+        Opacity   = 0.04    ViewingDistance = 250.0
+        WaterDepth = 1024.0 WaterBase = 0.0
+    Fuer ein eigenes Level also: fog.des + fog.tga anlegen und die .fog einer
+    vorhandenen Karte uebernehmen, oder die Erzeugung nachbauen (ungeprueft).
+
+--------------------------------------------------------------------------------
+4. .sam -- KLANGDESKRIPTOR
+--------------------------------------------------------------------------------
+    Gekochtes DES (AN1) bzw. Klartext (AN2), Abschnitt [SampleInfo]:
+
+        name     string  Pfad relativ zu sfx\sample\, z.B. "music_track01.mp3"
+                         oder "coc\coc_alarm_current.wav"
+        freq     int     Abtastrate: 44100 / 22050 / 11025
+        freqrnd  int     Zufallsstreuung der Rate in Hz (z.B. 1000)
+                         -> leichte Tonhoehenvariation bei jedem Abspielen
+        vol      int     Lautstaerke 0..255 (Musik 200-250, Effekte 140-240)
+        volrnd   int     Zufallsstreuung der Lautstaerke
+        cnt      int     0 = Musik/Endlos, 1 = einmalig
+        minr     float   minimaler Hoerradius
+        maxr     float   maximaler Hoerradius
+
+    Unsere eigene Datei ns_aqua_deep~.sam (214 B) folgt diesem Muster:
+        name "music\ns_aqua_deep.mp3", freq 44100, vol 250, cnt 1
+
+    ACHTUNG (Hauptreihe Abschnitt 118): freq MUSS zur tatsaechlichen Datei
+    passen, sonst spielt der Titel zu schnell oder zu langsam.
+
+--------------------------------------------------------------------------------
+5. .vc -- VERTEXFARBEN (nur AquaNox 2)
+--------------------------------------------------------------------------------
+    KLARTEXT:
+        [VertexColors]
+        {
+          V0 = 20.000
+          V1 = 14.000
+          ...
+        }
+    Je lmsh-Mesh eine Datei. 4.232 der 4.321 AN2-Levelmeshes haben eine;
+    89 (alle in instant1) kommen ohne aus -- also optional.
+    AquaNox 1 kennt das Format nicht.
+
+--------------------------------------------------------------------------------
+6. .ssc -- SZENENGRAPH (nur AquaNox 2, 1 Datei)
+--------------------------------------------------------------------------------
+    map\5h1\script\neopolis_neu.ssc, 5,56 MB.
+    Kopf: "BINARY", dann SED_NodeRoot, NotSortChildren, Visible, NOD_Game,
+    SED_SetState. Das ist der gespeicherte Baum eines Szeneneditors.
+    Dazu gehoert neopolis_neu.scr mit 8.504 Zeilen erzeugtem Lua.
+    Nicht weiter untersucht.
+
+--------------------------------------------------------------------------------
+7. .fnt -- SCHRIFT (nur AquaNox 2)
+--------------------------------------------------------------------------------
+    Magic "FN", dann Version/Anzahl/Glyphenzahl.
+    87 Dateien, aufgeteilt als glyphset_00000..n je Sprache und Schnitt.
+    Nicht weiter untersucht.
+
+--------------------------------------------------------------------------------
+8. .loc -- LOKALISIERUNG (nur AquaNox 2)
+--------------------------------------------------------------------------------
+    UTF-16 mit BOM, sonst dieselbe Struktur wie AN1s .des:
+        [Table] { [Acknowledge0] { Key = 1  Text = "..." } }
+    232 Dateien, davon 174 unter "en" und 58 "templates".
+    Die vorliegende AN2-Fassung ist NUR ENGLISCH; AN1 liegt deutsch vor
+    (63 von 66 Dateien in dat\sty tragen das Kuerzel "_d").
+
+--------------------------------------------------------------------------------
+9. *** .bor / .bop / .boa -- SKELETTANIMATION (nur AquaNox 1) ***
+--------------------------------------------------------------------------------
+34 Dateien unter dat\animation\. ALLE IM KLARTEXT-DES-FORMAT, also mit
+unseren Werkzeugen lesbar UND schreibbar. Die Exporter stehen im Kopf:
+
+    .bor   "Massive Bone Reference Frame Exporter, v1.0"   Referenzskelett
+    .bop   "Massive Bone Phy Exporter, v1.0"               Physik
+    .boa   "Massive B Animation Exporter, v1.0"            Bewegungsdaten
+
+Sie gehoeren zu den vier Bionten-Bossen: belial, crocell, forneus, marax.
+
+.bor -- REFERENZSKELETT MIT SKINNING
+    [AnimData]
+    {
+        NOB  = 107          Anzahl Knochen
+        NOSV = 18           Anzahl Stuetzwerte
+        [B0]                Knochen 0
+        {
+            N   = "Marax-haupt-bones02"     Name
+            Id  = 0
+            F   = -1                        Vaterknochen (-1 = Wurzel)
+            [SV0]
+            {
+                T   = 0.000000              Zeit
+                P   = -0.128789, -5.407810, 0.205613     Position
+                Rre = 0.472584                           Quaternion, Realteil
+                Rim = 0.525989, 0.525989, -0.472584      Quaternion, Imaginaer
+                [V0]                        an diesen Knochen gebundener Vertex
+                {
+                    I = 0                   Vertexindex im Mesh
+                    P = -3.652636, 1.408357, -10.387873
+                    W = 1.000000            Gewicht
+                }
+                ...
+            }
+        }
+    }
+    old_marax.bor: 107 Knochen, 749 gewichtete Vertices, 6.859 Zeilen.
+
+.boa -- BEWEGUNG
+    Gleiche Struktur, aber je Knochen viele [SV#] als Zeitreihe und OHNE
+    Vertexbindung:
+        [SV0] { T = 0.000000  P = ...  Rre = 1.0  Rim = 0,0,0 }
+        [SV1] { T = 0.066667  P = ...  ... }
+    Zeitschritt 0.066667 s = exakt 1/15 Sekunde -> 15 Bilder je Sekunde.
+    belial_test5_n.boa: 97 Knochen, 3.977 Stuetzwerte, 32.506 Zeilen.
+    Groesste Datei: old_belial_bones_anim_vl.boa mit 3,24 MB.
+
+.bop -- PHYSIK, sehr klein
+    [AnimData] { NOB = 1   B0 = 0 }
+
+DIE ENGINE-SEITE: NOD_PhysicalCharacter, Basis NOD_ShieldedBody,
+Groesse 2.932 Byte -- die groesste Klasse der Engine. Dazu 25 Kommandos:
+    Character_StartAnimation(string) / Character_StopAnimation()
+    PhysicalCharacter_StartAnimation(int32, float) / _StopAnimation
+    PhysicalCharacter_GotoStart / _GotoStartFromPosition / _GotoStartFromTo
+                      / _GotoStop / _GotoArrived / _GotoPosReached / _GotoOverride
+    PhysicalCharacter_Attack / _AttackCompleted / _AttackTurrets / _AttackTurretsStop
+    PhysicalCharacter_LookTo / _LookToObject / _LookToOverride
+    PhysicalCharacter_SwitchToGoing / _SwitchToStanding
+    PhysicalCharacter_SetHitPropability / _SetSpecialCollisionPartner
+    PhysicalCharacter_SensorActivated / _SonarDestroyed / _Stripped
+
+=> AquaNox 1 hat ein vollwertiges Skelettanimationssystem mit
+   Quaternion-Rotationen und gewichtetem Skinning. Es wurde nur fuer die
+   vier Bossgegner benutzt. Weil alle Daten Klartext sind, waeren eigene
+   animierte Kreaturen grundsaetzlich moeglich -- der Aufwand liegt beim
+   Erzeugen der Skelett- und Bewegungsdaten, nicht am Format.
+   NICHT ERPROBT.
+
+In den Dateien stehen noch die Arbeitspfade der Entwickler:
+    T:\decker\old_belial_bones_test4.boa
+    C:\massive\aquanox\dat\animation\old_crocell.bop
+    Y:\AQUA\animation\old_belial.bor
+
+--------------------------------------------------------------------------------
+10. TERRAIN
+--------------------------------------------------------------------------------
+Ein Levelverzeichnis map\<name>\terrain\ enthaelt:
+
+    hmap.tga              1025 x 1025, 24 bpp RGB, 3,15 MB
+                          Die Hoehenkarte. 1025 = 1024 Zellen + 1 Randpunkt.
+    lightmap.dds          5,59 MB   vorberechnete Beleuchtung
+    material_0/1/3.dds    Materialtexturen (44 KB oder 175 KB)
+    material_s.tga        256 x 256, 32 bpp   Materialverteilung
+    material.des          [Wrapping] { W0..W3 }  Texturwiederholung
+    radar_color.dds       1,40 MB   Radarbild
+    radar_height_fin.tga  256 x 256, 24 bpp
+    coral_01 / grass_01 / stone_01 / fungus_01 .tga   je 64x64  Detailtexturen
+    terrain.des           die Steuerdatei
+
+WELTGROESSE, aus terrain.des nachgerechnet:
+    Offset = -4096, -4096, 0      Scale = 4.0, 4.0, 4.0
+    1025 Gitterpunkte * 4.0 = 4100 Einheiten Kantenlaenge
+    Die Karte reicht also von -4096 bis etwa +4 in X und Y.
+    Das deckt sich mit den Positionen in unseren Rennskripten
+    (Tore bei X 1480..2720, Y 1062..1937).
+
+terrain.des nennt ausserdem eine Texture = "map\...\tmap_l10.tga", die im
+Verzeichnis NICHT liegt -- sie wird offenbar zur Laufzeit aus material_*
+und material_s zusammengesetzt. In der EXE stehen dazu die Meldungen
+"couldn't allocate heightmap" und "heightmap must be created before
+exportmap could be created".
+
+--------------------------------------------------------------------------------
+11. SCHON FRUEHER GEKLAERT (Hauptreihe)
+--------------------------------------------------------------------------------
+    .pak  MASSIVEFILE-Container, 64-B-Schluessel.
+          AN1: version u32 = 3, Name +KEY[(j+i)%64],
+               Groesse abs(u32(KEY[j%60]) - enc)
+          AN2: version u16 = 3, subversion u16 = 2, Name +KEY[((j-3)+i)%64],
+               Groesse enc - u32(KEY[((j-3)+0x68)%60])
+          Padding im 128-B-Namensfeld bleibt in beiden roh 0.
+          Verifiziert: 16.942/16.942 AN2-Eintraege byte-genau reproduziert.
+          Werkzeug: pak_tool.pack(..., an2=True)
+    .des / .osd   gekocht (AN1, Tilde im Namen) oder Klartext (AN2).
+          Werkzeug: descook.py, byte-treuer Roundtrip.
+    .sco  Lua-4.0-Bytecode, in beiden Spielen identischer Kopf.
+          Werkzeug: lua4dis.py, byte-treuer Roundtrip.
+    .dds  Standard-DirectDraw-Surface, DXT1/DXT3. AN1 und AN2 formatgleich.
+
+================================================================================
+ENDE
+================================================================================

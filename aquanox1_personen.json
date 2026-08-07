@@ -1,0 +1,1349 @@
+{
+ "personen": [
+  {
+   "key": 1,
+   "name": "Emerald Flint",
+   "kurz": "Flint",
+   "sex": "male",
+   "story_zeilen": 535,
+   "funk_zeilen": 0,
+   "gesamt": 535,
+   "kapitel": [
+    "K1",
+    "K2",
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 90,
+   "name": "Sally",
+   "kurz": "Sally",
+   "sex": "male",
+   "story_zeilen": 0,
+   "funk_zeilen": 273,
+   "gesamt": 273,
+   "kapitel": [],
+   "missionen": [
+    "1H1",
+    "1H2",
+    "1H3",
+    "1H4",
+    "1N1",
+    "1N2",
+    "1N3",
+    "2H1",
+    "2H2",
+    "2H3",
+    "2N1",
+    "2N2",
+    "2N3",
+    "3H1",
+    "3H2",
+    "3H3",
+    "3H4",
+    "3N1",
+    "3N3",
+    "4H1",
+    "4H2",
+    "4H3",
+    "4N1",
+    "4N2",
+    "4N3",
+    "5H2",
+    "5H3",
+    "5H4",
+    "5N1",
+    "5N2",
+    "5N3",
+    "5N4",
+    "6H1",
+    "6H2",
+    "6H3",
+    "6H4",
+    "GEN",
+    "MP",
+    "SP_NARROW"
+   ]
+  },
+  {
+   "key": 17,
+   "name": "Lt. Boston Harper",
+   "kurz": "Harper",
+   "sex": "male",
+   "story_zeilen": 50,
+   "funk_zeilen": 31,
+   "gesamt": 81,
+   "kapitel": [
+    "K1",
+    "K2",
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "1H2",
+    "2H1",
+    "2N2",
+    "3H2",
+    "4H1",
+    "4H3",
+    "5H2",
+    "5N2",
+    "6H1",
+    "6H2",
+    "6H3",
+    "6H4",
+    "GEN"
+   ]
+  },
+  {
+   "key": 6,
+   "name": "Commodore Sool",
+   "kurz": "Sool",
+   "sex": "male",
+   "story_zeilen": 40,
+   "funk_zeilen": 29,
+   "gesamt": 69,
+   "kapitel": [
+    "K1",
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "3H3",
+    "3H4",
+    "3N3",
+    "4H1",
+    "4H3",
+    "5H4",
+    "6H3"
+   ]
+  },
+  {
+   "key": 4,
+   "name": "Iwan King",
+   "kurz": "King",
+   "sex": "male",
+   "story_zeilen": 30,
+   "funk_zeilen": 35,
+   "gesamt": 65,
+   "kapitel": [
+    "K3",
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "3H1",
+    "3H2",
+    "3N1",
+    "3N3",
+    "5H1",
+    "5H2",
+    "5H4",
+    "6H2",
+    "6H4"
+   ]
+  },
+  {
+   "key": 16,
+   "name": "Cpt. Eliza deGrange",
+   "kurz": "deGrange",
+   "sex": "male",
+   "story_zeilen": 26,
+   "funk_zeilen": 37,
+   "gesamt": 63,
+   "kapitel": [
+    "K1",
+    "K2",
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "1H4",
+    "2H1",
+    "2H2",
+    "3H1",
+    "3H2",
+    "3H3",
+    "4H1",
+    "4H3",
+    "5H2",
+    "5H4",
+    "6H1",
+    "6H2",
+    "6H4",
+    "GEN"
+   ]
+  },
+  {
+   "key": 18,
+   "name": "Lt.(JG) Lisa Bonham",
+   "kurz": "Bonham",
+   "sex": "male",
+   "story_zeilen": 25,
+   "funk_zeilen": 38,
+   "gesamt": 63,
+   "kapitel": [
+    "K1",
+    "K2",
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "1H2",
+    "1H4",
+    "2H1",
+    "2H2",
+    "3H1",
+    "3H2",
+    "3H4",
+    "4H3",
+    "5H2",
+    "6H1",
+    "6H2",
+    "6H3",
+    "GEN"
+   ]
+  },
+  {
+   "key": 10,
+   "name": "Commander Farelli",
+   "kurz": "Farelli",
+   "sex": "male",
+   "story_zeilen": 15,
+   "funk_zeilen": 39,
+   "gesamt": 54,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": [
+    "4H1",
+    "4H3",
+    "6H1",
+    "6H2",
+    "6H3",
+    "6H4"
+   ]
+  },
+  {
+   "key": 15,
+   "name": "Lt.(JG) Flavio Picollini",
+   "kurz": "Picollini",
+   "sex": "male",
+   "story_zeilen": 13,
+   "funk_zeilen": 32,
+   "gesamt": 45,
+   "kapitel": [
+    "K1",
+    "K3",
+    "K4",
+    "K5"
+   ],
+   "missionen": [
+    "1H4",
+    "1N2",
+    "1N3",
+    "2H2",
+    "3H2",
+    "4H2",
+    "4H3",
+    "5H2",
+    "5N2",
+    "6H1",
+    "6H4",
+    "GEN"
+   ]
+  },
+  {
+   "key": 2,
+   "name": "Charlotte Gillmore",
+   "kurz": "Gillmore",
+   "sex": "male",
+   "story_zeilen": 26,
+   "funk_zeilen": 17,
+   "gesamt": 43,
+   "kapitel": [
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "3N2",
+    "5N1",
+    "6H3",
+    "6H4"
+   ]
+  },
+  {
+   "key": 3,
+   "name": "Sobinoso Chaka",
+   "kurz": "Chaka",
+   "sex": "male",
+   "story_zeilen": 30,
+   "funk_zeilen": 11,
+   "gesamt": 41,
+   "kapitel": [
+    "K3",
+    "K4",
+    "K5",
+    "K6"
+   ],
+   "missionen": [
+    "5H3",
+    "6H2",
+    "6H4",
+    "GEN"
+   ]
+  },
+  {
+   "key": 8,
+   "name": "Sergej Chang",
+   "kurz": "Chang",
+   "sex": "male",
+   "story_zeilen": 27,
+   "funk_zeilen": 14,
+   "gesamt": 41,
+   "kapitel": [
+    "K2",
+    "K4",
+    "K6"
+   ],
+   "missionen": [
+    "2H1",
+    "2H2",
+    "2H3",
+    "2N1",
+    "2N3",
+    "6H2"
+   ]
+  },
+  {
+   "key": 13,
+   "name": "El Topo",
+   "kurz": "El Topo",
+   "sex": "male",
+   "story_zeilen": 19,
+   "funk_zeilen": 10,
+   "gesamt": 29,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": [
+    "1H1",
+    "1H3",
+    "1N2"
+   ]
+  },
+  {
+   "key": 92,
+   "name": "Credits",
+   "kurz": "Credits",
+   "sex": "male",
+   "story_zeilen": 29,
+   "funk_zeilen": 0,
+   "gesamt": 29,
+   "kapitel": [],
+   "missionen": []
+  },
+  {
+   "key": 9,
+   "name": "Admiral Cox",
+   "kurz": "Cox",
+   "sex": "male",
+   "story_zeilen": 19,
+   "funk_zeilen": 3,
+   "gesamt": 22,
+   "kapitel": [
+    "K1",
+    "K2",
+    "K3"
+   ],
+   "missionen": [
+    "2H1",
+    "4H3"
+   ]
+  },
+  {
+   "key": 35,
+   "name": "Velasquez",
+   "kurz": "Velasquez",
+   "sex": "male",
+   "story_zeilen": 13,
+   "funk_zeilen": 8,
+   "gesamt": 21,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": [
+    "3H2",
+    "3N1",
+    "5H2"
+   ]
+  },
+  {
+   "key": 5,
+   "name": "Samuel Korhonen",
+   "kurz": "Korhonen",
+   "sex": "male",
+   "story_zeilen": 6,
+   "funk_zeilen": 11,
+   "gesamt": 17,
+   "kapitel": [
+    "K6"
+   ],
+   "missionen": [
+    "5H1",
+    "6H4"
+   ]
+  },
+  {
+   "key": 37,
+   "name": "Werner von Punch",
+   "kurz": "Punch",
+   "sex": "male",
+   "story_zeilen": 10,
+   "funk_zeilen": 7,
+   "gesamt": 17,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": [
+    "4H2",
+    "6H1"
+   ]
+  },
+  {
+   "key": 38,
+   "name": "Atahualpa Jones",
+   "kurz": "Jones",
+   "sex": "male",
+   "story_zeilen": 11,
+   "funk_zeilen": 6,
+   "gesamt": 17,
+   "kapitel": [
+    "K2",
+    "K3",
+    "K5"
+   ],
+   "missionen": [
+    "3N3",
+    "5N2"
+   ]
+  },
+  {
+   "key": 11,
+   "name": "Kristina Lloyd",
+   "kurz": "Lloyd",
+   "sex": "male",
+   "story_zeilen": 6,
+   "funk_zeilen": 10,
+   "gesamt": 16,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": [
+    "2H1",
+    "2H2",
+    "2H3"
+   ]
+  },
+  {
+   "key": 19,
+   "name": "Braumeister",
+   "kurz": "Braumeister",
+   "sex": "male",
+   "story_zeilen": 14,
+   "funk_zeilen": 2,
+   "gesamt": 16,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": [
+    "4N1"
+   ]
+  },
+  {
+   "key": 25,
+   "name": "Freeman",
+   "kurz": "Freeman",
+   "sex": "male",
+   "story_zeilen": 11,
+   "funk_zeilen": 4,
+   "gesamt": 15,
+   "kapitel": [
+    "K1",
+    "K5"
+   ],
+   "missionen": [
+    "5N4"
+   ]
+  },
+  {
+   "key": 24,
+   "name": "Tubby Escobar",
+   "kurz": "Escobar",
+   "sex": "male",
+   "story_zeilen": 13,
+   "funk_zeilen": 0,
+   "gesamt": 13,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 53,
+   "name": "Olga Sislaja",
+   "kurz": "Sislaja",
+   "sex": "male",
+   "story_zeilen": 13,
+   "funk_zeilen": 0,
+   "gesamt": 13,
+   "kapitel": [
+    "K1",
+    "K3",
+    "K5",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 55,
+   "name": "Mick Flaherty",
+   "kurz": "Flaherty",
+   "sex": "male",
+   "story_zeilen": 9,
+   "funk_zeilen": 4,
+   "gesamt": 13,
+   "kapitel": [
+    "K1",
+    "K4"
+   ],
+   "missionen": [
+    "4N1"
+   ]
+  },
+  {
+   "key": 36,
+   "name": "Homo Aquaticus R3G5",
+   "kurz": "Homo Aquaticus",
+   "sex": "male",
+   "story_zeilen": 11,
+   "funk_zeilen": 1,
+   "gesamt": 12,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": [
+    "3N2"
+   ]
+  },
+  {
+   "key": 66,
+   "name": "Vastian Griegh",
+   "kurz": "Griegh",
+   "sex": "male",
+   "story_zeilen": 7,
+   "funk_zeilen": 5,
+   "gesamt": 12,
+   "kapitel": [
+    "K4"
+   ],
+   "missionen": [
+    "4N2"
+   ]
+  },
+  {
+   "key": 56,
+   "name": "Hadespriester",
+   "kurz": "Hadespriester",
+   "sex": "male",
+   "story_zeilen": 11,
+   "funk_zeilen": 0,
+   "gesamt": 11,
+   "kapitel": [
+    "K1",
+    "K3",
+    "K5",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 29,
+   "name": "Neru",
+   "kurz": "Neru",
+   "sex": "male",
+   "story_zeilen": 10,
+   "funk_zeilen": 0,
+   "gesamt": 10,
+   "kapitel": [
+    "K1",
+    "K2",
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 32,
+   "name": "Ralf Razor",
+   "kurz": "Razor",
+   "sex": "male",
+   "story_zeilen": 10,
+   "funk_zeilen": 0,
+   "gesamt": 10,
+   "kapitel": [
+    "K3",
+    "K4",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 34,
+   "name": "Terry The Blaster",
+   "kurz": "Terry",
+   "sex": "male",
+   "story_zeilen": 10,
+   "funk_zeilen": 0,
+   "gesamt": 10,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 44,
+   "name": "Leoni",
+   "kurz": "Leoni",
+   "sex": "male",
+   "story_zeilen": 10,
+   "funk_zeilen": 0,
+   "gesamt": 10,
+   "kapitel": [
+    "K1",
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 23,
+   "name": "Entropoint Lady",
+   "kurz": "Entropoint Lady",
+   "sex": "male",
+   "story_zeilen": 9,
+   "funk_zeilen": 0,
+   "gesamt": 9,
+   "kapitel": [
+    "K1",
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 31,
+   "name": "Perry Lasalle",
+   "kurz": "Lasalle",
+   "sex": "male",
+   "story_zeilen": 9,
+   "funk_zeilen": 0,
+   "gesamt": 9,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 49,
+   "name": "Vanessa Brown",
+   "kurz": "Brown",
+   "sex": "male",
+   "story_zeilen": 9,
+   "funk_zeilen": 0,
+   "gesamt": 9,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 26,
+   "name": "Glo Zee",
+   "kurz": "Glo Zee",
+   "sex": "male",
+   "story_zeilen": 8,
+   "funk_zeilen": 0,
+   "gesamt": 8,
+   "kapitel": [
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 30,
+   "name": "Paghda",
+   "kurz": "Paghda",
+   "sex": "male",
+   "story_zeilen": 8,
+   "funk_zeilen": 0,
+   "gesamt": 8,
+   "kapitel": [
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 70,
+   "name": "Jane Brooklyn",
+   "kurz": "Brooklyn",
+   "sex": "male",
+   "story_zeilen": 8,
+   "funk_zeilen": 0,
+   "gesamt": 8,
+   "kapitel": [
+    "K2",
+    "K4",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 80,
+   "name": "Service Girl Jennie",
+   "kurz": "Jennie",
+   "sex": "male",
+   "story_zeilen": 8,
+   "funk_zeilen": 0,
+   "gesamt": 8,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 20,
+   "name": "Chris Krüger",
+   "kurz": "Krüger",
+   "sex": "male",
+   "story_zeilen": 7,
+   "funk_zeilen": 0,
+   "gesamt": 7,
+   "kapitel": [
+    "K2",
+    "K4"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 63,
+   "name": "Barkeeper Joe",
+   "kurz": "Barkeeper Joe",
+   "sex": "male",
+   "story_zeilen": 7,
+   "funk_zeilen": 0,
+   "gesamt": 7,
+   "kapitel": [
+    "K1",
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 81,
+   "name": "Museumswärter",
+   "kurz": "Museumswärter",
+   "sex": "male",
+   "story_zeilen": 7,
+   "funk_zeilen": 0,
+   "gesamt": 7,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 82,
+   "name": "Kellner",
+   "kurz": "Kellner",
+   "sex": "male",
+   "story_zeilen": 7,
+   "funk_zeilen": 0,
+   "gesamt": 7,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 74,
+   "name": "Service Girl",
+   "kurz": "Service Girl",
+   "sex": "male",
+   "story_zeilen": 6,
+   "funk_zeilen": 0,
+   "gesamt": 6,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 75,
+   "name": "Barkeeper",
+   "kurz": "Barkeeper",
+   "sex": "male",
+   "story_zeilen": 6,
+   "funk_zeilen": 0,
+   "gesamt": 6,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 79,
+   "name": "MacGrath",
+   "kurz": "MacGrath",
+   "sex": "male",
+   "story_zeilen": 6,
+   "funk_zeilen": 0,
+   "gesamt": 6,
+   "kapitel": [
+    "K4",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 39,
+   "name": "Yalla Rangun",
+   "kurz": "Rangun",
+   "sex": "male",
+   "story_zeilen": 5,
+   "funk_zeilen": 0,
+   "gesamt": 5,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 45,
+   "name": "Philip Soveso",
+   "kurz": "Soveso",
+   "sex": "male",
+   "story_zeilen": 5,
+   "funk_zeilen": 0,
+   "gesamt": 5,
+   "kapitel": [
+    "K1",
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 48,
+   "name": "Reisender",
+   "kurz": "Reisender",
+   "sex": "male",
+   "story_zeilen": 5,
+   "funk_zeilen": 0,
+   "gesamt": 5,
+   "kapitel": [
+    "K3",
+    "K6"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 71,
+   "name": "Maggie Svenson",
+   "kurz": "Svenson",
+   "sex": "male",
+   "story_zeilen": 5,
+   "funk_zeilen": 0,
+   "gesamt": 5,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 22,
+   "name": "Creole",
+   "kurz": "Creole",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 2,
+   "gesamt": 4,
+   "kapitel": [
+    "K3"
+   ],
+   "missionen": [
+    "3H3",
+    "3H4"
+   ]
+  },
+  {
+   "key": 28,
+   "name": "Nameless",
+   "kurz": "Nameless",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 33,
+   "name": "Diddi Spengler",
+   "kurz": "Spengler",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 50,
+   "name": "Geologe",
+   "kurz": "Geologe",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K2",
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 59,
+   "name": "Juan Lafayette",
+   "kurz": "Lafayette",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 60,
+   "name": "Frog",
+   "kurz": "Frog",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 69,
+   "name": "Laasu al Haschid",
+   "kurz": "Al Haschid",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K2",
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 84,
+   "name": "Bestatter",
+   "kurz": "Bestatter",
+   "sex": "male",
+   "story_zeilen": 4,
+   "funk_zeilen": 0,
+   "gesamt": 4,
+   "kapitel": [
+    "K3",
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 14,
+   "name": "Leo van der Waal",
+   "kurz": "van der Waal",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 41,
+   "name": "Natalie Corazon",
+   "kurz": "Corazon",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 42,
+   "name": "Will Saddler",
+   "kurz": "Saddler",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 47,
+   "name": "Kiz",
+   "kurz": "Kiz",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 57,
+   "name": "Lebensmitteldesignerin",
+   "kurz": "L.-Designerin",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 62,
+   "name": "Miriam",
+   "kurz": "Miriam",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 68,
+   "name": "Barlady Terry",
+   "kurz": "Barlady Terry",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 72,
+   "name": "Fletcher",
+   "kurz": "Fletcher",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 73,
+   "name": "Enrico Cortez",
+   "kurz": "Cortez",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K3"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 77,
+   "name": "Carlos Bergman",
+   "kurz": "Bergman",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K4"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 83,
+   "name": "MacSilver",
+   "kurz": "MacSilver",
+   "sex": "male",
+   "story_zeilen": 3,
+   "funk_zeilen": 0,
+   "gesamt": 3,
+   "kapitel": [
+    "K5"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 43,
+   "name": "Old Charly",
+   "kurz": "Old Charly",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 46,
+   "name": "EnTroPol",
+   "kurz": "EnTroPol",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 52,
+   "name": "Lasse Bormil",
+   "kurz": "Bormil",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K4"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 58,
+   "name": "Silvio Tesla",
+   "kurz": "Tesla",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 61,
+   "name": "Shakti",
+   "kurz": "Shakti",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 64,
+   "name": "Service Girl",
+   "kurz": "Service Girl",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 65,
+   "name": "Drogendealer",
+   "kurz": "Drogendealer",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 67,
+   "name": "Wirt",
+   "kurz": "Wirt",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K2"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 76,
+   "name": "Marina Selwick",
+   "kurz": "Selwick",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K4"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 78,
+   "name": "Brother Edge",
+   "kurz": "Edge",
+   "sex": "male",
+   "story_zeilen": 2,
+   "funk_zeilen": 0,
+   "gesamt": 2,
+   "kapitel": [
+    "K4"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 40,
+   "name": "Patty",
+   "kurz": "Patty",
+   "sex": "male",
+   "story_zeilen": 1,
+   "funk_zeilen": 0,
+   "gesamt": 1,
+   "kapitel": [
+    "K1"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 51,
+   "name": "Maria Lubbock",
+   "kurz": "Lubbock",
+   "sex": "male",
+   "story_zeilen": 1,
+   "funk_zeilen": 0,
+   "gesamt": 1,
+   "kapitel": [
+    "K4"
+   ],
+   "missionen": []
+  },
+  {
+   "key": 12,
+   "name": "Fritz Rasmussen",
+   "kurz": "Rasmussen",
+   "sex": "male",
+   "story_zeilen": 0,
+   "funk_zeilen": 0,
+   "gesamt": 0,
+   "kapitel": [],
+   "missionen": []
+  },
+  {
+   "key": 85,
+   "name": "Cato Chung",
+   "kurz": "Chung",
+   "sex": "male",
+   "story_zeilen": 0,
+   "funk_zeilen": 0,
+   "gesamt": 0,
+   "kapitel": [],
+   "missionen": []
+  },
+  {
+   "key": 86,
+   "name": "Ellen Suhawa",
+   "kurz": "Suhawa",
+   "sex": "male",
+   "story_zeilen": 0,
+   "funk_zeilen": 0,
+   "gesamt": 0,
+   "kapitel": [],
+   "missionen": []
+  },
+  {
+   "key": 91,
+   "name": "Sonstige",
+   "kurz": "Sonstige",
+   "sex": "male",
+   "story_zeilen": 0,
+   "funk_zeilen": 0,
+   "gesamt": 0,
+   "kapitel": [],
+   "missionen": []
+  }
+ ]
+}

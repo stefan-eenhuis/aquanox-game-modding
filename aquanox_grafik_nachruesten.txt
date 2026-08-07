@@ -1,0 +1,150 @@
+================================================================================
+RAYTRACING UND HOEHERE TEXTUREN NACHRUESTEN?
+================================================================================
+Stand: 2026-07-27
+Zwei Fragen, zwei sehr verschiedene Antworten.
+
+--------------------------------------------------------------------------------
+KURZANTWORT
+--------------------------------------------------------------------------------
+    RAYTRACING   praktisch nein. Nicht weil die Hardware zu schwach
+                 waere, sondern weil AquaNox 1 SHADERBASIERT auf
+                 Direct3D 8 rendert -- und genau das schliesst den
+                 einzigen praktikablen Weg (NVIDIA RTX Remix) aus.
+    TEXTUREN     ja, und zwar ohne Enginearbeit. Die Engine laedt
+                 nachweislich 2048x2048; dass die Objekttexturen bei
+                 512x512 aufhoeren, ist eine Entscheidung von 2001,
+                 keine technische Schranke.
+
+--------------------------------------------------------------------------------
+1. RAYTRACING -- warum es nicht geht
+--------------------------------------------------------------------------------
+DIE GRAFIK-API
+    Aqua.exe importiert d3d8.dll und ruft Direct3DCreate8.
+    Fehlermeldungen: "creation of d3d8 failed", "instantiation of
+    DSP_Direct3D() failed".
+    Direct3D 8, Stand 2001. Raytracing verlangt DXR, also Direct3D 12,
+    oder Vulkan RT.
+
+WAS MAN NORMALERWEISE MACHT: RTX REMIX
+    NVIDIAs RTX Remix ist genau fuer diesen Fall gebaut -- alte
+    DirectX-8- und -9-Spiele mit Pfadverfolgung neu beleuchten, ohne
+    den Quelltext zu haben. Es faengt die D3D-Aufrufe ab, rekonstruiert
+    daraus die Szene und rendert sie neu.
+    *** ABER: Remix braucht die FIXED-FUNCTION-PIPELINE. *** Es
+    erkennt Geometrie an den festen Transformations- und
+    Beleuchtungsaufrufen von D3D. Sobald ein Spiel eigene VERTEXSHADER
+    benutzt, sieht Remix nur noch undurchsichtige Datenstroeme und kann
+    die Szene nicht mehr rekonstruieren.
+
+    UND GENAU DAS TUT AQUANOX 1:
+        DSP_Display::VertexShader_CreateFromFile()
+        DSP_Display::VertexShader_Set()
+        DSP_Display::PixelShader_CreateFromMemory()
+        DSP_Display::PixelShader_Set()
+    dazu die 84 eingebetteten .vsa/.psa (aquanox_beleuchtung.txt
+    Abschnitt 2). Praktisch alles wird ueber Vertexshader gezeichnet --
+    Objekte, Gelaende, Pflanzen, HUD.
+    Es gibt KEINEN Schalter, der auf Fixed-Function zurueckfaellt:
+    unter den 15 dsp_-Schaltern steuert nur dsp_pixelshader die
+    PIXEL-Shader; fuer Vertexshader gibt es keine Abschaltung.
+
+WAS MAN STATTDESSEN MUESSTE
+    Den Renderer ersetzen. Das hiesse: alle 84 Shader neu schreiben,
+    die Geometrie in Beschleunigungsstrukturen ueberfuehren, Materialien
+    um physikalische Eigenschaften (Rauheit, Metallizitaet, Normalen)
+    ergaenzen -- die es in den Daten gar nicht gibt, weil jedes Material
+    genau eine Diffustextur hat (aquanox_beleuchtung.txt Abschnitt 4).
+    Das ist kein Mod, das ist eine Neuentwicklung mit AquaNox-Daten.
+
+WAS DAGEGEN GEHT UND SICH LOHNT
+    * dgVoodoo2 oder DXVK: uebersetzen D3D8 auf D3D11/Vulkan. Bringt
+      Stabilitaet auf heutigen Treibern, hohe Aufloesungen,
+      Kantenglaettung, anisotrope Filterung. KEIN Raytracing, aber ein
+      sauberes, scharfes Bild.
+    * Die eingebauten Schalter ausreizen: dsp_fsaa, dsp_anisotropy-
+      quality, dsp_trilinear, dsp_gammacorrection, dsp_usemipmap.
+    * Die dynamischen Lichter benutzen, die ohnehin da sind
+      (aquanox_levelwelt.txt Abschnitt 3). Vier bewegliche Lichtquellen
+      je Objekt sind fuer eine Noir-Stimmung mehr wert als
+      Pfadverfolgung.
+    * Eigene Lightmaps -- wenn man herausfindet, wie sie erzeugt werden.
+      Das waere der eigentliche Hebel fuer bessere Beleuchtung, denn die
+      Levelgeometrie ist vorberechnet beleuchtet.
+
+--------------------------------------------------------------------------------
+2. HOEHERE TEXTURAUFLOESUNG -- das geht
+--------------------------------------------------------------------------------
+WAS DAS SPIEL HEUTE BENUTZT
+    1.070 DDS-Texturen unter vfx\tex\:
+        512 x 512    784      256 x 256    105
+        128 x 128     97       64 x  64     65
+         32 x  32     17
+    Die groesste Objekttextur ist also 512x512. AquaNox 2 ist nicht
+    besser: dort ebenfalls 755 mal 512x512 als Maximum.
+
+ABER DIE ENGINE KANN MEHR -- sie beweist es selbst
+    map\<level>\terrain\lightmap.dds  ist 2048 x 2048, DXT3, 5,59 MB,
+    und liegt in JEDEM der 30 Level. 62 Dateien im Spiel sind groesser
+    als 512x512.
+    => 2048x2048 ist gesichert. Ob 4096 geht, ist ungetestet, waere
+       aber auf D3D8-Hardware ueblich gewesen.
+
+WAS MAN BEACHTEN MUSS
+    (a) DER TEXTURCACHE. Es gibt den Schalter dsp_texturecachesize und
+        die Meldung "error while reorganizing textures - try to
+        increase texturecache size". Wer alle Texturen vervierfacht,
+        muss den Cache mit hochziehen -- sonst laedt das Spiel staendig
+        nach.
+    (b) ZWEIERPOTENZEN. Die Meldung "illegal texture width" deutet auf
+        eine Pruefung; D3D8-Karten verlangten in der Regel Kantenlaengen
+        als Zweierpotenz. Also 1024, 2048 -- nicht 1500.
+    (c) MIPMAPS mitschreiben (dsp_usemipmap ist ein Schalter, die
+        Originale haben sie alle). Ohne Mipmaps flimmert es in der
+        Entfernung, und der Cache laeuft schneller voll.
+    (d) FORMAT. DXT1 fuer alles Undurchsichtige, DXT3 wo Transparenz
+        gebraucht wird -- so machen es die Originale. Unkomprimiert
+        ginge auch, kostet aber das Vierfache.
+        Bemerkenswert: die Engine bringt libpng UND libjpeg mit
+        (Meldungen "Not a PNG file", "Corrupt JPEG data: bad Huffman
+        code"). Sie kann also mehr als DDS und TGA lesen -- fuer
+        Texturen ist DDS trotzdem der richtige Weg, weil es komprimiert
+        auf der Grafikkarte liegt.
+
+DER PRAKTISCHE WEG
+    1. Textur in doppelter oder vierfacher Kantenlaenge erzeugen --
+       hochskalieren mit einem modernen Verfahren, oder neu malen.
+    2. Als DDS speichern, gleiches Format wie das Original, mit Mipmaps.
+    3. Unter demselben Namen in eine PAK legen, die spaeter geladen
+       wird als die Originaldatei (so haben wir es beim Polizeischiff
+       und bei der Musik gemacht).
+    4. dsp_texturecachesize erhoehen.
+    5. Nachsehen -- und bei Nachladerucklern den Cache weiter erhoehen
+       oder auf die wichtigsten Texturen beschraenken.
+
+WAS ES BRINGT UND WAS NICHT
+    Es bringt: schaerfere Schiffe, lesbare Beschriftungen, feinere
+    Gelaendematerialien.
+    Es bringt NICHT: bessere Beleuchtung. Die steckt in den Lightmaps
+    (2048x2048, bereits am oberen Ende) und in den vorberechneten
+    Schatten. Eine vierfach aufgeloeste Diffustextur auf einem
+    Modell mit 274 Dreiecken sieht scharf aus, aber immer noch eckig.
+    Wer das Bild wirklich heben will, braucht BEIDES: mehr Dreiecke
+    (eigene_3d_modelle.txt) und mehr Textur.
+
+--------------------------------------------------------------------------------
+3. WAS ICH EMPFEHLEN WUERDE
+--------------------------------------------------------------------------------
+    Fuer Nachtschicht in dieser Reihenfolge:
+    1. dgVoodoo2 oder DXVK davorschalten -- kostet nichts, macht das
+       Bild sofort sauberer und das Spiel auf heutigen Rechnern stabil.
+    2. Die dynamischen Lichter erproben (Test T6). Ein Suchscheinwerfer
+       im dunklen Level aendert die Stimmung mehr als jede
+       Texturaufloesung.
+    3. Gezielt einzelne Texturen erneuern -- die, die man aus der Naehe
+       sieht: das eigene Boot, Stationswaende, Beschriftungen.
+    4. Raytracing vergessen.
+
+================================================================================
+ENDE
+================================================================================

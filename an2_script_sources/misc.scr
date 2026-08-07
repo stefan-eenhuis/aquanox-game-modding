@@ -1,0 +1,834 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions
+--------------------------------------------------------------------
+
+
+-- We need some libs.
+VesselGotoLib = LoadLib("VesselGoto")
+VesselAttackLib = LoadLib("VesselAttack")
+FormationLib = LoadLib("Formation")
+
+
+
+
+-- The state for the milk run goto
+LM_MilkRunGoto =
+{
+	LM_Activate = function(State)
+		local formation
+		
+		formation = GetInnerValue(State, "MRG_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			FormationLib.DeclareAsLeader(State, formation) 
+			if (GetInnerValue(State, "MRG_CallBack") == nil) then
+				VesselGotoLib.ComplexGoto(State, GetInnerValue(State, "MRG_CommandTable"))
+			else
+				VesselGotoLib.ComplexGoto(State, GetInnerValue(State, "MRG_CommandTable"), "LM_LeaderArrived", nil)
+			end
+		end
+		
+		-- We activate the sensors for our behaviour.
+		StartEnemyPatrol(State, GetInnerValue(State, "MRG_Mode"),
+			GetInnerValue(State, "MRG_WatchDistance"), GetInnerValue(State, "MRG_FirstPri"),
+			GetInnerValue(State, "MRG_SecondPri"), GetInnerValue(State, "MRG_ThirdPri"), GetInnerValue(State, "MRG_FourthPri"),
+			GetInnerValue(State, "MRG_FightingArea"))
+		
+		State.LM_HelpCalled = 0	
+	end,	
+	
+	-- This function is called, if the lead vessel is lost.
+	Vessel_EscortObjectLost = function(State)
+	local formation
+		-- Reset everything
+		FormationLib.FollowInFormationStop(State)
+		-- Depending on the situation we declare ourselves as new leader.
+		formation = GetInnerValue(State, "MRG_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			FormationLib.DeclareAsLeader(State, formation) 
+			VesselGotoLib.ComplexGoto(State, GetInnerValue(State, "MRG_CommandTable"), "LM_LeaderArrived", nil)
+		end
+	end,
+		
+	
+	-- The leader has completed his goto command.
+	-- We quit the formatioin and broadcast the event to all other members.
+	LM_LeaderArrived = function(State)
+		FormationLib.DeclareAsLeaderStop(State)
+		-- We inform all vessels, that we have arrived.
+		CallFunction(GetInnerValue(State, "MRG_OurGroup"), "LM_Arrived", nil)
+	end,
+	
+	-- We have finally arrived and quit the behaviour.
+	LM_Arrived = function(State)
+		local callback, param
+		
+		callback = GetInnerValue(State, "MRG_CallBack")
+		param = GetInnerValue(State, "MRG_Param")
+		-- First we have to deactivate the behaviour.
+		FormationLib.FollowInFormationStop(State)
+		VesselAttackLib.ClearAreaStop(State)
+		
+		-- We shot down the sensors.
+		StopEnemyPatrol(State)
+		
+		RestoreModification(State, "LM_MilkRunGoto")
+		-- We activate the callback.
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	
+	-- WE prform an attack against a group of vessels.
+	LM_GroupAttack = function(State)
+		local formation
+	
+		if (State.LM_HelpCalled == 0) then
+			State.LM_HelpCalled = 1
+			formation = GetInnerValue(State, "MRG_Formation")
+			-- We have been shot upon.
+			-- Deactivattes the patrol sensor.
+			StopEnemyPatrol(State)
+			-- We stop the goto and store the inforation where we have stopped in the formation function.
+			formation.LM_OldStatus = VesselGotoLib.ComplexGotoStop(State, formation.LM_OldStatus)
+			-- We stop the leader beahviour possibly.
+			FormationLib.DeclareAsLeaderStop(State)
+			FormationLib.FollowInFormationStop(State)
+			-- For the case that we are a follower, we break the formation automatically.
+			-- Now we can perform the attack.
+			VesselAttackLib.ClearArea(State, 0, GetInnerValue(State, "MRG_FightingArea"),
+				GetInnerValue(State, "MRG_FirstPri"),
+				GetInnerValue(State, "MRG_SecondPri"),
+				GetInnerValue(State, "MRG_ThirdPri"),
+				GetInnerValue(State, "MRG_FourthPri"),
+				GetInnerValue(State, "MRG_WaitingTime"), 
+				GetInnerValue(State, "MRG_Velocity"), "LM_AttackOver", nil)
+		end
+	end,
+	
+	Body_EnemyArrivalPatrol = function(State)
+		CallFunction(GetInnerValue(State, "MRG_OurGroup"), "LM_GroupAttack", nil)
+	end,
+	
+	LM_AttackOver = function(State)
+		local formation
+		
+		formation = GetInnerValue(State, "MRG_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			FormationLib.DeclareAsLeader(State, formation) 
+			VesselGotoLib.ComplexGotoResume(State, formation.LM_OldStatus)
+		end
+		
+		-- We activate the sensors for our behaviour.
+		State.LM_HelpCalled = 0	
+		StartEnemyPatrol(State, GetInnerValue(State, "MRG_Mode"),
+			GetInnerValue(State, "MRG_WatchDistance"), GetInnerValue(State, "MRG_FirstPri"),
+			GetInnerValue(State, "MRG_SecondPri"), GetInnerValue(State, "MRG_ThirdPri"), GetInnerValue(State, "MRG_FourthPri"),
+			GetInnerValue(State, "MRG_FightingArea"))
+			
+		
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Misc_Basis.MilkRunGotoStop(State)
+	end,	
+}
+
+-- The state for the complex goto attack.
+LM_ComplexGotoAttack =
+{
+	LM_Activate = function(State)
+		
+		if (GetInnerValue(State, "CGA_CallBack") == nil) then
+			VesselGotoLib.ComplexGoto(State, GetInnerValue(State, "CGA_CommandTable"))
+		else
+			VesselGotoLib.ComplexGoto(State, GetInnerValue(State, "CGA_CommandTable"), "LM_Arrived", nil)
+		end
+		
+		-- We activate the sensors for our behaviour.
+		StartEnemyPatrol(State, GetInnerValue(State, "CGA_Mode"),
+			GetInnerValue(State, "CGA_WatchDistance"), GetInnerValue(State, "CGA_FirstPri"),
+			GetInnerValue(State, "CGA_SecondPri"), GetInnerValue(State, "CGA_ThirdPri"), GetInnerValue(State, "CGA_FourthPri"),
+			GetInnerValue(State, "CGA_FightingArea"))
+		
+	end,	
+	
+	
+	
+	-- We have finally arrived and quit the behaviour.
+	LM_Arrived = function(State)
+		local callback, param
+		
+		callback = GetInnerValue(State, "CGA_CallBack")
+		param = GetInnerValue(State, "CGA_Param")
+		-- First we have to deactivate the behaviour.
+		VesselAttackLib.ClearAreaStop(State)
+		
+		-- We shot down the sensors.
+		StopEnemyPatrol(State)
+		
+		RestoreModification(State, "LM_ComplexGotoAttack")
+		-- We activate the callback.
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	
+	
+	Body_EnemyArrivalPatrol = function(State)
+			-- We have been shot upon.
+			-- Deactivattes the patrol sensor.
+			StopEnemyPatrol(State)
+			-- We stop the goto and store the inforation where we have stopped in the formation function.
+			State.LM_OldStatus = VesselGotoLib.ComplexGotoStop(State, State.LM_OldStatus)
+			-- For the case that we are a follower, we break the formation automatically.
+			-- Now we can perform the attack.
+			VesselAttackLib.ClearArea(State, 0, GetInnerValue(State, "CGA_FightingArea"),
+				GetInnerValue(State, "CGA_FirstPri"),
+				GetInnerValue(State, "CGA_SecondPri"),
+				GetInnerValue(State, "CGA_ThirdPri"),
+				GetInnerValue(State, "CGA_FourthPri"),
+				GetInnerValue(State, "CGA_WaitingTime"), 
+				GetInnerValue(State, "CGA_Velocity"), "LM_AttackOver", nil)
+	end,
+	
+	LM_AttackOver = function(State)
+		
+		VesselGotoLib.ComplexGotoResume(State, State.LM_OldStatus)
+		
+		-- We activate the sensors for our behaviour.
+		StartEnemyPatrol(State, GetInnerValue(State, "CGA_Mode"),
+			GetInnerValue(State, "CGA_WatchDistance"), GetInnerValue(State, "CGA_FirstPri"),
+			GetInnerValue(State, "CGA_SecondPri"), GetInnerValue(State, "CGA_ThirdPri"), GetInnerValue(State, "CGA_FourthPri"),
+			GetInnerValue(State, "CGA_FightingArea"))
+			
+		
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Misc_Basis.ComplexGotoAttackStop(State)
+	end,	
+}
+
+-- The state for the milk run patrol
+LM_MilkRunPatrol =
+{
+	LM_Activate = function(State)
+		local formation
+		
+		formation = GetInnerValue(State, "MRP_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			VesselGotoLib.MultiPatrol(State, 
+				GetInnerValue(State, "MRP_ListOfPatrolAreas"),
+				GetInnerValue(State, "MRP_TimeOutForPatrol"), GetInnerValue(State, "MRP_Velocity"))
+			FormationLib.DeclareAsLeader(State, formation) 
+		end
+		-- We activate the sensors for our behaviour.
+		StartEnemyPatrol(State,GetInnerValue(State, "MRP_Mode"),
+			GetInnerValue(State, "MRP_WatchDistance"), GetInnerValue(State, "MRP_FirstPri"),
+			GetInnerValue(State, "MRP_SecondPri"), GetInnerValue(State, "MRP_ThirdPri"), GetInnerValue(State, "MRP_FourthPri"),
+			GetInnerValue(State, "MRP_FightingArea"))
+		State.LM_HelpCalled = 0	
+	end,	
+	
+	
+	-- This function is called, if the lead vessel is lost.
+	Vessel_EscortObjectLost = function(State)
+	local formation
+	
+		-- Reset everything
+		FormationLib.FollowInFormationStop(State)
+		-- Depending on the situation we declare ourselves as new leader.
+		formation = GetInnerValue(State, "MRP_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			VesselGotoLib.MultiPatrol(State, 
+				GetInnerValue(State, "MRP_ListOfPatrolAreas"),
+				GetInnerValue(State, "MRP_TimeOutForPatrol"), GetInnerValue(State, "MRP_Velocity"))
+			FormationLib.DeclareAsLeader(State, formation) 
+		end
+	end,
+	
+	
+	LM_GroupAttack = function(State)
+		if (State.LM_HelpCalled == 0) then
+			State.LM_HelpCalled = 1
+			-- We have been shot upon.
+			-- Deactivattes the patrol sensor.
+			StopEnemyPatrol(State)
+			-- We stop the leader beahviour possibly.
+			FormationLib.DeclareAsLeaderStop(State)
+			FormationLib.FollowInFormationStop(State)
+			VesselGotoLib.MultiPatrolStop(State)
+			-- For the case that we are a follower, we break the formation automatically.
+			-- Now we can perform the attack.
+			VesselAttackLib.ClearArea(State, 0, GetInnerValue(State, "MRP_FightingArea"),
+				GetInnerValue(State, "MRP_FirstPri"),
+				GetInnerValue(State, "MRP_SecondPri"),
+				GetInnerValue(State, "MRP_ThirdPri"),
+				GetInnerValue(State, "MRP_FourthPri"),
+				GetInnerValue(State, "MRP_WaitingTime"), 
+				GetInnerValue(State, "MRP_Velocity"), "LM_AttackOver", nil)
+		end
+	end,
+	
+	
+	Body_EnemyArrivalPatrol = function(State)
+		CallFunction(GetInnerValue(State, "MRP_OurGroup"), "LM_GroupAttack", nil)
+	end,
+	
+	LM_AttackOver = function(State)
+		local formation
+		
+		formation = GetInnerValue(State, "MRP_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			VesselGotoLib.MultiPatrol(State, 
+				GetInnerValue(State, "MRP_ListOfPatrolAreas"),
+				GetInnerValue(State, "MRP_TimeOutForPatrol"), GetInnerValue(State, "MRP_Velocity"))
+			FormationLib.DeclareAsLeader(State, formation) 
+		end
+		
+		-- We activate the sensors for our behaviour.
+		-- We activate the sensors for our behaviour.
+		State.LM_HelpCalled = 0	
+		StartEnemyPatrol(State, GetInnerValue(State, "MRP_Mode"),
+			GetInnerValue(State, "MRP_WatchDistance"), GetInnerValue(State, "MRP_FirstPri"),
+			GetInnerValue(State, "MRP_SecondPri"), GetInnerValue(State, "MRP_ThirdPri"), GetInnerValue(State, "MRP_FourthPri"),
+			GetInnerValue(State, "MRP_FightingArea"))	
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Misc_Basis.MilkRunPatrolStop(State)
+	end,	
+}
+
+
+-- The state for the protected goto.
+LM_ProtectedGoto = 
+{
+	PG_Finished = function(State)
+		local callback
+		
+		callback = GetInnerValue(State, "PG_CallBack")
+		-- We have to inform the other that, we have arrived.
+		CallFunction(GetInnerValue(State, "PG_Group"), "PV_Arrived")
+		FormationLib.DeclareAsLeaderStop(State)
+		RestoreModification(State, "LM_ProtectedGoto")
+		CallFunction(State.Thread, callback)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Misc_Basis.ProtectedGotoStop(State)
+	end,
+}
+
+-- The state for the protected patrol.
+LM_ProtectedPatrol = 
+{
+
+	StopBehavior = function(State)
+		LibList.Misc_Basis.ProtectedMultiPatrolStop(State)
+	end,
+}
+
+--  The state to perform the following.
+LM_FollowProtect =
+{
+	LM_Activate = function(State)
+		-- In this case we have also to terminate.
+		local callback
+		if (not(FormationLib.HasLeader(GetInnerValue(State, "FP_Formation")))) then 
+			-- In this case we have also to terminate.
+			callback = GetInnerValue(State, "FP_CallBack")
+			RestoreModification(State, "LM_FollowProtect")
+			CallFunction(State.Thread, callback)
+			return
+		end
+		-- First we do an follow in formation and activate the sensor.
+		FormationLib.FollowInFormation(State, GetInnerValue(State, "FP_Formation"))
+		-- We activate the sensors for our behaviour.
+		StartEnemyPatrol(State, GetInnerValue(State, "FP_Mode"),
+			GetInnerValue(State, "FP_WatchDistance"), GetInnerValue(State, "FP_FirstPri"),
+			GetInnerValue(State, "FP_SecondPri"), GetInnerValue(State, "FP_ThirdPri"), 
+			GetInnerValue(State, "FP_FourthPri"),
+			GetInnerValue(State, "FP_TriggerArea"))
+	end,	
+	
+	
+	Body_EnemyArrivalPatrol = function(State)
+		-- Gogogo
+		FormationLib.FollowInFormationStop(State)
+		VesselAttackLib.ClearArea(
+				State, 0, GetInnerValue(State, "FP_FollowArea"),
+				GetInnerValue(State, "FP_FirstPri"),
+				GetInnerValue(State, "FP_SecondPri"),
+				GetInnerValue(State, "FP_ThirdPri"),
+				GetInnerValue(State, "FP_FourthPri"),
+				GetInnerValue(State, "FP_WaitingTime"), 
+				GetInnerValue(State, "FP_Velocity"), "LM_Activate", nil)
+	end,
+	
+	-- The lead vessel has arrived at the destination
+	PV_Arrived = function(State)
+		local callback
+		
+		-- We deactivate the sensor.
+		StopEnemyPatrol(State)
+		-- Eventualy stop the Clear Area
+		VesselAttackLib.ClearAreaStop(State)
+		-- And also stop the formation command.
+		FormationLib.FollowInFormationStop(State)
+		callback = GetInnerValue(State, "FP_CallBack")
+		RestoreModification(State, "LM_FollowProtect")
+		CallFunction(State.Thread, callback)
+	end,
+	
+	Vessel_EscortObjectLost = function(State)
+		-- In this case we have also to terminate.
+		local callback
+		
+		-- We deactivate the sensor.
+		StopEnemyPatrol(State)
+		-- Eventualy stop the Clear Area
+		VesselAttackLib.ClearAreaStop(State)
+		-- And also stop the formation command.
+		FormationLib.FollowInFormationStop(State)
+		callback = GetInnerValue(State, "FP_CallBack")
+		RestoreModification(State, "LM_FollowProtect")
+		CallFunction(State.Thread, callback)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Misc_Basis.FollowProtectStop(State)
+	end,
+	
+	
+	
+}
+
+
+-- PURPOSE
+-- Here comes the state for the infiltrate behaviour,
+LM_Infiltrate = 
+{
+	
+	--  This function is called, if we have successfully infiltrated the object.
+	Vessel_InfiltrateFinished = function(State)
+		local callback
+		
+		callback = GetInnerValue(State, "IF_CallBack")
+		RestoreModification(State, "LM_Infiltrate")
+		
+		CallFunction(State.Thread, callback)
+	end,
+	
+	-- This function is called if we have successfully infiltreted the object.
+	Vessel_InfiltrateSuccess = function(State)
+		-- We set the flag, that the infiltration has been done successfully.
+		SetEngineValue(State, "InfiltrateSuccess", 1)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		SetEngineValue(State, "InfiltrateAbort", 1)
+	end, 
+	
+	StopBehavior = function(State)
+		LibList.Misc_Basis.InfiltrateStop(State)
+	end,
+	
+	Vessel_InfiltrateBegin = function(State)
+		SetEngineValue(State, "InfiltrateBegin", 1)
+	end,
+				
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the miscelangelous stuff.
+LibList.Misc_Basis =
+{
+	-- PURPOSE
+	-- This is an attack command, that can perform a complex goto but does not need a formation
+	--------------------------------
+	-- Info:
+	-- Sensor: Body_InformEnemyPatrol, Body_InformShotHit, ShieldGuard, Timer
+	-- Commands : Vessel_AttackOver, Vessel_GotoArrived, Vessel_SinkFinished, Vessel_GotoPosReached, Timer, 
+	-- Vessel_PatrolFinished , Body_InformShotHit, 
+	-- Body_EnemyArrivalPatrol, Body_ObjectDestroyed
+	--------------------------------
+	ComplexGotoAttack = function
+	(
+	State,	
+	Mode,			-- The looking mode we would like to apply in the milk run goto.
+	CommandTable,		-- The commandtable of the complex goto.
+	FightingArea,		-- The area where the battles are fought.
+	WatchDistance,		-- The distance we watch actively for anamies.
+	FirstPri,		-- The first ptiority of enemies we want to attack.
+	SecondPri,		-- The secondpriority of enemies we want to attack.
+	ThirdPri,		-- The third priority of enemies we want to attack.
+	FourthPri,		-- The fourth priority of enemies we want to attack,
+	WaitingTime, 		-- The after an attack until we continue our route.
+	Velocity,		-- The velocity during the patrol part.
+	Cycle,			-- Indicates whether we want to use the callback or not
+	CallBack,		-- A callback, that should be activated, when the complex goto is finished (nil = not desired)
+	Param			-- A parameter that is handed back, when we arrived.
+	)
+	
+		
+		ApplyModification(State, LM_ComplexGotoAttack, "LM_ComplexGotoAttack")
+		StoreInnerValue(State, "CGA_Mode", Mode)
+		StoreInnerValue(State, "CGA_CommandTable", CommandTable)
+		StoreInnerValue(State, "CGA_FightingArea", FightingArea)
+		StoreInnerValue(State, "CGA_WatchDistance", WatchDistance)
+		StoreInnerValue(State, "CGA_FirstPri", FirstPri)
+		StoreInnerValue(State, "CGA_SecondPri", SecondPri)
+		StoreInnerValue(State, "CGA_ThirdPri", ThirdPri)
+		StoreInnerValue(State, "CGA_FourthPri", FourthPri)
+		StoreInnerValue(State, "CGA_WaitingTime", WaitingTime)
+		StoreInnerValue(State, "CGA_Velocity", Velocity)
+		StoreInnerValue(State, "CGA_CallBack", CallBack)
+		StoreInnerValue(State, "CGA_Param", Param)
+		if (Cycle == 1 ) then
+			StoreInnerValue(State, "CGA_CallBack", nil)
+		end
+		CallFunction(State.Thread, "LM_Activate", nil)
+	end,
+	
+	-- PURPOSE
+	-- Stops the complex goto attack.
+	ComplexGotoAttackStop = function(State)
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		VesselGotoLib.ComplexGotoStop(State)
+		VesselAttackLib.ClearAreaStop(State)
+		-- Deactivate possible sensors.
+		-- Deactivattes the patrol sensor.
+		StopEnemyPatrol(State)
+		
+		if (not(IsNotLastModification(State, "LM_ComplexGotoAttack"))) then
+			-- We restore the old command table.
+			RestoreModification(State, "LM_ComplexGotoAttack")
+		end
+		
+	end,
+	
+	-- PURPOSE
+	-- The milk run goto  behaviour performs a complex goto in a formation
+	-- and turns to attack in an indicated patrolarea if either shot upon by a certain
+	-- enemy or if a certain enemy arrives with a given prefix.
+	--------------------------------
+	-- Info:
+	-- Sensor: Body_InformEnemyPatrol, Body_InformShotHit, ShieldGuard, Timer
+	-- Commands : Vessel_AttackOver, Vessel_GotoArrived, Vessel_SinkFinished, Vessel_GotoPosReached, Timer, 
+	-- Vessel_PatrolFinished , Body_InformShotHit, 
+	-- Body_EnemyArrivalPatrol, Body_ObjectDestroyed
+	--------------------------------
+	MilkRunGoto = function
+	(
+	State,	
+	Mode,			-- The looking mode we would like to apply in the milk run goto.
+	OurGroup,		-- The group we belong to.
+	CommandTable,		-- The commandtable of the complex goto.
+	Formation,		-- The formation the vessel has to fly in during milk run.
+	FightingArea,		-- The area where the battles are fought.
+	WatchDistance,		-- The distance we watch actively for anamies.
+	FirstPri,		-- The first ptiority of enemies we want to attack.
+	SecondPri,		-- The secondpriority of enemies we want to attack.
+	ThirdPri,		-- The third priority of enemies we want to attack.
+	FourthPri,		-- The fourth priority of enemies we want to attack,
+	WaitingTime, 		-- The after an attack until we continue our route.
+	Velocity,		-- The velocity during the patrol part.
+	Cycle,			-- Indicates whether we want to use the callback or not
+	CallBack,		-- A callback, that should be activated, when the complex goto is finished (nil = not desired)
+	Param			-- A parameter that is handed back, when we arrived.
+	)
+	
+		
+		ApplyModification(State, LM_MilkRunGoto, "LM_MilkRunGoto")
+		StoreInnerValue(State, "MRG_Mode", Mode)
+		StoreInnerValue(State, "MRG_OurGroup", OurGroup)
+		StoreInnerValue(State, "MRG_CommandTable", CommandTable)
+		StoreInnerValue(State, "MRG_Formation", Formation)
+		StoreInnerValue(State, "MRG_FightingArea", FightingArea)
+		StoreInnerValue(State, "MRG_WatchDistance", WatchDistance)
+		StoreInnerValue(State, "MRG_FirstPri", FirstPri)
+		StoreInnerValue(State, "MRG_SecondPri", SecondPri)
+		StoreInnerValue(State, "MRG_ThirdPri", ThirdPri)
+		StoreInnerValue(State, "MRG_FourthPri", FourthPri)
+		StoreInnerValue(State, "MRG_WaitingTime", WaitingTime)
+		StoreInnerValue(State, "MRG_Velocity", Velocity)
+		StoreInnerValue(State, "MRG_CallBack", CallBack)
+		StoreInnerValue(State, "MRG_Param", Param)
+		if (Cycle == 1 ) then
+			StoreInnerValue(State, "MRG_CallBack", nil)
+		end
+		CallFunction(State.Thread, "LM_Activate", nil)
+	end,
+	
+	
+	
+	
+	-- PURPOSE
+	-- Stops the milrun behaviour.
+	MilkRunGotoStop = function(State)
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		FormationLib.DeclareAsLeaderStop(State)
+		FormationLib.FollowInFormationStop(State)
+		VesselGotoLib.ComplexGotoStop(State)
+		VesselAttackLib.ClearAreaStop(State)
+		
+		-- Deactivattes the patrol sensor.
+		StopEnemyPatrol(State)
+		
+		if (not(IsNotLastModification(State, "LM_MilkRunGoto"))) then
+			-- We restore the old command table.
+			RestoreModification(State, "LM_MilkRunGoto")
+		end
+		
+	end,
+	
+	-- PURPOSE
+	-- The milkrunpatrol dos the same as the milkrun goto command,
+	-- except, that the base behaviour is a multi-patrol.
+	--------------------------------
+	-- Info:
+	-- Sensor: Body_InformEnemyPatrol, Body_InformShotHit, ShieldGuard
+	-- Commands : Vessel_AttackOver, Vessel_PatrolFinished, Vessel_PatrolFinished , Body_InformShotHit, 
+	-- Body_EnemyArrivalPatrol,Body_ObjectDestroyed
+	--------------------------------
+	MilkRunPatrol = function
+	(
+	State,	
+	Mode,			-- The mode we wnt to apply while looking for enemies.
+	OurGroup,		-- The group we belong to.
+	ListOfPatrolAreas,	-- The list of the patrolareas for the multipatrol.
+	TimeOutForPatrol,	-- The timeout for changing the patrol area.
+	Formation,		-- The formation the vessel has to fly in during milk run.
+	FightingArea,		-- The area where the battles are fought.
+	WatchDistance,		-- The distance we watch actively for anamies.
+	FirstPri,		-- The first ptiority of enemies we want to attack.
+	SecondPri,		-- The secondpriority of enemies we want to attack.
+	ThirdPri,		-- The third priority of enemies we want to attack.
+	FourthPri,		-- The fourth priority of enemies we want to attack,
+	WaitingTime, 		-- The after an attack until we continue our route.
+	Velocity		-- The velocity during the patrol part.
+	)
+		
+		ApplyModification(State, LM_MilkRunPatrol, "LM_MilkRunPatrol")
+		StoreInnerValue(State, "MRP_Mode", Mode)
+		StoreInnerValue(State, "MRP_OurGroup", OurGroup)
+		StoreInnerValue(State, "MRP_ListOfPatrolAreas", ListOfPatrolAreas)
+		StoreInnerValue(State, "MRP_TimeOutForPatrol", TimeOutForPatrol)
+		StoreInnerValue(State, "MRP_Formation", Formation)
+		StoreInnerValue(State, "MRP_FightingArea", FightingArea)
+		StoreInnerValue(State, "MRP_WatchDistance", WatchDistance)
+		StoreInnerValue(State, "MRP_FirstPri", FirstPri)
+		StoreInnerValue(State, "MRP_SecondPri", SecondPri)
+		StoreInnerValue(State, "MRP_ThirdPri", ThirdPri)
+		StoreInnerValue(State, "MRP_FourthPri", FourthPri)
+		StoreInnerValue(State, "MRP_WaitingTime", WaitingTime)
+		StoreInnerValue(State, "MRP_Velocity", Velocity)
+		CallFunction(State.Thread, "LM_Activate", nil)
+	end,
+	
+	-- PURPOSE
+	-- Stops the milrun behaviour.
+	MilkRunPatrolStop = function(State)
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		FormationLib.DeclareAsLeaderStop(State)
+		FormationLib.FollowInFormationStop(State)
+		VesselGotoLib.MultiPatrolStop(State)
+		VesselAttackLib.ClearAreaStop(State)
+		-- Deactivattes the patrol sensor.
+		StopEnemyPatrol(State)
+		if (not(IsNotLastModification(State, "LM_MilkRunPatrol"))) then
+			-- We restore the old command table.
+			RestoreModification(State, "LM_MilkRunPatrol")
+		end
+	end,
+	
+	-- PURPOSE
+	-- Starts a complex goto in combination with a declaration as vessel to be protected.
+	ProtectedGoto = function
+	(
+	State,
+	CommandTable,		-- The command table we would like to process.
+	Group,			-- The group we belong to.
+	Formation,		-- The formation we would like to do our goto in.
+	TriggerArea,		-- The area, that is used to trigger the attack.
+	FollowArea,		-- The area, that is ised for following the enemies.
+	Cycle,			-- Indicates, that we want to cycle the goto command.
+	CallBack		-- The callback, that should be activated, when the goto is finished.
+	)
+	
+		ApplyModification(State, LM_ProtectedGoto, "LM_ProtectedGoto")
+		StoreInnerValue(State, "PG_CallBack", CallBack)
+		StoreInnerValue(State, "PG_Group", Group)
+		FormationLib.DeclareAsLeader(State, Formation)
+		if (Cycle == 1) then
+			VesselGotoLib.ComplexGoto(State, CommandTable)
+		else
+			VesselGotoLib.ComplexGoto(State, CommandTable, "PG_Finished")
+		end
+		-- We bind the patrol areas to the actual vessel.
+		PatrolArea_BindNode(Node_Find(State.Node, TriggerArea), State.Node)
+		PatrolArea_BindNode(Node_Find(State.Node, FollowArea), State.Node)
+	end,
+	
+	
+	-- PURPOSE
+	-- Stops the behaviour of the protected goto.
+	ProtectedGotoStop = function(State)
+		VesselGotoLib.ComplexGotoStop(State)
+		FormationLib.DeclareAsLeaderStop(State)
+		CallFunction(GetInnerValue(State, "PG_Group"), "PV_Arrived")
+		if (not(IsNotLastModification(State, "LM_ProtectedGoto"))) then
+			-- We restore the old command table.
+			RestoreModification(State, "LM_ProtectedGoto")
+		end
+	end,
+	
+	
+	-- PURPOSE
+	-- Starts a multipatrol in combination with ability to beeing protected.
+	ProtectedMultiPatrol = function
+	(
+	State,
+	PatrolAreas,		-- The list with the patrol areas.
+	Group,			-- The group we belong to.
+	Formation,		-- The formation we fly in.
+	TriggerArea,		-- The trigger where we want to start fighting.
+	FollowArea,		-- The area until where we want to follow possible enemy vessels.
+	TimeOutForPatrol,	-- The timeout for changing the patrol area.
+	PatrolVelocity		-- The velocity during the patrol part.
+	)
+		ApplyModification(State, LM_ProtectedPatrol, "LM_ProtectedPatrol")
+		StoreInnerValue(State, "PMP_Group", Group)
+		FormationLib.DeclareAsLeader(State, Formation)
+		VesselGotoLib.MultiPatrol(State, PatrolAreas, TimeOutForPatrol, PatrolVelocity) 
+		
+		-- We bind the patrol areas to the actual vessel.
+		PatrolArea_BindNode(Node_Find(State.Node, TriggerArea), State.Node)
+		PatrolArea_BindNode(Node_Find(State.Node, FollowArea), State.Node)
+	
+	end,	
+	
+	-- Stops the protected multi patrol.
+	ProtectedMultiPatrolStop = function(State)
+		VesselGotoLib.MultiPatrolStop(State)
+		FormationLib.DeclareAsLeaderStop(State)
+		CallFunction(GetInnerValue(State, "PMP_Group"), "PV_Arrived")
+		if (not(IsNotLastModification(State, "LM_ProtectedPatrol"))) then
+			RestoreModification(State, "LM_ProtectedPatrol")
+		end
+	end,
+	
+	-- PURPOSE
+	-- This method performs a follow and attack for the objects.
+	FollowProtect = function
+	(
+	State,		
+	Formation,		-- The formation we want to follow in.
+	SensorMode,		-- The sensor mode we want to apply
+	WatchDistance,		-- The watchdistance wewant to apply.
+	FirstPri,		-- The first priority we want to attack.
+	SecondPri,		-- The second priority we want to attack.
+	ThirdPri,		-- The third priority we want to attack.
+	FourthPri,		-- The fourth priority we want to attack.
+	TriggerArea,		-- The area where we trigger the attack againsst objects.
+	FollowArea,		-- The area up to where we would like to follow objects.
+	PatrolVelocity,		-- The velocity, that should be performed during the patrol.
+	TimeOutForPatrol,	-- The time until when we would like to regroup in the formation.
+	CallBack		-- The callback when we want to perform, when we have finsihed the escort.
+	)
+	
+		ApplyModification(State, LM_FollowProtect, "LM_FollowProtect")
+		StoreInnerValue(State, "FP_Formation", Formation)
+		StoreInnerValue(State, "FP_FirstPri", FirstPri)
+		StoreInnerValue(State, "FP_SecondPri",SecondPri)
+		StoreInnerValue(State, "FP_ThirdPri", ThirdPri)
+		StoreInnerValue(State, "FP_FourthPri", FourthPri)
+		StoreInnerValue(State, "FP_Mode", SensorMode)
+		StoreInnerValue(State, "FP_WatchDistance", WatchDistance)
+		StoreInnerValue(State, "FP_TriggerArea", TriggerArea)
+		StoreInnerValue(State, "FP_FollowArea", FollowArea)
+		StoreInnerValue(State, "FP_WaitingTime", TimeOutForPatrol)
+		StoreInnerValue(State, "FP_Velocity", PatrolVelocity)
+		StoreInnerValue(State, "FP_CallBack", CallBack)
+		CallFunction(State.Thread, "LM_Activate")
+	end,
+	
+	
+	-- PURPOSE
+	-- Stops the follow and attack sequence.
+	FollowProtectStop = function(State)
+		FormationLib.FollowInFormationStop(State)
+		VesselAttackLib.ClearAreaStop(State)
+		StopEnemyPatrol(State)
+		if (not(IsNotLastModification(State, "LM_FollowProtect"))) then
+			-- We restore the old command table.
+			RestoreModification(State, "LM_FollowProtect")
+		end
+	end,
+	
+	-- PURPOSE
+	-- This command performs the infiltration of another object.
+	-- The reelative position ha sto be indicated in meters relative to object to be infiltrated.
+	Infiltrate = function
+	(
+	State,
+	Object,					-- The object wew would like to infiltrate.
+	CounterDock,				-- The name of the counterdock we use.
+	Dock,					-- Our own docking point we use.
+	InfiltrationStiffnessTranslation,	-- The stiffness we use for infiltration.
+	InfiltrationStiffnessOrientation,
+	TimeToInfiltrate,			-- The time we need to infiltrate the object.
+	CallBack				-- The callback, that is activated, when we have reached the InfiltrationTime.
+	)
+	
+		
+		StartShieldGuard(State)
+		Vessel_Infiltrate(State.Node, Object , CounterDock, Dock, InfiltrationStiffnessTranslation, 
+			InfiltrationStiffnessOrientation, TimeToInfiltrate)
+		ApplyModification(State, LM_Infiltrate, "LM_Infiltrate")
+		StoreInnerValue(State, "IF_CallBack", CallBack)
+		
+	end,
+	
+	
+	-- PURPOSE
+	-- Stops the infiltrate behaviour.
+	InfiltrateStop = function(State)
+		if (not(IsNotLastModification(State, "LM_Infiltrate"))) then
+			-- We restore the old command table.
+			RestoreModification(State, "LM_Infiltrate")
+		end
+	end,
+	
+	-- PURPOSE
+	-- Stops the infiltration process and makes the ship undock.
+	UnInfiltrate = function
+	(
+	State,
+	CallBack			-- The callback we call if we have done some infiltration.
+	)
+		Vessel_FinalizeInfiltrate(State.Node)
+		ApplyModification(State, LM_Infiltrate, "LM_Infiltrate")
+		StoreInnerValue(State, "IF_CallBack", CallBack)
+	end,
+		
+	
+}
+		 	 

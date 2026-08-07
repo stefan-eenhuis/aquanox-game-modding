@@ -1,0 +1,543 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the goto
+-- behaviour of a Vehicle.
+--------------------------------------------------------------------
+
+
+-- We need the synchronization lib
+LibSync = LoadLib("Synchronization")
+
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the goose march
+--------------------------------------------------------------------
+
+
+-- A list with semaphores for a Vehicle
+LCG_Semaphores = {}
+
+-- This is the new state we want to put onto.
+LCG_SimpleGoose =
+{
+	-- This function is activated, when we want to start the goose march
+	LCG_Activate = function(State)
+		Vehicle_Stop(State.Node)
+		LibSync.LockSemaphore(State, GetInnerValue(State, "LSG_Semaphore"))
+	end,
+
+	-- This function is activated, if we are allowed to pass.
+	LCG_StartGoing = function(State)
+		Vehicle_Goto(State.Node, GetInnerValue(State, "LSG_Path"), GetInnerValue(State, "LSG_Speed") , GetInnerValue(State, "LSG_Radius"))
+	end,
+
+	Vehicle_GotoPosReached = function(State, Path, Node)
+		-- We have to see if we have arrived at the critical position
+		if (Node == GetInnerValue(State, "LSG_SyncNode")) then
+			LibSync.FreeSemaphore(State, GetInnerValue(State, "LSG_Semaphore"))
+		end
+	end,
+
+	Vehicle_GotoArrived = function(State, Path)
+		-- In this case we have to restore the old envirnonment and return
+		local callback = GetInnerValue(State, "LSG_CallBack")
+		local param = GetInnerValue(State, "LSG_Param")
+
+		RestoreModification(State, "LCG_SimpleGoose")
+		StopShieldGuard(State)
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		LibList.VehicleGoto_Basis.GooseMarchStatStop(State)
+	end,	
+	
+	StopBehavior = function(State)
+		LibList.VehicleGoto_Basis.GooseMarchStatStop(State)
+	end,
+
+
+
+}
+
+-- We define the behaviour for the complex goto with synchronization.
+LCG_ComplexGoose =
+{
+
+	LCG_Activate = function(State)
+		Vehicle_Patrol(State.Node, GetInnerValue(State, "LCG_PatrolArea") , -1.0 )
+		LibSync.LockSemaphore(State, GetInnerValue(State, "LCG_Semaphore"))
+	end,
+
+	-- This function is activated, if we are allowed to pass.
+	LCG_StartGoing = function(State)
+		Vehicle_Goto(State.Node, GetInnerValue(State, "LCG_Path"), GetInnerValue(State, "LCG_Speed") , GetInnerValue(State, "LCG_Radius"))
+	end,
+
+	Vehicle_GotoPosReached = function(State, Path, Node)
+		-- We have to see if we have arrived at the critical position
+		if (Node == GetInnerValue(State, "LCG_SyncNode")) then
+			LibSync.FreeSemaphore(State, GetInnerValue(State, "LCG_Semaphore"))
+		end
+	end,
+
+	Vehicle_GotoArrived = function(State, Path)
+		-- In this case we have to restore the old envirnonment and return
+		local callback = GetInnerValue(State, "LCG_CallBack")
+		local param = GetInnerValue(State, "LCG_Param")
+
+		RestoreModification(State, "LCG_ComplexGoose")
+		StopShieldGuard(State)
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		LibList.VehicleGoto_Basis.GooseMarchPatStop(State)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VehicleGoto_Basis.GooseMarchPatStop(State)
+	end,
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for multi patrol
+--------------------------------------------------------------------
+
+LCG_MultiPatrol =
+{
+	-- The start function for the behaviour.
+	LCG_Activate = function(State)
+		Vehicle_Patrol(State. Node,  GetInnerValue(State, "LMP_ListOfPatrolAreas")[1] , GetInnerValue(State, "LMP_CompleteTimeOut"))
+	end,
+
+	Vehicle_PatrolFinished = function(State)
+		local newPos
+
+		-- We have to change directions, if we have reached the end.
+		if ((GetInnerValue(State, "LMP_Position") == 1) and (GetInnerValue(State, "LMP_Direction") == -1)) then
+			StoreInnerValue(State, "LMP_Direction", 1)
+		end
+		if ((GetInnerValue(State, "LMP_Position") == GetInnerValue(State, "LMP_Entries")) and (GetInnerValue(State, "LMP_Direction") == 1)) then
+			StoreInnerValue(State, "LMP_Direction", -1)
+		end
+
+		-- We have to find the new patrol area, where we want to patrol.
+		newPos = GetInnerValue(State, "LMP_Position") + GetInnerValue(State, "LMP_Direction")
+		StoreInnerValue(State, "LMP_Position", newPos)
+
+		-- Finally we can do the patrol
+		Vehicle_Patrol(State. Node,  GetInnerValue(State, "LMP_ListOfPatrolAreas")[newPos] , GetInnerValue(State, "LMP_CompleteTimeOut"))
+
+	end,
+	
+	
+	StopBehavior = function(State)
+		LibList.VehicleGoto_Basis.MultiPatrolStop(State)
+	end,
+
+
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the complex goto
+--------------------------------------------------------------------
+
+LCG_ComplexGoto =
+{
+
+	LCG_Activate = function(State)
+		GetInnerValue(State, "LCG_Process")(State)
+	end,
+
+	LCG_Process = function(State)
+		local callback, param, list, position, oldPosition, timer
+		-- First we choose which entryy to choose next.
+		if (GetInnerValue(State, "LG_Entries") == GetInnerValue(State, "LG_Position")) then
+			-- We have reached the end of the list.
+			if (GetInnerValue(State, "LG_CallBack") == nil) then
+				-- In this case we have to cycle.
+				StoreInnerValue(State, "LG_Position", 0)
+			else
+				-- In this case we return
+				timer = GetInnerValue(State, "LG_Timer")
+				if (timer ~= -1) then
+					StopTimer(State.Thread, timer)
+				end
+				-- Vehicle_AvoidanceObjects(State.Node, 1)
+				callback = GetInnerValue(State, "LG_CallBack")
+				param = GetInnerValue(State, "LG_Param")
+				RestoreModification(State, "LCG_ComplexGoto")
+				CallFunction(State.Thread, callback, param)
+				return
+			end
+		end
+		-- Increment the inner value
+		position = GetInnerValue(State, "LG_Position") + 1
+		StoreInnerValue(State, "LG_Position", position)
+		list = GetInnerValue(State, "LG_ToDoList")[position]
+		oldPosition = GetInnerValue(State, "LG_OldPosition")
+		-- Now comes the dispatcher for the list.
+		if (list[1] == "Goto") then
+			if (oldPosition ~= nil) then
+				Vehicle_GotoFromPosition(State.Node, list[2], oldPosition, list[3], list[4])
+			else
+				Vehicle_Goto(State.Node, list[2], list[3], list[4])
+			end
+		elseif (list[1] == "GotoFrom") then
+			if (oldPosition ~= nil) then
+				Vehicle_GotoFromPosition(State.Node, list[2], oldPosition, list[4], list[5])
+			else
+				Vehicle_GotoFromPosition(State.Node, list[2], list[3], list[4], list[5])
+			end
+		elseif (list[1] == "GotoFromTo") then
+			if (oldPosition ~= nil) then
+				Vehicle_GotoFromTo(State.Node, list[2], oldPosition,  list[4], list[5], list[6])
+			else
+				Vehicle_GotoFromTo(State.Node, list[2], list[3], list[4], list[5], list[6])
+			end
+		elseif (list[1] == "Wait") then
+			Vehicle_Stop(State.Node)
+			timer = SetTimer(State.Thread, list[2])
+			StoreInnerValue(State, "LG_Timer", timer)
+		elseif (list[1] == "ActivateAvoidance") then
+			Vehicle_AvoidanceObjects(State.Node, 1)
+			StoreInnerValue(State, "LG_Avoidance", 1)
+			GetInnerValue(State, "LCG_Process")(State)
+		elseif (list[1] == "DeactivateAvoidance") then
+			Vehicle_AvoidanceObjects(State.Node, 0)
+			StoreInnerValue(State, "LG_Avoidance", 0)
+			GetInnerValue(State, "LCG_Process")(State)
+		else
+			Script_LogRaw("[SCRIPTERROR] [" .. Script_GetLineNumber(2) .. "] ComplexGoto - Unknown commad " .. list[1])
+		end
+		StoreInnerValue(State, "LG_OldPosition", nil)
+	end,
+
+	Vehicle_GotoArrived = function(State, Path, Node)
+		GetInnerValue(State, "LCG_Process")(State)
+	end,
+
+	Timer = function(State, Handle)
+		if ( Handle == GetInnerValue(State, "LG_Timer") ) then
+			StoreInnerValue(State, "LG_Timer", -1)
+			GetInnerValue(State, "LCG_Process")(State)
+		end
+	end,
+
+	Vehicle_GotoPosReached = function(State, Path, Position)
+		StoreInnerValue(State, "LG_OldPositionRem", Position)
+	end,
+
+	
+	StopBehavior = function(State)
+		LibList.VehicleGoto_Basis.ComplexGotoStop(State)
+	end,
+
+
+
+
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+
+
+-- This library defines the functionality of the synchronization stuff.
+LibList.VehicleGoto_Basis =
+{
+
+	--------------------------------------------------------------------
+	-- Here come the commands for the goose march
+	--------------------------------------------------------------------
+
+	-- PURPOSE
+	-- This method activates the goose marh for a simple path.
+	-- We go into stopping mode, if we can not enter the path.
+	--------------------------------
+	-- Info Goose March:
+	-- Kein Sensor,
+	-- Vehicle_GotoPosReached, Vehicle_GotoArrived ist blocked.
+	--------------------------------
+	GooseMarchStat = function
+	(
+	State,
+	Path, 		-- The path we like to follow.
+	SyncNode, 	-- The node, where new Vehicle may start if we pass.
+	Speed, 		-- The speed we go with.
+	Radius,		-- The radius impact used for detecting the goto nodes.
+	Callback, 	-- The Callback we activate when we have reched the end.
+	Param		-- Some user data, that is handed back
+	)
+		local node, semaphore
+
+		node = Node_GetPath(Node_Find(State.Node, Path))
+
+		-- First we check, if we have to generate a semaphore for the path.
+		if (LCG_Semaphores[node] == nil) then
+			LCG_Semaphores[node] = LibSync.CreateSemaphore(1, "LCG_StartGoing")
+		end
+
+
+		ApplyModification(State, LCG_SimpleGoose, "LCG_SimpleGoose")
+
+
+		-- We set the necessary semaphore
+		StoreInnerValue(State, "LSG_Semaphore", LCG_Semaphores[node])
+		StoreInnerValue(State, "LSG_Path",	Path)
+		StoreInnerValue(State, "LSG_SyncNode", SyncNode)
+		StoreInnerValue(State, "LSG_CallBack", Callback)
+		StoreInnerValue(State, "LSG_Speed", Speed)
+		StoreInnerValue(State, "LSG_Radius", Radius)
+		StoreInnerValue(State, "LSG_Param", Param)
+		StartShieldGuard(State)
+		CallFunction(State.Thread, "LCG_Activate", nil)
+	end,
+
+	-- PURPOSE
+	-- This method stops the GooseMarchStatBehaviour.
+	GooseMarchStatStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCG_SimpleGoose") then
+			return
+		end
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "LSG_Semaphore"))
+		-- We restore the old command table.
+		StopShieldGuard(State)
+		RestoreModification(State, "LCG_SimpleGoose")
+	end,
+
+
+	-- PURPOSE
+	-- This method perfroms a goose march, where the Vehicles at the beginning
+	-- perform a patrol in a certin area, unti they can continue.
+	--------------------------------
+	-- Info Goose March:
+	-- Kein Sensor,
+	-- Vehicle_GotoPosReached, Vehicle_GotoArrived ist blocked.
+	--------------------------------
+	GooseMarchPat = function
+	(
+	State,
+	Path, 			-- The path we like to follow.
+	SyncNode, 		-- The node, where new Vehicle may start if we pass.
+	Speed, 			-- The speed we go with.
+	Radius,			-- The radius impact used for detecting the goto nodes.
+	PatrolArea,		-- The patrol area we wait in if we can not enter.
+	Callback, 		-- The Callback we activate when we have reched the end.
+	Param			-- Some user data, that is handed back
+	)
+
+		local node, semaphore
+
+		node = Node_GetPath(Node_Find(State.Node, Path))
+
+		-- First we check, if we have to generate a semaphore for the path.
+		if (LCG_Semaphores[node] == nil) then
+			LCG_Semaphores[node] = LibSync.CreateSemaphore(1, "LCG_StartGoing")
+		end
+
+
+		ApplyModification(State, LCG_ComplexGoose, "LCG_ComplexGoose")
+
+
+		-- We set the necessary semaphore
+		StoreInnerValue(State, "LCG_Semaphore", LCG_Semaphores[node])
+		StoreInnerValue(State, "LCG_Path",	Path)
+		StoreInnerValue(State, "LCG_SyncNode", SyncNode)
+		StoreInnerValue(State, "LCG_CallBack", Callback)
+		StoreInnerValue(State, "LCG_Speed", Speed)
+		StoreInnerValue(State, "LCG_Radius", Radius)
+		StoreInnerValue(State, "LCG_Param", Param)
+		-- the info for the patrol
+		StoreInnerValue(State, "LCG_PatrolArea", PatrolArea)
+		StartShieldGuard(State)
+		CallFunction(State.Thread, "LCG_Activate", nil)
+	end,
+
+	-- This method stops the GooseMarchPatBehaviour.
+	GooseMarchPatStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCG_ComplexGoose") then
+			return
+		end
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "LCG_Semaphore"))
+		-- We restore the old command table.
+		StopShieldGuard(State)
+		RestoreModification(State, "LCG_ComplexGoose")
+	end,
+
+
+
+	--------------------------------------------------------------------
+	-- Here comes the information for the multipatrol
+	--------------------------------------------------------------------
+
+	-- PURPOSE
+	-- The multipatrol performs several patrols in different areas,
+	-- It starts with the firt area and walks over to the last area.
+	-- When it has reached the last area, it goes back to the fisrt area.
+	--------------------------------
+	-- Info MultiPatrol:
+	-- Kein Sensor,
+	-- Vehicle_PatrolFinished ist blocked.
+	--------------------------------
+	MultiPatrol = function
+	(
+	State,
+	ListOfPatrolAreas,	-- The list of areas, where the patrol should be perfomred in.
+	CompleteTimeOut		-- When the timeout is passed, we switch over to the next patrol area.
+	)
+
+		local a,b, counter
+
+		-- We count the number of elements
+		counter = 0
+		for a,b in ListOfPatrolAreas do
+			counter = counter +1
+		end
+		-- We do some plausibility check.
+		if (counter < 2 ) then
+			Script_LogRaw("[SCRIPTERROR] [" .. Script_GetLineNumber(2) .. "] MultiPatrol - At least 2 patrol areas required.")
+			return
+		end
+
+		ApplyModification(State, LCG_MultiPatrol, "LCG_MultiPatrol")
+		-- the info for the patrol.
+		StoreInnerValue(State, "LMP_ListOfPatrolAreas", ListOfPatrolAreas)
+		StoreInnerValue(State, "LMP_CompleteTimeOut", CompleteTimeOut)
+		-- We set some information, that we for swapping through the areas.
+		StoreInnerValue(State, "LMP_Position", 	1)
+		StoreInnerValue(State, "LMP_Direction", 	1)
+		StoreInnerValue(State, "LMP_Entries",	counter)
+		-- We cna activate the function.
+		CallFunction(State.Thread, "LCG_Activate", nil)
+	end,
+
+	-- This function stops the multipatrol and regenerates the old function.
+	MultiPatrolStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCG_MultiPatrol") then
+			return
+		end
+		-- We restore the old command table.
+		RestoreModification(State, "LCG_MultiPatrol")
+	end,
+
+
+	--------------------------------------------------------------------
+	-- Here comes the information for complex goto
+	--------------------------------------------------------------------
+
+	-- Purpose
+	-- ComplexGoto processes several commands, that are added into a list.
+	-- When tehy have finished the command list, They either switch back or they restart.
+	-- The commands the Vehicle may process are:
+	-- { "Goto", "path", vel, rad}  the normal goto command.
+	-- { "GotoFrom" , "path", "start", vel, rad}
+	-- { "GotoFromTo", "path", "start", "target", vel, rad}
+	-- { "Wait", time }
+	-- { "ActivateAvoidance" }
+	-- { "DeactivateAvoidance" }
+	--------------------------------
+	-- Info ComplexGoto:
+	-- AvoidanceObjects kann deaktiviert werden.
+	-- Kein Sensor,
+	-- Vehicle_GotoArrived, Vehicle_SinkFinished, Vehicle_GotoPosReached Timer ist blocked.
+	--------------------------------
+	ComplexGoto = function
+	(
+	State,
+	ToDoList, 	-- The list with the commands that should be processed.
+	CallBack,	-- The callback, that is cativated, when the list is finsihed, if nil we cycle through the stuff.
+	Param		-- A parameter, that is activated, when the callback is called.
+	)
+		local a,b, counter
+		-- We count the number of entries in the list.
+		counter = 0
+		for a,b in ToDoList do
+			counter = counter +1
+		end
+		ApplyModification(State, LCG_ComplexGoto, "LCG_ComplexGoto")
+		-- We copy the information
+		StoreInnerValue(State, "LG_ToDoList", ToDoList)
+		StoreInnerValue(State, "LG_CallBack", CallBack)
+		StoreInnerValue(State, "LG_Param", Param)
+		-- We set the counter for the procesing and the maximum number of entries.
+		StoreInnerValue(State, "LG_Position", 0)
+		StoreInnerValue(State, "LG_Entries", counter)
+		StoreInnerValue(State, "LG_Avoidance", 1)
+		StoreInnerValue(State, "LG_Timer", -1)
+		CallFunction(State.Thread, "LCG_Activate", nil)
+	end,
+
+
+	-- Purpose
+	-- This method restarts a goto after it has been interrupted by a goto stop,
+	-- the list has to be handed over.
+	--------------------------------
+	-- Info ComplexGotoResume:
+	-- AvoidanceObjects kann deaktiviert werden.
+	-- Kein Sensor,
+	-- Vehicle_GotoArrived, Vehicle_SinkFinished, Vehicle_GotoPosReached Timer ist blocked.
+	--------------------------------
+	ComplexGotoResume = function
+	(
+	State,
+	List		-- The list retunred at the complex goto
+	)
+		ApplyModification(State, LCG_ComplexGoto, "LCG_ComplexGoto")
+		-- We copy the information
+		StoreInnerValue(State, "LG_ToDoList", List.ToDoList)
+		StoreInnerValue(State, "LG_CallBack", List.CallBack)
+		StoreInnerValue(State, "LG_Param", List.Param)
+		StoreInnerValue(State, "LG_Position", List.Position)
+		StoreInnerValue(State, "LG_Entries", List.Entries)
+		StoreInnerValue(State, "LG_OldPosition", List.OldPosition)
+		StoreInnerValue(State, "LG_Avoidance", List.Avoidance)
+		StoreInnerValue(State, "LG_Timer", -1)
+		Vehicle_AvoidanceObjects(State.Node, List.Avoidance)
+		CallFunction(State.Thread, "LCG_Activate", nil)
+	end,
+
+	-- This function stops the complex goto behaviour.
+	-- It returns a control structure, that may besued to resume the behaviour.
+	ComplexGotoStop = function(State, List )
+
+		local struct, timer
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCG_ComplexGoto") then
+			return List
+		end
+
+		struct ={}
+		struct.ToDoList = GetInnerValue(State, "LG_ToDoList")
+		struct.CallBack = GetInnerValue(State, "LG_CallBack")
+		struct.Param = GetInnerValue(State, "LG_Param")
+		struct.Position = GetInnerValue(State, "LG_Position") - 1
+		struct.Entries = GetInnerValue(State, "LG_Entries")
+		struct.OldPosition = GetInnerValue(State, "LG_OldPositionRem")
+		struct.Avoidance = GetInnerValue(State, "LG_Avoidance")
+
+		-- We deactivate the timer.
+		timer = GetInnerValue(State, "LG_Timer")
+		if (timer ~= -1) then
+			StopTimer(State.Thread, timer)
+		end
+		Vehicle_AvoidanceObjects(State.Node, 1)
+		-- We restore the old command table.
+		RestoreModification(State, "LCG_ComplexGoto")
+
+		return struct
+
+	end,
+
+
+
+}
+		 	 

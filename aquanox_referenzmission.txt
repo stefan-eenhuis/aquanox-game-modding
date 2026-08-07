@@ -1,0 +1,167 @@
+================================================================================
+DIE REFERENZMISSION -- 1N1 "TERROR", kommentiert
+================================================================================
+Stand: 2026-07-28, Aufgabe B2
+Grundlage: mod_docu\an1_missionen_lua\1n1.lua (2.054 Zeilen)
+
+WARUM DIESE MISSION
+    Sie ist mit 2.054 Zeilen die kleinste der 30 Kampagnenmissionen und
+    trotzdem vollstaendig: Weltaufbau, Objekte, Schiffe, Pfade, Zonen,
+    Zustandstabellen, Funk und Missionsende. Wer eine eigene Mission
+    bauen will, findet hier das Geruest in seiner schlanksten Form.
+    Inhalt: Randis Albion, ein betrunkener Moechtegern-Terrorist aus
+    Neopolis, bedroht die Station. Er fliegt ein besseres Boot.
+
+--------------------------------------------------------------------------------
+1. DER KOPF -- Zeilen 1 bis 25
+--------------------------------------------------------------------------------
+    True = 1
+    False = 0
+    F = 1        -- Freund
+    N = 2        -- Neutral
+    U = 3        -- Unbekannt
+    E = 4        -- Feind
+    VesselGotoLib   = LoadLib("VesselGoto")
+    VesselAttackLib = LoadLib("VesselAttack")
+    SensorLib       = LoadLib("Sensor")
+    MiscLib         = LoadLib("Misc")
+    TurretLib       = LoadLib("Turret")
+    VehicleGotoLib  = LoadLib("VehicleGoto")
+    VehicleAttackLib= LoadLib("VehicleAttack")
+    DockLib         = LoadLib("Dock")
+    FormationLib    = LoadLib("Formation")
+    CameraLib       = LoadLib("Camera")
+    DipolLib        = LoadLib("Dipol")
+    OldOneLib       = LoadLib("OldOne")
+    SED_SetTaskTextKey = function(L0, L1, L2)
+      Game_SetTaskTextKey(GetGameNode(), L0, L1, L2)
+    end
+
+    *** DIE FOF-KONSTANTEN F/N/U/E SIND DER FUND DIESES ABSCHNITTS. ***
+    Body_SetFriendOrFoeID nimmt 1 = Freund, 2 = Neutral, 3 = Unbekannt,
+    4 = Feind. Unsere Levelvorlage sagte bisher "1 = befreundet,
+    2 = feindlich" -- das ist FALSCH. 2 ist neutral, feindlich ist 4.
+    ALLE ZWOELF Bibliotheken werden geladen, auch die, die eine
+    einzelne Mission nie braucht. Das ist Editorroutine, kein Muss.
+
+--------------------------------------------------------------------------------
+2. __InitLayout -- der Weltaufbau, ab Zeile 26
+--------------------------------------------------------------------------------
+    node0 = Node_Find("/")
+    Game_LoadProgress_Advance(node0)          -- Ladebalken einen Schritt
+    node1 = Node_CreateNode("nod_terrain", "Terrain")
+    Node_AddSon(node0, node1)
+    Terrain_LoadTerrain(node1, "map/1N1/Terrain/")
+    Node_EnterSimulation(node1)
+    Game_LoadFog(node0, "map/1N1/Fog/fog.fog")
+    Game_SetFog(node0, 0.99, 1)
+    Game_SetCausticTerrain(node0, 0.025, 0.3)
+    Game_SetCausticObject(node0, 0.1, 0.3)     -- Objekte staerker!
+    Game_SetCausticBuilding(node0, 0.025, 0.3)
+    Game_SetLightCache(node0, "map/1N1/Lmsh/", "map/1N1/Ltex/")
+    Game_SetTerrainDepth(node0, 1024)
+    Game_SetDecompressionHeight(node0, 512)
+    Game_SetAmbientLight(node0,     0.019608, 0.086275, 0.141176)
+    Game_SetParallelLightT(node0,   0.039216, 0.172549, 0.282353)
+    Game_SetParallelLightB(node0,   0.462745, 0.352941, 0.086275)
+    Game_LoadTextTable(node0, "dat/sty/pilot_d.des")
+    Game_LoadTextTable(node0, "dat/sty/cargo_d.des")
+    Game_LoadMTake(node0, "dat/sty/mtake_1N1_d.des")
+    Game_LoadMTake(node0, "dat/sty/mtake_gen_d.des")   -- ZWEI Dateien!
+    Game_LoadMusic(node0, "sfx/sample/music/music_track05.sam", 1)
+    Game_LoadMusic(node0, "sfx/sample/music/music_badend.sam", 2)
+
+    BEOBACHTUNGEN
+    * Game_LoadProgress_Advance steht VOR jedem Schritt, nicht danach.
+    * ZWEI mtake-Dateien: die eigene und mtake_gen_d.des mit den 80
+      allgemeinen Spruechen. Wer eine eigene Mission baut, sollte
+      beide laden.
+    * ZWEI Musikstuecke mit Slotnummer -- Slot 1 die Hintergrundmusik,
+      Slot 2 fuer das schlechte Ende.
+    * Die Kaustik ist auf OBJEKTEN vierfach staerker (0.1) als auf
+      Gelaende und Gebaeuden (0.025).
+    * Das Umgebungslicht ist sehr dunkel und blau (0.02 / 0.09 / 0.14),
+      das Licht von UNTEN dagegen warm (0.46 / 0.35 / 0.09) -- der
+      Magmaschein. Fuer Nachtschicht ein brauchbares Vorbild.
+
+    Danach folgt der Knotenbaum, jeder Schritt nach demselben Muster:
+    Game_LoadProgress_Advance, Node_CreateNode, Node_AddSon,
+    Node_EnterSimulation.
+        Scenario_Static
+          +- Light        NOD_Directory
+          +- Navigation   NOD_Directory
+          +- Director     NOD_Directory
+          +- Trigger      NOD_Directory
+          +- Object       NOD_Directory
+              +- BLOCK_1 ...
+        Scenario_Dynamic
+          +- Object
+
+--------------------------------------------------------------------------------
+3. DIE ZUSTANDSTABELLEN -- ab Zeile 1263
+--------------------------------------------------------------------------------
+    S_o30 = { [nil] = {}, Start = function(L0) ... end }
+    S_o64 = { [nil] = {}, Start = function(L0) ... end }
+    ... 55 Stueck, durchnummeriert
+
+    Die einfachen (fuer unbewegliche Kulisse) haben nur ein Start:
+        S_o30 = { [nil] = {}, Start = function(L0)
+          DipolLib.InUtero_Normal(L0, "Code0")
+        end }
+
+    *** DipolLib.InUtero_Normal IST DER STANDARDEINSTIEG. ***
+    1332 Vorkommen in allen 30 Missionen. "InUtero" ist der Zustand
+    vor dem Eintritt in die Simulation -- das Objekt wartet dort, bis
+    es gebraucht wird. Erst dann laeuft sein Zustandsautomat an.
+
+    Die komplexen (fuer Schiffe) haben Code0 bis Code14:
+        Code3 = function(L0)
+          L0["CodeIndex"] = 3
+          ShieldedBody_MakeInvulnerable(L0.Node)
+          CallFunction(o1643, "Code4")
+        end
+
+--------------------------------------------------------------------------------
+4. __StartUp -- das Binden
+--------------------------------------------------------------------------------
+    __StartUp = function()
+      Game_LoadProgress_Enter(Node_Find("/"), 349)   -- Anzahl Schritte!
+      __InitLayout()
+      __InitLayout = nil                             -- Speicher frei
+      G_ScriptTimerThread = BindEasy(Node_Find("/"), "/script",
+                                     C_ScriptTimer)
+      o30 = BindEasy(Node_Find("/Scenario_Static/Object"),
+                     "atl_dock3_1", S_o30)
+      o64 = BindEasy(...)
+      ... 55 weitere
+    end
+
+    Game_LoadProgress_Enter bekommt die GENAUE Zahl der Ladeschritte
+    (hier 349). Sie muss zur Zahl der Advance-Aufrufe passen, sonst
+    bleibt der Balken stehen oder springt.
+
+--------------------------------------------------------------------------------
+5. WAS 1N1 NICHT HAT -- und was das heisst
+--------------------------------------------------------------------------------
+    keine Trigger-Zonen (0)
+    nur 1 Wegpunkt, 3 Pfade, 2 Patrouillenzonen
+    39 statische Objekte, 7 Schiffe
+    55 Zustandstabellen, 55 BindEasy-Aufrufe
+
+    Eine vollstaendige, spielbare Mission braucht also WENIGER, als
+    man denkt. Der Rest der 2.054 Zeilen geht fuer den Weltaufbau
+    drauf -- und den kann man sich sparen, wenn man ein bestehendes
+    Level als Wirt nimmt (siehe nachtschicht_level_vorlage.lua).
+
+--------------------------------------------------------------------------------
+6. DIE VOLLSTAENDIGE DATEI
+--------------------------------------------------------------------------------
+    mod_docu\an1_missionen_lua\1n1.lua
+    Daneben liegen die 29 anderen Kampagnenmissionen und die 14
+    Bibliotheken -- 88 Dateien, 346.125 Zeilen.
+    Die groesste (6h2.lua, "Krieg in Neopolis") hat 23.338 Zeilen,
+    170 Objekte und 131 Schiffe.
+
+================================================================================
+ENDE
+================================================================================

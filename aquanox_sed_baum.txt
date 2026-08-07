@@ -1,0 +1,105 @@
+================================================================================
+DER SED-BAUM -- was der Parser hergibt (A4 und A10)
+================================================================================
+Stand: 2026-07-27
+ERGEBNIS EHRLICH: teilweise. Die Struktur ist erkannt, aber nicht
+verlustfrei zu parsen. Was dabei herauskam, steht unten.
+
+--------------------------------------------------------------------------------
+1. DER AUFBAU DER DATEI
+--------------------------------------------------------------------------------
+    "BINARY\0"
+    <str Knotentyp> <u32> <Attributpaare> <u32> <Kinder> ...
+    durchgehend laengenpraefigierte Zeichenketten (u32 Laenge + Bytes
+    einschliesslich Null).
+
+WORAN EIN SAUBERER PARSER SCHEITERT
+    Die u32-Felder zwischen den Zeichenketten lassen sich nicht
+    zuverlaessig deuten. Beim Wurzelknoten steht nach dem Typ eine 3,
+    es folgen aber VIER Attributpaare (NotSortChildren, Visible, Name,
+    Game). Die Zahl ist also weder Attribut- noch Kinderzahl.
+    Ein Parser, der sie als Laenge liest, verliert nach dem ersten
+    Knoten die Synchronisation.
+    WAS FUNKTIONIERT: an den SED_-Marken schneiden und die
+    Zeichenketten dazwischen paarweise lesen. Das ist robust, aber die
+    Zuordnung Schluessel/Wert verschiebt sich gelegentlich um eins.
+
+--------------------------------------------------------------------------------
+2. WAS DIE DATEI ENTHAELT
+--------------------------------------------------------------------------------
+    2.250 SED_-Marken, davon
+        839 mit einem TMP_-Namen  -- Vorlagen
+      1.411 uebrige
+    67.461 Zeichenketten insgesamt.
+
+    ERNUECHTERND: Nur EIN Block traegt ein auswertbares Name-Feld
+    (der Wurzelknoten "Root"), und KEINE einzige OSD-Referenz ist zu
+    finden. Die 5,56 MB bestehen also ueberwiegend aus der
+    VORLAGENBIBLIOTHEK des Editors, nicht aus der platzierten Mission.
+    Das passt zu dem, was schon bekannt war: die eigentlichen Objekte
+    stehen im erzeugten Lua (neopolis_neu.scr, 8.504 Zeilen), nicht in
+    der Projektdatei -- oder sie liegen in einem Teil der Datei, den
+    dieser Parser nicht erschliesst.
+
+--------------------------------------------------------------------------------
+3. A10 -- DIE 838 STRUKTURVORLAGEN
+--------------------------------------------------------------------------------
+Vorlagen ohne Kommando und ohne Hilfetext, nach Typ:
+    SED_ScriptOrder          192      SED_NodeText            107
+    SED_NodeFloat             95      SED_NodeInteger          76
+    SED_NodeList              69      SED_Node                 47
+    SED_NodeObject            39      SED_NodeCreateObject     34
+    SED_ScriptBlock           29      SED_NodeFileSelect       22
+    SED_ScriptOrderNothing    16      SED_ScriptSimpleOrder    15
+    SED_NodeStringSelect      10      SED_NodePosition         10
+    SED_NodeSphere             9      SED_NodeCone              7
+
+Die haeufigsten Verweise zwischen ihnen:
+    TMP_StateNode        57     TMP_StringState      47
+    TMP_String1          36     TMP_InnerGoto        36
+    TMP_GameNode         35     TMP_PathReference    25
+    TMP_BreakCondition   24     TMP_Init             24
+    TMP_InUtero_Wait     19
+Dazu die Farbwerte "0,0,255" (113x) und "0,0,128" (27x) -- die
+PrintColor, mit der der Editor Befehle einfaerbte, und "Parent/EState"
+(21x) als Pfadverweis auf den Zustand des Vaterknotens.
+
+--------------------------------------------------------------------------------
+4. *** DAS ZIELSYSTEM, wie es der Editor modelliert ***
+--------------------------------------------------------------------------------
+Zwoelf Bedingungsvorlagen, und ihre Namen sagen alles:
+
+    TMP_ConditionWin          das Primaerziel
+    TMP_ConditionLose         die Verlustbedingung
+    TMP_ConditionBonus        das Bonusziel
+    TMP_ConditionUser         eine benutzerdefinierte Bedingung
+    TMP_WinConditionStateBuffer          haelt den Zustand
+    TMP_WinConditionAutoConnect          verknuepft automatisch
+    TMP_LoseConditionAutoConnect
+    TMP_WinConditionAutoConnectStateBuffer
+
+    Die AutoConnect-Vorlagen tragen ein Feld AutoConnectLookingDeep --
+    der Editor konnte Bedingungen also selbsttaetig durch den Baum
+    verknuepfen, statt sie einzeln zu verdrahten.
+
+    VIER ZIELARTEN also: Win, Lose, Bonus, User. Das deckt sich mit
+    mission.des in AquaNox 2 (Goal und BonusGoal) und praezisiert es:
+    es gab auch eine VERLUST- und eine BENUTZERBEDINGUNG.
+    Wer das System in AquaNox 1 nachbaut (Levelvorlage Abschnitt 5c),
+    sollte alle vier vorsehen, nicht nur zwei.
+
+--------------------------------------------------------------------------------
+5. WAS OFFEN BLEIBT
+--------------------------------------------------------------------------------
+    * Ein verlustfreier Parser. Dafuer muesste man die u32-Felder
+      zwischen den Zeichenketten deuten -- machbar, aber es braucht
+      eine Sitzung nur dafuer.
+    * Ob die platzierten Missionsobjekte ueberhaupt in dieser Datei
+      stehen. Der Verdacht: die .ssc haelt die Bibliothek und die
+      Struktur, die konkreten Koordinaten stehen im erzeugten Lua.
+    * Die Bedeutung von "InUtero" (19 Vorlagen). Der Name legt einen
+      Zustand vor dem Eintritt in die Simulation nahe.
+
+================================================================================
+ENDE
+================================================================================

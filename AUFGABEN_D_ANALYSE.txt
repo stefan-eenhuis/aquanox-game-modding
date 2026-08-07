@@ -1,0 +1,216 @@
+================================================================================
+AUFGABENLISTE D -- REINE ANALYSE, OHNE SPIELDURCHLAUF
+================================================================================
+Stand: 2026-07-28, nach Abschluss der C-Reihe (Handoff v93)
+
+Alle zehn Aufgaben lassen sich am Schreibtisch erledigen: Dateien lesen,
+messen, vergleichen, dokumentieren. Kein Spielstart noetig, keine
+Anwesenheit erforderlich. Was einen Blick ins laufende Spiel braucht,
+steht in OFFENE_TESTS.txt, nicht hier.
+
+Reihenfolge ist Prioritaet: D1-D5 zahlen direkt auf Nachtschicht ein,
+D6-D10 raeumen technische Restposten auf.
+
+--------------------------------------------------------------------------------
+D1  DAS FUNKSPRUCH- UND DIALOGSYSTEM VOLLSTAENDIG AUFSCHLUESSELN
+--------------------------------------------------------------------------------
+    Warum:   Eine Noir-Kampagne lebt vom Dialog. Bisher weiss ich, dass
+             SendRadioMessageTake(node, node, N) Funksprueche ausloest
+             und dass Game_LoadMTake die Textdateien laedt -- aber nicht,
+             wie die Zahl N mit Text und Sprachaufnahme zusammenhaengt.
+    Zu klaeren:
+             - Welche IDs kommen in den 30 Missionen vor? (1170, 1172,
+               1175, 8, 21, 83, 84 sind schon gesichtet)
+             - Wie ordnet mtake_1N1_d.des die ID einem Text zu?
+             - Wo liegen die Sprachaufnahmen, wie heissen sie?
+             - Was unterscheidet mtake_gen_d.des (generisch) von
+               mtake_<Mission>_d.des (missionsspezifisch)?
+             - Gibt es Sprecherzuordnung, Portraits, Dauer?
+    Ergebnis: aquanox1_funksprueche.json mit allen IDs, Texten und
+             Dateiverweisen + ein Rezeptabschnitt "eigenen Dialog
+             einbauen" fuer den Handoff.
+    Aufwand: gross, aber der hoechste Nutzen von allen zehn.
+
+--------------------------------------------------------------------------------
+D2  MISSIONSBAUSTEINE AUS DEN 30 TRIGGERNETZEN DESTILLIEREN
+--------------------------------------------------------------------------------
+    Warum:   trigger_netz.py kann jetzt jede Mission aufschluesseln.
+             Der naechste Schritt ist, aus 3.236 Triggerknoten die
+             wiederkehrenden MUSTER zu ziehen -- statt fuer Nachtschicht
+             alles neu zu erfinden.
+    Zu klaeren:
+             Welche Bausteine gibt es und wie sehen sie im Lua aus?
+             Erwartbar: "zerstoere alle Gegner im Gebiet", "eskortiere
+             X bis Y", "erreiche Punkt", "ueberlebe N Sekunden",
+             "beschuetze Objekt", "dock an", "folge unauffaellig".
+    Vorgehen: trigger_netz.py --json ueber alle 30, dann die Knoten
+             nach ihrer Kommandosignatur gruppieren. Knoten mit
+             gleicher Signatur sind derselbe Baustein.
+    Ergebnis: aquanox1_missionsbausteine.json + eine Sammlung
+             kopierfertiger Lua-Schnipsel. Das ist der direkte Weg zu
+             einer Nachtschicht-Mission.
+    Aufwand: mittel bis gross.
+
+--------------------------------------------------------------------------------
+D3  ZWISCHENSEQUENZEN UND KAMERAFUEHRUNG
+--------------------------------------------------------------------------------
+    Warum:   Noir ist Atmosphaere, und Atmosphaere ist Kameraarbeit.
+             CameraLib, Camera_Cut und Camera_LookAt kommen in den
+             Missionen vor, aber ich habe nie untersucht, wie eine
+             fertige Zwischensequenz aufgebaut ist.
+    Zu klaeren:
+             - Welche Funktionen hat CameraLib genau? (aus dem
+               dekompilierten camera.lua)
+             - Wie sieht eine komplette Sequenz aus, Zeile fuer Zeile?
+             - Was steht in dat\menu\cinematics~.des (12.439 B)?
+             - Gibt es Kamerapfade oder nur Schnitte?
+             - Wie wird die Steuerung waehrend der Sequenz gesperrt?
+    Ergebnis: aquanox_zwischensequenzen.txt mit einer kommentierten
+             Originalsequenz und einer Vorlage zum Nachbauen.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+D4  NAVIGATION: WEGPUNKTE, PFADE, PATROUILLEN
+--------------------------------------------------------------------------------
+    Warum:   Ohne Pfade bewegt sich in einer eigenen Mission niemand.
+             Game_SetWayPoint kommt 115x vor, jede Mission legt einen
+             NOD_Directory "Navigation" an -- aber wie ein Pfad
+             tatsaechlich definiert wird, ist nicht aufgeschrieben.
+    Zu klaeren:
+             - Wie entsteht ein Pfad im Szenenbaum? Welche Knotenart?
+             - Wie unterscheiden sich MultiPatrol, ComplexGoto und
+               die einfachen Goto-Varianten?
+             - Was macht Game_SetWayPoint fuer den SPIELER (HUD-Marke)
+               im Unterschied zu Pfaden fuer die KI?
+             - Wie haengen die Pfade mit dem Radar zusammen?
+             - Die Beobachtung aus Abschnitt 120 (ComplexGoto ist bei
+               zwei Schiffen auf einem Pfad nicht zuverlaessig) --
+               laesst sich die Ursache im Dekompilat finden?
+    Ergebnis: aquanox_navigation.txt, Bauplan fuer eigene Pfade.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+D5  AUSRUESTUNG, WAFFEN UND SPIELERFORTSCHRITT
+--------------------------------------------------------------------------------
+    Warum:   Eine siebenteilige Kampagne braucht eine Kurve: womit
+             faengt der Spieler an, was bekommt er wann? Body_AddItem
+             ist gesichtet, das System dahinter nicht.
+    Zu klaeren:
+             - Wie ist ein Item definiert? (OSD-Werte, jetzt lesbar)
+             - Wie kommt Ausruestung an den Spieler -- per Skript, per
+               Haendler, per Missionsbelohnung?
+             - Gibt es einen Haendler, und wo ist sein Warenbestand?
+             - Wird Ausruestung zwischen Missionen mitgenommen? Wo
+               steht das?
+             - Welche Waffen gibt es, mit welchen Werten? (Grundlage
+               liegt in aquanox1_osd_werte.json)
+    Ergebnis: aquanox_ausruestung.txt + Ergaenzung der Werte-JSON.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+D6  DIE AQUANOX-2-ENGINE FINDEN UND VOLLSTAENDIG VERGLEICHEN
+--------------------------------------------------------------------------------
+    Warum:   an_diff.py steht, laeuft aber halb leer: die GOG-Fassung
+             von AN2 hat im Hauptordner nur einen 40-KB-Starter. Die
+             eigentliche Engine liegt woanders (vielleicht in einem
+             Unterordner, einem Archiv oder in Aquanox2Relevation\).
+    Zu klaeren:
+             - Wo ist die echte AN2-Programmdatei?
+             - Dann: welche Kommandos und Knotenklassen hat AN2, die
+               AN1 nicht hat -- und umgekehrt?
+             - Bestaetigt AN2 das Triggernetz-Modell? AN2 liefert
+               .scr-QUELLTEXTE mit, also unverfaelschte Vorlagen.
+    Ergebnis: an_diff.py arbeitet vollstaendig; Abschnitt 133 ("Was
+             AquaNox 2 besser kann") wird von Vermutung auf Messung
+             umgestellt.
+    Aufwand: klein bis mittel, hoher Hebel fuer alles Weitere.
+
+--------------------------------------------------------------------------------
+D7  DAS SPEICHERSTANDSFORMAT
+--------------------------------------------------------------------------------
+    Warum:   Praktisch: um eine Nachtschicht-Mission zu testen, muss
+             man nicht die halbe Kampagne spielen, wenn man den
+             Fortschritt setzen kann. C19 hat die Ansatzpunkte
+             gefunden, das Format nicht.
+    Zu klaeren:
+             - Wo legt die GOG-Fassung Speicherstaende ab?
+             - Wie ist der Kopf aufgebaut, wo steht die Missionsnummer?
+             - Steht die Ausruestung mit drin?
+             - Ist es dieselbe Struktur wie die .des-Dateien
+               (descook.py koennte passen)?
+    Ergebnis: aquanox_speicherstand.txt, im Idealfall ein Werkzeug
+             zum Setzen des Kampagnenfortschritts.
+    Aufwand: mittel, Ausgang offen.
+
+--------------------------------------------------------------------------------
+D8  BYTE 8 IM MATERIALKOPF -- DER LETZTE REST DES SCHIFFSPORTS
+--------------------------------------------------------------------------------
+    Warum:   Das aus AN2 portierte Schiff wird falsch dargestellt.
+             Der aktuelle Verdacht: Byte 8 im Materialkopf. AN1 hat
+             dort ausnahmslos 0, AN2 vierzehn verschiedene Werte.
+             Das ist die einzige offene Frage beim Modellimport.
+    Zu klaeren:
+             - Welche 14 Werte sind es, und welche AN2-Modelle nutzen
+               welchen?
+             - Korreliert der Wert mit sichtbaren Eigenschaften
+               (durchsichtig, leuchtend, zweiseitig, gespiegelt)?
+             - Was passiert, wenn man ihn beim Import auf 0 zwingt?
+               (Die Datei laesst sich schreiben, msb_write.py steht.)
+             - Gibt es in Aqua.exe eine Zeichenkette, die auf die
+               Bedeutung deutet?
+    Ergebnis: entweder die Bedeutung, oder eine belastbare Aussage,
+             dass es nicht daran liegt. Beides bringt weiter.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+D9  DER .col-BESCHLEUNIGUNGSBAUM
+--------------------------------------------------------------------------------
+    Warum:   Die Permutationsliste ist geknackt, die Baumstruktur
+             nicht -- sie hat variable Groesse. Solange sie offen ist,
+             lassen sich eigene Kollisionskoerper nicht sauber bauen.
+    Vorgehen: Vergleichende Analyse statt Raten. Die kleinsten
+             .col-Dateien nebeneinanderlegen, die zugehoerigen Meshes
+             (jetzt lesbar!) danebenhalten und die Groessen
+             gegeneinander rechnen. Ein Baum ueber N Dreiecke hat eine
+             vorhersagbare Knotenzahl.
+    Zu klaeren:
+             - Ist es ein AABB-Baum, ein Octree oder ein BSP?
+             - Wieviele Bytes pro Knoten, welche Felder?
+             - Laesst sich aus einem bekannten Mesh der Baum
+               nachrechnen und byte-gleich reproduzieren?
+    Ergebnis: entweder das Format, oder die begruendete Empfehlung,
+             stattdessen Test T14 (leerer Baum) abzuwarten.
+    Aufwand: gross, Ausgang offen -- die schwerste Aufgabe der Liste.
+
+--------------------------------------------------------------------------------
+D10 HUD, MENUES UND DAS SCHNELLGEFECHT
+--------------------------------------------------------------------------------
+    Warum:   Zwei Gruende. Erstens ist Instant Fight der schnellste
+             Weg, irgendetwas im Spiel zu sehen -- wer versteht, wie
+             instantfightlist~.des aufgebaut ist, kann eigene
+             Testszenarien eintragen. Zweitens braucht Nachtschicht
+             vermutlich eigene Menueeintraege.
+    Zu klaeren:
+             - Wie ist eine .des-Menuedatei aufgebaut? (descook.py
+               steht, das Schema ist aus C15 halb bekannt)
+             - Wie definiert instantfightlist~.des ein Gefecht?
+             - Laesst sich ein eigener Eintrag hinzufuegen -- und
+               liest die Engine die Anzahl aus der Datei, so wie
+               mission_d.des es mit NumOfMission tut?
+             - Welche HUD-Elemente gibt es, wo sind sie definiert?
+    Ergebnis: aquanox_menues.txt; im besten Fall ein eigener
+             Instant-Fight-Eintrag als Testrahmen fuer alles Weitere.
+    Aufwand: mittel.
+
+================================================================================
+NICHT AUF DIESER LISTE -- UND WARUM
+================================================================================
+    Mehrspielermodus zum Laufen bringen      braucht das Spiel  -> T16
+    Leerer .col-Baum ausprobieren            braucht das Spiel  -> T14
+    NumOfMission erhoehen                    braucht das Spiel  -> T15
+    NOD_Light an ein Schiff haengen          braucht das Spiel  -> T6
+    Raytracing nachruesten                   nicht analysierbar, und
+                                             nach heutigem Stand auch
+                                             nicht machbar
+
+================================================================================

@@ -1,0 +1,591 @@
+================================================================================
+AQUANOX 2: REVELATION -- ANALYSE FUER DAS MODDING VON TEIL 1
+Handoff-Datei, Version 2
+================================================================================
+Erstellt: 2026-07-27, Nachtarbeit im Anschluss an v1
+Vorgaenger: aquanox2_analyse_handoff_v1.txt (bleibt gueltig, ausser wo hier
+            ausdruecklich korrigiert)
+Bezug: aquanox_modding_handoff_v90.txt (AN1-Hauptreihe)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen
+(aquanox2_analyse_handoff_v3.txt usw.), nicht diese hier ueberschreiben.
+
+--------------------------------------------------------------------------------
+0. WAS IN DIESER RUNDE PASSIERT IST
+--------------------------------------------------------------------------------
+Zwei Dinge wurden versucht und mit klarem Ergebnis abgeschlossen:
+
+  A) SCHIFFSPORTIERUNG AN2 -> AN1 ist GESCHEITERT. Das Schiff erscheint, wird
+     aber falsch dargestellt (facettiert, ohne erkennbare Textur). Drei
+     Reparaturversuche haben nicht geholfen. Die Ursache ist NICHT gefunden --
+     aber der Suchraum ist stark eingegrenzt, und das .msb-Format ist dabei
+     erstmals vollstaendig entschluesselt worden (Abschnitt 2).
+
+  B) LEVELPORTIERUNG AN1 -> AN2 ist dagegen MACHBAR, und zwar besser als
+     erwartet. AN2 laedt AN1-Dateien unveraendert -- das ist nicht vermutet,
+     sondern belegt (Abschnitt 4). Mehr noch: AN2 hat eine fest eingebaute
+     Multiplayer-Kartenliste, die exakt AN1s MP-Level adressiert, und diese
+     Level fehlen in den AN2-PAKs vollstaendig (Abschnitt 5).
+
+KURZFASSUNG DER RICHTUNGEN:
+     AN1 -> AN2   funktioniert vermutlich ohne Konvertierung   (Abschnitt 4-6)
+     AN2 -> AN1   scheitert an der Darstellung, Ursache offen  (Abschnitt 1-3)
+
+--------------------------------------------------------------------------------
+1. DER GESCHEITERTE SCHIFFSPORT -- WAS GEPRUEFT UND AUSGESCHLOSSEN WURDE
+--------------------------------------------------------------------------------
+Testaufbau: Instant-Fight-Level auf Narrow, mehrere Boote nebeneinander,
+per Body_Freeze festgesetzt, ueber Body_SetNameKey beschriftet (die
+Namenstabelle dat\sty\narrow_names_d.des wurde dafuer erweitert -- das
+funktioniert und ist ein brauchbares Verfahren fuer eigene Objektnamen).
+
+Portiert wurde atl_police aus AN2 (Mesh, Kollision, 2 Texturen) auf ein OSD,
+das aus AN1s atl_pscout~.osd abgeleitet ist.
+
+ERGEBNIS aller drei Fassungen: gleich falsch dargestellt.
+  V1  AN2-Mesh + AN2-Texturen                      -> facettiert, untexturiert
+  V2  AN2-Mesh + AN1-Texturen (Namen im Mesh gepatcht) -> unveraendert falsch
+  V3  AN2-Mesh, Trailer auf AN1-Konvention          -> unveraendert falsch
+  V4  zusaetzlich Glaettungsgruppe gesetzt          -> liegt bereit, ungetestet
+
+AUSGESCHLOSSEN (jeweils mit Messung, nicht mit Vermutung):
+  * TEXTURFORMAT. Die DDS-Koepfe von atl_pscout_0.dds (AN1) und
+    atl_police_0.dds (AN2) sind ueber alle 128 Byte identisch: 512x512,
+    10 Mips, DXT3 bzw. DXT1, gleiche Flags, gleiche Pitch.
+  * TEXTURVERFUEGBARKEIT. V2 nutzt die bewaehrten AN1-Texturen und sieht
+    genauso falsch aus. Damit ist die Textur als Ursache raus.
+  * TEXTURANMELDUNG. Game_LoadTextures wird von KEINEM der 74
+    Original-Missionsskripte aufgerufen -- es gibt keinen Anmeldeschritt,
+    den wir uebersehen haetten.
+  * VERTEXDATEN. Beide Meshes: Diffusfarbe ausnahmslos 0xffffffff, das
+    Feld bei +36 hat in beiden 304 verschiedene Werte im Bereich 0..0x12f,
+    UV-Bereiche identisch, Normalen exakt Laenge 1.0, und die Bounding Box
+    ist auf drei Nachkommastellen dieselbe.
+  * DREIECKSANZAHL. Beide exakt 413.
+  * DER 8-BYTE-TRAILER. Siehe Abschnitt 3 -- ein echter Formatunterschied,
+    aber nachweislich nicht die Ursache.
+
+NOCH NICHT AUSGESCHLOSSEN:
+  * Die Glaettungsgruppe im Dreiecks-Flagwort (Abschnitt 3b). V4 liegt
+    eingespielt bereit und beantwortet das beim naechsten Durchlauf.
+  * Ein Materialfeld, das nur in einem einzigen Block abweicht
+    (Position +8 im Materialkopf: AN1=0, AN2=50).
+  * Etwas ausserhalb der Datei -- etwa eine Registrierung, die AN1 fuer
+    Meshes braucht, die nicht im Original-PAK-Bestand stehen.
+
+--------------------------------------------------------------------------------
+2. *** DAS .msb-FORMAT, VOLLSTAENDIG ENTSCHLUESSELT ***
+--------------------------------------------------------------------------------
+Das ist der bleibende Gewinn dieser Runde. Handoff-Abschnitt 6e der
+AN1-Hauptreihe kannte nur "40-Byte-Vertexlaeufe, Anfang per Inhaltssuche".
+Jetzt ist die ganze Struktur bekannt und an beiden Spielen verifiziert.
+
+DATEIKOPF (6 Byte)
+    +0  uint16   0x0200   Magic
+    +2  uint16   nBlocks  Anzahl Untermeshes
+    +4  uint16   0
+
+BLOCK (direkt hintereinander, nBlocks Stueck)
+    +0  uint16   0x0200   Blockmarker
+    +2  uint32   vCount   Anzahl Vertices
+    +6  uint32   tCount   Anzahl Dreiecke
+    +10          Vertex[vCount]      je 40 Byte
+                 Tri[tCount]         je  8 Byte
+                 Material[2]         je 80 Byte
+                 Abschluss           46 Byte
+
+VERTEX (40 Byte)
+    +0   3x float   Position
+    +12  3x float   Normale (immer exakt Laenge 1.0)
+    +24  uint32     Diffusfarbe (in allen geprueften Meshes 0xffffffff)
+    +28  2x float   UV
+    +36  uint32     Index auf die eindeutige Position -- bei atl_pscout
+                    716 Vertices, aber nur 304 verschiedene Werte 0..303.
+                    Das sind die an UV-Naehten aufgetrennten Vertices.
+
+DREIECK (8 Byte)
+    +0  uint16  Index 0
+    +2  uint16  Index 1
+    +4  uint16  Index 2
+    +6  uint16  Flagwort:
+                lo-Byte = BLOCK-ID. Pro Block konstant, und zwischen AN1 und
+                          AN2 IDENTISCH -- damit lassen sich die Bloecke
+                          beider Fassungen eindeutig einander zuordnen,
+                          auch wenn sie in anderer Reihenfolge gespeichert
+                          sind (bei atl_police sind 7 der 14 vertauscht).
+                hi-Byte = Glaettungsgruppe (Vermutung, siehe 3b)
+
+MATERIALSLOT (80 Byte, zwei pro Block)
+    +0   uint16   Flags (Slot 1: 0x0200, Slot 2: 0x0000)
+    +2   uint32   0xffffffff
+    +6   uint16   0
+    +8   uint16   0 bei AN1 / bei AN2 teilweise 50
+    +10  uint16   0xff00
+    +12  uint16   7
+    +14  float    1.0
+    +18  char[62] Texturname ohne Endung, mit 0 aufgefuellt
+                  (z.B. "atl_pscout_0" -> Datei vfx\tex\atl_pscout_0.dds)
+
+ABSCHLUSS (46 Byte)
+    +0   14 Byte  Kopf
+    +14  6x float Bounding Box (min xyz, max xyz)
+    +38  8 Byte   das ACHTFELD, siehe Abschnitt 3
+
+VERIFIKATION: Der Parser liest atl_pscout (14 Bloecke, 716 Vertices, 413
+Dreiecke) und atl_police (14 Bloecke, 766 Vertices, 413 Dreiecke)
+widerspruchsfrei; alle Dreiecksindizes liegen unter dem jeweiligen vCount,
+und die berechneten Materialoffsets treffen die Texturnamen exakt.
+
+WERKZEUG: mod_docu\tools\msb_an2_to_an1.py
+    parse_blocks(data)  -> Blockliste
+    analyse(data)       -> (Bloecke, AN1-Trailer, AN2-Trailer, sonstige)
+    convert(data)       -> Trailer auf AN1-Konvention, Laenge bleibt gleich
+    CLI: check <glob> | convert <quelle> <ziel>
+
+--------------------------------------------------------------------------------
+3. DIE BEIDEN FORMATUNTERSCHIEDE IM DETAIL
+--------------------------------------------------------------------------------
+3a) DAS ACHTFELD -- echter Unterschied, aber NICHT die Fehlerursache
+
+    AN1: 00 00 00 00 00 00 f0 3f   = double 1.0
+    AN2: 00 00 80 3f XX 00 00 00   = float 1.0 + neues uint32 (Werte 10..80)
+
+    AN2 hat den double auf float verkuerzt und die frei gewordenen 4 Byte
+    fuer ein neues Feld benutzt. AN1 liest die Stelle weiter als double und
+    bekommt ~1e-312, praktisch null.
+
+    BELEGDICHTE: in 25 AN1-Meshes steht dort 101 von 101 Mal exakt der
+    double 1.0. Bei atl_police dagegen 13 von 13 Mal die AN2-Form.
+
+    ABER: Das Umstellen aller 13 Trailer hat die Darstellung NICHT
+    veraendert. Und: AN1s eigenes Level mp_06_dm enthaelt selbst 3 Meshes
+    mit AN2-Trailer (neben 329 mit AN1-Trailer). Das Feld ist also
+    offenbar unkritisch. NICHT weiter verfolgen.
+
+3b) DAS hi-BYTE DES DREIECKSFLAGS -- der aussichtsreichste verbliebene Kandidat
+
+    Bei atl_pscout (AN1):  {1:49, 2:96, 3:112, 4:98, 6:58} -- KEIN einziges 0
+    Bei atl_police (AN2):  {0:351, 1:33, 2:23, 31:6}       -- ueberwiegend 0
+
+    Wenn 0 "keine Glaettungsgruppe" bedeutet, ergibt sich Flat-Shading --
+    genau das facettierte Aussehen im Screenshot.
+
+    WARNUNG AUS EIGENER ERFAHRUNG: Eine erste Gegenprobe schien das zu
+    widerlegen (angeblich 17 % Nullen auch in AN1). Diese Zahl kam aus einer
+    groben Heuristik, die die Dreiecksbereiche nur geschaetzt hat, und war
+    WERTLOS. Mit dem exakten Parser aus Abschnitt 2 ist das Bild eindeutig.
+    Lehre: keine Statistik ueber ein Format erheben, bevor der Parser steht.
+
+    Uebertragen lassen sich die AN1-Werte nicht: nur 1 von 14 Bloecken hat
+    identische Dreiecksindizes, und nur 15-25 % der Vertices sind byte-gleich.
+    Die Modelle sind doch merklich ueberarbeitet.
+
+    Geometrische Gegenprobe an AN1 Block 0: Gruppen 2, 3 und 6 haben 0-4 Grad
+    mittleren Normalenwinkel (passt zu Glaettung), Gruppe 4 aber 57,9 Grad bei
+    einem Blockdurchschnitt von 44,8 Grad (passt nicht). Die Deutung
+    "Glaettungsgruppe" ist also plausibel, aber nicht bewiesen.
+
+    STAND: Eine Fassung mit hi-Byte = 4 fuer alle 351 betroffenen Dreiecke
+    ist eingespielt und heisst im Spiel "AN2 REPARIERT". Ergebnis offen.
+
+--------------------------------------------------------------------------------
+4. *** BEWEIS: AN2 LAEDT AN1-DATEIEN UNVERAENDERT ***
+--------------------------------------------------------------------------------
+Methode: Alle 10.355 AN1-Dateien und alle 16.942 AN2-Dateien gehasht und
+verglichen.
+
+ERGEBNIS: 426 AN2-Dateien sind BYTE-IDENTISCH mit einer AN1-Datei.
+    .dds 231   .wav 97   .msb 57   .mp3 9   .col 8   .tga 7   .txt 7
+    .sco 7     .tse 3
+
+DIE 57 IDENTISCHEN MESHES sind der eigentliche Beweis, darunter:
+    vfx\msh\elt_asylum.msb          69.574 B
+    vfx\msh\pla_phobocaster.msb     46.302 B   (das AN1-Spielerschiff!)
+    vfx\msh\tz_pscout.msb           34.750 B
+    vfx\msh\mac_geb_habitat_big.msb 26.078 B
+    vfx\msh\atl_ec_triumph.msb      25.318 B
+    ... und 52 weitere
+
+UND: Von diesen gemeinsamen Meshes tragen ALLE 218 geprueften Bloecke den
+AN1-Trailer. AN2 nimmt AN1-Meshes also unveraendert entgegen.
+
+DIE 7 IDENTISCHEN SKRIPTE sind Bibliotheken:
+    dat\script\lib\camera.sco           2.129 B
+    dat\script\lib\misc.sco            26.594 B
+    dat\script\lib\oldone.sco           4.452 B
+    dat\script\lib\synchronization.sco  3.920 B
+    dat\script\lib\turret.sco           2.132 B
+    dat\script\lib\vehicleattack.sco    6.152 B
+    dat\script\lib\vesselattack.sco    17.419 B
+Die uebrigen 7 (dipol, dock, formation, glue, sensor, vehiclegoto,
+vesselgoto) wurden ueberarbeitet, sind aber namensgleich.
+
+=> Die Lua-Laufzeitumgebung ist zwischen beiden Spielen kompatibel.
+   AN2 ist Lua 4.0.1, AN1 ebenfalls; unser lua4dis laedt 12 von 12
+   geprueften AN2-Levelskripten mit byte-identischem Roundtrip.
+
+--------------------------------------------------------------------------------
+5. *** AN2 SUCHT NACH AN1s MULTIPLAYER-LEVELN ***
+--------------------------------------------------------------------------------
+In AN2.dat steht eine fest einkompilierte Kartenliste, umgeben von
+ANT_ServerInfo::RemoveMapName(), ANT_ServerInfo::SwapMapNames() und
+ANT_Console::CheckMaps() -- also die Multiplayer-Kartenverwaltung.
+Sie enthaelt paarweise Pfad und Kurzname:
+
+    map/mp_05_ctf/script/ctf_liberty     ctf_liberty
+    map/mp_06_dm/script/dm_narrow        dm_narrow
+    map/mp_07_ctf/script/ctf_vulcano     ctf_vulcano
+    map/mp_08/script/dm_vertical         dm_vertical
+    map/mp_09/script/dm_nightfall        dm_nightfall
+    map/mp_10/script/ctf_stream          ctf_stream
+    map/mp_11/script/dm_isolation        dm_isolation
+    map/mp_12/script/ctf_canyon          ctf_canyon
+    map/mp_13/script/dm_sightless        dm_sightless
+    map/mp_14/script/dm_industrial       dm_industrial     <- AN1 hat es nicht
+    map/mp_cellar/script/dm_cellar       dm_cellar         <- AN1 hat es nicht
+    map/mp_soccer/script/ctf_soccer      ctf_soccer        <- AN1 hat es nicht
+
+BEFUND: Die AN2-PAKs enthalten KEINES dieser Verzeichnisse. AN2 sucht also
+nach Leveln, die es selbst nicht mitbringt -- und neun davon liegen in AN1
+unter exakt demselben Pfad mit exakt demselben Skriptnamen.
+
+Die drei uebrigen (Industrial, Cellar, Soccer) hat keines der beiden Spiele.
+Vermutlich fuer einen Multiplayer-Patch geplant, der nie kam.
+
+WAS DAS BEDEUTET: Ein AN1-MP-Level in eine AN2-PAK zu legen ist der
+kuerzeste denkbare Portierungsweg -- kein Umbenennen, kein Eintragen,
+keine Konvertierung. Ob AN2s Multiplayer-Frontend die Karten dann auch
+anbietet, ist NICHT geprueft.
+
+--------------------------------------------------------------------------------
+6. LEVELAUFBAU IM VERGLEICH -- was ein Level ueberhaupt braucht
+--------------------------------------------------------------------------------
+STRUKTUR (in beiden Spielen gleich):
+    map\<level>\script\*.sco      Missionsskript
+                terrain\          terrain.des, material.des, hmap.tga, tmap_*.tga
+                fog\              fog.des, fog.fog, fog.tga
+                lmsh\             Levelgeometrie (.msb)
+                ltex\             Leveltexturen (.dds)
+    nur AN2:    cubemap\          envcubemap.dds (262.256 B)
+    nur AN2:    lmsh\*.vc         Vertexfarben
+
+WAS PFLICHT IST: nur script\. Alles andere ist optional.
+    cubemap fehlt bei 15 von 42 AN2-Leveln
+    terrain fehlt bei 12 von 42
+    .vc fehlt bei 89 lmsh-Meshes (alle in instant1)
+    Sechs AN2-Level bestehen aus einer EINZIGEN .sco-Datei:
+        6h2, 3n1, 5b1, 1n2, instant9, 4h5
+
+FORMATE, die zwischen beiden Spielen uebereinstimmen:
+    terrain.des  gleiche Felder UND gleiche Werte (Offset -4096,-4096,0;
+                 Scale 4,4,4; MaximumD2 100; RestrictedQuadTree 1;
+                 TriangulationMode 2). AN2 hat nur Kommentare ergaenzt.
+    material.des [Wrapping] mit W0..W3
+    fog.des      800 B, identische Struktur, nur andere Werte
+                 (AN1 Narrow: Opacity 0.04, ViewingDistance 250;
+                  AN2 1n1:    Opacity 0.3,  ViewingDistance 256)
+    fog.fog      beide exakt 1.048.596 B = 20 B Kopf + 1024*1024 Daten
+
+DIE .vc-DATEIEN SIND KLARTEXT:
+    [VertexColors]
+    {
+      V0 = 20.000
+      ...
+    }
+    Also notfalls selbst erzeugbar. Ob AN2 ohne sie dunkel rendert, ist
+    ungeprueft -- instant1 kommt jedenfalls ohne aus.
+
+--------------------------------------------------------------------------------
+7. AN2-PAKs SCHREIBEN -- geloest und vollstaendig verifiziert
+--------------------------------------------------------------------------------
+Die Schreibchiffre ist die exakte Umkehrung der Lesechiffre aus v1:
+
+    Kopf:    MAGIC(12) | uint16 version=3 | uint16 subversion=2 | uint32 count
+             | Copyright(60) | FOURCC(4)                 = 84 Byte
+    Eintrag: Name(128, verschluesselt) | uint32 Groesse(verschluesselt) = 132 B
+    Name:    enc[i] = dec[i] + KEY[((j-3)+i) % 64]
+             Das Padding hinter dem Namen bleibt ROH 0 -- nicht verschluesseln!
+             (Das war der einzige Stolperstein.)
+    Groesse: enc = size + u32(KEY[((j-3)+0x68) % 60])
+    Daten:   ab Offset 84 + count*132, in Verzeichnisreihenfolge
+
+VERIFIKATION: Alle fuenf Original-PAKs komplett nachgerechnet --
+16.942 von 16.942 Namen und 16.942 von 16.942 Groessen byte-identisch
+reproduziert. Dazu ein echter Schreib-Lese-Roundtrip mit vier Testdateien.
+
+EINGEBAUT in mod_docu\tools\pak_tool.py:
+    pak_tool.pack(entries, ziel, an2=True)
+Das AN1-Verhalten ist unveraendert (Regressionstest bestanden, aquanox6.pak
+liest sich weiterhin korrekt).
+
+--------------------------------------------------------------------------------
+8. AN2 ALS MODDING-ZIEL -- was dort geht
+--------------------------------------------------------------------------------
+MISSIONSREGISTRIERUNG: dat\sty\mission.des, 22.941 B, KLARTEXT, 49 Missionen.
+    [Mission0]
+    {
+        // 1H1
+        Key = 2
+        EngineScript = "map\1h1\script\1h1"
+        BriefingKey = 2
+        MovieUndock = "gui\movie\undock.usi"
+        MovieDock = "gui\movie\dock.usi"
+        [Goal0]
+        {
+            EngineID = 4
+            [RewardInventory] { }
+            RewardOption = 0
+        }
+    }
+    Felder insgesamt: 49x Key/EngineScript/BriefingKey/MovieUndock/MovieDock,
+    64 Goal-Bloecke, 33 BonusGoal-Bloecke, 97 RewardInventory.
+
+    => Eine eigene Mission einzutragen heisst: einen [MissionN]-Block
+       ergaenzen. Das ist genauso zugaenglich wie AN1s instantfightlist~.des.
+    => Instant Fights stehen in DERSELBEN Datei
+       (EngineScript = "map\instant1\script\instant1").
+    => Die acht Boss-Kaempfe teilen sich EIN Levelverzeichnis mit acht
+       verschiedenen Skripten (instant-boss\script\{fightclub,hank,chow,
+       mayling,hamlet,redbeard,shantyman,strega}). Mehrere Missionen pro
+       Level sind also vorgesehen.
+
+DOSTRING GIBT ES AUCH IN AN2. Die Fehlermeldung
+"`dostring' cannot run pre-compiled code" steht woertlich in AN2.dat,
+Lua 4.0.1. Unsere gesamte Authoring-Kette (mod_docu\tools\sco_lua.py)
+ist damit auch fuer AN2 brauchbar.
+
+KOMMANDOZEILENSCHALTER, die AN1 NICHT hat (43 gefunden, Auswahl):
+    -scriptsnoop     Skript-Debugging (steht direkt am [SCRIPTERROR]-Pfad)
+    -logscenegraph   Szenengraph ins Log
+    -compileusi      GUI-Dateien uebersetzen
+    -logcache        Cache-Protokoll
+    -logalloc        Speicherprotokoll
+    -windowsize      Fenstergroesse
+    -nologo          Vorspann ueberspringen
+    -dif_e/-dif_n/-dif_h/-dif_vh/-dif_ve   Schwierigkeitsgrad
+    -ship1..-ship4   Startschiff
+    -fuzzyhead -amitab -strega -drake      vermutlich die Cheatschalter
+                     (stehen als Viererblock direkt beieinander bei
+                      NOD_Game::NOD_Game; AN1s Gegenstueck ist -stendek)
+AN1-Schalter, die AN2 nicht hat: -stendek, -noterrain, -redrum, -connect,
+    -port, -password, -name, -maxplayers, -cdkey u.a.
+
+CHEATS in AN2 laut Textkonstanten: INDESTRUCTABLE ON/OFF, INVISIBLE ON/OFF,
+    MISSION COMPLETE AUTO/MANUAL, MISSION FAILED, TARGET TERMINATED KIN/EMP.
+
+KONSOLE: Console_Activate / Console_Deactivate / ConsoleWindow / ConsoleText
+    sind vorhanden -- AN2 hat eine eingebaute Konsole.
+
+PROXY-DLL: AN2 importiert DINPUT8.dll. Der Weg aus AN1-Handoff Abschnitt 119
+    (dinput8.dll als Proxy, Export-Weiterleitung) ist also uebertragbar.
+    AN2 rendert allerdings mit D3D9 (AN1: D3D8) -- Renderer-Hooks muessten
+    neu geschrieben werden.
+
+FRONTEND: AN2 hat KEIN dat\menu. Die Oberflaeche steckt in 131 .usi.bin
+    (kompilierte .usi-Dateien, per -compileusi erzeugbar). Menuemodding waere
+    damit deutlich aufwendiger als in AN1.
+
+--------------------------------------------------------------------------------
+9. KORREKTUREN AN VERSION 1
+--------------------------------------------------------------------------------
+(1) TEXTUREN BRINGEN KEINEN OPTIKGEWINN. v1 Abschnitt 7E vermutete hoehere
+    Aufloesungen in AN2. Gemessen an allen gemeinsam benannten Texturen:
+        gleich gross  352
+        kleiner        24
+        groesser        1   (nur tail-beam.dds, 128x128 -> 256x256)
+    Der Punkt ist damit erledigt.
+
+(2) DIE SCHIFFSPORTIERUNG (v1 Abschnitt 7B, Empfehlung 2) FUNKTIONIERT SO
+    NICHT. Der dort skizzierte Weg (OSD anpassen, Assets kopieren) ist
+    technisch korrekt und das Schiff erscheint auch -- aber es wird falsch
+    dargestellt. Siehe Abschnitt 1.
+
+(3) v1 nannte "96 nod_vessel-Definitionen mit Meshes, die AN1 fehlen" als
+    Hauptgewinn. Das bleibt richtig, ist aber wertlos, solange Abschnitt 3b
+    nicht geklaert ist.
+
+(4) NEU GEGENUEBER v1: die Waffenlage. AN1 hat 47 Waffen-OSDs, AN2 58,
+    davon 45 gemeinsam. Nur in AN2: bul_nailgun_p/_s, tor_rocket_p/_s,
+    tor_key und acht generische bul_npc_generic00..07.
+    Nur in AN1: tor_default, tor_homing.
+    Bei den Effekten ist der Abstand groesser: AN1 111 FX-Definitionen,
+    AN2 325 (viele neue emi_*-Emitter pro Waffe).
+
+--------------------------------------------------------------------------------
+10. WERKZEUGE, DIE IN DIESER RUNDE ENTSTANDEN SIND
+--------------------------------------------------------------------------------
+mod_docu\tools\msb_an2_to_an1.py
+    Vollstaendiger .msb-Parser (Abschnitt 2) plus Trailer-Konverter.
+    check <glob>  zeigt je Mesh, welche Trailerform vorliegt.
+
+mod_docu\tools\level_an1_to_an2.py
+    Packt ein AN1-Levelverzeichnis in eine AN2-taugliche PAK.
+    check <level>  meldet Dateizahl, Typen, ob AN2 das Level bereits kennt,
+                   und wie die Mesh-Trailer verteilt sind.
+    build <level> <ziel.pak>   schreibt die PAK.
+    NICHT AUSGEFUEHRT -- schreibt in den AquaNox-2-Ordner, das ist eine
+    Entscheidung des Nutzers.
+
+mod_docu\tools\pak_tool.py
+    pack(..., an2=True) ergaenzt (Abschnitt 7).
+
+--------------------------------------------------------------------------------
+11. *** AN2s RENNMISSION SEZIERT -- direkt auf AN1 anwendbar ***
+--------------------------------------------------------------------------------
+map\instant2\script\instant2.sco (185.880 B, 498 Protos) im Detail.
+
+11a) DER FUND MIT DEM GROESSTEN PRAKTISCHEN WERT: MoveFriction
+
+Alle drei Rennschiffe (atl_scout2_race, gen_avenger_race, gen_toiler_race)
+binden dieselbe Datei ein:  vfx\osd\inc_control\control_scout_race.osd
+
+    [Control]
+    {
+        MovePV        = 41.0     MoveNV        = 30.0     MoveT  = 1.0
+        StrafeHorrVel = 5.0      StrafeHorrT   = 2.0
+        StrafeVertVel = 5.0      StrafeVertT   = 2.0
+        TurnPV        = 90.0     TurnNV        = 90.0
+        TurnT         = 0.5      TurnR         = 0.4
+        SwingT        = 20.0     SwingA        = 0.6
+        MoveFriction  = 10.0, 10.0, 10.0        <<<<<<<<<<
+        TurnFriction  = 0.0, 0.0, 0.0
+    }
+
+MoveFriction 10.0 ist das HUNDERTFACHE von AN1s ueblichem Wert:
+    AN1 atl_pscout      MoveFriction = 0.1, 0.1, 0.1
+    AN1 nv_pscout       MoveFriction = 0.1, 0.1, 0.1
+    AN2 atl_police      MoveFriction = 0.1, 0.1, 0.1   (normales NPC-Schiff)
+    AN2 Rennschiffe     MoveFriction = 10.0, 10.0, 10.0
+
+=> Massive hat fuer den Rennbetrieb die Bewegungsdaempfung massiv erhoeht.
+   Hohe Reibung heisst: das Schiff traegt nicht nach, Kursaenderungen wirken
+   sofort, Uebersteuern faellt weg.
+
+DAS IST DIE VERMUTLICHE ANTWORT AUF UNSER KI-PROBLEM. In unserem AN1-Rennen
+"fuhren die Gegner Kreise, torkelten herum, wie besoffen" (Rueckmeldung des
+Nutzers). Der Gegenversuch ueber Body_SetCS pro Tick liess sie durchs Terrain
+fliegen und war schlechter. Eine dritte Moeglichkeit wurde nie probiert:
+einfach ein eigenes Renn-OSD mit MoveFriction 10.0 anlegen und die KI
+weiter normal per ComplexGoto/Patrol fahren lassen.
+
+DIE AUSGANGSWERTE UNSERER BEIDEN RENN-KIs (gemessen):
+    gen_phobocaster_inst   MoveFriction = 0.09, 0.04, 0.12
+                           MovePV 50   MoveNV 35   TurnPV 270 (!)
+                           TurnT 1.0   SwingT 10   SwingA 0.01
+    gen_toiler_inst        MoveFriction = 0.04, 0.03, 0.06
+                           MovePV 32   MoveNV 22   TurnPV 90
+                           TurnT 1.5   SwingT 5    SwingA 0.2
+
+TurnPV 270 beim Phobocaster ist extrem drehfreudig -- 90 Grad/s waeren
+normal, AN2s Rennschiffe nutzen ebenfalls 90. Eine so wendige Zelle ohne
+nennenswerte Bewegungsdaempfung erklaert das beobachtete Kreisen und
+Uebersteuern zwanglos.
+
+ERLEDIGT: Zwei neue OSDs liegen bereits in aquanox6.pak, rein additiv,
+das bestehende Rennen ist unveraendert:
+    vfx\osd\gen\gen_phobocaster_race~.osd    MoveFriction 10,10,10
+    vfx\osd\gen\gen_toiler_race~.osd         MoveFriction 10,10,10
+(sonst identisch zum Original, nur namenod angepasst)
+
+AKTIVIEREN: im Rennskript sp_1n1race.sco
+    G_AIShips = {"osd/gen/gen_phobocaster_inst.osd", "osd/gen/gen_toiler_inst.osd"}
+ersetzen durch
+    G_AIShips = {"osd/gen/gen_phobocaster_race.osd", "osd/gen/gen_toiler_race.osd"}
+Falls 10.0 zu zaeh wirkt, sind Zwischenwerte (1.0 / 3.0) einen Versuch wert;
+ebenso TurnPV 270 -> 90 beim Phobocaster.
+
+11b) SICHTBARE TORE -- AN1 hat alles dafuer
+
+AN2 baut die Strecke aus acht Wegpunkten, jeder mit dem vollen Satz:
+    WayPoint_Attach        8x
+    WayPoint_SetTakeKey_Enter / _Inside / _Leave / _Outside / _Activate  je 8x
+    Game_SetWayPoint       8x
+    WayPoint_SetRadius     1x  (im Aufbau-Proto)
+Knotennamen: nav_waypoint_1, nav_nextwaypoint_1..6, nav_nextwaypoint_finish
+Klasse: nod_waypoint, OSDs osd/nav/nav_waypoint.osd und nav_nextwaypoint.osd
+
+AN1s Gegenstueck vfx\osd\nav\nav_waypoint_01~.osd ist jetzt vollstaendig
+gelesen und enthaelt genau dieselbe Struktur:
+
+    [sed]      class   = "nod_waypoint_v3"
+    [class]    namecla = "nod_waypoint"   namenod = "waypoint"
+    [visual]   m0      = "hud_waypoint.msh"    l0 = 512.0
+    [waypoint]
+        activate_takekey = 703
+        enter_takekey    = 0        leave_takekey  = 0
+        inside_count     = 1        inside_takekey0..7 = 0
+        inside_delay     = 10.0
+        outside_count    = 1        outside_takekey0 = 704
+                                    outside_takekey1 = 705
+        outside_delay    = 30.0
+    [child0]   nod_halo, Textur vfx\tex\fx\glow02,
+               Skalierung 24x24, Farbe (1, 1, 0) = gelb, Opazitaet 1
+
+=> Ein AN1-Wegpunkt ist ein fertiges, sichtbares Objekt mit eigenem Mesh und
+   gelbem Leuchten. Fuer Renn-Tore muss nichts gebaut, nur benutzt werden:
+   Node_CreateNode("nod_waypoint", name) + Node_ParseIniFile auf
+   "osd/nav/nav_waypoint_01.osd" + Position + WayPoint_SetRadius.
+   Die takekey-Felder verweisen auf Eintraege der Textdatenbank; ueber
+   WayPoint_SetTakeKey_Enter laesst sich das im Skript umbiegen.
+
+11c) WAS AN1 AN DIESEM SKRIPT FEHLT
+Von 93 kommandoartigen Namen in instant2 fehlen AN1 nur 13 echte Kommandos
+(die restlichen 25 "Fehltreffer" sind Klassennamen wie NOD_Path, NOD_Trigger,
+Knotennamen wie AtlScoutPath_1 oder Zustandsnamen wie SetStateValue_Born):
+    Game_PrimaryObjectiveReached / _Failed
+    Game_SetCausticTerrainNormal / _Micro
+    Game_SetCausticBuildingNormal / _Micro
+    Game_SetCausticObjectNormal
+    Game_SetDecompressionRange
+    Game_SetEnvironmentCubeMap
+    Game_SetNPCHitFactor
+    ShieldedBody_SetFriendlyFireMode
+    SED_SetTaskTextKey
+    StopAllActiveBehaviours_AndCall
+Alles davon ist Optik oder Zielsystem -- die eigentliche Rennmechanik
+(Wegpunkte, Pfade, Trigger, Patrouillen) benutzt ausschliesslich Kommandos,
+die AN1 ebenfalls hat.
+
+--------------------------------------------------------------------------------
+12. EMPFEHLUNG
+--------------------------------------------------------------------------------
+(0) DAS BILLIGSTE UND LOHNENDSTE ZUERST: MoveFriction 10.0 fuer die
+    Renn-KI (Abschnitt 11a). Ein einziger Zahlenwechsel in einem OSD,
+    kein Formatrisiko, und die begruendete Aussicht, das seit Wochen
+    offene "Torkeln" der Gegner zu beheben -- weil Massive im eigenen
+    Rennmodus genau das getan hat.
+
+(1) SCHIFFSPORT: Das Ergebnis von "AN2 REPARIERT" (hi-Byte = 4) abwarten.
+    Bleibt es falsch, den Weg aufgeben. Der Aufwand steht in keinem
+    Verhaeltnis -- fuer Nachtschicht braucht AN1 keine AN2-Schiffe, und
+    fuer atl_police schon gar nicht (AN1s atl_pscout ist dasselbe Schiff mit
+    716 statt 766 Vertices).
+
+(1b) SICHTBARE RENN-TORE (Abschnitt 11b). AN1 hat die Klasse, die OSDs und
+    das Mesh bereits an Bord; es ist reine Skriptarbeit.
+
+(2) LEVELPORTIERUNG AN1 -> AN2: Das ist die lohnende Richtung, und sie ist
+    billig zu testen. Vorschlag: mp_13 (dm_sightless), 24 Dateien, 11,8 MB,
+    3 Meshes, alle mit AN1-Trailer.
+        python mod_docu\tools\level_an1_to_an2.py build mp_13 data5.pak
+        Datei nach Aquanox2Relevation\pak\ kopieren (Ordner vorher sichern)
+        AN2 starten, Multiplayer, nach "dm_sightless" sehen
+    Faellt das positiv aus, ist der Weg fuer alle neun MP-Level offen --
+    und damit grundsaetzlich fuer eigene Level in AN2.
+
+(3) NICHT EMPFEHLENSWERT: AN2s Frontend anfassen (.usi.bin), oder AN2.dat
+    disassemblieren. Beides ist Aufwand ohne absehbaren Nutzen fuer
+    Nachtschicht.
+
+OFFEN UND UNGEPRUEFT:
+    * Ob AN2s Multiplayer-Frontend ueberhaupt erreichbar ist (kein Server,
+      GOG-Fassung, keine Netzwerkschalter in der Schalterliste).
+    * Ob ein AN1-Level in AN2 ohne .vc korrekt beleuchtet wird.
+    * Ob AN1s Skripte in AN2 laufen -- die Bibliotheken passen, aber die
+      sieben ueberarbeiteten (glue, sensor, formation, dock, dipol,
+      vesselgoto, vehiclegoto) koennten sich anders verhalten.
+    * .ssc (1 Datei, 5,3 MB), .scr (15), .fnt (87), .usi.bin (131).
+
+================================================================================
+ENDE -- Version 2
+================================================================================

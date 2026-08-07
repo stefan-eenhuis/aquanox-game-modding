@@ -1,0 +1,401 @@
+{
+ "game": "AquaNox 1 (2001)",
+ "description": "Skript-API (Lua 4.0 -> KRASS-Engine), aus der GOG-Aqua.exe extrahiert und gegen tatsächliche Skript-Nutzung verifiziert. 209 Funktionen/Konstanten in Subsystemen.",
+ "subsystems": {
+  "Body": {
+   "purpose": "Physik-Objekt: Position/Ausrichtung, Schilde (KIN/EMP/BIO), Items/Cargo, Friend-or-Foe",
+   "count": 32,
+   "functions": [
+    "Body_ActivateEscapePod",
+    "Body_ActivateShieldGuard",
+    "Body_AddItem",
+    "Body_BioShieldBarrierReached",
+    "Body_DeactivateShieldGuard",
+    "Body_EmpShieldBarrierReached",
+    "Body_EnemyArrival",
+    "Body_EnemyArrivalPatrol",
+    "Body_EscapePodEjected",
+    "Body_Freeze",
+    "Body_GetPosition",
+    "Body_InformEnemies",
+    "Body_InformEnemyPatrol",
+    "Body_InformShotHit",
+    "Body_KinShieldBarrierReached",
+    "Body_ObjectDestroyed",
+    "Body_RejectEnemies",
+    "Body_RejectEnemyPatrol",
+    "Body_RejectShotHits",
+    "Body_RequestEmpInfo",
+    "Body_RequestKinInfo",
+    "Body_RequestShotHits",
+    "Body_SetCS",
+    "Body_SetCargoKey",
+    "Body_SetEmpShield",
+    "Body_SetFriendOrFoeID",
+    "Body_SetKineticShield",
+    "Body_SetNameKey",
+    "Body_SetOrientation",
+    "Body_SetPosition",
+    "Body_StartEscapeBehaviour",
+    "Body_StopEscapeBehaviour"
+   ]
+  },
+  "Game": {
+   "purpose": "Welt/Mission: Atmosphäre (Licht/Fog/Caustics), Musik, Lade-Progress, MissionEnd, Enemy-Matrix, Waypoints",
+   "count": 26,
+   "functions": [
+    "Game_GetEnemyMatrixElement",
+    "Game_LoadFog",
+    "Game_LoadMTake",
+    "Game_LoadMusic",
+    "Game_LoadProgress_Advance",
+    "Game_LoadProgress_Enter",
+    "Game_LoadProgress_Leave",
+    "Game_LoadTextTable",
+    "Game_LoadTextures",
+    "Game_MissionEnd",
+    "Game_PlayMusic",
+    "Game_ResetEnemyMatrix",
+    "Game_SendRadioMessageTake",
+    "Game_SetAmbientLight",
+    "Game_SetCausticBuilding",
+    "Game_SetCausticObject",
+    "Game_SetCausticTerrain",
+    "Game_SetDecompressionHeight",
+    "Game_SetEnemyMatrixElement",
+    "Game_SetFog",
+    "Game_SetLightCache",
+    "Game_SetParallelLightB",
+    "Game_SetParallelLightT",
+    "Game_SetTaskTextKey",
+    "Game_SetTerrainDepth",
+    "Game_SetWayPoint"
+   ]
+  },
+  "Vessel": {
+   "purpose": "Schiffs-KI (dynamisch): Angriff, Patrouille, Goto, Eskorte, Infiltration, Sinken",
+   "count": 21,
+   "functions": [
+    "Vessel_AttackPatrol",
+    "Vessel_AttackTurrets",
+    "Vessel_AttackTurretsStop",
+    "Vessel_AvoidanceObjects",
+    "Vessel_CollisionObjects",
+    "Vessel_CollisionTerrain",
+    "Vessel_DeactivateTurningInEmp",
+    "Vessel_DipolIn",
+    "Vessel_DipolOut",
+    "Vessel_Escort",
+    "Vessel_FinalizeInfiltrate",
+    "Vessel_Goto",
+    "Vessel_GotoFromPosition",
+    "Vessel_GotoFromTo",
+    "Vessel_Infiltrate",
+    "Vessel_Patrol",
+    "Vessel_PseudoExplode",
+    "Vessel_Sink",
+    "Vessel_Stop",
+    "Vessel_StopWithHeading",
+    "Vessel_SuspendCollisionReaction"
+   ]
+  },
+  "Trigger": {
+   "purpose": "Sensoren: Presence/Acoustic/Visible Enter/Leave",
+   "count": 14,
+   "functions": [
+    "Trigger_ActivateSensor",
+    "Trigger_EnterAcoustic",
+    "Trigger_EnterPresence",
+    "Trigger_EnterVisible",
+    "Trigger_LeaveAcoustic",
+    "Trigger_LeavePresence",
+    "Trigger_LeaveVisible",
+    "Trigger_SetAcousticSensibility",
+    "Trigger_SetBoxMode",
+    "Trigger_SetInterestList",
+    "Trigger_SetPresenceSphere",
+    "Trigger_SetVisibilityBlockingStatus",
+    "Trigger_SetVisibilityCone",
+    "Trigger_StopSensor"
+   ]
+  },
+  "Camera": {
+   "purpose": "Cinematische Kamera: Cut, LookAt/From, MoveTo, Zoom, Shake",
+   "count": 11,
+   "functions": [
+    "Camera_Cut",
+    "Camera_LookAhead",
+    "Camera_LookAt",
+    "Camera_LookFrom",
+    "Camera_MoveInto",
+    "Camera_MoveTo",
+    "Camera_RollTo",
+    "Camera_SetBackPlane",
+    "Camera_ShakeHit",
+    "Camera_ZoomAt",
+    "Camera_ZoomTo"
+   ]
+  },
+  "Vehicle": {
+   "purpose": "Fahrzeug-KI (Variante von Vessel)",
+   "count": 11,
+   "functions": [
+    "Vehicle_AttackPatrol",
+    "Vehicle_AvoidanceObjects",
+    "Vehicle_CollisionObjects",
+    "Vehicle_DipolIn",
+    "Vehicle_Goto",
+    "Vehicle_GotoFromPosition",
+    "Vehicle_GotoFromTo",
+    "Vehicle_ParkPatrol",
+    "Vehicle_Patrol",
+    "Vehicle_Stop",
+    "Vehicle_StopWithHeading"
+   ]
+  },
+  "NOD": {
+   "purpose": "Node-Klassen (Typen für Node_CreateNode)",
+   "count": 10,
+   "functions": [
+    "NOD_Camera",
+    "NOD_Director",
+    "NOD_Directory",
+    "NOD_FX_Stream",
+    "NOD_NodeRef",
+    "NOD_Path",
+    "NOD_PatrolArea",
+    "NOD_Position",
+    "NOD_Scenario",
+    "NOD_Trigger"
+   ]
+  },
+  "Script": {
+   "purpose": "Skript-Verwaltung: Timer, Threads, Logging, Fehler",
+   "count": 10,
+   "functions": [
+    "Script_BindThread",
+    "Script_DoFile",
+    "Script_Error",
+    "Script_GetFunctionName",
+    "Script_GetLineNumber",
+    "Script_IsNodeRefValid",
+    "Script_Log",
+    "Script_LogRaw",
+    "Script_SetTimer",
+    "Script_StopTimer"
+   ]
+  },
+  "Node": {
+   "purpose": "Szenegraph: Knoten erzeugen/finden/verketten, Simulation betreten",
+   "count": 9,
+   "functions": [
+    "Node_AddSon",
+    "Node_CreateNode",
+    "Node_EnterSimulation",
+    "Node_Find",
+    "Node_GetName",
+    "Node_GetPath",
+    "Node_GetTime",
+    "Node_LeaveSimulation",
+    "Node_ParseIniFile"
+   ]
+  },
+  "ShieldedBody": {
+   "purpose": "Schild-Detailsteuerung (koppeln, verwundbar/unverwundbar, selektiv)",
+   "count": 8,
+   "functions": [
+    "ShieldedBody_CoupleFather",
+    "ShieldedBody_DeactivateSelectiveVulnerability",
+    "ShieldedBody_DeepDestruct",
+    "ShieldedBody_MakeInvulnerable",
+    "ShieldedBody_MakeSelectiveVulnerableAgainst",
+    "ShieldedBody_MakeVulnerable",
+    "ShieldedBody_SetLogarithmicMode",
+    "ShieldedBody_SetLogarithmicModeStop"
+   ]
+  },
+  "WayPoint": {
+   "purpose": "Wegpunkte + zugeordnete Dialog-Takes",
+   "count": 7,
+   "functions": [
+    "WayPoint_Attach",
+    "WayPoint_SetRadius",
+    "WayPoint_SetTakeKey_Activate",
+    "WayPoint_SetTakeKey_Enter",
+    "WayPoint_SetTakeKey_Inside",
+    "WayPoint_SetTakeKey_Leave",
+    "WayPoint_SetTakeKey_Outside"
+   ]
+  },
+  "PatrolArea": {
+   "purpose": "Patrouillen-Zonen (Position/Radius/Z-Grenzen)",
+   "count": 6,
+   "functions": [
+    "PatrolArea_BindNode",
+    "PatrolArea_GetDiameter",
+    "PatrolArea_SetMaxZ",
+    "PatrolArea_SetMinZ",
+    "PatrolArea_SetPosition",
+    "PatrolArea_SetRadius"
+   ]
+  },
+  "TORPEDO": {
+   "purpose": "Konstanten: Torpedo-Typen",
+   "count": 6,
+   "functions": [
+    "TORPEDO_BULLSHARK",
+    "TORPEDO_FLASHSHARK",
+    "TORPEDO_MANEATER",
+    "TORPEDO_STANLEY",
+    "TORPEDO_THRESHERSHARK",
+    "TORPEDO_TIGERSHARK"
+   ]
+  },
+  "GUN": {
+   "purpose": "Konstanten: Kanonen",
+   "count": 4,
+   "functions": [
+    "GUN_DOOMMORTAR",
+    "GUN_PLASMAGATLIN",
+    "GUN_TORPEDOLAUNCHER",
+    "GUN_VENDETTAGATLIN"
+   ]
+  },
+  "Position": {
+   "purpose": "Positions-Knoten",
+   "count": 4,
+   "functions": [
+    "Position_GetPosition",
+    "Position_SetCS",
+    "Position_SetPosition",
+    "Position_SetRadius"
+   ]
+  },
+  "Stream": {
+   "purpose": "Strömung (Richtung/Geschwindigkeit/Turbulenz)",
+   "count": 4,
+   "functions": [
+    "Stream_SetBoxExtension",
+    "Stream_SetCurrentDirection",
+    "Stream_SetCurrentSpeed",
+    "Stream_SetTurbulenceFrequency"
+   ]
+  },
+  "Turret": {
+   "purpose": "Geschütztürme: Angriff, Patrouille, Winkelbereich",
+   "count": 4,
+   "functions": [
+    "Turret_ComplexAttack",
+    "Turret_Patrol",
+    "Turret_SetAcousticMode",
+    "Turret_SetAngleArea"
+   ]
+  },
+  "ItemBox": {
+   "purpose": "Item-Pickups (Anzahl/Respawn)",
+   "count": 3,
+   "functions": [
+    "ItemBox_SetItemCount",
+    "ItemBox_SetRespawnCount",
+    "ItemBox_SetRespawnDelay"
+   ]
+  },
+  "AMMO": {
+   "purpose": "Konstanten: Munition",
+   "count": 2,
+   "functions": [
+    "AMMO_ENERGY",
+    "AMMO_SHELL"
+   ]
+  },
+  "Character": {
+   "purpose": "Pilot/Charakter-Animation",
+   "count": 2,
+   "functions": [
+    "Character_StartAnimation",
+    "Character_StopAnimation"
+   ]
+  },
+  "DEVICE": {
+   "purpose": "Konstanten: Geräte",
+   "count": 2,
+   "functions": [
+    "DEVICE_BOOSTER",
+    "DEVICE_REPAIR"
+   ]
+  },
+  "Director": {
+   "purpose": "Cutscene-Steuerung",
+   "count": 2,
+   "functions": [
+    "Director_BeginCutscene",
+    "Director_EndCutscene"
+   ]
+  },
+  "Gun": {
+   "purpose": "Bullet-Typen",
+   "count": 2,
+   "functions": [
+    "Gun_SetDogBullet",
+    "Gun_SetSniperBullet"
+   ]
+  },
+  "LaserWall": {
+   "purpose": "Laser-Barrieren",
+   "count": 2,
+   "functions": [
+    "LaserWall_SetWallExtensionX",
+    "LaserWall_SetWallExtensionZ"
+   ]
+  },
+  "BUZZER": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "BUZZER_NORMAL"
+   ]
+  },
+  "FX": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "FX_Plant_SetMap"
+   ]
+  },
+  "ParticleEmitter": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "ParticleEmitter_SetCone"
+   ]
+  },
+  "Path": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "Path_GetPositionOrientation"
+   ]
+  },
+  "Player": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "Player_SuppressFF"
+   ]
+  },
+  "Scenario": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "Scenario_Dynamic"
+   ]
+  },
+  "Terrain": {
+   "purpose": "",
+   "count": 1,
+   "functions": [
+    "Terrain_LoadTerrain"
+   ]
+  }
+ }
+}

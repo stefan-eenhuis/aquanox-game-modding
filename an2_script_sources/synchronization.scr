@@ -1,0 +1,331 @@
+--------------------------------------------------------------------
+-- This file implements the library for a counting semaphore
+-- a barrier and a switch.
+--------------------------------------------------------------------
+
+
+-- This is a single semaphore, that is in raw format.
+LSYNC_Semaphore = 
+{
+	-- The maximum number of entries the semaphore contains.
+	MaxNumOfEntries = 0,
+	-- The actual number of objects that are holding the semaphore.
+	ActualNumOfEntries = 0,
+	-- The position, where a candidate in the waiting list should be inserted.
+	InsertPosition = 0,
+	-- The position, where a candidate in the waiting list should be removed.
+	RemovePosition = 0,
+	-- The callback that should be evokes by the thread, whena semaphore is released.
+	CallBack = "",
+	-- The list with the threads that actually are holding a semaphore.
+	ListOfHolders = {},
+	-- The list with objects, that are waiting for beeing entered.
+	ListOfWaiters = {}
+}
+
+-- Here comes the indicatioin for the barrier.
+LSYNC_Barrier =
+{
+	-- The number of threads we wait for to reach
+	MaxNumOfEntries = 0,
+	-- The actual entries, that have reached the barrier.
+	NumOfEntries = 0,
+	-- The list with the threads contained in the barrier.
+	ListOfThreads = {},
+	-- The name of the function that should be called for every barrier.
+	CallBack = ""
+}
+
+LSYNC_Switch = 
+{
+	-- The maximum number of values, when to activate the switch.
+	MaxNumOfEntries = 0,
+	-- The actual number of entries.
+	NumOfEntries = 0,
+	-- The thread to trigger, when a position has been reached.
+	ThreadInform = {},
+	-- The callbck of the thread that should be activated.
+	CallBack = "" 
+}
+
+
+-- This library defines the functionality of the synchronization stuff.
+LibList.Synchronization_Basis = 
+{
+	----------------------------------------------------------------------------
+	-- Here comes the semaphore stuff.
+	----------------------------------------------------------------------------
+	
+	
+	-- PURPOSE
+	-- This method creates a new semaphore structure.
+	CreateSemaphore = function
+	(
+	MaxEntries,		-- The number of entries the semaphore may old. 
+	CallBack		-- The activation callback, when a semaphore is freed.
+	)		
+		local semaphore
+		
+		semaphore = CloneTable(LSYNC_Semaphore)
+		semaphore.MaxNumOfEntries = MaxEntries
+		semaphore.CallBack = CallBack
+		semaphore.ListOfHolders = {}
+		semaphore.ListOfWaiters = {}
+		return semaphore
+	end,
+	
+	
+	-- PURPOSE
+	-- This emthod requests a certain semaphore from the list.
+	-- As soon as there are some free capacities, the capacities are freed, 
+	LockSemaphore = function
+	(
+	State, 
+	Semaphore		-- The semaphore we want to lock.
+	)
+		local thread = State.Thread
+		
+		-- A check, whether we are already in one of the lists.
+		if ((Semaphore.ListOfHolders[thread] ~= nil) or (Semaphore.ListOfWaiters[thread] ~= nil)) then
+			Script_LogRaw("[SCRIPTERROR] [" .. Script_GetLineNumber(2) .. "] RequestSemaphore - Semaphore already requested")
+			return
+		end
+		-- First we check, if there is some place on the semaphore.
+		if (Semaphore.ActualNumOfEntries < Semaphore.MaxNumOfEntries) then
+			-- In this case we may activate the object directly.
+			Semaphore.ActualNumOfEntries = Semaphore.ActualNumOfEntries + 1
+			Semaphore.ListOfHolders[thread] = thread
+			-- We immediately notify the thread
+			CallFunction(thread, Semaphore.CallBack, nil)
+		else
+			-- We have to register the thread with the list of waiters.
+			Semaphore.ListOfWaiters[Semaphore.InsertPosition] = thread
+			Semaphore.InsertPosition = Semaphore.InsertPosition + 1
+		end
+	end,
+	
+	
+	-- PURPOSE
+	-- This method releases a semaphore. If there are threads waiting for
+	-- the semaphore, one of the threads is released.
+	FreeSemaphore = function
+	(
+	State, 
+	Semaphore		-- The semaphore we want to free.
+	)
+		local thread = State.Thread
+		local threadNew
+		local counter
+		
+		
+		-- First we check, if we are actually holding the semaphore.
+		if (Semaphore.ListOfHolders[thread] ~= thread) then
+			-- In this case, we might be in the waiting list of it.
+			counter = Semaphore.RemovePosition
+			while ((counter <= Semaphore.InsertPosition) and (Semaphore.ListOfWaiters[counter] ~= thread)) do
+				counter = counter + 1
+			end
+			
+			-- Now we see, if we have found the necessarry data
+			if (counter  > Semaphore.InsertPosition) then
+				return
+			end
+			
+			-- We have found the entrs and copy the rest of it down.
+			while (counter < Semaphore.InsertPosition) do
+				Semaphore.ListOfWaiters[counter] = Semaphore.ListOfWaiters[counter + 1]
+				counter = counter + 1
+			end
+			
+			Semaphore.ListOfWaiters[Semaphore.InsertPosition] = nil
+			Semaphore.InsertPosition = Semaphore.InsertPosition - 1
+			-- Thats it.
+			return 
+		end
+		
+		-- We remove the semaphore from the list of holders.
+		Semaphore.ListOfHolders[thread] = nil
+		Semaphore.ActualNumOfEntries = Semaphore.ActualNumOfEntries - 1
+		-- If the waiting list is empty, we can return
+		if (Semaphore.InsertPosition == Semaphore.RemovePosition) then
+			return
+		end
+		-- We activate the last thread.
+		threadNew = Semaphore.ListOfWaiters[Semaphore.RemovePosition]
+		-- Clean up the stuff
+		Semaphore.ListOfWaiters[Semaphore.RemovePosition] = nil
+		Semaphore.RemovePosition = Semaphore.RemovePosition + 1
+		-- We activate the corresponding thread.
+		Semaphore.ListOfHolders[threadNew] = threadNew
+		Semaphore.ActualNumOfEntries = Semaphore.ActualNumOfEntries + 1
+		-- We inform the thread, that we activated him
+		CallFunction(threadNew, Semaphore.CallBack, nil)
+	end,
+	
+	
+	
+	----------------------------------------------------------------------------
+	-- Here comes the barrier stuff.
+	----------------------------------------------------------------------------
+	
+	-- This method creates a barrier
+	-- Resets all variables to the appropriate values.
+	CreateBarrier = function
+	(
+	MaxEntries, 		-- The number of requests required to break the barrier.
+	CallBack		-- The callback, that is activated when the barrier breaks.
+	)
+		local barrier 
+		
+		barrier = CloneTable(LSYNC_Barrier)
+		barrier.MaxNumOfEntries = MaxEntries
+		barrier.CallBack = CallBack
+		barrier.ListOfThreads = {}
+		
+		return barrier
+	end,
+	
+	
+	-- PURPOSE
+	-- Locks a barrier.
+	-- If the barrier has reached the sufficient number of entries, the barrier is emptied.
+	LockBarrier = function
+	(
+	State, 
+	Barrier			-- The barrier we want to lock.
+	)
+		local thread, i
+		
+		-- We register the actual thread with the barrier.
+		thread = State.Thread
+		Barrier.NumOfEntries = Barrier.NumOfEntries + 1
+		Barrier.ListOfThreads[Barrier.NumOfEntries] = thread
+
+		-- We analyze if the barrier is full and start 
+		if (Barrier.NumOfEntries == Barrier.MaxNumOfEntries) then
+			for i = 1, Barrier.NumOfEntries do
+				CallFunction(Barrier.ListOfThreads[i], Barrier.CallBack, nil)
+			end
+			Barrier.NumOfEntries = 0
+		end
+	end,
+	
+	
+	-- PURPOSE
+	-- Removes an entry from the barrier, if it has locked  the barrier.
+	RemoveFromBarrier = function
+	(
+	State, 
+	Barrier		-- The barrier we want to be removed from.
+	)
+		local thread, i
+		
+		thread = State.Thread
+		i = 1
+		while ((i <= Barrier.NumOfEntries) and (Barrier.ListOfThreads[i] ~= thread)) do
+			i = i + 1
+		end
+		-- We check, if we did not make it.
+		if ( i > Barrier.NumOfEntries) then
+			return
+		end
+		
+		-- Now we make the list tight and remove the entry.
+		while (i < Barrier.NumOfEntries) do
+			Barrier.ListOfThreads[i] = Barrier.ListOfThreads[i + 1]
+			i = i + 1
+		end
+		
+		Barrier.ListOfThreads[Barrier.NumOfEntries] = nil
+		Barrier.NumOfEntries = Barrier.NumOfEntries - 1
+	end,
+	
+	-- PURPOSE
+	-- Decreases the size of the barrier and eventually flushes it.
+	DecrementBarrier = function
+	(
+	State, 
+	Barrier		-- The barrier we want to decrement.
+	)
+		local i
+		
+		Barrier.NumOfEntries = Barrier.NumOfEntries - 1
+		-- We analyze if the barrier is full and start 
+		if (Barrier.NumOfEntries == Barrier.MaxNumOfEntries) then
+			for i = 1, Barrier.NumOfEntries do
+				CallFunction(Barrier.ListOfThreads[i], Barrier.CallBack, nil)
+			end
+			Barrier.NumOfEntries = 0
+		end
+	end,
+	
+	
+	-- PURPOSE
+	-- Increases the barrier size by one
+	IncrementBarrier = function
+	(
+	State, 
+	Barrier		-- The barrier size we want to increment.
+	)
+		Barrier.NumOfEntries = Barrier.NumOfEntries + 1
+	end,
+		
+	
+	----------------------------------------------------------------------------
+	-- Here comes the switch stuff.
+	----------------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- Creates a new switch, the swithc we crate here 
+	-- is a one shot switch, that triggers the indicated thread and the 
+	-- method, ones the limit has been reached.
+	CreateSwitch = function
+	(
+	Limit,		-- The amount, when we want to activate the trigger.
+	Thread,		-- The thread or block we want to trigger.
+	CallBack	-- The callback we would like to activate.
+	)
+		local result
+		
+		result = CloneTable(LSYNC_Switch)
+		result.MaxNumOfEntries = Limit
+		result.ThreadInform = Thread
+		result.CallBack = CallBack
+		return result
+	end,
+	
+	-- PURPOSE
+	-- Triggers the switch, if the counter has been reached, the threda or the method is envoked.
+	TriggerSwitch = function
+	(
+	State, 
+	Switch			-- The switch we want to trigger.
+	)
+		Switch.NumOfEntries = Switch.NumOfEntries + 1
+		if (Switch.NumOfEntries == Switch.MaxNumOfEntries) then
+			CallFunction(Switch.ThreadInform, Switch.CallBack, nil)
+		end
+	end,
+	
+	-- PURPOSE
+	-- Resets the switch for a new round.
+	-- The counter of the trigger is reset.
+	RestartSwitch = function
+	(
+	State, 
+	Switch		-- The switch we want to restart.
+	)
+		Switch.NumOfEntries = 0
+	end,
+	
+	
+	
+	 							 
+}
+
+
+
+
+
+
+

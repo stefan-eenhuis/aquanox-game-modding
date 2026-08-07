@@ -1,0 +1,169 @@
+================================================================================
+MASSIVES EIGENE KOMMANDODOKUMENTATION
+gehoben aus der SED-Projektdatei
+================================================================================
+Stand: 2026-07-27
+Lesefassung zu mod_docu\aquanox_sed_vorlagen.json (111 KB, 338 Vorlagen).
+
+WAS DAS IST
+    Die einzige erhaltene SED-Projektdatei (neopolis_neu.ssc, 5,56 MB)
+    enthaelt nicht nur eine Mission, sondern die VORLAGENBIBLIOTHEK des
+    Editors. Jede Vorlage nennt das Engine-Kommando, das sie aufruft --
+    und traegt einen HILFETEXT, den die Entwickler selbst geschrieben
+    haben.
+    Das ist die einzige bekannte Erklaerung, was die Kommandos TUN.
+    Unsere Registry (aquanox1_message_ids.json) kennt nur Namen und
+    Signaturen; hier steht, wofuer sie gedacht sind.
+
+DIE ZAHLEN
+    338 Vorlagen ausgewertet
+    312 nennen ein Kommando
+    190 tragen einen Hilfetext
+    185 davon gelten AUCH IN AQUANOX 1
+     32 sind AN2-Neuerungen
+     72 rufen keine Engine-Funktion, sondern eine Lua-Bibliothek
+
+GELTUNGSBEREICH
+    Die Vorlagen stammen aus AquaNox 2. Die Kommandonamen sind zwischen
+    beiden Spielen aber unveraendert (Handoff v91 Abschnitt 133) --
+    steht ein Kommando in AN1s Registry, gilt die Erklaerung dort
+    ebenso. Das Feld in_aquanox1 in der JSON sagt es je Eintrag.
+
+--------------------------------------------------------------------------------
+BEISPIELE, die vorher unklar waren
+--------------------------------------------------------------------------------
+KAMERA -- alle 21 Kommandos sind jetzt erklaert:
+    Camera_MoveTo          Moves (relative) to the specified object
+    Camera_MoveInto        Moves into the specified object
+    Camera_MoveToAnglesAbs Moves (absolute) to the specified object
+                           with given angles
+    Camera_LookAt          Looks to position (relative) to the
+                           specified object
+    Camera_LookAhead       Looks ahead relative to current position path
+    Camera_LookFrom        Looks from the specified object
+    Camera_RollTo          Rolls gamma of camera to the given angle
+    Camera_RollAhead       Rolls ahead relative to current position path
+    Camera_ZoomAt          Zooms given object
+    Camera_ZoomTo          Zooms to given values in horizontal and
+                           vertical direction
+    Camera_ShakeTo         Shakes to a given amplitude value
+    Camera_ShakeHit        Shakes to a imaginairy hit
+    Camera_Cut             Performs a cut of given time in movie
+    => Fuer die Zwischenszenen von Nachtschicht ist das die
+       Bedienungsanleitung, die uns fehlte.
+
+SCHILDE UND SCHADEN:
+    Body_SetKineticShield          Setzt den kinetischen Schild [0..1]
+    Body_SetEmpShield              Setzt den EMP-Schild [0..1]
+    Body_SetKinEscapeBarrier       Sets the kinetic barrier for the
+                                   escape pod
+    Body_ActivateEscapePod         Activates the automatic escape pod
+                                   ejection
+    Body_ForceEjection             Forces the escape pod to eject
+                                   immediately
+    ShieldedBody_DeepDestruct      Zerstoert den Vater des Knotens
+    ShieldedBody_CoupleFather      Der Vater wird zerstoert, wenn der
+                                   Knoten zerstoert ist
+    MakeInvulnerable               Macht das Objekt unverwundbar
+    MakeSelectiveVulnerable        Nur von Schuessen eines bestimmten
+                                   Typs verwundbar
+    => Die Kopplung von Vater und Kind ist fuer mehrteilige Objekte
+       gedacht -- ein Turm, der mit seinem Gebaeude faellt.
+
+CHARAKTERE (die Bionten):
+    Character_StartAnimation       Startet die angegebene Animation
+    Character_StopAnimation        Stoppt die aktuelle Animation
+    CharacterGoto                  Fuehrt ein Goto mit dem Older one aus
+    CharacterGotoFromTo            Goto mit festen Positionen
+    CharacterLookTo                Richtet den Character auf ein Objekt
+    CharacterSink                  Fuehrt ein Sink mit dem Older one aus
+    CharacterPhysicalActivateTurrets / -StopTurrets
+                                   Aktiviert/deaktiviert die Tuerme, die
+                                   dem Turmprefix entsprechen
+    CharacterPhysicalSetHitPropability
+                                   Setzt die Trefferwahrscheinlichkeit
+                                   der Geschuetztuerme
+    => "Older one" ist Massives interner Name fuer die Bionten-Bosse.
+       Das erklaert die Bibliothek oldone.scr.
+
+SONSTIGES, das Licht ins Dunkel bringt:
+    Emitter_SetSoundEmissionLevel  Stellt den Sound-Emissionswert fuer
+                                   das Schiff ein
+                                   -> DAS ist der Schleichfahrt-Regler
+    Game_SetWayPoint               Setzt den Wegpunkt innerhalb des
+                                   Spieles
+    Game_MissionEnd                Signals mission end 0=failure
+                                   1=success
+    Script_Log                     Gibt Kommentar mit Objektnamen aus
+    Player_SuppressFF              Supresses Friendly fire
+    __DoNothing                    Befehl der nichts macht
+    Activate / Deactivate          Schaltet den Strom ein / ab
+    ActivateLogarithmicMode        Schaltet den logarithmischen
+                                   Schildmodus ein
+
+--------------------------------------------------------------------------------
+NUR IN AQUANOX 2 -- das Zielsystem, jetzt mit Erklaerung
+--------------------------------------------------------------------------------
+    Game_PrimaryObjectiveReached   Signalisiert erfolgreiches Primaerziel
+    Game_PrimaryObjectiveFailed    Signalisiert scheitern an Primaerziel
+    Game_BonusObjectiveReached     Signalisiert erfolgreiches Bonusziel
+    Game_BonusObjectiveFailed      Signalisiert scheitern an Bonusziel
+    Jede dieser Vorlagen traegt dieselben vier Parameter:
+        GameNode        Vorgabe GetGameNode()
+        ObjectiveID     Vorgabe 1
+        TakeKeyBrief    Vorgabe 2000 / 2001 / 2002 / 2003
+        TakeKeyDetail   Vorgabe 2100
+    => Die TakeKeys sind Funkspruchnummern: 2000 fuer "Primaerziel
+       erreicht", 2001 fuer gescheitert, 2002/2003 fuer die Bonusziele,
+       2100 als Detailtext. Wer das System in AquaNox 1 nachbaut,
+       braucht diese vier Meldungen und einen eigenen Zaehler --
+       die KOMMANDOS gibt es dort nicht.
+    Weitere AN2-Neuerungen mit Erklaerung:
+        Game_SetDecompressionRange  Sets decompression ranges
+        Game_PlaySound              Plays a previously loaded music
+                                    track as sound
+        Generic_Taunt_Activate      Activates sending of taunt messages
+        Player_DefineKeyLocation    Defines location and related
+                                    information
+
+--------------------------------------------------------------------------------
+DIE BIBLIOTHEKSAUFRUFE (72 Vorlagen)
+--------------------------------------------------------------------------------
+Sie rufen kein Engine-Kommando, sondern eine Lua-Funktion:
+    SensorLib        12    DipolLib         11    VesselGotoLib   10
+    VehicleGotoLib    8    MiscLib           8    FormationLib     5
+    VesselAttackLib   5    DockLib           4    OldOneLib        4
+    VehicleAttackLib  3    CameraLib         1    TurretLib        1
+Beispiele mit Erklaerung:
+    DockLib.Dock            Laesst das Schiff im angegebenen Dock
+                            andocken
+    DockLib.DockVehicle     dasselbe fuer ein Fahrzeug
+    DipolLib.DipolJumpOut   Performs a jump out for the vessel
+    CameraLib.Wait          Wartet eine vorgegebene Zahl an Sekunden ab
+    => Der DipolLib-Zweck wird damit klarer: es ist ein SPRUNG-
+       verhalten (jump out), kein Bewegungsmodus. Und "InUtero" taucht
+       in sieben Vorlagen auf -- offenbar der Zustand eines Objekts,
+       das noch nicht in der Simulation ist.
+
+--------------------------------------------------------------------------------
+EIN FUND AM RANDE
+--------------------------------------------------------------------------------
+Eine Vorlage zu Body_SetKineticShield traegt als Hilfetext:
+    "UND TSCHÜSS!!"
+Vermutlich die Vorlage, die den Schild auf 0 setzt. Ein Entwicklerscherz,
+der in die Verkaufsfassung gelangt ist.
+
+--------------------------------------------------------------------------------
+WIE MAN DAMIT ARBEITET
+--------------------------------------------------------------------------------
+    mod_docu\aquanox_sed_vorlagen.json
+        Je Eintrag: template, node_type, command, library, help,
+        parameters, in_aquanox1, in_aquanox2, dazu Vorgabewerte.
+    Wer wissen will, was ein Kommando tut, sucht dort nach dem Namen.
+    Wer wissen will, ob es in AquaNox 1 existiert, liest in_aquanox1.
+    Fuer Signaturen und Argumenttypen bleibt
+    aquanox1_message_ids.json zustaendig -- die beiden ergaenzen sich.
+
+================================================================================
+ENDE
+================================================================================

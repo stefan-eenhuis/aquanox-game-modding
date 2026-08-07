@@ -1,0 +1,214 @@
+================================================================================
+AQUANOX 2 -- DIE ENGINE-REGISTRY
+Handoff-Datei, Version 8
+================================================================================
+Erstellt: 2026-07-27
+Thema: AN2s Klassen- und Kommandoregistry vollstaendig extrahiert,
+       AN1s Registry dabei vervollstaendigt
+Vorgaenger: v7 (Skelettanimation, Terrain), v6 (Skript-API, Binaerformate),
+            v5 (AN2.dat), v4 (Missionsaufbau), v3 (Lua-Quelltexte),
+            v2 (Levelportierung), v1 (Bestand)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+0. ERGEBNIS
+--------------------------------------------------------------------------------
+Fuer AquaNox 1 gab es seit langem zwei Registries: 468 Engine-Klassen und
+398 Skriptkommandos mit Argumenttypen. Fuer AquaNox 2 hatten wir bisher nur
+Namenslisten aus Stringsuche.
+
+Das ist jetzt behoben. NEU ANGELEGT:
+
+    mod_docu\aquanox2_engine_classes.json     536 Klassen
+    mod_docu\aquanox2_message_ids.json        439 Kommandos MIT Signaturen
+
+Beide mit derselben Methodik wie fuer AN1 gewonnen und gegengeprueft.
+Nebenbei ist AN1s eigene Registry vollstaendig geworden (Abschnitt 4).
+
+--------------------------------------------------------------------------------
+1. WIE AN2 SEINE KLASSEN REGISTRIERT
+--------------------------------------------------------------------------------
+AN1 uebergibt die Argumente auf dem Stack:
+
+    push 0xe70                  ; Groesse
+    push 0x484600               ; Factory
+    push 0x612078               ; "NOD_Vessel"
+    push 0x6100e8               ; "NOD_ShieldedBody"
+    mov  ecx, 0x668910          ; RTI-Objekt
+    call 0x43e1b0               ; RegisterClass
+
+AN2 benutzt Register (MSVC-Optimierung):
+
+    push 0x72cb70               ; "NOD_Vessel"        className (Stack)
+    mov  edx, 0xf5c             ; 3932                Groesse
+    mov  ecx, 0x4e7e60          ;                     Factory
+    mov  eax, 0x73ae88          ; "NOD_ShieldedBody"  Basisklasse
+    mov  esi, 0x793ba4          ;                     RTI-Objekt
+    call 0x442a40               ; RegisterClass
+
+    RegisterClass in AN2 @0x00442a40
+    503 der 504 NOD_-Strings laufen dort hinein.
+
+ERGEBNIS: 536 Klassen erkannt, 16 Aufrufstellen blieben unklar.
+    mit Basisklasse: 536      mit Groesse: 535
+    Groessen von 16 B bis 30.396 B
+
+DIE GROESSTEN AN2-KLASSEN
+    NOD_Script              30.396 B   (Basis NOD_Node)  -- der Lua-Wrapper
+    NOD_Player              13.724 B
+    NOD_Cockpit              5.608 B
+    NOD_Vessel               3.932 B
+    NOD_Camera               3.636 B
+    NOD_Turret_Base          3.488 B
+    NOD_Vehicle              3.280 B
+    NOD_PhysicalCharacter    3.180 B
+
+BASISKLASSEN-VERTEILUNG
+    NOD_MessagePrototype   439      NOD_Body               25
+    NOD_ShieldedBody        18      NOD_Node               17
+    RTI_Class               12      USI_Node_Group          8
+    USI_Node_Button          6      USI_Node_Primitive      5
+    USI_Node                 2      USI_Node_Text/-Reference/-Control je 1
+
+Die USI_-Hierarchie ist AN2s Oberflaechensystem (die 131 .usi.bin-Dateien).
+AN1 hat davon nichts.
+
+VERGLEICH: AN1 468 Klassen, AN2 536; 438 gemeinsam, 30 nur AN1, 98 nur AN2.
+Groesste Zuwaechse bei gemeinsamen Klassen:
+    NOD_Player      6.008 -> 13.724   (+7.716)
+    NOD_Gun         1.152 ->  1.996   (+844)
+    NOD_Cockpit     8.616 ->  5.608   (-3.008)
+    NOD_FX_Plant    1.728 ->  1.092   (-636)
+
+--------------------------------------------------------------------------------
+2. DIE KOMMANDOREGISTRY MIT SIGNATUREN
+--------------------------------------------------------------------------------
+Der Weg von der Klasse zur Signatur ist in AN2 einen Schritt laenger:
+
+    RegisterClass-Stelle -> Factory -> KONSTRUKTOR -> Vtable
+
+Die AN2-Factory allokiert nur und ruft den Konstruktor:
+    push 0x10 ; call operator_new ; test eax,eax ; je ...
+    mov esi, eax ; call <ctor> ; ret
+Der Konstruktor setzt ERST die Basis-Vtable, DANN die eigene. Man muss die
+LETZTE Zuweisung nehmen -- die erste liefert sonst fuer alle 439 Klassen
+dieselbe NOD_MessagePrototype-Vtable, deren GetName "__error__" zurueckgibt.
+(Genau in diese Falle bin ich zuerst gelaufen.)
+
+DIE VTABLE-SLOTS SIND IN BEIDEN SPIELEN DIESELBEN:
+    vt[3]  GetName        mov eax, <string> ; ret
+    vt[4]  GetArgCount    mov eax, <n> ; ret   bzw. xor eax,eax ; ret
+    vt[6]  GetParamType   Sprungtabelle ueber den Argumentindex
+
+ERGEBNIS: 439 von 439 Kommandos vollstaendig aufgeloest -- Name, Argumentzahl
+und alle Parametertypen, ohne eine einzige Luecke.
+
+--------------------------------------------------------------------------------
+3. *** KORREKTUR ZU v5: AN2 HAT KEINE UMBENENNUNGEN ***
+--------------------------------------------------------------------------------
+In v5 stand, AN2 habe 21 Kommandos umbenannt (Light_SetColor ->
+FX_Light_SetColor usw.). Das war aus den Klassennamen geschlossen und ist
+FALSCH.
+
+Der GetName-Stub zeigt es: die Klasse heisst NOD_FX_Light_SetColor, das
+Kommando aber schlicht
+
+    Light_SetColor
+
+-- genau wie in AquaNox 1. Von 439 Kommandos tragen 41 einen Klassennamen,
+der vom Skriptnamen abweicht; alle davon sind FX_-Praefixe im Klassennamen.
+
+=> Die Skript-Schnittstelle von AN2 ist gegenueber AN1 NICHT umbenannt
+   worden. Wer AN2-Skripte liest, findet dieselben Namen wie in AN1.
+
+--------------------------------------------------------------------------------
+4. AN1s REGISTRY IST JETZT LUECKENLOS
+--------------------------------------------------------------------------------
+Beim Abgleich fielen zwei AN1-Kommandos auf, die argc=18 meldeten, aber
+keine Parametertypen hatten:
+
+    WayPoint_SetTakeKey_Inside
+    WayPoint_SetTakeKey_Outside
+
+Ursache: ihr vt[6]-Stub loest die Typen ueber eine SPRUNGTABELLE auf
+    mov eax, [esp+4] ; cmp eax, 0x11 ; ja ... ; jmp [eax*4 + 0x4aaf78]
+und die war beim Erstellen der Registry nicht ausgewertet worden.
+
+Jetzt auf drei Wegen bestimmt, alle mit identischem Ergebnis:
+    (a) stub_eval ueber alle 18 Argumentindizes
+    (b) die Sprungtabelle @0x4aaf78 bzw. @0x4ab128 von Hand gelesen
+    (c) AN2s Registry, wo derselbe Stub ohne Sprungtabelle vorliegt
+
+    WayPoint_SetTakeKey_Inside(node, uint32, node, uint32, node, uint32,
+                               node, uint32, node, uint32, node, uint32,
+                               node, uint32, node, uint32, int32, float)
+
+Das sind ACHT (node, uint32)-Paare plus int32 und float -- und passt exakt
+zum OSD-Aufbau von nav_waypoint_01~.osd:
+    inside_takekey0 .. inside_takekey7   (acht Schluessel)
+    inside_count                          (int32)
+    inside_delay                          (float)
+
+aquanox1_message_ids.json ist entsprechend ergaenzt worden.
+Sicherung: aquanox1_message_ids.json.bak-vor-waypointfix
+VERBLEIBENDE LUECKEN IN AN1: keine.
+
+--------------------------------------------------------------------------------
+5. SIGNATURVERGLEICH AN1 <-> AN2
+--------------------------------------------------------------------------------
+Nach der Korrektur bleibt bei den gemeinsamen Kommandos GENAU EIN echter
+Unterschied:
+
+    ShieldedBody_MakeSelectiveVulnerableAgainst
+        AN1  (node)
+        AN2  (node, uint32)
+
+Alles andere ist identisch -- Argumentzahl und Typen. Stichproben:
+    Game_LoadMusic(string, int32)                gleich
+    Game_TextMessage(int8, string)               gleich
+    Body_SetCS(MAT_Vector3, MAT_Vector3)         gleich
+    Vessel_Patrol(string, float, float)          gleich
+    Trigger_SetBoxMode(float, float, float)      gleich
+    WayPoint_SetRadius(float)                    gleich
+    Light_SetColor(MAT_Vector3, MAT_Vector3)     gleich
+
+=> Die Skript-Schnittstelle ist zwischen beiden Spielen praktisch
+   deckungsgleich. Wer fuer AN1 schreibt, schreibt fast dasselbe wie fuer AN2.
+   Das erklaert rueckwirkend, warum sieben Skriptbibliotheken byte-identisch
+   sind (v3) und warum AN2 AN1-Assets unveraendert laedt (v2).
+
+--------------------------------------------------------------------------------
+6. DIE TYPKENNUNGEN
+--------------------------------------------------------------------------------
+In beiden Spielen dieselbe Tabelle (aus stub_eval):
+    0 none        1 int8        2 int16       3 uint16     4 int16b
+    5 int32       6 uint32      7 float       8 floatb     9 MAT_Vector3
+    10/11/12 string            13 node
+
+--------------------------------------------------------------------------------
+7. WAS JETZT NOCH OFFEN IST
+--------------------------------------------------------------------------------
+    * .ssc  AN2-Szenengraph (5,56 MB) -- angesehen, nicht entschluesselt
+    * .usi.bin  AN2-GUI (131 Dateien); die USI_Node-Klassenhierarchie aus
+      Abschnitt 1 waere der Einstieg
+    * .fnt  AN2-Schriften
+    * der Schlussteil der .col (Raumbaum)
+    * lightmap.dds
+    * das MSB-Renderproblem (v2) -- weiterhin ungeklaert
+
+    IM SPIEL ZU PRUEFEN, unveraendert:
+      "AN2 REPARIERT", die Renn-KI mit AN2-Rennprofil, die Levelvorlage
+      aus v4, die Levelportierung nach AN2
+
+--------------------------------------------------------------------------------
+8. DATEIEN
+--------------------------------------------------------------------------------
+    NEU        mod_docu\aquanox2_engine_classes.json      536 Klassen
+    NEU        mod_docu\aquanox2_message_ids.json         439 Kommandos
+    GEAENDERT  mod_docu\aquanox1_message_ids.json         2 Luecken geschlossen
+               (Sicherung: .bak-vor-waypointfix)
+
+================================================================================
+ENDE -- Version 8
+================================================================================

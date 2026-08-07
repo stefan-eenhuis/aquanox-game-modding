@@ -1,0 +1,165 @@
+================================================================================
+AQUANOX 1 + 2 -- TIEFENANALYSE
+Handoff-Datei, Version 7
+================================================================================
+Erstellt: 2026-07-27
+Thema: ein bisher voellig uebersehenes Subsystem -- Skelettanimation --
+       sowie Terrain und die letzten AN1-eigenen Dateiformate
+Vorgaenger: v6 (Skript-API, .col/.fog/.sam), v5 (AN2.dat), v4 (Missionsaufbau),
+            v3 (Lua-Quelltexte), v2 (Levelportierung), v1 (Bestand)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+0. DER FUND
+--------------------------------------------------------------------------------
+Beim Durchgehen der Dateiendungen, die AN1 hat und AN2 nicht (.boa .bop .bor),
+ist ein komplettes Subsystem aufgetaucht, das in 90 Handoff-Abschnitten der
+Hauptreihe nie vorkam:
+
+*** AQUANOX 1 HAT EIN VOLLWERTIGES SKELETTANIMATIONSSYSTEM ***
+
+34 Dateien unter dat\animation\, alle im KLARTEXT-DES-Format, mit
+Quaternion-Rotationen und gewichtetem Vertex-Skinning. Benutzt wird es fuer
+die vier Bionten-Bosse: Belial, Crocell, Forneus, Marax.
+
+Die Exporter-Signaturen stehen in den Dateikoepfen:
+    "Massive Bone Reference Frame Exporter, v1.0"   -> .bor
+    "Massive Bone Phy Exporter, v1.0"               -> .bop
+    "Massive B Animation Exporter, v1.0"            -> .boa
+
+Vollstaendige Formatbeschreibung in mod_docu\aquanox_binaerformate.txt
+Abschnitt 9. Kurzfassung:
+
+    .bor  Referenzskelett. NOB Knochen, je mit Name, Id, Vaterknochen,
+          Position, Quaternion (Rre/Rim) und einer Liste gebundener
+          Vertices mit Index und Gewicht.
+          old_marax.bor: 107 Knochen, 749 gewichtete Vertices.
+    .boa  Bewegung. Dieselben Knochen, aber je Knochen eine Zeitreihe
+          aus [SV#]-Stuetzwerten. Zeitschritt 0.066667 s = exakt 1/15 s.
+          belial_test5_n.boa: 97 Knochen, 3.977 Stuetzwerte.
+          Groesste: old_belial_bones_anim_vl.boa mit 3,24 MB.
+    .bop  Physikzuordnung, sehr klein.
+
+DIE ENGINE-SEITE:
+    NOD_PhysicalCharacter, Basis NOD_ShieldedBody, Groesse 2.932 Byte --
+    die GROESSTE Klasse der ganzen Engine.
+    Dazu 25 eigene Kommandos, u.a.
+        Character_StartAnimation(string) / Character_StopAnimation()
+        PhysicalCharacter_StartAnimation(int32, float)
+        PhysicalCharacter_GotoStart / _GotoStartFromPosition / _GotoStartFromTo
+        PhysicalCharacter_Attack / _AttackCompleted / _AttackTurrets
+        PhysicalCharacter_LookTo / _LookToObject / _LookToOverride
+        PhysicalCharacter_SwitchToGoing / _SwitchToStanding
+        PhysicalCharacter_SetHitPropability / _SetSpecialCollisionPartner
+        PhysicalCharacter_SensorActivated / _SonarDestroyed / _Stripped
+
+WAS DAS BEDEUTET: Eigene animierte Kreaturen sind in AquaNox 1
+grundsaetzlich moeglich. Alle Daten liegen im Klartext, das Format ist
+verstanden, die Engine-Anbindung ist dokumentiert. Der Aufwand liegt
+vollstaendig beim ERZEUGEN der Skelett- und Bewegungsdaten -- nicht am
+Format und nicht an fehlenden Kommandos.
+NICHT ERPROBT. Fuer Nachtschicht vermutlich zu aufwendig, aber es ist
+gut zu wissen, dass die Tuer offen steht.
+
+In den Dateien stehen noch die Arbeitspfade von 2001:
+    T:\decker\old_belial_bones_test4.boa
+    C:\massive\aquanox\dat\animation\old_crocell.bop
+    Y:\AQUA\animation\old_belial.bor
+
+--------------------------------------------------------------------------------
+1. TERRAIN -- was ein eigenes Level braucht
+--------------------------------------------------------------------------------
+Ausfuehrlich in aquanox_binaerformate.txt Abschnitt 10.
+
+    hmap.tga              1025 x 1025, 24 bpp, 3,15 MB   Hoehenkarte
+    lightmap.dds          5,59 MB                        Beleuchtung
+    material_0/1/3.dds    Materialtexturen
+    material_s.tga        256 x 256, 32 bpp              Materialverteilung
+    material.des          [Wrapping] { W0..W3 }
+    radar_color.dds       1,40 MB                        Radarbild
+    radar_height_fin.tga  256 x 256
+    coral/grass/stone/fungus_01.tga   je 64 x 64         Detailtexturen
+    terrain.des           Steuerdatei
+
+WELTGROESSE nachgerechnet: 1025 Gitterpunkte * Scale 4.0 = 4100 Einheiten,
+Offset -4096 -> die Karte reicht von -4096 bis etwa +4. Das deckt sich mit
+den Koordinaten unserer Renntore (X 1480..2720, Y 1062..1937).
+
+Die in terrain.des genannte "tmap_l10.tga" liegt NICHT im Verzeichnis --
+sie wird zur Laufzeit erzeugt. Dazu passen die EXE-Meldungen
+"couldn't allocate heightmap" und "heightmap must be created before
+exportmap could be created".
+
+=> Ein eigenes Terrain waere also: hmap.tga malen, material_s.tga als
+   Verteilung, die Detailtexturen uebernehmen, terrain.des anpassen.
+   Lightmap und Radarbild muesste man aus einem vorhandenen Level
+   uebernehmen oder erzeugen. UNGEPRUEFT.
+
+--------------------------------------------------------------------------------
+2. DIE LETZTEN AN1-EIGENEN ENDUNGEN
+--------------------------------------------------------------------------------
+    .boa .bop .bor   Skelettanimation -- Abschnitt 0
+    .zip             genau eine Datei: vfx\menu\picture\stations.zip,
+                     114 KB, ein echtes ZIP mit Stationslogos
+                     (menu_station_logo_entropoint6.tga u.a.)
+    .bmp             genau eine Datei, 0 Byte, versehentlich mitgeliefert:
+                     sfx\sample\d\mtake\c2\Bitmap-Bild (neu).bmp
+                     -- ein deutscher Windows-Standardname; da hat jemand
+                     im Aufnahmeordner aus Versehen eine leere Datei
+                     angelegt und sie ist im Master gelandet.
+
+Keine dieser Dateien wird von einem Missionsskript erwaehnt, und keine
+Endung steht als String in Aqua.exe -- die Namen kommen aus den
+.des-Verweisen der jeweiligen Objekte.
+
+--------------------------------------------------------------------------------
+3. STAND DER FORMATKENNTNIS
+--------------------------------------------------------------------------------
+VOLLSTAENDIG VERSTANDEN (mit byte-treuem Roundtrip oder exakter Nachrechnung):
+    .pak    beide Chiffren, Lesen und Schreiben   (16.942/16.942 geprueft)
+    .des / .osd  gekocht und Klartext
+    .sco    Lua-4.0-Bytecode
+    .msb    Mesh, alle Bloecke und Felder
+    .col    Kollision (bis auf den Schlussteil)
+    .fog    Nebeltabelle
+    .sam    Klangdeskriptor
+    .vc     Vertexfarben (AN2)
+    .bor/.boa/.bop   Skelettanimation
+    hmap/material/radar   Terrain als TGA/DDS
+
+TEILWEISE:
+    .col    der Schlussteil (Raumbaum) fehlt
+    .ssc    AN2-Szenengraph, nur der Kopf angelesen
+    .fnt    AN2-Schriften, nur Magic "FN"
+
+UNBERUEHRT:
+    .usi.bin (AN2-GUI, 131 Dateien)
+    .vid / .bik (Video)
+    lightmap.dds -- Aufbau der Beleuchtungsdaten
+
+--------------------------------------------------------------------------------
+4. WAS ALS NAECHSTES LOHNT
+--------------------------------------------------------------------------------
+(1) Nichts von alledem ist im Spiel geprueft. Es liegen inzwischen vier
+    fertige Sachen bereit, die je einen Durchlauf brauchen:
+        "AN2 REPARIERT" (Mesh mit gesetzter Glaettungsgruppe)
+        die Renn-KI mit AN2-Rennprofil
+        die Levelvorlage aus v4
+        die Levelportierung nach AN2
+    Weitere Analyse bringt weniger als eine dieser Proben.
+
+(2) Falls doch weiter analysiert wird, in dieser Reihenfolge:
+    * der .col-Schlussteil -- noetig, wenn eigene Objekte mit eigener
+      Kollision entstehen sollen
+    * lightmap.dds -- noetig fuer ein eigenes Terrain
+    * AN2s Message-Registry mit Signaturen (fuer AN1 haben wir sie)
+
+(3) Fuer Nachtschicht ist die Sachlage jetzt klar: die Engine kann alles,
+    was die Kampagne braucht. Funkdialoge (v5), Zonensystem mit Sicht und
+    Akustik (v4), Cutscenes, Wachverhalten mit gestaffelten Zonen. Was
+    fehlt, ist gebaute Mission, nicht Wissen.
+
+================================================================================
+ENDE -- Version 7
+================================================================================

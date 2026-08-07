@@ -1,0 +1,171 @@
+================================================================================
+ZEHN ANALYSEAUFGABEN, DIE ICH ALLEIN ERLEDIGEN KANN
+================================================================================
+Stand: 2026-07-27, nach Handoff v91
+
+Kein Spieldurchlauf noetig, keine Entscheidung von dir noetig.
+Sortiert danach, was am meisten freischaltet.
+Die spielabhaengigen Aufgaben stehen weiterhin in AUFGABEN.txt.
+
+--------------------------------------------------------------------------------
+ A1  DIE 74 ORIGINALMISSIONEN ZURUECK IN LESBARES LUA
+--------------------------------------------------------------------------------
+    WARUM ZUERST: Wir haben GENAU EINE Mission im Klartext
+    (neopolis_neu.scr, und die ist aus AquaNox 2). Alle 74 AN1-Missionen
+    liegen nur als kompilierter Bytecode vor. Ein Dekompiler wuerde aus
+    einem Beispiel vierundsiebzig machen -- und zwar echte, die im
+    Spiel laufen.
+    AUSGANGSLAGE: mod_docu\tools\lua4dis.py existiert bereits (9 KB).
+    Lua 4.0 hat ein einfaches, gut dokumentiertes Bytecodeformat, und
+    die .sco tragen sogar noch die Quellpfade und Funktionsnamen.
+    ZU TUN: den Disassembler zu einem Dekompiler ausbauen -- Kontroll-
+    fluss rekonstruieren, Tabellenkonstruktoren zusammensetzen,
+    lesbares Lua ausgeben. Zuerst an 1n1.sco (61 KB, die kleinste),
+    dann an 1h1.sco.
+    ERTRAG: 74 erprobte Beispiele fuer Missionsaufbau, Wachverhalten,
+    Zwischenszenen und Funkspruchsteuerung. Das waere die groesste
+    einzelne Verbesserung der Wissenslage, die noch moeglich ist.
+    RISIKO: mittel. Dekompilierung ist nie vollstaendig; Ziel ist
+    lesbares, nicht wiederuebersetzbares Lua.
+
+--------------------------------------------------------------------------------
+ A2  stake_d.des AUSWERTEN -- 345 KB Dialogtext
+--------------------------------------------------------------------------------
+    Die groesste Textdatenbank des Spiels, bisher nie angesehen.
+    "Stake" duerfte fuer die Stationsgespraeche stehen -- also die
+    Dialoge zwischen den Missionen, mit Antwortmoeglichkeiten.
+    ZU TUN: Format bestimmen, Struktur dokumentieren, Beispiele
+    herausziehen: Wie ist ein Gespraech aufgebaut? Gibt es
+    Verzweigungen? Bedingungen? Wie haengen Dialoge an Personen und
+    Stationen?
+    ERTRAG: Fuer eine Noir-Kampagne sind die Stationsgespraeche der
+    zweite Erzaehlkanal neben dem Funk. Ohne dieses Format bleibt
+    Nachtschicht auf Funksprueche beschraenkt.
+
+--------------------------------------------------------------------------------
+ A3  DAS .col-FORMAT FERTIG ENTSCHLUESSELN
+--------------------------------------------------------------------------------
+    Drei Viertel bekannt: uint32 nTri, Tri[nTri] je 8 B, uint32 nVert,
+    Vertex[nVert] je 12 B. Der Schlussteil (bei atl_pscout 13.724 B)
+    skaliert weder mit nTri noch nVert -- vermutlich ein Raumbaum.
+    ZU TUN: mehrere .col unterschiedlicher Groesse vergleichen, nach
+    Knotenstrukturen suchen, gegen die Bounding Box aus dem .msb
+    pruefen.
+    ERTRAG: eigene Kollisionsnetze. Ohne sie faehrt man durch
+    selbstgebaute Waende. Der Behelf (fremde .col weiterverwenden)
+    taugt fuer ein Wrack, nicht fuer einen Raum.
+
+--------------------------------------------------------------------------------
+ A4  DIE SED-MISSION 5H1 ALS BLAUPAUSE AUSWERTEN
+--------------------------------------------------------------------------------
+    Aus der 5,56-MB-Projektdatei habe ich bisher nur die
+    VORLAGENBIBLIOTHEK gehoben (338 Vorlagen, 190 Hilfetexte). Die
+    eigentliche MISSION steckt noch drin: wie Mission 5H1 "The Deimos"
+    konkret aufgebaut ist -- welche Objekte, welche Zustaende, welche
+    Bedingungen, in welcher Reihenfolge.
+    ZU TUN: den Baum wirklich parsen (nicht nur Zeichenketten
+    sammeln), die Knotenhierarchie rekonstruieren, die Mission als
+    Struktur ausgeben.
+    ERTRAG: die einzige vollstaendige Missionsstruktur, die wir je
+    sehen werden -- als Vorlage fuer den Aufbau eigener Missionen.
+    Ergaenzt A1: dort der erzeugte Code, hier die Absicht dahinter.
+
+--------------------------------------------------------------------------------
+ A5  KAMPAGNENPLANUNG v3 -- nur der technische Teil
+--------------------------------------------------------------------------------
+    aquanox_nachtschicht_zusatzkampagne_planung_v2.txt stammt aus
+    Iteration 27 und verweist auf Handoff v4; wir sind bei v91.
+    Zwei Namen darin sind nachweislich falsch ("Waypoint_Attach",
+    "DirectPatrol" gibt es gar nicht).
+    ZU TUN: Abschnitt 13 ("Technische Systeme nach Missionsart")
+    vollstaendig gegen die Registry pruefen und um das ergaenzen, was
+    seither belegt ist: Zielsystem, AVP-Wahrnehmung, Licht,
+    Funksprueche an Wegpunkten, eigene Modelle, Lautstaerkestufen.
+    Der erzaehlerische Teil bleibt unangetastet.
+    ERTRAG: die Planung wird wieder benutzbar, statt in die Irre zu
+    fuehren.
+
+--------------------------------------------------------------------------------
+ A6  item_d.des UND DAS AUSRUESTUNGSSYSTEM
+--------------------------------------------------------------------------------
+    9 KB, nie ausgewertet. Dazu cargo_d.des (6,5 KB).
+    ZU TUN: Welche Waffen, Torpedos, Schilde und Ausruestungsteile
+    kennt AquaNox 1? Wie haengen sie an den OSDs? Was bedeuten die
+    Cargo-Schluessel, die in Body_SetCargoKey stehen (76 Vorkommen in
+    den Missionen)? Gibt es ungenutzte Ausruestung?
+    ERTRAG: Belohnungen fuer Missionsziele (das Zielsystem aus AN2
+    vergibt Gegenstaende ueber RewardInventory) und die Frage, welche
+    Bewaffnung eine Nachtschicht-Mission voraussetzen darf.
+
+--------------------------------------------------------------------------------
+ A7  DIE KLASSENHIERARCHIE VOLLSTAENDIG KARTIEREN
+--------------------------------------------------------------------------------
+    468 Klassen sind bekannt, mit Basisklasse und Groesse. Was fehlt,
+    ist der Baum: was erbt von was, und welche Kommandos gelten
+    deshalb fuer welche Klasse.
+    ZU TUN: aus aquanox1_engine_classes.json den Vererbungsbaum bauen,
+    die 398 Kommandos ihren Klassen zuordnen (ueber die
+    NOD_<Kommando>-Traegerklassen und deren Basis), und daraus
+    ableiten: welche Kommandos darf ich auf einen nod_generic anwenden,
+    welche nur auf ein nod_vessel?
+    ERTRAG: verhindert eine ganze Fehlerklasse beim Missionsbau --
+    Kommandos auf Knoten anzuwenden, die sie nicht verstehen.
+
+--------------------------------------------------------------------------------
+ A8  DER SCHIFFSPORT NOCH EINMAL, MIT DEM .msh-WISSEN
+--------------------------------------------------------------------------------
+    Der Port von atl_police aus AquaNox 2 ist an der Darstellung
+    gescheitert; Textur, DDS-Format, Vertexdaten, Trailer und
+    Glaettungsgruppe sind ausgeschlossen.
+    NEUER ANSATZ: .msh traegt Materialdaten, die im .msb gar nicht
+    vorkommen -- ShadingType, TrancparencyType, DepthBuffered,
+    SelfIllumination, OneSided. Wenn AN2s Mesh mit anderen
+    Materialeinstellungen kompiliert wurde, koennte der Unterschied
+    dort liegen und im .msb-Materialblock sichtbar sein.
+    ZU TUN: die 18-Byte-Materialkoepfe beider Fassungen Byte fuer Byte
+    vergleichen, nicht nur die Texturnamen.
+    ERTRAG: entweder die Loesung oder ein weiterer sauber
+    ausgeschlossener Kandidat. Kostet wenig.
+
+--------------------------------------------------------------------------------
+ A9  KANN MAN EIGENES TERRAIN ERZEUGEN?
+--------------------------------------------------------------------------------
+    Die Bestandteile sind bekannt (139e): hmap.tga 1025x1025,
+    material_s.tga als Selektormap, zwei bis vier material_N.dds,
+    material.des mit den Kachelungsfaktoren, terrain.des mit Offset,
+    Scale und Triangulierung, dazu lightmap.dds.
+    ZU TUN: pruefen, ob sich ein minimales Terrain erzeugen laesst --
+    flache Hoehenkarte, eine Materialschicht, neutrale Lightmap. Alle
+    Dateien schreiben, Format gegen die Originale verifizieren.
+    OFFEN BLEIBT die Lightmap: wie SED sie berechnet, wissen wir
+    nicht. Eine gleichmaessig helle Ersatz-Lightmap waere der Behelf.
+    ERTRAG: die Voraussetzung fuer ein EIGENES Level statt eines
+    Wirtslevels. Klaert, ob Nachtschicht eigene Schauplaetze bekommen
+    kann.
+
+--------------------------------------------------------------------------------
+A10  DIE RESTLICHEN SED-VORLAGEN (207 von 545)
+--------------------------------------------------------------------------------
+    Von 545 Vorlagen habe ich 338 ausgewertet -- die mit Kommando oder
+    Hilfetext. Die uebrigen sind Strukturvorlagen: Bedingungen,
+    Zustandspuffer, Wertreferenzen.
+    ZU TUN: sie systematisch durchgehen und daraus ableiten, wie SED
+    Bedingungen und Zustaende modelliert hat (TMP_Condition kommt
+    10.108x vor, TMP_BoolOperation 10.037x -- das ist das Herz der
+    Missionslogik).
+    ERTRAG: verstehen, wie die Originale ihre Ablauflogik gebaut
+    haben. Ergaenzt A4.
+
+--------------------------------------------------------------------------------
+MEINE EMPFEHLUNG
+--------------------------------------------------------------------------------
+    A1 zuerst, mit Abstand. Aus einem Beispiel vierundsiebzig zu
+    machen veraendert die Arbeitsgrundlage staerker als alles andere
+    auf dieser Liste -- und der Disassembler steht schon.
+    Danach A3 (Kollision) und A2 (Dialoge), weil beide echte Luecken
+    schliessen statt vorhandenes Wissen zu vertiefen.
+    A8 ist billig genug, um es nebenher mitzunehmen.
+
+================================================================================
+ENDE
+================================================================================

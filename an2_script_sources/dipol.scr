@@ -1,0 +1,216 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for dipol
+--------------------------------------------------------------------
+
+SensorLib = LoadLib("Sensor")
+DockLib = LoadLib("Dock")
+
+
+
+
+-- This is a general state, that is used for camera callbacks.
+LD_Jump =
+{
+	Vessel_DipolInFinished = function(State)
+	local callback
+		callback = GetInnerValue(State, "LD_CallBack")
+		RestoreModification(State, "LD_Jump")
+		CallFunction(State.Thread, callback)
+	end,
+	
+	Vehicle_DipolInFinished = function(State)
+	local callback
+		callback = GetInnerValue(State, "LD_CallBack")
+		RestoreModification(State, "LD_Jump")
+		CallFunction(State.Thread, callback)
+	end,	
+	
+	Turret_DipolInFinished = function(State)
+	local callback
+		callback = GetInnerValue(State, "LD_CallBack")
+		RestoreModification(State, "LD_Jump")
+		CallFunction(State.Thread, callback)
+	end,	
+	
+	StopBehavior = function(State)
+		RestoreModification(State, "LD_General")
+	end,
+}
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the dipol
+LibList.Dipol_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the commands for the camera move
+	--------------------------------------------------------------------
+	
+	
+	
+	-- PURPOSE
+	-- This commands activates the behavioiur to perform the dipol jump out.
+	DipolJumpOut = function
+	(
+	State,
+	CallBack	-- The callback, that should be called, if the jump out is completed.
+	)
+	
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Vessel_DipolOut(State.Node)
+		SetEngineValue(State, "DipoledOut", 1)
+		SetEngineValue(State, "DestJump", 1)
+		SetEngineValue(State, "EmpJump", 1)
+		SetEngineValue(State, "DestEmpJump", 1)
+	end,
+	
+	-- PURPOSE
+	-- Seimply leaves the simulation
+	LeaveSimulation = function
+	(
+	State
+	)
+		Node_LeaveSimulation(State.Node)
+		SetEngineValue(State, "DipoledOut", 1)
+	end,
+	
+	-- PURPOSE
+	-- This commands activates the behavioiur to perform the dipol jump out.
+	DipolJumpIn = function
+	(
+	State,
+	Time,		-- The delay time, when to do the dipol in.
+	CallBack	-- The callback, that should be called, if the jump out is completed.
+	)
+	
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Vessel_DipolIn(State.Node, Time)
+	end,
+	
+
+	
+	JumpStop = function(State)
+		if IsNotLastModification(State, "LD_Jump") then
+			return
+		end
+		RestoreModification(State, "LD_Jump")
+	end,
+	
+	
+	-- PURPOSE
+	-- This command is a simple enter simulation anf activates the sensor behaviours.
+	InUtero_Normal = function
+	(
+	State, 		-- The state we are in
+	CallBack	-- The acllback we want to activate
+	)
+	
+		-- We enter the simulation
+		Node_EnterSimulation(State.Node)
+		-- We set the value, that we been born.
+		SetEngineValue(State, "Born", 1)
+		SensorLib.ActivateShotHitSensor(State)
+		SensorLib.ActivateShieldGuard(State)
+		CallFunction(State.Thread, CallBack)
+	end,
+	
+	InUtero_DipolIn	= function
+	(
+	State,		-- The state we are in.
+	CallBack	-- the callback we have.
+	)
+		SetEngineValue(State, "Born", 1)
+		-- Activate the sensors.
+		SensorLib.ActivateShotHitSensor(State)
+		SensorLib.ActivateShieldGuard(State)
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Vessel_DipolIn(State.Node, 0.1)
+	end,
+	
+	InUtero_VehicleDipolIn = function
+	(
+	State,		-- The state we are in.
+	CallBack	-- The callback we apply
+	)
+		SetEngineValue(State, "Born", 1)
+		-- Activate the sensors.
+		SensorLib.ActivateShotHitSensor(State)
+		SensorLib.ActivateShieldGuard(State)
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Vehicle_DipolIn(State.Node)
+	end,
+	
+	InUtero_TurretDipolIn = function
+	(
+	State,		-- The state we are in.
+	CallBack	-- The callback we apply
+	)
+		SetEngineValue(State, "Born", 1)
+		-- Activate the sensors.
+		SensorLib.ActivateShotHitSensor(State)
+		SensorLib.ActivateShieldGuard(State)
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Turret_DipolIn(State.Node, 0.1)
+	end,
+	
+	-- PURPOSE
+	-- This commands activates the behavioiur to perform the dipol jump out.
+	Turret_DipolJumpOut = function
+	(
+	State,
+	CallBack	-- The callback, that should be called, if the jump out is completed.
+	)
+	
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Turret_DipolOut(State.Node)
+		SetEngineValue(State, "DipoledOut", 1)
+	end,
+	
+	InUtero_DipolInRelative = function
+	(
+	State,			-- The state we are in.
+	XPos,			-- Relative xPosition
+	YPos,			-- Relative yPosition
+	ZPos,			-- Relative zPosition
+	Reference,		-- Relative object, where we jump in.
+	CallBack		-- The callback we call when we have finsihed.
+	)
+	
+	
+		Body_SetPosition(State.Node, Body_GetPosition(Reference) + MAT_Vector3(XPos, YPos, ZPos))
+		
+		SetEngineValue(State, "Born", 1)
+		-- Activate the sensors.
+		SensorLib.ActivateShotHitSensor(State)
+		SensorLib.ActivateShieldGuard(State)
+		ApplyModification(State, LD_Jump, "LD_Jump")
+		StoreInnerValue(State, "LD_CallBack", CallBack)
+		Vessel_DipolIn(State.Node, 0.1)
+	end,
+	
+	InUtero_Undock = function
+	(
+	State,		-- The state we are in.
+	DockMaster,	-- The dockmaster we need for undocking.
+	CallBack	-- The callback we call when we have finished.
+	)
+		SetEngineValue(State, "Born", 1)
+		SensorLib.ActivateShotHitSensor(State)
+		-- The shield guard should be already activated due to the place in dock, but we start it also. 
+		SensorLib.ActivateShieldGuard(State)
+		DockLib.UndockOwn(State, DockMaster, CallBack)
+	end,
+		
+}
+		 	 

@@ -1,0 +1,162 @@
+================================================================================
+DIE NAECHSTEN ZEHN AUFGABEN
+================================================================================
+Stand: 2026-07-27, nach Handoff v91
+
+SORTIERT NACH: was am meisten freischaltet, geteilt durch Aufwand.
+GEKENNZEICHNET: [DU] braucht einen Spieldurchlauf -- [ICH] mache ich allein.
+
+--------------------------------------------------------------------------------
+ 1. [DU+ICH]  MESHFORMAT KLAEREN -- T3 und T7 zusammen
+--------------------------------------------------------------------------------
+    WARUM ZUERST: Solange nicht feststeht, ob eigene 3D-Modelle im Spiel
+    erscheinen, ist jede Arbeit an Innenraeumen, Requisiten und eigener
+    Kulisse Spekulation. Der Test kostet fuenf Minuten und entscheidet
+    einen ganzen Arbeitszweig.
+    ES LIEGT ALLES BEREIT:
+        mod_docu\testcube.msb   1.302 B   binaeres Format
+        mod_docu\testcube.msh   3.409 B   Klartextformat, derselbe Wuerfel
+    OFFEN VON MIR: beides in aquanox6.pak legen, zwei OSDs schreiben,
+    im Testlevel platzieren. Sagen Sie Bescheid, dann mache ich das.
+    ERGEBNIS: entweder ist der Weg Blender -> AquaNox offen, oder wir
+    wissen, woran es scheitert -- und haben mit einem Wuerfel den
+    einfachsten denkbaren Fehlerfall.
+
+--------------------------------------------------------------------------------
+ 2. [DU]  T6 -- DYNAMISCHES LICHT PER SKRIPT
+--------------------------------------------------------------------------------
+    WARUM FRUEH: Ein Suchscheinwerfer im dunklen Level aendert die
+    Stimmung mehr als jede Texturaufloesung -- und Licht ist das
+    Kernmotiv einer Noir-Kampagne.
+    AUSGANGSLAGE: Dynamisches Licht LAEUFT bereits (11 Spielerboote,
+    27 Explosionen), nur nie per Skript. Zwei Wege stehen in
+    OFFENE_TESTS.txt: erst der sichere ueber ein eigenes OSD, dann der
+    interessante rein per Skript mit nod_fx_light.
+    IDEAL FUER DEN HOT-RELOAD: Farbe und Radien im laufenden Spiel
+    aendern, ohne Neustart.
+
+--------------------------------------------------------------------------------
+ 3. [DU]  T1 -- "AN2 REPARIERT" endlich ansehen
+--------------------------------------------------------------------------------
+    Das haengt seit Tagen eingespielt im Spiel und ist in zwei Minuten
+    geprueft: Instant Fight -> "< AN2 Polizeischiff >", das linke Boot
+    ansehen.
+    WENN ES IMMER NOCH FALSCH AUSSIEHT, wuerde ich den Schiffsport
+    aufgeben -- Textur, DDS-Format, Vertexdaten, Trailer und
+    Glaettungsgruppe sind dann alle ausgeschlossen. Kein Verlust:
+    atl_police und atl_pscout sind ohnehin dasselbe Schiff.
+
+--------------------------------------------------------------------------------
+ 4. [DU]  T2 -- RENN-KI mit AN2-Rennprofil
+--------------------------------------------------------------------------------
+    Ebenfalls eingespielt. Instant Fight -> "< 1N1 Rennen >".
+    Frage: torkeln und kreisen die Gegner noch?
+    Rueckweg und Zwischenwerte stehen in OFFENE_TESTS.txt.
+
+--------------------------------------------------------------------------------
+ 5. [DU]  T4 -- DIE LEVELVORLAGE IM SPIEL
+--------------------------------------------------------------------------------
+    mod_docu\nachtschicht_level_vorlage.lua, zweite Fassung, 485 Zeilen.
+    Alle 31 benutzten Engine-Kommandos sind gegen AN1s Registry
+    geprueft -- aber im Spiel getestet ist nichts davon.
+    ZU PRUEFEN, in dieser Reihenfolge:
+        a) laeuft der dostring-Block ueberhaupt durch?
+        b) erscheint das Wachschiff?
+        c) greift VesselAttackLib.GuardArea?
+        d) greift SensorLib.ActivateAvpSensorComplex?
+        e) loest ein Wegpunkt-Funkspruch aus?
+    Jeder Punkt einzeln, damit man weiss, wo es klemmt.
+
+--------------------------------------------------------------------------------
+ 6. [ICH]  EIGENE FUNKSPRUCH-DATENBANK FUER NACHTSCHICHT
+--------------------------------------------------------------------------------
+    Ohne eigene mtake_nachtschicht_d.des kann keine Mission erzaehlen.
+    Das Format ist vollstaendig bekannt (Key, Person, Text, Wav, Mood),
+    und Wav = "ff_dummy" laeuft OHNE eigene Tonaufnahme.
+    ZU TUN: Datei anlegen, Schluesselbereich festlegen (die Originale
+    belegen 1..2999, also z.B. ab 9000 anfangen), ein Dutzend Sprueche
+    fuer die erste Mission schreiben, in die PAK legen.
+    BRAUCHT VON DIR: die Namen der Figuren und ihre Rolle. Ich kann
+    Platzhalter schreiben, aber die Kampagne ist deine.
+
+--------------------------------------------------------------------------------
+ 7. [ICH+DU]  DIE ERSTE NACHTSCHICHT-MISSION BAUEN
+--------------------------------------------------------------------------------
+    Das eigentliche Ziel. Voraussetzung: Aufgabe 5 ist durch.
+    VORSCHLAG FUER DEN ZUSCHNITT -- klein anfangen:
+        ein bestehendes Level als Wirt (mp_06_dm ist uebersichtlich)
+        drei bis vier Wegpunkte mit Funkspruechen
+        ein Wachschiff mit GuardArea und AVP-Sensor
+        ein Ziel, ein Bonusziel
+        eine kurze Zwischenszene am Anfang
+    Das ist mit dem, was jetzt bekannt ist, ohne neue Grundlagenarbeit
+    machbar. Alles Weitere (eigenes Terrain, eigene Modelle,
+    Innenraeume) kommt danach.
+
+--------------------------------------------------------------------------------
+ 8. [ICH]  KAMPAGNENPLANUNG AUF STAND BRINGEN (v3)
+--------------------------------------------------------------------------------
+    aquanox_nachtschicht_zusatzkampagne_planung_v2.txt stammt aus
+    Iteration 27 und verweist auf Handoff v4 -- wir sind bei v91.
+    Zwei Namen darin sind nachweislich falsch: "Waypoint_Attach"
+    (heisst WayPoint_Attach) und "DirectPatrol" (gibt es nicht).
+    ZU TUN: den technischen Teil (Abschnitt 13) gegen die Registry
+    pruefen und um das ergaenzen, was seither belegt ist -- Zielsystem,
+    Wahrnehmung, Licht, Funksprueche an Wegpunkten, eigene Modelle.
+    Der erzaehlerische Teil bleibt unangetastet, der ist deiner.
+
+--------------------------------------------------------------------------------
+ 9. [ICH]  DAS .col-FORMAT FERTIG ENTSCHLUESSELN
+--------------------------------------------------------------------------------
+    Drei Viertel sind bekannt: nTri, die Dreiecke, nVert, die Vertices.
+    Der Schlussteil (bei atl_pscout 13.724 Byte) skaliert weder mit
+    nTri noch nVert -- vermutlich ein Raumbaum.
+    WARUM ES ZAEHLT: Ohne eigene .col faehrt man durch selbstgebaute
+    Waende hindurch. Der Behelf (eine vorhandene .col weiterverwenden)
+    taugt fuer ein Wrack, nicht fuer einen Raum.
+    Sinnvoll erst NACH Aufgabe 1 -- wenn eigene Meshes gar nicht
+    erscheinen, ist die Kollision zweitrangig.
+
+--------------------------------------------------------------------------------
+10. [DU]  T5 -- EIN AN1-LEVEL NACH AQUANOX 2 PORTIEREN
+--------------------------------------------------------------------------------
+    Das Werkzeug ist fertig, die Beweislage gut (426 byte-identische
+    Dateien, AN2s Kartenliste nennt AN1s Level). Ich habe es nicht
+    ausgefuehrt, weil es in den AquaNox-2-Ordner schreibt.
+    WARUM ZULETZT: Es ist die einzige Aufgabe, die fuer Nachtschicht
+    nichts beitraegt. Reizvoll, aber ein Seitenweg.
+    Wenn doch: Ordner sichern, dann
+        python mod_docu\tools\level_an1_to_an2.py build mp_13 data5.pak
+
+--------------------------------------------------------------------------------
+WAS NICHT AUF DER LISTE STEHT -- und warum
+--------------------------------------------------------------------------------
+    Raytracing            geht nicht (139f). AN1 rendert shaderbasiert
+                          auf D3D8, das schliesst RTX Remix aus.
+    Spielbarer Fussgaenger  drei IsA(NOD_Player)-Pruefungen, und selbst
+                          danach fehlen Innenraeume, Modelle und
+                          Laufanimationen (Abschnitt 135).
+    Eigene Lightmaps      wir wissen nicht, wie SED sie berechnet hat.
+    Hoehere Texturen      machbar (139f), aber kein Engpass -- eine
+                          vierfach aufgeloeste Textur auf 274 Dreiecken
+                          sieht scharf aus und bleibt eckig.
+
+--------------------------------------------------------------------------------
+DIE KUERZESTE FASSUNG
+--------------------------------------------------------------------------------
+    Wenn du nur eine Stunde hast: Aufgaben 1 bis 4 sind alle
+    Spieldurchlaeufe von je zwei bis fuenf Minuten und beantworten
+    vier unabhaengige Fragen. Danach weiss ich, woran ich weiterbauen
+    kann.
+
+--------------------------------------------------------------------------------
+UND WENN DU KEINE ZEIT HAST
+--------------------------------------------------------------------------------
+    mod_docu\AUFGABEN_ANALYSE.txt listet zehn Aufgaben, die WEDER
+    einen Spieldurchlauf NOCH eine Entscheidung von dir brauchen.
+    Die wichtigste davon: die 74 Originalmissionen zurueck in lesbares
+    Lua dekompilieren. Aus einem Beispiel wuerden vierundsiebzig.
+
+================================================================================
+ENDE
+================================================================================

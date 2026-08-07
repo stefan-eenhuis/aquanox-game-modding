@@ -1,0 +1,240 @@
+================================================================================
+AUFGABENLISTE E -- REINE ANALYSE, OHNE SPIELDURCHLAUF
+================================================================================
+Stand: 2026-07-28, nach Abschluss der D-Reihe (Handoff v94)
+
+Wie bei C und D: alles am Schreibtisch erledigbar, keine Anwesenheit
+noetig. Was einen Blick ins laufende Spiel braucht, steht in
+OFFENE_TESTS.txt (dort inzwischen T1 bis T18).
+
+VORBEMERKUNG ZUM STAND
+    Nach der D-Reihe ist der Bauplan einer EINZELNEN Mission
+    vollstaendig (Handoff Abschnitt 172). Was fehlt, ist die Ebene
+    DARUEBER: wie eine Kampagne aus Missionen zusammenwaechst --
+    Auftraege, Stationen, Filme, Fortschritt. Genau da setzen E1
+    bis E4 an. E5 bis E10 raeumen Restposten und heben den groessten
+    ungehobenen Schatz (die AN2-Archive).
+
+Reihenfolge ist Prioritaet.
+
+--------------------------------------------------------------------------------
+E1  DAS AUFTRAGSSYSTEM -- dat\sty\option~.des
+--------------------------------------------------------------------------------
+    Warum:   Die letzte grosse Luecke der Kampagnenlogik. Der
+             Speicherstand (Abschnitt 167) nennt OptionKey0 = 2004,
+             OptionKey1 = 1008, OptionKey2 = 1007 -- das sind KEINE
+             Missionsnummern aus mission_d.des (dort 1..30). Es gibt
+             also eine Zwischenschicht: Auftraege, die angeboten
+             werden und auf Missionen verweisen.
+    Zu klaeren:
+             - Wie ist option~.des aufgebaut? (44 Treffer bei
+               *option*, die Datei existiert)
+             - Was verbindet einen Option-Key mit einer Mission?
+             - Was bedeutet OptionTick (50, 51, 52, 53)?
+             - Was ist NumOfBannedOptions -- gesperrte Auftraege?
+             - Gibt es Vorbedingungen (erst nach Mission X)?
+    Ergebnis: aquanox1_auftraege.json + der Handoff-Abschnitt, der
+             erklaert, wie Nachtschicht seine sieben Missionen als
+             Auftragskette einhaengt.
+    Aufwand: mittel. Hoechster Nutzen der Liste.
+
+--------------------------------------------------------------------------------
+E2  DIE STATIONEN -- dat\sty\station_d.des
+--------------------------------------------------------------------------------
+    Warum:   Der Speicherstand sagt Station = 2. Stationen sind das
+             Zwischenspiel: Auftragsannahme, Haendler, Gespraeche.
+             Eine Noir-Kampagne spielt zur Haelfte zwischen den
+             Missionen. 94 Dateien tragen "station" im Namen.
+    Zu klaeren:
+             - Welche Stationen gibt es, wie sind sie definiert?
+             - Was ist AdditionalStationKey im Speicherstand?
+             - Wie haengen Station und angebotene Auftraege zusammen?
+             - Wo sind die Stationsbilder und -texte?
+             - Laesst sich eine eigene Station anlegen, oder muss
+               man eine bestehende umwidmen?
+    Ergebnis: aquanox_stationen.txt. Zusammen mit E1 ist damit die
+             Kampagnenebene vollstaendig.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+E3  DIE AQUANOX-2-ARCHIVE OEFFNEN -- 1,5 GB unerschlossen
+--------------------------------------------------------------------------------
+    Warum:   Der groesste ungehobene Schatz. Fuenf PAK-Dateien mit
+             zusammen rund 1,54 GB (data0 bis data4). Entpackt sind
+             daraus bisher NUR 15 .scr-Dateien. pak_tool.py steht
+             seit langem bereit.
+    Zu klaeren:
+             - Was liegt in den Archiven? (Inhaltsverzeichnis)
+             - Sind die AN2-MISSIONSSKRIPTE als Quelltext dabei?
+               Das waere die unabhaengige Bestaetigung des
+               Triggernetz-Modells aus Abschnitt 145 -- bisher
+               kenne ich es nur aus dem AN1-Dekompilat.
+             - Welche Formate haben sich zwischen AN1 und AN2
+               geaendert? (.msb ist bekannt, .osd? .col? .des?)
+             - Gibt es dort eine Entsprechung zu option~.des?
+    Achtung: NICHTS nach AN1 kopieren, nur lesen. Und der
+             Plattenplatz will bedacht sein -- erst das Verzeichnis
+             lesen, dann gezielt einzelne Dateien ziehen.
+    Ergebnis: an2_inhalt.json mit dem Verzeichnis, plus gezielt
+             entpackte Missionsskripte zum Vergleich.
+    Aufwand: mittel bis gross, sehr hoher Hebel.
+
+--------------------------------------------------------------------------------
+E4  DIE ACHT MEHRSPIELER-SKRIPTE
+--------------------------------------------------------------------------------
+    Warum:   ctf_liberty, dm_narrow, dm_vertical, dm_nightfall,
+             ctf_stream, dm_isolation, ctf_canyon, dm_sightless --
+             acht fertige Karten mit eigenen Skripten, die NIE
+             untersucht wurden. Sie muessen andere Bausteine nutzen
+             als die Kampagne: Startpunkte, Flaggen, Punktezaehlung,
+             Wiedereinstieg.
+    Zu klaeren:
+             - Wie ist ein CTF-Skript aufgebaut? Wo ist die Flagge?
+             - Wie werden Startpunkte definiert (mehrere Teams)?
+             - Nutzen sie dasselbe Triggernetz oder etwas anderes?
+             - Was macht sp_narrow anders als dm_narrow (dieselbe
+               Karte, einmal Einzel-, einmal Mehrspieler)? Der
+               DIREKTE VERGLEICH zweier Skripte auf derselben Karte
+               ist besonders lehrreich.
+    Ergebnis: aquanox_mehrspieler_skripte.txt. Nebennutzen: sp_narrow
+             zeigt, wie man ein schlankes Einzelspieler-Skript baut,
+             das ohne Kampagnenanbindung laeuft -- genau was ein
+             Nachtschicht-Prototyp braucht.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+E5  DAS LIGHTMAP-SYSTEM -- die Analyse hinter Test T17
+--------------------------------------------------------------------------------
+    Warum:   D8 hat gezeigt: der zweite Materialslot jedes Meshes
+             traegt Flag 0x0200 und einen Namen "lightmap0" bis
+             "lightmap16". msb_write.py schreibt dort 0x0000 und
+             einen leeren Namen -- der aktuelle Hauptverdacht beim
+             fehlgeschlagenen Modellimport.
+    Zu klaeren:
+             - Was IST "lightmap6"? Ein Dateiname, ein Index, ein
+               Kanal?
+             - Wo liegen die zugehoerigen Texturen? (Game_SetLightCache
+               nennt map\<Mission>\Lmsh\ und Ltex\)
+             - Warum bis 16 -- gibt es 17 Lightmaps je Level?
+             - Wie waehlt ein Mesh seine Lightmap aus?
+             - Was passiert bei einem Objekt OHNE Lightmap
+               (bewegliche Schiffe brauchen keine)?
+    Ergebnis: Die Antwort sagt, womit der zweite Slot zu fuellen ist
+             -- und macht aus dem Ratetest T17 einen gezielten.
+    Aufwand: mittel. Blockiert derzeit den ganzen Modellimport.
+
+--------------------------------------------------------------------------------
+E6  DIE ZWISCHENFILME -- movie_d.des und die Bink-Videos
+--------------------------------------------------------------------------------
+    Warum:   Der Speicherstand fuehrt NumOfFinishedMovies und
+             MovieKey0 -- Filme sind Fortschrittsmarken. binkw32.dll
+             liegt im Spielordner, es sind also Bink-Videos. 21
+             Dateien tragen "movie" im Namen, dazu cinematics~.des
+             mit 12.439 B.
+    Zu klaeren:
+             - Welche Filme gibt es, wo liegen sie?
+             - Wie wird ein Film ausgeloest -- Skriptbefehl oder
+               Auftragslogik?
+             - Was steht in cinematics~.des?
+             - Laesst sich ein eigener Film einbauen? (Bink ist ein
+               proprietaeres Format, aber ffmpeg kann Bink LESEN --
+               und die Werkzeugkette hat ffmpeg.)
+    Ergebnis: aquanox_filme.txt. Fuer Nachtschicht waere schon ein
+             Standbild mit Text ein brauchbarer Ersatz, falls sich
+             Bink nicht schreiben laesst.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+E7  DIE SPRECHER UND FIGUREN -- wer ist Person 90?
+--------------------------------------------------------------------------------
+    Warum:   D1 hat 25 Sprecher-IDs gefunden, aber keine Namensliste.
+             Person 90 spricht 273 der 738 Funksprueche. Fuer eine
+             Kampagne mit wiederkehrenden Figuren muss klar sein,
+             wer wer ist.
+    Zu klaeren:
+             - Wo steht die Zuordnung Person-ID -> Name?
+             - Gibt es Portraits/Gesichter je Person?
+             - Was bedeutet Mood 0..24 wirklich? Erste Sichtung
+               zeigte KEINEN klaren Zusammenhang mit der Tonlage --
+               Mood 0 enthaelt sowohl Aufgabentexte als auch
+               Dialoge. Vielleicht ist es ein Portrait-Index oder
+               eine Animationsvariante, keine "Stimmung".
+             - pilot_d.des enthaelt 160 Eintraege mit den
+               Massive-Mitarbeitern als Pilotennamen -- ist das
+               dieselbe Nummerierung?
+    Ergebnis: aquanox1_personen.json ergaenzen (existiert schon,
+             aber ohne diese Zuordnung).
+    Aufwand: klein bis mittel.
+
+--------------------------------------------------------------------------------
+E8  DIE SCHWIERIGKEITSGRADE -- difficulty_d.des
+--------------------------------------------------------------------------------
+    Warum:   Der Speicherstand sagt GameDifficulty = 4. Es gibt genau
+             eine Datei difficulty_d.des. Wenn Nachtschicht fair sein
+             soll, muss klar sein, was der Grad tatsaechlich aendert.
+    Zu klaeren:
+             - Welche Grade gibt es, wie heissen sie?
+             - Was skaliert der Grad -- Schaden, Trefferquote,
+               Gegnerzahl, Schilde? (AN2 hat Game_SetNPCHitFactor,
+               AN1 nicht -- ein Hinweis, dass AN1 es anders loest)
+             - Wirkt er ueberhaupt auf Skriptebene, oder rein in
+               der Engine?
+             - Laesst er sich je Mission setzen?
+    Ergebnis: kurzer Handoff-Abschnitt. Kleine Aufgabe, aber sie
+             schliesst eine Luecke im Verstaendnis des Spielgefuehls.
+    Aufwand: klein.
+
+--------------------------------------------------------------------------------
+E9  DIE KLANG- UND NEBELFORMATE -- .sam und .fog
+--------------------------------------------------------------------------------
+    Warum:   Zwei Formate, die jede eigene Mission braucht und die
+             beide nur halb bekannt sind. .sam-Deskriptoren wurden in
+             C14 gestreift, .fog in Abschnitt 145 nur als Ladebefehl
+             notiert (Game_LoadFog).
+    Zu klaeren:
+             - Wie ist eine .sam aufgebaut? (Lautstaerke, Reichweite,
+               Schleife, 3D-Position?)
+             - Laesst sich eine .sam von Hand schreiben, damit eigene
+               Klaenge einbaubar sind?
+             - Wie ist eine .fog aufgebaut? Farbverlauf nach Tiefe?
+             - Wieviele Nebeldateien gibt es, wie unterscheiden sie
+               sich zwischen hellen und dunklen Leveln?
+    Ergebnis: Zwei Formatbeschreibungen, im Idealfall zwei kleine
+             Schreiber analog zu terrain_write.py.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+E10 "MMMN" UND DIE KAMERA-FEINHEITEN
+--------------------------------------------------------------------------------
+    Warum:   Der einzige Rest aus D3. Camera_LookAt und Camera_MoveTo
+             nehmen als viertes Argument eine Zeichenkette wie "MMMN".
+             Sie steuert offenbar die Interpolation -- weich, hart,
+             beschleunigt.
+    Zu klaeren:
+             - Welche Zeichenketten kommen vor, wie oft?
+             - Korreliert die Laenge mit der Argumentzahl?
+             - Steht in Aqua.exe etwas dazu? (M = Move? N = None?
+               Smooth/Linear?)
+             - Was macht Camera_SetBackPlane (30x) und
+               Camera_MoveInto (22x)?
+    Ergebnis: Ergaenzung zu Abschnitt 163. Praktisch abschreibbar
+             sind die Werte ohnehin -- aber wer sie versteht, baut
+             bessere Sequenzen.
+    Aufwand: klein.
+
+================================================================================
+NICHT AUF DIESER LISTE -- UND WARUM
+================================================================================
+    Lightmap-Slot im Spiel erproben          -> Test T17
+    Leere .col fuer eigenes Modell           -> Test T14
+    Eigener Schnellgefecht-Eintrag           -> Test T18
+    NumOfMission erhoehen                    -> Test T15
+    Laeuft der Mehrspielermodus?             -> Test T16
+    NOD_Light an einem Schiff                -> Test T6
+
+    Der .col-Beschleunigungsbaum ist BEWUSST nicht mehr dabei:
+    D9 hat drei Originaldateien mit 0 Byte gefunden. Den Baum
+    nachzubauen lohnt erst, wenn Test T14 zeigt, dass es ohne
+    nicht geht.
+
+================================================================================

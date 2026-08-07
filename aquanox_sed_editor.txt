@@ -1,0 +1,276 @@
+================================================================================
+SED -- MASSIVES LEVELEDITOR
+was sich aus den Spuren in den Spieldaten rekonstruieren laesst
+================================================================================
+Stand: 2026-07-27
+
+WAS SED IST
+    Der hausinterne Editor von Massive Development, mit dem AquaNox 1
+    und 2 gebaut wurden. Er wurde NIE veroeffentlicht und liegt keinem
+    der beiden Spiele bei. Was wir haben, sind seine Spuren: Felder in
+    Datendateien, eine vollstaendige Projektdatei und ein Quellformat.
+    Wofuer die drei Buchstaben stehen, ist nicht belegt -- "Scenario
+    EDitor" waere die naheliegende Lesart, mehr als eine Vermutung ist
+    es nicht.
+
+--------------------------------------------------------------------------------
+1. DER HAUPTFUND: EINE KOMPLETTE PROJEKTDATEI
+--------------------------------------------------------------------------------
+    Aquanox2Relevation ... map\5h1\script\neopolis_neu.ssc
+    5.557.301 Byte
+
+Das ist die einzige erhaltene SED-Projektdatei -- die Mission 5H1
+"The Deimos" in der Fassung, in der der Editor sie gespeichert hat.
+Sie ist versehentlich mit ausgeliefert worden, zusammen mit dem
+kommentierten Lua-Quelltext neopolis_neu.scr (292 KB) und dem
+kompilierten neopolis_neu.sco.
+=> Wir haben von genau einer Mission ALLE DREI Stufen: Editorprojekt,
+   erzeugter Quelltext, kompiliertes Skript.
+
+DAS FORMAT
+    Kopf "BINARY\0", danach durchgaengig laengenpraefigierte
+    Zeichenketten (u32-Laenge + Text), rekursiv verschachtelt.
+    Der Wurzelknoten heisst SED_NodeRoot und traegt die Felder
+    NotSortChildren, Visible, Name = "Root", Game = "NOD_Game".
+
+--------------------------------------------------------------------------------
+2. WIE SED AUFGEBAUT WAR: 36 KNOTENTYPEN
+--------------------------------------------------------------------------------
+Der Editor kannte typisierte Felder -- ein Baum, in dem jeder Eintrag
+weiss, was er darstellt:
+
+    GEOMETRIE UND RAUM
+        SED_NodeBox          SED_NodeSphere        SED_NodeCone
+        SED_NodeCylinder     SED_NodeFace          SED_NodePosition
+        SED_NodeCoordinate   SED_NodeCoordinateOSD SED_NodePath
+        SED_NodeLandscape
+    LICHT
+        SED_NodeAmbientLight SED_NodeDirectedLight SED_NodeSphereLight
+    OBJEKTE
+        SED_NodeObject       SED_NodeObjectOSD     SED_NodeOSDInfo
+        SED_NodeCreateObject SED_NodeCreateObjectByOSD
+    DATENTYPEN
+        SED_NodeFloat  3787x   SED_NodeAngle 1106x  SED_NodeInteger 372x
+        SED_NodeBool    267x   SED_NodeText   267x  SED_NodeColor   264x
+        SED_NodeList     86x   SED_NodeTable
+        SED_NodeFileSelect     SED_NodeStringSelect
+        SED_NodeIntegerTableSelect
+        SED_NodeTextInvisible  SED_NodeBoolTrue
+    STRUKTUR
+        SED_NodeRoot     SED_NodeTemplate 200x
+        SED_NodeReference     SED_NodeReferenceAutomatic
+
+JEDER KNOTEN traegt dieselben Verwaltungsfelder:
+    Name (1401x)          NotSortChildren (1021x)   Visible (935x)
+    Editable (934x)       PathReferenceObject (442x) CanDelete (433x)
+    CanChangeName (384x)  ScriptObject (180x)       Template (200x)
+    CreateReference (20076x -- der haeufigste Eintrag ueberhaupt)
+
+--------------------------------------------------------------------------------
+3. DAS VISUELLE SKRIPTSYSTEM
+--------------------------------------------------------------------------------
+SED erzeugte den Lua-Code, den wir in den .sco finden. Die Bausteine:
+
+    SED_ScriptOrder        194x    ein Befehl
+    SED_ScriptBlock         29x    ein Block
+    SED_ScriptOrderNothing  16x    Leerbefehl / Platzhalter
+    SED_ScriptSimpleOrder   15x
+    SED_ScriptState          7x    Zustand
+    SED_ScriptUserState      4x
+    SED_ScriptCall           2x    Aufruf
+    SED_ScriptIf             1x    Verzweigung
+    SED_ScriptTableInit      1x
+    dazu SED_SimpleScriptCall, SED_SimpleSetState, SED_ValueState,
+    SED_ConnectedState, SED_StateReferenceCompare
+
+Man hat also Zustandsautomaten zusammengeklickt, nicht Lua getippt.
+Das erklaert, warum die kompilierten Missionsskripte so gleichfoermig
+aufgebaut sind (Handoff v91 Abschnitt 139c) und warum darin Namen wie
+o2, S_o30, S_o64 stehen -- fortlaufend nummerierte Editorknoten.
+
+--------------------------------------------------------------------------------
+4. 545 FERTIGE BAUSTEINE (Templates)
+--------------------------------------------------------------------------------
+Die Projektdatei nennt 545 verschiedene TMP_-Vorlagen. Die haeufigsten:
+
+    TMP_Condition              10108x   Bedingung
+    TMP_Value_Invisible_True   10067x
+    TMP_MessageHandler         10060x   Ereignisbehandlung
+    TMP_CreateReferences       10039x
+    TMP_BoolOperation          10037x   logische Verknuepfung
+    TMP_SimpleCreateOrder       9999x
+    TMP_StateReferenceTrue      8596x
+    TMP_EngineState             6089x
+    TMP_Cargo / TMP_ID           957x
+    TMP_EnterSimulation          433x
+    TMP_SetGroupID               374x
+
+*** UND DAS ZIELSYSTEM, das AquaNox 2 auszeichnet: ***
+    TMP_ConditionWin    361x     TMP_ConditionLose   361x
+    TMP_ConditionBonus  361x     TMP_ConditionUser   361x
+    TMP_WinConditionStateBuffer  365x
+    TMP_UserStateBuffer          366x
+Das sind genau die vier Zielarten, die in mission.des als Goal und
+BonusGoal auftauchen (Handoff 139d). Sie wurden im Editor als Vorlage
+angelegt und je Mission ausgefuellt.
+
+    TMP_BuildingScriptBlock       316x
+    TMP_BuildingEngineStateBuffer 316x
+    TMP_PropertyBuilding          316x
+    TMP_BuildingCreateOrderBlock  315x
+Gebaeude hatten eine eigene Vorlagenfamilie -- 316 Vorkommen in EINER
+Mission zeigt, wie stark mit Bausteinen gearbeitet wurde.
+
+--------------------------------------------------------------------------------
+5. WELCHE ENGINE-KLASSEN SED ANBOT
+--------------------------------------------------------------------------------
+    nod_generic       317x     nod_turret          43x
+    nod_directory      22x     nod_objectbase      16x
+    nod_fx_plankton     3x     nod_fx_rays          3x
+    nod_fx_sky          3x     nod_terrain          3x
+    nod_waypoint_v3     2x     nod_itembox          2x
+    nod_building        2x     nod_player           2x
+    nod_fx_plant        2x     nod_fx_flare         2x
+    nod_vessel, nod_fungus, nod_trash, nod_vehicle,
+    nod_physicalcharacter, nod_particleemitter, nod_laserwall  je 1x
+BEMERKENSWERT: "nod_waypoint_v3" traegt eine Versionsnummer, und
+"nod_building" sowie "nod_objectbase" kommen in AquaNox 1 nicht vor --
+AquaNox 2 hat den Klassensatz erweitert.
+
+--------------------------------------------------------------------------------
+6. *** DAS SED-QUELLFORMAT FUER MESHES: .msh IM KLARTEXT ***
+--------------------------------------------------------------------------------
+Im Spiel liegen 41 .msh-Dateien -- und sie sind LESBARER TEXT:
+
+    [_SED_Detail]
+    {
+      DetailNumber = 0
+      DetailCount = 0
+    }
+    [Vertex]
+    {
+      NumOfV = 32
+      V0 = 0.021673, -0.115506, 0.188795
+      ...
+    }
+    [Material]
+    {
+      NumOfM = 8
+      [SortOrder] { M0 = 0  M1 = 1 ... }
+      [M0]
+      {
+        Name = "hud_ship_repair_fshield"
+        _SED_NewVersion = 1
+        Diffuse = 1.0, 1.0, 1.0
+        Specular = 1.0, 1.0, 1.0
+        Shine = 0.0        ShineStrength = 0.0
+        Opacity = 0.99     ShadingType = "Blinn"
+        FalloffType = "In" FalloffFactor = 0.0
+        OneSided = 1       SelfIllumination = 1.0
+        TrancparencyType = "Additive"     (Tippfehler im Original)
+        DepthBias = 0      DepthBuffered = 0
+        [Map_Diffuse]
+        {
+          Name = "Map #61"       Bitmap = "hud_ship_repair"
+          Amount = 1.0           MappingType = "Explicit"
+          TilingU = 1.0          TilingV = 1.0
+          Filter = "Pyramidal"
+        }
+        _SED_ShowColorRed/-Green/-Blue = 0
+      }
+    }
+    [Polygon]
+    {
+      NumOfP = 80
+      _SED_NewVersion = 1
+      [P0] { G=0  M=0  _SED_Mark=0  V0=10 V1=1 V2=20
+             P0=0.538594,0.135688  P1=...  P2=... }
+    }
+
+DIE HERKUNFT IST EINDEUTIG: "Blinn", "Map #61", "Pyramidal",
+"FalloffType", "SelfIllumination" -- das sind Begriffe aus 3ds Max.
+.msh ist also der EXPORT AUS 3DS MAX, den SED eingelesen hat.
+
+*** UND DIE ENGINE LIEST DIESES FORMAT DIREKT. ***
+    Aqua.exe enthaelt ".msh" und konkrete Namen: box.msh,
+    hud_lock_direction.msh, hud_waypoint_direction.msh und elf
+    pla_*_sw.msh (je Spielerboot eines).
+    Referenziert wird es aus vfx\menu\menu.des (31 Verweise) und
+    vfx\hud\hud.des (7).
+    KEINE der 41 .msh hat eine gleichnamige .msb -- sie werden also
+    NICHT kompiliert, sondern zur Laufzeit als Text gelesen.
+    Benutzt wird das ausschliesslich fuer HUD und Menue.
+
+WAS DAS FUER UNS BEDEUTET
+    Es gibt einen ZWEITEN Weg, Geometrie ins Spiel zu bringen -- einen
+    im Klartext, ohne Binaerformat. Fuer HUD- und Menueelemente ist er
+    der vorgesehene.
+    Ob die Engine auch Objekte oder Levelgeometrie aus .msh laedt, ist
+    NICHT GEPRUEFT; alle 41 vorhandenen Dateien sind HUD/Menue.
+    Falls ja, waere .msh fuer eigene Modelle deutlich bequemer als
+    .msb -- man koennte ihn mit einem Texteditor schreiben.
+    Ausserdem enthaelt .msh MEHR Materialdaten als das kompilierte
+    .msb: Specular, Shine, Opacity, Transparenzart, Schattierungsmodell.
+    Beim Kompilieren nach .msb geht das meiste davon verloren (dort
+    gibt es nur zwei Texturslots je Block).
+
+--------------------------------------------------------------------------------
+7. DIE UEBRIGEN SPUREN IN AQUANOX 1
+--------------------------------------------------------------------------------
+    SED_CanChange = 1     in terrain.des ALLER 31 Level. Ein Schalter,
+                          der dem Editor sagt, ob er diese Kachel
+                          veraendern darf.
+    SED_SetTaskTextKey    195x in den Missionsskripten, und zwar in der
+                          Liste der Bibliotheksnamen -- eine von SED
+                          erzeugte Funktion, die den Missionsziel-Text
+                          setzt.
+    _SED_Mark  583x       in den .msh: eine Markierung je Polygon,
+                          vermutlich die Auswahl im Editor.
+    _SED_NewVersion 84x   Formatversion je Material und Polygonblock.
+    _SED_ShowColorRed/
+    -Green/-Blue  73x     Anzeigefarben im Editor, im Spiel bedeutungslos.
+    _SED_Detail    4x     Detailstufe des Meshes.
+    _SED_Texture  10x     in menu_station_logo.msh.
+
+In AquaNox 2 kommen hinzu:
+    "// SED" als Kommentarkopf in terrain.des
+    "// ID as set in SED." in mission.loc, ueber jedem EngineID-Feld
+=> Die EngineID der Missionsziele ist eine Nummer, die im Editor
+   vergeben wurde. Wer eigene Ziele baut, muss sie selbst konsistent
+   halten.
+
+--------------------------------------------------------------------------------
+8. WAS DAS FUER NACHTSCHICHT HEISST
+--------------------------------------------------------------------------------
+SED HABEN WIR NICHT und werden ihn nicht bekommen. Aber:
+
+    (a) Wir wissen jetzt, WIE die Originale entstanden sind -- durch
+        Zusammenklicken von Zustandsautomaten aus 545 Vorlagen. Unsere
+        handgeschriebenen Lua-Skripte sind dem nicht unterlegen,
+        sondern nur anders: direkter, kuerzer, ohne Editorballast.
+    (b) Die .ssc zeigt, welche Felder ein Objekt im Editor hatte --
+        und damit, welche Eigenschaften die Engine tatsaechlich
+        auswertet.
+    (c) Das Zielsystem von AquaNox 2 (TMP_ConditionWin/Lose/Bonus/User)
+        ist als Vorlagenfamilie erkennbar. Wer es in AquaNox 1
+        nachbaut, weiss jetzt, dass es vier Zielarten sein sollten.
+    (d) .msh ist ein Klartext-Meshformat, das die Engine liest. Fuer
+        HUD-Aenderungen ist das der einfachste Weg ueberhaupt, und ob
+        es auch fuer Objekte taugt, waere einen Versuch wert.
+    (e) Was SED erzeugt hat -- Lightmaps, Selektormaps, die
+        Kollisionsbeschleunigung im .col -- koennen wir weiterhin
+        nicht erzeugen. Das bleibt die eigentliche Luecke.
+
+--------------------------------------------------------------------------------
+9. OFFEN
+--------------------------------------------------------------------------------
+    * Ob die Engine .msh auch fuer Objekte und Levelgeometrie liest
+      (bisher nur HUD und Menue belegt). LOHNENDER TEST.
+    * Was die 545 Templates im Einzelnen tun -- die .ssc ist mit
+      5,5 MB gross genug fuer eine eigene Auswertung.
+    * Wie SED Lightmaps und Selektormaps berechnet hat.
+    * Wofuer "SED" steht.
+
+================================================================================
+ENDE
+================================================================================

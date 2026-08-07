@@ -1,0 +1,332 @@
+================================================================================
+WIE EINE AQUANOX-WELT AUFGEBAUT IST
+Terrain, Objektplatzierung, dynamisches Licht und die Wellenkaustik
+================================================================================
+Stand: 2026-07-27
+Gilt fuer AquaNox 1 und AquaNox 2; Unterschiede sind jeweils benannt.
+
+--------------------------------------------------------------------------------
+1. DAS TERRAIN -- UND WER SEINE TEXTUR BESTIMMT
+--------------------------------------------------------------------------------
+DIE HOEHENKARTE
+    map\<level>\terrain\hmap.tga    1025 x 1025, 24 bpp, 3,15 MB
+    Ein Graustufenbild; jeder Punkt eine Hoehe.
+    AQUANOX 2 legt zusaetzlich 16 KACHELN ab: hmap_0_0 bis hmap_3_3
+    (4x4-Raster). Die Gesamtkarte bleibt daneben bestehen. Das ist
+    vermutlich fuer schrittweises Laden gedacht -- die Weltgroesse ist
+    unveraendert.
+
+DIE WELTPARAMETER stehen in terrain.des:
+    [Parameter]
+    {
+        Offset   = -4096.0, -4096.0, 0.0
+        Scale    = 4.0, 4.0, 4.0
+        MinimumResolution  = 30.0
+        MaximumD2          = 100.0
+        RestrictedQuadTree = 1
+        TriangulationMode  = 2
+    }
+    1025 Gitterpunkte x Scale 4 = 4100 Einheiten Kantenlaenge, von
+    -4096 bis etwa +4. RestrictedQuadTree und MaximumD2 sind die
+    Detailstufensteuerung: das Gelaende wird zur Laufzeit trianguliert,
+    je nach Entfernung feiner oder groeber (NumOfTriangulationMaps = 8).
+    In AquaNox 2 stehen EXAKT DIESELBEN Werte -- und darueber der
+    Kommentar "// SED", der Name des Editors.
+
+*** WER BESTIMMT DIE TEXTUR? DIE SELEKTORMAP ***
+    map\<level>\terrain\material_s.tga    256 x 256, 32 bpp, unkomprimiert
+    Das "s" steht fuer Selector. Die Engine bestaetigt das mit ihrer
+    Fehlermeldung:
+        "At least material 0 has to be defined in selectormap."
+    und dem Renderpfad
+        REP_TerrainPrelit::CreateAndUploadSelectors()
+
+    Die vier Kanaele (B, G, R, A) sind die GEWICHTE der vier
+    Materialslots. Gemessen ueber alle 65.536 Punkte von 1h1:
+        Blau    95 verschiedene Werte, haeufigster 128 (26.864x)
+        Gruen  126,                    haeufigster 128 (25.315x)
+        Rot    113,                    haeufigster 128 (25.109x)
+        Alpha   33,                    haeufigster  32 (24.321x)
+    Die Summe der Kanaele ist NICHT 255 -- haeufigste Summe B+G+R ist
+    384, also 3 x 128. Es ist also keine normalisierte Mischung,
+    sondern 128 ist der Neutralwert je Kanal.
+    Aufloesung: 256 x 256 Selektorpunkte auf 1025 x 1025 Hoehenpunkte,
+    ein Selektorwert deckt also rund 16 Hoehenpunkte ab.
+
+DIE MATERIALIEN
+    material_0.dds    in 30 Leveln    256x256 oder 512x512, DXT1
+    material_1.dds    in 28
+    material_2.dds    in  5           (nur wenige Level nutzen alle vier)
+    material_3.dds    in 30
+    Die Engine kennt vier Slots -- in Aqua.exe stehen die Pfade
+    "\material_0" bis "\material_3" einzeln.
+
+WIE OFT SIE GEKACHELT WERDEN, steht in material.des:
+    [Wrapping]
+    {
+        W0 = 110.0     W1 = 32.0     W2 = 256.0     W3 = 8.0
+    }
+    Je Material ein Faktor. Kleiner Wert = grosse Kachel.
+    W1 = 32 und W3 = 8 sind in fast allen Leveln gleich, W0 schwankt
+    zwischen 32 und 110 -- das ist der gestalterische Spielraum.
+
+DIE DETAILTEXTUREN
+    coral_01.tga, grass_01.tga, stone_01.tga, fungus_01.tga -- je 64x64,
+    in 15 bzw. 8 Leveln. AquaNox 2 benennt sie um (org_grass_l,
+    org_grass_s, org_seetang, org_stone_l, org_stone_s, org_tubes) und
+    hat damit sechs statt vier.
+    Die Engine unterscheidet die beiden Ebenen ausdruecklich:
+        VEC_Material::Parse_Diffuse()   die Grundtextur
+        VEC_Material::Parse_Detail()    die Nahdetails
+
+ZUSAMMENGEFASST: Die Gelaendetextur entsteht aus vier gekachelten
+Materialtexturen, die eine 256x256-Selektormap punktweise gewichtet,
+darueber eine Detailtextur fuer die Nahsicht und die vorberechnete
+lightmap.dds (2048x2048) fuer die Schattierung.
+Wer ein eigenes Gelaende bauen will, braucht also: hmap.tga,
+material_s.tga, zwei bis vier material_N.dds, material.des,
+terrain.des und lightmap.dds.
+
+--------------------------------------------------------------------------------
+2. WIE DIE OBJEKTE IN DIE LANDSCHAFT KOMMEN
+--------------------------------------------------------------------------------
+*** ES GIBT KEINE SZENENDATEI. DAS MISSIONSSKRIPT BAUT DIE WELT AUF. ***
+
+Jedes Gebaeude, jeder Felsen, jedes Wrack ist ein eigener Aufruf im
+Missionsskript, in __InitLayout():
+
+    node = Node_CreateNode("nod_generic", "atl_dock3_1")
+    Node_AddSon(parent, node)
+        Body_SetCS(node, MAT_Vector3(x, y, z),      -- WO
+                         MAT_Vector3(rx, ry, rz))   -- wie gedreht
+        Node_ParseIniFile(node, "osd/atl/atl_dock3.osd")  -- WAS
+        Body_SetFriendOrFoeID(node, 0)
+        Node_EnterSimulation(node)
+
+Ein Level ist damit ein PROGRAMM, keine Datei. Deshalb sind die
+Missionsskripte so gross (im Schnitt 282 KB, das groesste 775 KB) --
+sie enthalten die Koordinaten jedes einzelnen Objekts.
+Die OSD-Datei bestimmt, WAS das Objekt ist: Mesh, Kollisionsnetz,
+Textur, Verhalten. Der Skriptaufruf bestimmt nur Ort und Drehung.
+
+ZWEI GETRENNTE WELTEN
+    Scenario_Static     alles Unbewegliche, in BLOCK_N-Verzeichnissen
+                        gruppiert (Sichtbarkeitsgruppen)
+    Scenario_Dynamic    alles Bewegliche: Schiffe, Spieler, Torpedos
+
+DAZU DIE GEBAUTE LEVELGEOMETRIE
+    map\<level>\lmsh\*.msb
+    1h1 166 Meshes, 3h3 111, mp_06_dm 61. Sie wird NICHT einzeln
+    platziert, sondern als ganzes Verzeichnis geladen:
+        Game_SetLightCache(node, "map/<lv>/Lmsh/", "map/<lv>/Ltex/")
+    Die Engine nimmt, was drinliegt -- Position und Drehung stecken
+    bereits in den Meshdaten. Deshalb tragen viele davon Namen wie
+    atl_dock3_1_child2_child0.msb: sie sind Bauteile eines groesseren
+    Ganzen, an Ort und Stelle eingebacken.
+
+=> ZWEI WEGE, ETWAS IN DIE WELT ZU SETZEN:
+   (a) als lmsh-Bauteil, vorberechnet beleuchtet, unbeweglich, ohne
+       Skriptzeile -- aber man braucht die Lightmap dazu
+   (b) per Node_CreateNode mit OSD, dynamisch beleuchtet, ansprechbar,
+       bewegbar -- der Weg fuer alles, was wir selbst bauen
+   (siehe aquanox_beleuchtung.txt und eigene_3d_modelle.txt)
+
+--------------------------------------------------------------------------------
+3. FRAGE: WAERE DYNAMISCHES LICHT MOEGLICH?
+--------------------------------------------------------------------------------
+*** KORREKTUR gegenueber der ersten Fassung dieses Abschnitts: ***
+Dort stand, dynamisches Licht sei "eingebaut und nie benutzt". Das war
+FALSCH. Beim Vorbereiten des Tests T6 kam heraus:
+
+    DYNAMISCHES LICHT LAEUFT IM SPIEL BEREITS.
+
+    nod_light      in 11 OSDs: ALLE Spielerboote haben einen
+                   Scheinwerfer namens "light_player" --
+                   pla_phobocaster, pla_toiler, pla_avenger,
+                   pla_skipjack, pla_tiburon, pla_vortex,
+                   pla_succubus2, pla_voodoobreath, pla_drowsymaggie,
+                   dazu hi_phobocaster und cra_raupe
+    nod_fx_light   in 27 OSDs: jede Explosion traegt ein Licht namens
+                   "illuminate" (fx_exp_dying1 bis 19 und weitere)
+
+Man sieht dynamisches Licht also in jeder Spielminute -- am eigenen
+Boot und bei jedem Treffer. Was NICHT benutzt wird, sind die sechs
+Light_-SKRIPTKOMMANDOS: kein Originalskript legt ein Licht an oder
+schaltet eines. Die Lichter werden ueber OSD-Eintraege definiert und
+laufen dann von selbst.
+
+Das ist ein wichtiger Unterschied: die Engine kann es nachweislich,
+und die Frage ist nur noch, ob man es SKRIPTGESTEUERT bekommt.
+
+WAS DA IST
+    NOD_Light         860 B, Basis NOD_Body
+    NOD_FX_Light      808 B, die Effektfassung
+    Light_SetColor(node, MAT_Vector3, MAT_Vector3)   zwei Farben
+    Light_SetCone(node, MAT_Vector3, MAT_Vector3, float, float)
+    Light_SetMode(node, string)
+    Light_SetR1(node, float)      innerer Radius
+    Light_SetR2(node, float)      aeusserer Radius
+    Light_Switch(node, int8)      ein und aus
+    In AquaNox 2 exakt dieselben sechs Kommandos, unveraendert.
+
+DIE MODI, die Light_SetMode annimmt, stehen in der EXE:
+    "omni"  und  "omnifast"
+    Dazu ConeAngle, ConeMin, ConeMax fuer den Kegel.
+    NOD_Light::ParseIniFile() meldet: light "%s" no type given /
+    parsed wrong type "%s" -- der Typ wird also auch im OSD gesetzt.
+
+DIE OBERGRENZE: VIER LICHTER JE OBJEKT
+    Die Vertexshader liegen in fuenf Fassungen vor:
+        object_vs_cm0 .. cm4              Colormap, 0 bis 4 Lichter
+        object_vs_cmdm0 .. cmdm4          + Detailmap
+        object_vs_cmdmfm0 .. cmdmfm4      + Fogmap
+        objectprelit_vs_lmcs0 .. lmcs4    Lightmap + 0 bis 4 Lichter
+        objectprelit_vs_lmcsa0 .. lmcsa4
+    25 Shader allein dafuer.
+    *** WICHTIG: Das ist KEINE Hardwaregrenze, sondern eine
+    Compilezeit-Entscheidung von 2001. *** Fuer jede Lichtanzahl wurde
+    ein eigener Shader uebersetzt und in Aqua.exe eingebacken. Mehr als
+    vier gleichzeitige Lichter je Objekt wuerden einen neuen Shader
+    verlangen -- und den kann man nicht nachreichen, weil AquaNox 1
+    Shader nur vorkompiliert kennt (aquanox_beleuchtung.txt Abschnitt 2).
+    Heutige Hardware ist also nicht der begrenzende Faktor. Der Grund
+    ist, dass 2001 fuenf Faelle einprogrammiert wurden.
+
+DIE SCHALTER
+    ren_object_dlight     dynamische Objektbeleuchtung
+    ren_terrain_dlight    dynamisches Licht auf dem Gelaende
+    ren_terrain_dshadow   Gelaendeschatten
+    Keiner davon wird von einer Konfigurationsdatei gesetzt
+    (aquanox1_unused_mechanics.json) -- sie stehen auf ihrem
+    eingebauten Vorgabewert. Ueber die Konsole oder die Proxy-DLL sind
+    sie zur Laufzeit umschaltbar.
+
+SO SIEHT EINE ORIGINALDEFINITION AUS
+    Aus pla_phobocaster~.osd, dem Spielerschiff:
+        child0
+          namecla  = nod_light
+          nameson  = light_player
+          [localcs]
+            translation, rotation0, rotation1, rotation2
+          [visual]
+            type          = omnifast
+            rgb           = r, g, b
+            range         = zwei Werte (entsprechen R1 und R2)
+            apertureangle = Oeffnungswinkel
+            intensity     = Staerke
+    Aus fx_exp_dying10~.osd, einem Explosionslicht:
+          namecla = nod_fx_light    nameson = illuminate
+          [visual]  type = omni     rgb = ...    range = ...
+          [life]    time = kurz     -- ein Lichtblitz mit Lebensdauer
+
+    Bemerkenswert: der Scheinwerfer benutzt "omnifast", der Lichtblitz
+    "omni". Die schnelle Fassung ist offenbar fuer dauerhaft mitlaufende
+    Lichter gedacht, die genaue fuer kurze Effekte.
+
+    NOD_Light ist die VERALTETE Klasse -- die EXE enthaelt den Hinweis
+    "Legacy class use NOD_FX_Light instead". Fuer Eigenes also
+    nod_fx_light nehmen.
+
+WAS DAS PRAKTISCH HEISST
+    Vier bewegliche, farbige Lichter je Objekt sind zu haben, und die
+    Engine beweist es selbst -- an jedem Boot und bei jeder Explosion.
+    Offen ist nur, ob man sie SKRIPTGESTEUERT bekommt: kein
+    Originalskript ruft je Light_Switch oder Light_SetColor auf, die
+    Lichter stehen alle im OSD und laufen von selbst.
+    FUER NACHTSCHICHT waere gerade das der Gewinn: ein Suchscheinwerfer,
+    der einem folgt, ein Warnlicht, das bei Alarm angeht, ein Wrack, das
+    flackert -- also Licht als ERZAEHLMITTEL statt als Dekoration.
+    Das ist Test T6 in OFFENE_TESTS.txt, mit zwei Wegen: erst der
+    sichere ueber ein eigenes OSD, dann der interessante rein per
+    Skript.
+
+--------------------------------------------------------------------------------
+4. FRAGE: WIE ENTSTEHEN DIE BEWEGTEN WELLENLICHTER? (KAUSTIK)
+--------------------------------------------------------------------------------
+KURZANTWORT: Eine vorgerenderte Sequenz aus 32 Bildern, die zyklisch
+durchlaufen und ueber Gelaende, Gebaeude und Schiffe projiziert wird.
+Kein Echtzeiteffekt, sondern ein Daumenkino.
+
+DIE DATEN -- vfx\tex\caustic\
+    caustic.tse       der Deskriptor, 68 Byte:
+        [TextureSet]
+        {
+            Name = "vfx\tex\caustic\caus"
+            NumT = 32
+        }
+    caus001 bis caus032    die 32 Einzelbilder
+    und jedes davon in FUENF fest abgelegten Aufloesungsstufen:
+        caus001_l2.tga     4 x 4     24 bpp        92 B
+        caus001_l3.tga     8 x 8                  236 B
+        caus001_l4.tga    16 x 16                 812 B
+        caus001_l5.tga    32 x 32               3.116 B
+        caus001_l6.tga    64 x 64              12.332 B
+    Macht 160 Dateien fuer den Effekt. Die Stufen sind keine Mipmaps in
+    einer Datei, sondern eigene Bilder -- die Engine waehlt nach
+    Entfernung. Die hoechste Aufloesung ist gerade einmal 64x64.
+
+DIE ABSPIELMECHANIK ist ein allgemeines Subsystem, kein Sonderfall:
+    FX_TextureSet::Load / GetTextureID
+    FX_TextureAnim::Parse() / Start()
+    mit den Parametern numofframes, framespersecond (1 bis 60) und
+    startframe.
+    Dasselbe System treibt auch die Explosionen und Funken:
+        expl1.tse   NumT = 24     expl2.tse  NumT = 27
+        sparc2.tse  NumT = 14
+    In AquaNox 2 zusaetzlich trash1.tse.
+
+DIE ANWENDUNG -- drei getrennte Staerken, weil es drei Renderpfade gibt:
+    Game_SetCausticTerrain(node, float, float)     auf das Gelaende
+    Game_SetCausticObject(node, float, float)      auf Schiffe
+    Game_SetCausticBuilding(node, float, float)    auf Levelgeometrie
+    Alle 74 Originalmissionen rufen sie im __InitLayout auf.
+    Die zwei Floats sind Staerke und (vermutlich) Geschwindigkeit.
+
+*** AQUANOX 2 HAT DEN EFFEKT VERDOPPELT ***
+    Statt drei Kommandos mit zwei Parametern gibt es dort fuenf mit
+    vier bzw. fuenf:
+        Game_SetCausticTerrainNormal (f, f, f, f)
+        Game_SetCausticObjectNormal  (f, f, f, f)
+        Game_SetCausticBuildingNormal(f, f, f, f)
+        Game_SetCausticTerrainMicro  (f, f, f, f, f)
+        Game_SetCausticBuildingMicro (f, f, f, f, f)
+    ZWEI UEBERLAGERTE EBENEN: eine grobe ("Normal") und eine feine
+    ("Micro"). Passend dazu liegen in AN2 ZWEI Sequenzen:
+        caustic0.tse und caustic1.tse
+    und die Einzelbilder sind jetzt DDS statt TGA (cstg001.dds ff.).
+    Echte Werte aus neopolis_neu.scr, dem einzigen Missionsquelltext
+    im Klartext, den wir haben:
+        Game_SetCausticTerrainNormal(node0, 0.0009, 0.4, 4.0, 2.0)
+        Game_SetCausticObjectNormal (node0, 0.0009, 0.4, 5.0, 2.5)
+        Game_SetCausticBuildingNormal(node0, 0.0009, 0.4, 5.0, 2.5)
+        Game_SetCausticTerrainMicro (node0, 0.08, 0.8, 2.0, 1.0, 60.0)
+        Game_SetCausticBuildingMicro(node0, 0.08, 0.8, 2.0, 1.0, 60.0)
+    Der letzte Wert der Micro-Fassung ist 60.0 -- das koennte die
+    Reichweite sein, ab der die feine Ebene ausgeblendet wird.
+    UNGEPRUEFT, aber die Groessenordnung passt.
+
+WAS MAN DAMIT MACHEN KANN
+    Die Sequenz laesst sich austauschen: 32 Graustufenbilder in fuenf
+    Stufen, dazu eine .tse mit Praefix und Anzahl. Ein eigenes
+    Kaustikmuster -- schaerfer, langsamer, farbiger -- ist damit eine
+    reine Bildaufgabe, keine Programmieraufgabe.
+    Und weil FX_TextureAnim allgemein ist, liesse sich dasselbe fuer
+    andere Flaechen nutzen: flackernde Bildschirme, laufende Anzeigen,
+    pulsierende Warnleuchten.
+
+--------------------------------------------------------------------------------
+5. WAS OFFEN BLEIBT
+--------------------------------------------------------------------------------
+    * Wie die Selektormap und die Lightmaps ERZEUGT werden -- das macht
+      SED, Massives Editor, den wir nicht haben.
+    * Die genaue Bedeutung der zwei Caustic-Floats in AquaNox 1
+      (Staerke und Geschwindigkeit ist die plausibelste Deutung).
+    * Ob die vier Materialkanaele wirklich B/G/R/A auf material_0..3
+      abbilden -- die Kanalstatistik legt es nahe, bewiesen ist es
+      nicht. Ein Test mit einer manipulierten material_s.tga wuerde es
+      klaeren.
+    * Ob dynamisches Licht im Spiel tatsaechlich sichtbar wird.
+
+================================================================================
+ENDE
+================================================================================

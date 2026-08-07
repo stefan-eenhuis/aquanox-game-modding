@@ -1,0 +1,176 @@
+================================================================================
+AQUANOX 1 + 2 -- TIEFENANALYSE
+Handoff-Datei, Version 6
+================================================================================
+Erstellt: 2026-07-27
+Thema: die Skript-API vollstaendig kartiert, drei Binaerformate entschluesselt
+Vorgaenger: v5 (AN2.dat), v4 (Missionsaufbau), v3 (Lua-Quelltexte),
+            v2 (Levelportierung), v1 (Bestandsaufnahme)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+0. WAS DIESE RUNDE ERGEBEN HAT
+--------------------------------------------------------------------------------
+  * Die Skript-API beider Spiele ist jetzt VOLLSTAENDIG kartiert -- vier
+    Schichten, alle Adressen belegt (Abschnitt 1-2).
+  * Drei bis dahin unbekannte Binaerformate sind entschluesselt:
+    .col, .fog und .sam (Abschnitt 3, ausfuehrlich in
+    mod_docu\aquanox_binaerformate.txt).
+  * In v5 hatte ich empfohlen, AN2.dat nicht weiter zu untersuchen.
+    Der Nutzer hat das ueberstimmt -- zu Recht: die Registrierungsstelle
+    in AN2 zu kennen war noetig, um den Vergleich zu fuehren.
+
+--------------------------------------------------------------------------------
+1. *** DIE SKRIPT-API BESTEHT AUS VIER SCHICHTEN ***
+--------------------------------------------------------------------------------
+Bisher kannten wir 398 Kommandos und hatten in v3 elf Script_*-Globals
+zufaellig gefunden. Jetzt ist das Bild vollstaendig:
+
+  SCHICHT 1 -- Lua-Standardbibliothek, 71 Funktionen
+      In AN1 drei getrennte luaL_reg-Tabellen:
+          @0x00600308  37 Eintraege  Basis (dofile, dostring, print, type,
+                                     tonumber, tostring, next, foreach, ...)
+          @0x006001c8  23 Eintraege  Mathe (abs, sin, cos, tan, sqrt, floor,
+                                     min, max, log, exp, deg, rad, random, ...)
+          @0x00600298  11 Eintraege  String (strlen, strsub, strlower, format,
+                                     strfind, gsub, ...)
+      In AN2 dieselben 71, aber in EINER zusammenhaengenden Tabelle
+          @0x007180f8
+      In beiden ist `dostring` enthalten -- die Grundlage unserer
+      Authoring-Kette gilt fuer beide Spiele.
+
+  SCHICHT 2 -- direkt registrierte Engine-Globals, 16 Stueck
+      Registriert ueber lua_pushcclosure + lua_setglobal:
+          AN1  lua_setglobal @0x005d38b0   (pushcclosure @0x005d3680)
+          AN2  lua_setglobal @0x00685ae0
+      Der Lua-State steht in AN1 bei 0x00668a40 -- dieselbe Adresse, die
+      unsere Proxy-DLL fuer den Hot-Reload benutzt (Hauptreihe 119).
+
+      DIE VOLLSTAENDIGE LISTE (in AN1 und AN2 IDENTISCH):
+          MAT_Vector3              der Vektorkonstruktor
+          NOD_NodeRef              Knotenreferenz
+          PI                       die Kreiszahl als Konstante
+          Script_Log               Zeile ins Log
+          Script_LogRaw            dasselbe ohne Praefix
+          Script_Error             [SCRIPTERROR]-Zeile
+          Script_AssertFile
+          Script_DoFile
+          Script_GetTime
+          Script_GetLineNumber
+          Script_GetFunctionName
+          Script_IsNodeRefValid
+          Script_SnoopOn           Skript-Tracer EIN
+          Script_SnoopOff          Skript-Tracer AUS
+          _ERRORMESSAGE            Fehlerhaken
+          _VERSION
+      AN2 hat zusaetzlich __Timer, arg, in, self (teils Lua-intern).
+
+      PI ist bemerkenswert: Lua 4.0 hat kein math.pi, die Engine liefert es.
+      Script_SnoopOn/-Off ist das Gegenstueck zu AN2s Startschalter
+      -scriptsnoop und in AN1 direkt aus dem Skript aufrufbar. UNGETESTET.
+
+  SCHICHT 3 -- die 398 Message-Kommandos
+      Laufen NICHT ueber lua_setglobal, sondern ueber den Message-Dispatcher
+      (@0x0048ff30, Hauptreihe Abschnitt 91ff). Deshalb tauchen sie in
+      Schicht 2 nicht auf. Registry: mod_docu\aquanox1_message_ids.json
+
+  SCHICHT 4 -- die Lua-Bibliotheken
+      BindEasy, DelayedFunction, GuardArea usw. sind in Lua geschrieben und
+      liegen als .sco unter dat\script\lib\. Quelltexte dazu in
+      mod_docu\an2_script_sources\, Uebersicht in
+      mod_docu\aquanox_lua_api_referenz.txt (v3/v4).
+
+=> Wer wissen will, ob ein Name in AquaNox 1 existiert, muss alle vier
+   Schichten pruefen. Die 398er-Registry allein reicht nicht -- das war
+   der Fehler, der in v3 zur falschen Aussage ueber Vessel_AvoidanceTerrain
+   gefuehrt hatte.
+
+--------------------------------------------------------------------------------
+2. DIE ADRESSEN IM UEBERBLICK
+--------------------------------------------------------------------------------
+                                   AquaNox 1        AquaNox 2
+    ImageBase                      0x400000         0x400000
+    Lua-State-Slot                 0x00668a40       (nicht gesucht)
+    lua_pushcclosure               0x005d3680       (nicht gesucht)
+    lua_setglobal                  0x005d38b0       0x00685ae0
+    luaL_reg Basis                 0x00600308       0x007180f8
+    luaL_reg Mathe                 0x006001c8       (in derselben Tabelle)
+    luaL_reg String                0x00600298       (in derselben Tabelle)
+    lua_dobuffer                   0x005d5790       -
+    Message-Dispatcher             0x0048ff30       -
+    NOD_Script-Vtable              0x005f6218       -
+    NOD_Script::HeartBeat          0x0048d750       -
+
+--------------------------------------------------------------------------------
+3. DREI FORMATE ENTSCHLUESSELT
+--------------------------------------------------------------------------------
+Ausfuehrlich in mod_docu\aquanox_binaerformate.txt. Kurzfassung:
+
+  .col (Kollisionsnetz, 511 Dateien in AN1)
+      u32 nTri | Tri[nTri] je 8 B (LAYOUT WIE IM .msb) |
+      u32 nVert | Vertex[nVert] je 12 B | Beschleunigungsstruktur
+      Belegt an atl_pscout.col: nTri 413 und nVert 716 stimmen exakt mit
+      dem Mesh ueberein, die Vertices sind byte-identisch.
+      Der Schlussteil (bei atl_pscout 13.724 B) skaliert weder mit nTri
+      noch nVert -- vermutlich ein Raumbaum, ungeklaert.
+      PRAXIS: fuer eigene Objekte eine vorhandene .col weiterverwenden.
+
+  .fog (Nebeltabelle, 29 Dateien, alle exakt 1.048.596 B)
+      u32 64 | u32 64 | u32 0 | f32 7.8125 | f32 16.0 |
+      64*64 Zellen a 256 B (= je 64 RGBA-Werte)
+      Ein Farbverlauf ueber Entfernung/Tiefe. Erzeugt aus fog.tga (300 B)
+      nach den Angaben in fog.des (Opacity, ViewingDistance, WaterDepth).
+
+  .sam (Klangdeskriptor)
+      name / freq / freqrnd / vol / volrnd / cnt / minr / maxr
+      freqrnd streut die Tonhoehe zufaellig (coc_elf_in: 1000 Hz bei 22050),
+      minr/maxr sind die Hoerradien, cnt 0 = endlos, 1 = einmalig.
+
+--------------------------------------------------------------------------------
+4. AN2.dat -- ERGAENZUNGEN ZU v5
+--------------------------------------------------------------------------------
+  * Der interne Build-Pfad steht im Binary:
+      c:\massive\develop\intern\main\aqua\src\aqua_main\
+          Release MaxOptimization\aquaRELOPT.pdb
+    Das Projekt hiess intern "aqua" -- AN2 ist derselbe Quellbaum wie AN1.
+  * AN2 nutzt zusaetzlich zlib 1.1.4, hat eine .reloc-Sektion (AN1 nicht)
+    und rendert mit D3D9 statt D3D8.
+  * Die Lua-Anbindung ist in beiden Spielen strukturgleich; nur die
+    Adressen unterscheiden sich.
+
+--------------------------------------------------------------------------------
+5. WAS JETZT NOCH OFFEN IST
+--------------------------------------------------------------------------------
+  BINAERFORMATE
+    * der Schlussteil der .col (Raumbaum)
+    * .ssc (AN2-Szenengraph, 5,56 MB, nur angelesen)
+    * .fnt (AN2-Schriften, Magic "FN")
+    * .usi.bin (AN2-GUI, 131 Dateien)
+    * hmap.tga / tmap_*.tga -- die Terrainquellen, noch nie untersucht
+    * .vid und .bik (Video)
+    * AN1s .boa/.bop/.bor/.zip -- Endungen, die AN2 nicht hat
+
+  ENGINE
+    * Das MSB-Renderproblem (v2 Abschnitt 1-3). Der Suchraum ist eng, die
+      Ursache aber weiter unbekannt. "AN2 REPARIERT" wartet auf einen
+      Durchlauf.
+    * AN2s Message-Dispatcher und seine Kommandoregistry mit Signaturen --
+      fuer AN1 haben wir das (398 mit Argumenttypen), fuer AN2 nur die
+      Namensliste aus v5.
+    * Script_SnoopOn als Debugwerkzeug erproben.
+
+  IM SPIEL ZU PRUEFEN (unveraendert aus v2-v4)
+    * Renn-KI mit AN2-Rennprofil (eingespielt)
+    * Levelvorlage aus v4
+    * Levelportierung AN1 -> AN2 (Werkzeug bereit)
+
+--------------------------------------------------------------------------------
+6. NEUE UND AKTUALISIERTE DATEIEN
+--------------------------------------------------------------------------------
+    mod_docu\aquanox_binaerformate.txt        NEU -- alle Formate an einem Ort
+    mod_docu\aquanox2_analyse_handoff_v6.txt  diese Datei
+
+================================================================================
+ENDE -- Version 6
+================================================================================

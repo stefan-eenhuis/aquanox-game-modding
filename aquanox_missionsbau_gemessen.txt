@@ -1,0 +1,162 @@
+================================================================================
+WIE EINE AQUANOX-MISSION WIRKLICH GEBAUT IST
+gemessen an den 30 dekompilierten Kampagnenmissionen
+================================================================================
+Stand: 2026-07-28, Aufgaben B1 und B10
+
+WAS SICH GEAENDERT HAT
+    Bisher beruhten alle Angaben auf Bytecode-Zaehlungen, die nur
+    RELATIVES Gewicht messen ("in N Funktionen referenziert"). Jetzt
+    liegen die Missionen im Klartext vor, und die Zahlen sind absolut.
+
+--------------------------------------------------------------------------------
+1. DIE GROESSE EINER MISSION
+--------------------------------------------------------------------------------
+                   Mittel   Median      von         bis
+    Zeilen          8.622    8.178    2.053      23.338
+    Objekte            76       51        2         181
+    Schiffe            35       27        6         131
+    Fahrzeuge           4        0        0          31
+    Wegpunkte           3        3        0           9
+    Trigger             3        1        0          16
+    Pfade              11        9        1          30
+    Patrouillenzonen    7        5        1          27
+    Positionen         51       47        8         111
+    BindEasy-Aufrufe  148      120       55         361
+
+    KLEINSTE   1N1 "Terror"            2.053 Zeilen, 39 Obj,   7 Schiffe
+    GROESSTE   6H2 "Krieg in Neopolis" 23.338 Zeilen, 170 Obj, 131 Schiffe
+
+    *** MASSSTAB FUER NACHTSCHICHT: eine erste eigene Mission mit
+    20 Objekten, 5 Schiffen, 2 Pfaden und 3 Zonen liegt weit unter
+    dem Original -- und ist trotzdem eine vollstaendige Mission.
+    Man muss nicht bei 76 Objekten anfangen. ***
+
+--------------------------------------------------------------------------------
+2. WELCHE VERHALTEN WIRKLICH GERUFEN WERDEN
+--------------------------------------------------------------------------------
+    DipolLib.InUtero_Normal              1332x  in ALLEN 30 Missionen
+    VesselAttackLib.GuardArea             843x  in 29
+    CameraLib.Wait                        367x  in 29
+    DipolLib.LeaveSimulation              341x  in  8
+    DipolLib.InUtero_DipolIn              329x  in 24
+    TurretLib.Attack                      251x  in 16
+    DipolLib.DipolJumpOut                 156x  in 21
+    FormationLib.PlaceFormationPath        99x  in 27
+    VesselGotoLib.MultiPatrol              92x  in  9
+    FormationLib.VesselGotoInFormationFromTo 82x in 28
+    FormationLib.CreateFormation           78x  in 29
+    SensorLib.ActivateAvpSensorComplex     76x  in 20
+    VesselAttackLib.GuardAreaRespawn       64x  in  9
+    VehicleAttackLib.GuardArea             57x  in  6
+    VesselAttackLib.ClearArea              39x  in  5
+    MiscLib.MilkRunGoto                    25x  in  5
+    MiscLib.Infiltrate                     22x  in 13
+    DockLib.CreateDockMaster               10x  in  8
+    DockLib.Dock                            7x  in  5
+
+*** DIE UEBERRASCHUNG: DipolLib IST DAS MEISTGENUTZTE SUBSYSTEM. ***
+    InUtero_Normal steht in ALLEN 30 Missionen, 1332 Mal.
+    "InUtero" ist der Zustand VOR dem Eintritt in die Simulation --
+    jedes Objekt, das spaeter erscheinen soll, wartet dort.
+    Das korrigiert eine frueherere Einschaetzung, die DipolLib als
+    "Sprungverhalten, kaum benutzt" gefuehrt hat. Ungenutzt ist nur
+    die Funktion Jump; das UEBRIGE Dipol-System traegt jede Mission.
+    Die Familie: InUtero_Normal, InUtero_DipolIn, InUtero_Undock,
+    InUtero_VehicleDipolIn, InUtero_DipolInRelative, DipolJumpOut,
+    LeaveSimulation.
+
+--------------------------------------------------------------------------------
+3. DIE ENGINE-KOMMANDOS NACH HAEUFIGKEIT
+--------------------------------------------------------------------------------
+    MAT_Vector3                 9803x
+    Body_SetCargoKey            9468x   (drei je Objekt: Slot 0, 1, 2)
+    Node_CreateNode             7169x   \
+    Node_AddSon                 7169x    > exakt gleich haeufig --
+    Game_LoadProgress_Advance   7169x   /  jedes Objekt macht alle drei
+    Node_EnterSimulation        5125x
+    Node_Find                   4532x
+    Node_ParseIniFile           4158x
+    Body_SetCS                  3899x
+    Body_SetFriendOrFoeID       3896x
+    Body_SetNameKey             3156x
+    StopAllActiveBehaviours_AndCall  2072x
+    Node_LeaveSimulation        1774x
+    Position_SetPosition        1514x
+    Position_SetRadius          1514x
+    Body_AddItem                 253x
+    Turret_SetAngleArea          248x
+    Camera_LookAt                214x
+    Camera_MoveTo                205x
+    PatrolArea_Set{Position,Radius,MinZ,MaxZ}  je 201x
+    Game_PlayMusic               163x
+
+    LEHRE: Game_LoadProgress_Advance gehoert zu JEDEM Objekt. Die
+    Ladeanzeige zaehlt also mit -- wer eigene Objekte anlegt, sollte
+    es mitrufen, sonst bleibt der Balken stehen.
+
+--------------------------------------------------------------------------------
+4. *** DIE ZUSTANDSTABELLEN: DAS SED-MUSTER ***
+--------------------------------------------------------------------------------
+89 verschiedene Feldnamen, und die Verteilung verraet den Editor:
+
+    SetStateValue           3236x    der Zustandsschreiber
+    ReCalculate             2305x    \  Neuberechnung einer Bedingung
+    StartCalculate          2305x    /  (immer paarweise)
+    Code0                   2072x    \
+    CheckCondition          2072x     > ebenfalls exakt gleich haeufig
+    ProcesseStateChange     2072x    /  (Tippfehler steht so im Original)
+    Code1                   1865x
+    Code3                   1804x
+    Code2                   1787x
+    Code4                   1501x
+    Code5                   1185x
+    Code6                    826x
+    Code7                    409x  ...  bis Code14 (70x)
+    SetDelayedStateValue     573x
+    SetStateValue_Destroyed  406x
+    ChangeTo1                333x
+    SetStateValue_DestEmp     98x
+    SetStateValue_Triggered   74x
+    SetStateValue_DestEmpJump 67x
+
+    DAS MUSTER: Jeder Knoten bekommt eine Zustandstabelle mit
+    durchnummerierten Zustaenden Code0, Code1, Code2 ... Jeder Zustand
+    setzt seinen Index, tut etwas und ruft den naechsten:
+
+        Code3 = function(L0)
+          L0["CodeIndex"] = 3
+          ShieldedBody_MakeInvulnerable(L0.Node)
+          CallFunction(o1643, "Code4")
+        end
+
+    Bedingungen laufen ueber CheckCondition / ProcesseStateChange,
+    Zustandswerte ueber SetStateValue und seine Varianten
+    (_Destroyed, _DestEmp, _Triggered, _DestEmpJump).
+    Das ist KEIN handgeschriebener Stil -- es ist erzeugter Code.
+    Fuer eigene Missionen heisst das: man MUSS es nicht so machen.
+    Ein handgeschriebener Zustandsautomat mit sprechenden Namen ist
+    kuerzer und lesbarer. Die Originale sind Vorbild fuer WAS
+    funktioniert, nicht fuer WIE man schreibt.
+
+--------------------------------------------------------------------------------
+5. DIE UEBLICHEN PARAMETERWERTE
+--------------------------------------------------------------------------------
+    Position_SetRadius       *** 5.0 in 1414 von 1514 Faellen ***
+                             danach 10.0 (41x) und 15.0 (41x)
+                             Ausreisser bis 350.0, aber selten
+    PatrolArea_SetRadius     200 (25x), 150 (15x), 250 (15x),
+                             400 (13x), 300 (13x), 550 (12x),
+                             100 (11x) -- der uebliche Bereich ist
+                             100 bis 600
+    DelayedFunction          2.0 (89x), 1.0 (51x), 5.0 (38x),
+                             10.0 (37x), 3.0 (27x), 60.0 (19x)
+                             -- Sekunden, meist ein bis zehn
+
+    => Wer einen Wegpunkt setzt, nimmt Radius 5. Wer eine
+       Patrouillenzone setzt, nimmt 200. Wer etwas verzoegert,
+       nimmt zwei Sekunden. So machen es die Originale.
+
+================================================================================
+ENDE
+================================================================================

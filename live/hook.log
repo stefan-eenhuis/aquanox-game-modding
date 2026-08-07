@@ -1,0 +1,43 @@
+[00:45:30] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[00:45:30]   ok  NOD_Script::HeartBeat  0x0048D750
+[00:45:30]   ok  lua_dobuffer           0x005D5790
+[00:45:30] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6B6F10E0
+[00:45:30] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[00:45:38] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2179 Bytes)
+[00:49:46] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[00:49:46]   ok  NOD_Script::HeartBeat  0x0048D750
+[00:49:46]   ok  lua_dobuffer           0x005D5790
+[00:49:46] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6B7210E0
+[00:49:46] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[00:49:55] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2179 Bytes)
+[00:50:07] Neu geladen (#1): 2182 Bytes, Rueckgabe 0 (ok)
+[01:28:56] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[01:28:56]   ok  NOD_Script::HeartBeat  0x0048D750
+[01:28:56]   ok  lua_dobuffer           0x005D5790
+[01:28:56] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x735910E0
+[01:28:56] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[01:29:05] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[01:41:54] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[01:41:54]   ok  NOD_Script::HeartBeat  0x0048D750
+[01:41:54]   ok  lua_dobuffer           0x005D5790
+[01:41:54] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x735910E0
+[01:41:54] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[01:42:04] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[01:54:46] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[01:54:46]   ok  NOD_Script::HeartBeat  0x0048D750
+[01:54:46]   ok  lua_dobuffer           0x005D5790
+[01:54:46] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x735910E0
+[01:54:46] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[01:54:55] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[02:03:22] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[02:03:22]   ok  NOD_Script::HeartBeat  0x0048D750
+[02:03:22]   ok  lua_dobuffer           0x005D5790
+[02:03:22] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x735910E0
+[02:03:22] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[02:03:32] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[02:07:24] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[02:07:24]   ok  NOD_Script::HeartBeat  0x0048D750
+[02:07:24]   ok  lua_dobuffer           0x005D5790
+[02:07:24] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x735910E0
+[02:07:24] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[02:07:31] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)

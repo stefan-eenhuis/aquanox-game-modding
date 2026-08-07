@@ -1,0 +1,270 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the goto
+-- behaviour of a Vehicle.
+--------------------------------------------------------------------
+
+
+-- We need the synchronization lib
+LibSync = LoadLib("Synchronization")
+
+
+ 
+--------------------------------------------------------------------
+-- Here comes the information for the cleararea/clearareafrom
+--------------------------------------------------------------------
+
+LCA_ClearArea =
+{
+	LCA_Activate = function(State)
+		Vehicle_Patrol(State.Node, GetInnerValue(State, "LCA_Area"), GetInnerValue(State, "LCA_WaitingTime"))
+		StartEnemyPatrol(State, 0, GetInnerValue(State, "LCA_DefaultRad"),
+			GetInnerValue(State, "LCA_FirstPriority"), GetInnerValue(State, "LCA_SecondPriority"),
+			GetInnerValue(State, "LCA_ThirdPriority"), GetInnerValue(State, "LCA_FourthPriority"), GetInnerValue(State, "LCA_Area"))
+	end,
+	
+	Vehicle_AttackOver = function(State)
+		Vehicle_Patrol(State.Node, GetInnerValue(State, "LCA_Area"), GetInnerValue(State, "LCA_WaitingTime"))
+		StartEnemyPatrol(State, 0, GetInnerValue(State, "LCA_DefaultRad"),
+			 	GetInnerValue(State, "LCA_FirstPriority"), GetInnerValue(State, "LCA_SecondPriority"),
+				GetInnerValue(State, "LCA_ThirdPriority"), GetInnerValue(State, "LCA_FourthPriority"), GetInnerValue(State, "LCA_Area"))
+	end,
+	
+	Body_EnemyArrivalPatrol = function(State)
+			Vehicle_AttackPatrol(State.Node, GetInnerValue(State, "LCA_DefaultRad"), GetInnerValue(State, "LCA_FirstPriority"), GetInnerValue(State, "LCA_SecondPriority"),
+				GetInnerValue(State, "LCA_ThirdPriority"), GetInnerValue(State, "LCA_FourthPriority"), GetInnerValue(State, "LCA_Area"))
+	end,
+	
+	Vehicle_PatrolFinished = function(State)
+		local callback, retValue
+		
+		callback = GetInnerValue(State, "LCA_Callback")
+		retValue = GetInnerValue(State, "LCA_Param")
+		-- In this case we return.
+		StopEnemyPatrol(State)
+		RestoreModification(State, "LCA_ClearArea")
+		CallFunction(State.Thread, callback, retValue)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VehicleAttack_Basis.ClearAreaStop(State)
+	end,
+		
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the guard area
+--------------------------------------------------------------------
+LCA_GuardArea =
+{
+	LCA_Activate = function(State)
+		Vehicle_Patrol(State.Node, GetInnerValue(State, "LGA_PatrolArea"), -1.0)	
+		StartEnemyPatrol(State, 0, 
+			GetInnerValue(State, "LGA_DefaultRad"), GetInnerValue(State, "LGA_FirstPriority"), GetInnerValue(State, "LGA_SecondPriority"),
+			GetInnerValue(State, "LGA_ThirdPriority"), GetInnerValue(State, "LGA_FourthPriority"), GetInnerValue(State, "LGA_TriggerArea"))
+	end,
+	
+	Vehicle_AttackOver = function(State)
+		Vehicle_Patrol(State.Node, GetInnerValue(State, "LGA_PatrolArea"), -1.0)
+		StartEnemyPatrol(State,0, GetInnerValue(State, "LGA_DefaultRad"),
+		 	GetInnerValue(State, "LGA_FirstPriority"), GetInnerValue(State, "LGA_SecondPriority"),
+			GetInnerValue(State, "LGA_ThirdPriority"), GetInnerValue(State, "LGA_FourthPriority"), GetInnerValue(State, "LGA_TriggerArea"))
+	end,
+	
+	Body_EnemyArrivalPatrol = function(State)
+		Vehicle_AttackPatrol(State.Node, GetInnerValue(State, "LGA_DefaultRad"), GetInnerValue(State, "LGA_FirstPriority"), GetInnerValue(State, "LGA_SecondPriority"),
+			GetInnerValue(State, "LGA_ThirdPriority"), GetInnerValue(State, "LGA_FourthPriority"), GetInnerValue(State, "LGA_FollowArea"))
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VehicleAttack_Basis.GuardAreaStop(State)
+	end,	
+		
+	
+}
+
+	
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the Vehicle attack.
+LibList.VehicleAttack_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the clear area
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This method clears the area from an indictaed object (node refrence).
+	-- If the object has quit the area a patrol is perfomed for the indicated 
+	-- number of seconds. If nothing arrives in this time, the command is finished.
+	--------------------------------
+	-- Info ClearAreaFrom:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vehicle_AttackOver, Vehicle_PatrolFinished
+	--------------------------------
+	ClearAreaFrom = function
+	(
+	State, 
+	Area,			-- The patrol area we should clear 		
+	TargetNode, 		-- The object we will attack.
+	WaitingTime, 		-- The time we wait until we finish the command.
+	Callback, 		-- The Callback we activate when we have reched the end.
+	Param			-- Some user data, that is handed back
+	)
+	
+	
+	
+		-- First we check if the node is valid, other wise it has
+		-- been already destroyed and we can return immediately.
+		if (not(Script_IsNodeRefValid(TargetNode)))  then
+			CallFunction(State.Thread, Callback, Param)
+			return
+		end
+			
+		
+		ApplyModification(State, LCA_ClearArea, "LCA_ClearArea")
+		
+		
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "LCA_DefaultRad", PatrolArea_GetDiameter(Node_Find(State.Node, Area)))
+		StoreInnerValue(State, "LCA_Area", Area)
+		StoreInnerValue(State, "LCA_FirstPriority", Node_GetName(TargetNode))
+		StoreInnerValue(State, "LCA_SecondPriority", "")
+		StoreInnerValue(State, "LCA_ThirdPriority", "")
+		StoreInnerValue(State, "LCA_FourthPriority", "")
+		StoreInnerValue(State, "LCA_WaitingTime", WaitingTime)
+		StoreInnerValue(State, "LCA_Callback", Callback)
+		StoreInnerValue(State, "LCA_Param", Param)
+		CallFunction(State.Thread, "LCA_Activate", nil)
+	end, 
+	
+	-- PURPOSE
+	-- This method stops the ClearAreaFrom.
+	ClearAreaFromStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCA_ClearArea") then
+			return
+		end
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		-- We restore the old command table.
+		RestoreModification(State, "LCA_ClearArea")
+	end,
+	
+	--------------------------------------------------------------------
+	-- Here come the clear area
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This method clears the area from the indicated priority list
+	-- If the object has quit the area a patrol is perfomed for the indicated 
+	-- number of seconds. If nothing arrives in this time, the command is finished.
+	--------------------------------
+	-- Info ClearAreaFrom:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vehicle_AttackOver, Vehicle_PatrolFinished
+	--------------------------------
+	ClearArea = function
+	(
+	State, 
+	Area,			-- The patrol area we should clear 		
+	FirstPriority, 		-- The first priority we would like to attack.
+	SecondPriority,		-- The second priority we wopuld like to attack.
+	ThirdPriority,		-- The third priority we would like to attack.
+	FourthPriority,		-- The fourth priority, we would like to attack
+	WaitingTime, 		-- The time we wait until we finish the command.
+	Callback, 		-- The Callback we activate when we have reched the end.
+	Param			-- Some user data, that is handed back
+	)
+		
+		
+		ApplyModification(State, LCA_ClearArea, "LCA_ClearArea")
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "LCA_DefaultRad", PatrolArea_GetDiameter(Node_Find(State.Node, Area)))
+		StoreInnerValue(State, "LCA_Area", Area)
+		StoreInnerValue(State, "LCA_FirstPriority",	FirstPriority)
+		StoreInnerValue(State, "LCA_SecondPriority", SecondPriority)
+		StoreInnerValue(State, "LCA_ThirdPriority", ThirdPriority)
+		StoreInnerValue(State, "LCA_FourthPriority", FourthPriority)
+		StoreInnerValue(State, "LCA_MeanTravelDistance", MeanTravelDistance)
+		StoreInnerValue(State, "LCA_Callback", Callback)
+		StoreInnerValue(State, "LCA_Param", Param)
+		CallFunction(State.Thread, "LCA_Activate", nil)
+	end, 
+	
+	
+	-- PURPOSE
+	-- This method stops the ClearArea.
+	ClearAreaStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCA_ClearArea") then
+			return
+		end
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		-- We restore the old command table.
+		RestoreModification(State, "LCA_ClearArea")
+	end,
+	
+	
+	-- PURPOSE
+	-- This command guards an area and prevents other ships from entering it. 
+	-- When a ship with the required attributes enters the Trigger Area, the attack is activated
+	-- until it leaves the follow area.
+	--------------------------------
+	-- Info GuardArea:
+	-- Sensor: Body_InformEnemyPatrol
+	-- Vehicle_AttackOver, Vehicle_PatrolFinished
+	--------------------------------
+	GuardArea = function
+	(
+	State,
+	PatrolArea,			-- The core area, where the patrol is perfomed.
+	TriggerArea,			-- The area, where the attack should start.
+	FollowArea,			-- The area until which we should follow the enemy.
+	FirstPriority, 			-- The first priority we would like to attack.
+	SecondPriority,			-- The second priority we wopuld like to attack.
+	ThirdPriority,			-- The third priority we would like to attack.
+	FourthPriority			-- The fourth priority, we would like to attack.
+	)
+		
+		
+		ApplyModification(State, LCA_GuardArea, "LCA_GuardArea")
+
+		-- We set the necessary information for the attack.
+		StoreInnerValue(State, "LGA_DefaultRad", PatrolArea_GetDiameter(Node_Find(State.Node, TriggerArea)))
+		StoreInnerValue(State, "LGA_PatrolArea", PatrolArea)
+		StoreInnerValue(State, "LGA_TriggerArea", TriggerArea)
+		StoreInnerValue(State, "LGA_FollowArea", FollowArea)
+		StoreInnerValue(State, "LGA_FirstPriority",	FirstPriority)
+		StoreInnerValue(State, "LGA_SecondPriority", SecondPriority)
+		StoreInnerValue(State, "LGA_ThirdPriority", ThirdPriority)
+		StoreInnerValue(State, "LGA_FourthPriority", FourthPriority)
+		StoreInnerValue(State, "LGA_Callback", Callback)
+		StoreInnerValue(State, "LGA_Param", Param)
+		CallFunction(State.Thread, "LCA_Activate", nil)
+	end, 
+	
+	
+	-- PURPOSE
+	-- This method stops the GuardArea.
+	GuardAreaStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LCA_GuardArea") then
+			return
+		end
+		-- We stop the sensor.
+		StopEnemyPatrol(State)
+		-- We restore the old command table.
+		RestoreModification(State, "LCA_GuardArea")
+	end,
+	
+				
+	
+}
+		 	 

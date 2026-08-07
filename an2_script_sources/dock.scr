@@ -1,0 +1,731 @@
+--------------------------------------------------------------------
+-- This file implements functions for the docking proces
+--------------------------------------------------------------------
+
+
+-- We need thesynchronization library for the semaphore.
+LibSync = LoadLib("Synchronization")
+
+--------------------------------------------------------------------
+-- The prototype of the dockmaster.
+--------------------------------------------------------------------
+
+LD_DockMaster =
+{
+
+
+	-- Here come the commands, that are understoof by the dockmaster.
+	ContainsVessel = function(Thread)
+		return (ListOfVessels[Thread] ~= nil)
+	end,
+
+
+
+	-- The impact ratio for the goto
+	VesselImpact = 0,
+	-- The speed for the approach, before we reach the dock.
+	ApproachSpeed = 0,
+	-- The path for the approach.
+	ApproachPath = "",
+	-- The docking path to be used for the docking (string)
+	DockPath = "",
+	-- The speed needed for docking.
+	DockSpeed = 0,
+	-- The name of the patrol area we use.
+	WaitingPatrol = "",
+	-- The average height in the patrol area.
+	AverageHeight = 0,
+	-- The height deviation in the patrol.
+	HeightDeviation = 0,
+	-- The mean travel distance within the patrol area,
+	MeanTravelDistance = 0,
+	-- The deviation of the travel distance in the patrol area.
+	TravelDistanceDeviation = 0,
+	-- The deviation of the angle within the patrol area.
+	TravelAngleDeviation = 0,
+	-- The section timeout for the patrol.
+	SectionTimeOut = 0,
+	-- The velocity to be used within the patrol area.
+	PatrolVelocity = 0,
+
+	-- The semaphore we use for the patrol.
+	Semaphore = {},
+	-- The list of the vessels that are under controle of the docmaster.
+	ListOfVessels = {},
+
+}
+
+--------------------------------------------------------------------
+-- The functionality for the docking process.
+--------------------------------------------------------------------
+
+-- We have the following inner state.
+-- ApproachingDock
+-- WaitForDocking
+-- PrepareForDocking
+-- Docking
+-- Docked
+-- WaitForLeaving
+-- Leaving
+
+LD_Docking =
+{
+
+	LD_Activate = function(State)
+		local master
+
+		-- First we register with the dock.
+		master = GetInnerValue(State, "LD_DockMaster")
+		master.ListOfVessels[State.Thread] = State.Thread
+		-- Activate the shield guard.
+		State.Thread.Dock_ShieldGuardActive = 1
+		StartShieldGuard(State)
+		
+		-- We store the actual value.
+		StoreInnerValue(State, "LD_InnerState", "ApproachingDock")
+		Vessel_Goto(State.Node, master.ApproachPath, master.ApproachSpeed, 1.0)
+	end,
+
+	
+
+	-- This method is called, if a ship is released from the DockMaster.
+	LD_ReleaseShip = function(State, CallBack, Param)
+		local timer
+		-- We do some cleaning up.
+		if (State.Thread.Dock_ShieldGuardActive == 1) then
+			State.Thread.Dock_ShieldGuardActive = 0
+			StopShieldGuard(State)
+		end
+		Vessel_AvoidanceObjects(State.Node, 1)
+		Vessel_CollisionObjects(State.Node, 1)
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "LD_DockMaster").Semaphore)
+		timer = GetInnerValue(State, "LD_TimerHandle")
+		if (timer ~= -1) then
+			StopTimer(State.Thread, timer)
+		end
+		-- Remove the ship from the dockmaster.
+		GetInnerValue(State, "LD_DockMaster").ListOfVessels[State.Thread] = nil
+		-- Repair the environment.
+		RestoreModification(State, "LD_Docking")
+		-- Activate Callback
+		CallFunction(State.Thread, CallBack, Param)
+	end,
+
+
+	-- The arrival function
+	Vessel_GotoArrived = function(State, Path)
+		local master, timer
+
+		master = GetInnerValue(State, "LD_DockMaster")
+		if (GetInnerValue(State, "LD_InnerState") == "ApproachingDock") then
+			-- We change over to WaitForDocking
+			StoreInnerValue(State, "LD_InnerState", "WaitForDocking")
+			-- We start the patrol
+			Vessel_Patrol(State.Node, master.WaitingPatrol,  -1.0, master.PatrolVelocity)
+			-- And we lock the semaphore so we can enter the dock.
+			LibSync.LockSemaphore(State, master.Semaphore)
+			-- All done
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "PrepareForDocking") then
+			-- We change status to docking
+			StoreInnerValue(State, "LD_InnerState", "Docking")
+			-- Deactivate Avoidance.
+			Vessel_AvoidanceObjects(State.Node, 0)
+			Vessel_CollisionObjects(State.Node, 0)
+			Vessel_GotoFromTo(State.Node, master.DockPath, "pos_2", "pos_2", master.DockSpeed, 0.0)
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "Docking") then
+			-- We have finally arrived in the dock
+			StoreInnerValue(State, "LD_InnerState", "Docked")
+			-- Leave the simulation
+			Node_LeaveSimulation(State.Node)
+			-- Release the semaphore.
+			LibSync.FreeSemaphore(State, master.Semaphore)
+			-- Eventually set the timer for leaving the dock.
+			if (GetInnerValue(State, "LD_TimeCallBack") ~= nil) then
+				timer = SetTimer(State.Thread, GetInnerValue(State, "LD_Time"))
+				StoreInnerValue(State, "LD_TimerHandle", timer)
+			end
+			-- Set engine state
+			SetEngineValue(State, "DockedOn", 1)
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "Leaving") then
+			-- We activate collision and avoidance
+			Vessel_AvoidanceObjects(State.Node, 0)
+			Vessel_CollisionObjects(State.Node, 0)
+			-- Now we see, if we leave bacuase of a timer.
+			if (GetInnerValue(State, "LD_TimerUndock") == 1) then
+				GetInnerValue(State, "LD_ReleaseShip")(State, GetInnerValue(State, "LD_TimeCallBack"), nil)
+			else
+				GetInnerValue(State, "LD_ReleaseShip")(State, GetInnerValue(State, "LD_UndockCommand"),
+					GetInnerValue(State, "LD_UndockParam"))
+			end
+		end
+
+	end,
+
+	Timer = function(State, Handle)
+		local master
+
+		if (Handle == GetInnerValue(State, "LD_TimerHandle") ) then
+			StoreInnerValue(State, "LD_TimerHandle", -1)
+
+			master = GetInnerValue(State, "LD_DockMaster")
+			if (GetInnerValue(State, "LD_InnerState") == "Docked") then
+				-- If the timer is running, we are docked.
+				-- Store the reason for leaving.
+				StoreInnerValue(State, "LD_TimerUndock", 1)
+				-- We change to waiting for leaving.
+				StoreInnerValue(State, "LD_InnerState", "WaitForLeaving")
+				-- Prepare everything
+				LibSync.LockSemaphore(State, master.Semaphore)
+				return
+			end
+			if (GetInnerValue(State, "LD_InnerState") == "Leaving") then
+				Vessel_GotoFromTo(State.Node, master.DockPath, "pos_1", "pos_1",  master.PatrolVelocity, 0.0)
+				return
+			end
+		end
+	end,
+
+
+	LD_ClearForDocking = function(State)
+		local master, timer
+
+		master = GetInnerValue(State, "LD_DockMaster")
+		if (GetInnerValue(State, "LD_InnerState") == "WaitForDocking") then
+			-- The Dock is now clered and we can approach the docking path.
+			StoreInnerValue(State, "LD_InnerState", "PrepareForDocking")
+			-- We go to the firt node of the docking path.
+			Vessel_GotoFromTo(State.Node, master.DockPath, "pos_1", "pos_1", master.PatrolVelocity, 0.0)
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "WaitForLeaving") then
+			StoreInnerValue(State, "LD_InnerState", "Leaving")
+			Node_EnterSimulation(State.Node)
+			Vessel_StopWithHeading(State. Node, master.DockPath, "pos_1")
+			timer = SetTimer(State.Thread, 3.0)
+			StoreInnerValue(State, "LD_TimerHandle", timer)
+			return
+		end
+	end,
+
+	Body_ObjectDestroyed = function(State)
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "LD_DockMaster").Semaphore)
+	end,
+
+	LD_Undock = function(State, Parameter)
+		local master, timer
+
+
+		-- This flag indicates whether we have activateed the shield guard or not.
+		State.Thread.Dock_ShieldGuardActive = 0
+		State.Thread.Dock_ShotHitActive = 0 
+		master = GetInnerValue(State, "LD_DockMaster")
+		-- depending on the situation we do different things.
+		if ((GetInnerValue(State, "LD_InnerState") == "ApproachingDock") or
+		    (GetInnerValue(State, "LD_InnerState") == "WaitForDocking") or
+		    (GetInnerValue(State, "LD_InnerState") == "PrepareForDocking")) then
+			GetInnerValue(State, "LD_ReleaseShip")(State, Parameter[1], Parameter[2])
+			return
+		end
+
+		-- First we remeber the necessarry data.
+		StoreInnerValue(State, "LD_TimerUndock", 0)
+		StoreInnerValue(State, "LD_UndockCommand", Parameter[1])
+		StoreInnerValue(State, "LD_UndockParam", Parameter[2])
+
+		if (GetInnerValue(State, "LD_InnerState") == "Docking") then
+			StoreInnerValue(State, "LD_InnerState", "Leaving")
+			Vessel_StopWithHeading(State. Node, master.DockPath, "pos_1")
+			timer = SetTimer(State.Thread, 3.0 )
+			StoreInnerValue(State, "LD_TimerHandle", timer)
+			return
+		end
+
+		if (GetInnerValue(State, "LD_InnerState") == "Docked") then
+			-- We change to waiting for leaving.
+			StoreInnerValue(State, "LD_InnerState", "WaitForLeaving")
+			-- Prepare everything
+			LibSync.LockSemaphore(State, master.Semaphore)
+			return
+		end
+
+		-- For the rest two cases wait for leaving ans leaving all is done.
+	end,
+
+
+	LD_PlaceInDock = function(State)
+		local master, time, timer
+
+		-- First we register with the dock.
+		master = GetInnerValue(State, "LD_DockMaster")
+		time = GetInnerValue(State, "LD_Time")
+		master.ListOfVessels[State.Thread] = State.Thread
+		-- Activate the shield guard
+		State.Thread.Dock_ShieldGuardActive = 1
+		StartShieldGuard(State)
+		
+		-- Deactivate Avoidance and collision
+		Vessel_AvoidanceObjects(State.Node, 0)
+		Vessel_CollisionObjects(State.Node, 0)
+		-- Leave the simulation.
+		Node_LeaveSimulation(State.Node)
+		-- Set the inner status
+		StoreInnerValue(State, "LD_InnerState", "Docked")
+		if (GetInnerValue(State, "LD_TimeCallBack") ~= nil) then
+			timer = SetTimer(State.Thread, time)
+			StoreInnerValue(State, "LD_TimerHandle", timer)
+		end
+	end,
+	
+	StopBehavior = function(State)
+		Script_LogRaw("[WARNING] Can not stop the dock behaviour")
+	end,
+
+
+
+}
+
+LV_Docking =
+{
+
+	LD_Activate = function(State)
+		local master
+
+		-- First we register with the dock.
+		master = GetInnerValue(State, "LD_DockMaster")
+		master.ListOfVessels[State.Thread] = State.Thread
+		-- Activate the shield guard.
+		State.Thread.Dock_ShieldGuardActive = 1
+		StartShieldGuard(State)
+		
+		-- We store the actual value.
+		StoreInnerValue(State, "LD_InnerState", "ApproachingDock")
+		Vehicle_Goto(State.Node, master.ApproachPath, master.ApproachSpeed, 1.0)
+	end,
+
+	
+
+	-- This method is called, if a ship is released from the DockMaster.
+	LD_ReleaseShip = function(State, CallBack, Param)
+		local timer
+		-- We do some cleaning up.
+		if (State.Thread.Dock_ShieldGuardActive == 1) then
+			State.Thread.Dock_ShieldGuardActive = 0
+			StopShieldGuard(State)
+		end
+		Vehicle_AvoidanceObjects(State.Node, 1)
+		Vehicle_CollisionObjects(State.Node, 1)
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "LD_DockMaster").Semaphore)
+		timer = GetInnerValue(State, "LD_TimerHandle")
+		if (timer ~= -1) then
+			StopTimer(State.Thread, timer)
+		end
+		-- Remove the ship from the dockmaster.
+		GetInnerValue(State, "LD_DockMaster").ListOfVessels[State.Thread] = nil
+		-- Repair the environment.
+		RestoreModification(State, "LV_Docking")
+		-- Activate Callback
+		CallFunction(State.Thread, CallBack, Param)
+	end,
+
+
+	-- The arrival function
+	Vehicle_GotoArrived = function(State, Path)
+		local master, timer
+
+		master = GetInnerValue(State, "LD_DockMaster")
+		if (GetInnerValue(State, "LD_InnerState") == "ApproachingDock") then
+			-- We change over to WaitForDocking
+			StoreInnerValue(State, "LD_InnerState", "WaitForDocking")
+			-- We start the patrol
+			Vehicle_ParkPatrol(State.Node, master.WaitingPatrol)
+			-- And we lock the semaphore so we can enter the dock.
+			LibSync.LockSemaphore(State, master.Semaphore)
+			-- All done
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "PrepareForDocking") then
+			-- We change status to docking
+			StoreInnerValue(State, "LD_InnerState", "Docking")
+			-- Deactivate Avoidance.
+			Vehicle_AvoidanceObjects(State.Node, 0)
+			Vehicle_CollisionObjects(State.Node, 0)
+			Vehicle_GotoFromTo(State.Node, master.DockPath, "pos_2", "pos_2", master.DockSpeed, 0.0)
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "Docking") then
+			-- We have finally arrived in the dock
+			StoreInnerValue(State, "LD_InnerState", "Docked")
+			-- Leave the simulation
+			Node_LeaveSimulation(State.Node)
+			-- Release the semaphore.
+			LibSync.FreeSemaphore(State, master.Semaphore)
+			-- Eventually set the timer for leaving the dock.
+			if (GetInnerValue(State, "LD_TimeCallBack") ~= nil) then
+				timer = SetTimer(State.Thread, GetInnerValue(State, "LD_Time"))
+				StoreInnerValue(State, "LD_TimerHandle", timer)
+			end
+			-- Set engine state
+			SetEngineValue(State, "DockedOn", 1)
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "Leaving") then
+			-- We activate collision and avoidance
+			Vehicle_AvoidanceObjects(State.Node, 0)
+			Vehicle_CollisionObjects(State.Node, 0)
+			-- Now we see, if we leave bacuase of a timer.
+			if (GetInnerValue(State, "LD_TimerUndock") == 1) then
+				GetInnerValue(State, "LD_ReleaseShip")(State, GetInnerValue(State, "LD_TimeCallBack"), nil)
+			else
+				GetInnerValue(State, "LD_ReleaseShip")(State, GetInnerValue(State, "LD_UndockCommand"),
+					GetInnerValue(State, "LD_UndockParam"))
+			end
+		end
+
+	end,
+
+	Timer = function(State, Handle)
+		local master
+
+		if (Handle == GetInnerValue(State, "LD_TimerHandle") ) then
+			StoreInnerValue(State, "LD_TimerHandle", -1)
+
+			master = GetInnerValue(State, "LD_DockMaster")
+			if (GetInnerValue(State, "LD_InnerState") == "Docked") then
+				-- If the timer is running, we are docked.
+				-- Store the reason for leaving.
+				StoreInnerValue(State, "LD_TimerUndock", 1)
+				-- We change to waiting for leaving.
+				StoreInnerValue(State, "LD_InnerState", "WaitForLeaving")
+				-- Prepare everything
+				LibSync.LockSemaphore(State, master.Semaphore)
+				return
+			end
+			if (GetInnerValue(State, "LD_InnerState") == "Leaving") then
+				Vehicle_GotoFromTo(State.Node, master.DockPath, "pos_1", "pos_1",  master.PatrolVelocity, 0.0)
+				return
+			end
+		end
+	end,
+
+
+	LD_ClearForDocking = function(State)
+		local master, timer
+
+		master = GetInnerValue(State, "LD_DockMaster")
+		if (GetInnerValue(State, "LD_InnerState") == "WaitForDocking") then
+			-- The Dock is now clered and we can approach the docking path.
+			StoreInnerValue(State, "LD_InnerState", "PrepareForDocking")
+			-- We go to the firt node of the docking path.
+			Vehicle_GotoFromTo(State.Node, master.DockPath, "pos_1", "pos_1", master.PatrolVelocity, 0.0)
+			return
+		end
+		if (GetInnerValue(State, "LD_InnerState") == "WaitForLeaving") then
+			StoreInnerValue(State, "LD_InnerState", "Leaving")
+			Node_EnterSimulation(State.Node)
+			Vehicle_StopWithHeading(State. Node, master.DockPath, "pos_1")
+			timer = SetTimer(State.Thread, 3.0)
+			StoreInnerValue(State, "LD_TimerHandle", timer)
+			return
+		end
+	end,
+
+	Body_ObjectDestroyed = function(State)
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "LD_DockMaster").Semaphore)
+	end,
+
+	LD_Undock = function(State, Parameter)
+		local master, timer
+
+
+		-- This flag indicates whether we have activateed the shield guard or not.
+		State.Thread.Dock_ShieldGuardActive = 0
+		State.Thread.Dock_ShotHitActive = 0 
+		master = GetInnerValue(State, "LD_DockMaster")
+		-- depending on the situation we do different things.
+		if ((GetInnerValue(State, "LD_InnerState") == "ApproachingDock") or
+		    (GetInnerValue(State, "LD_InnerState") == "WaitForDocking") or
+		    (GetInnerValue(State, "LD_InnerState") == "PrepareForDocking")) then
+			GetInnerValue(State, "LD_ReleaseShip")(State, Parameter[1], Parameter[2])
+			return
+		end
+
+		-- First we remeber the necessarry data.
+		StoreInnerValue(State, "LD_TimerUndock", 0)
+		StoreInnerValue(State, "LD_UndockCommand", Parameter[1])
+		StoreInnerValue(State, "LD_UndockParam", Parameter[2])
+
+		if (GetInnerValue(State, "LD_InnerState") == "Docking") then
+			StoreInnerValue(State, "LD_InnerState", "Leaving")
+			Vehicle_StopWithHeading(State. Node, master.DockPath, "pos_1")
+			timer = SetTimer(State.Thread, 3.0 )
+			StoreInnerValue(State, "LD_TimerHandle", timer)
+			return
+		end
+
+		if (GetInnerValue(State, "LD_InnerState") == "Docked") then
+			-- We change to waiting for leaving.
+			StoreInnerValue(State, "LD_InnerState", "WaitForLeaving")
+			-- Prepare everything
+			LibSync.LockSemaphore(State, master.Semaphore)
+			return
+		end
+
+		-- For the rest two cases wait for leaving ans leaving all is done.
+	end,
+
+
+	LD_PlaceInDock = function(State)
+		local master, time, timer
+
+		-- First we register with the dock.
+		master = GetInnerValue(State, "LD_DockMaster")
+		time = GetInnerValue(State, "LD_Time")
+		master.ListOfVessels[State.Thread] = State.Thread
+		-- Activate the shield guard
+		State.Thread.Dock_ShieldGuardActive = 1
+		StartShieldGuard(State)
+		
+		-- Deactivate Avoidance and collision
+		Vehicle_AvoidanceObjects(State.Node, 0)
+		Vehicle_CollisionObjects(State.Node, 0)
+		-- Leave the simulation.
+		Node_LeaveSimulation(State.Node)
+		-- Set the inner status
+		StoreInnerValue(State, "LD_InnerState", "Docked")
+		if (GetInnerValue(State, "LD_TimeCallBack") ~= nil) then
+			timer = SetTimer(State.Thread, time)
+			StoreInnerValue(State, "LD_TimerHandle", timer)
+		end
+	end,
+	
+	StopBehavior = function(State)
+		Script_LogRaw("[WARNING] Can not stop the dock behaviour")
+	end,
+
+
+
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+-- This library defines the functionality of the miscelangelous stuff.
+LibList.Dock_Basis =
+{
+		
+
+
+
+	-- Purpose
+	-- This method creates a new dock master, that manages the traffic for
+	-- incoming and outgoing vessels. Several information have to be
+	-- handed over, that concerns the dock process.
+	CreateDockMaster = function
+	(
+	ApproachPath,			-- Path that describes the approach to the doch and that is used by everyone, before it enters the patrol area.
+	DockPath,			-- Contains of two points: 1: Point before the dock, 2: Point within the dock.
+	WaitingPatrol			-- The patrol area, where the waiting should be done.
+	)
+
+		local result
+
+		result = CloneTable(LD_DockMaster)
+
+
+		-- Firstwe copy the data.
+		result.ApproachPath = ApproachPath
+		result.ApproachSpeed = 0.7
+		result.DockPath = DockPath
+		result.DockSpeed = 0.3
+		result.WaitingPatrol = WaitingPatrol
+		result.PatrolVelocity = 0.7
+		-- Then we create the semaphore.
+		result.Semaphore = LibSync.CreateSemaphore(1, "LD_ClearForDocking")
+		result.ListOfVessels = {}
+
+
+		return result
+	end,
+
+	------------------------------------
+	-- This command places a vessel directly into the dock.
+	------------------------------------
+	--
+	-- Info: Timer
+	-- -----------
+	PlaceInDock = function
+	(
+	State,
+	DockMaster,		-- The dockmaster we want to belong to.
+	Time,			-- The time we want to leave again (nil = not)
+	TimeCallBack	-- The time call back, when we have been placed in the dock.
+	)
+		-- if 0 then wait for ever
+		if (Time == 0.0) then
+			TimeCallBack = nil
+		end
+	
+		-- We transform the position to point.
+		Body_SetPosition(State.Node, Position_GetPosition(Node_Find(Node_Find(DockMaster.DockPath), "pos_2")))
+		-- This flag indicates whether we have activateed the shield guard or not.
+		State.Thread.Dock_ShieldGuardActive = 0
+		ApplyModification(State, LD_Docking, "LD_Docking")
+		StoreInnerValue(State, "LD_DockMaster", DockMaster)
+		StoreInnerValue(State, "LD_Time", Time)
+		StoreInnerValue(State, "LD_TimeCallBack", TimeCallBack)
+		StoreInnerValue(State, "LD_TimerHandle", -1)
+		CallFunction(State.Thread, "LD_PlaceInDock", nil)
+	end,
+
+	--------------------------------------------------------------------
+	-- Here come the command for the docking process.
+	--------------------------------------------------------------------
+
+	-- PURPOSE
+	-- Performs an automated docking process with the vessel indicated.
+	-- All sensor should be shut down, before this command is issued.
+	-- After the dock has been send no further control can be performed.
+
+	Dock = function
+	(
+	State,
+	DockMaster,		-- The dock master, that has been created.
+	ShotCallBack,		-- The callback, that should be activated, when we received a hot hit during the docking process (nil = ignored).
+	Time,			-- The time when the vessel should be send out again, when it has completed docking.
+	TimeCallBack		-- Callback, that should be activated, if time has passed and vessel has been send out again. (nil = ignored).
+	)
+
+
+		-- This flag indicates whether we have activateed the shield guard or not.
+		State.Thread.Dock_ShieldGuardActive = 0
+		ApplyModification(State, LD_Docking, "LD_Docking")
+		-- Remeber the necessarry values.
+		StoreInnerValue(State, "LD_DockMaster", DockMaster)
+		StoreInnerValue(State, "LD_ShotCallBack", ShotCallBack)
+		if (Time > 0) then
+			StoreInnerValue(State, "LD_TimeCallBack", TimeCallBack)
+		else
+			StoreInnerValue(State, "LD_TimeCallBack", nil)
+		end
+		StoreInnerValue(State, "LD_Time", Time)
+		StoreInnerValue(State, "LD_TimerHandle", -1)
+
+		CallFunction(State.Thread, "LD_Activate", nil)
+	end,
+	
+	
+	
+	-- PURPOSE
+	-- Places a vehicle into  dock.
+	
+	PlaceInDockVehicle = function
+	(
+	State,
+	DockMaster,		-- The dockmaster we want to belong to.
+	Time,			-- The time we want to leave again (nil = not)
+	TimeCallBack	-- The time call back, when we have been placed in the dock.
+	)
+		-- if 0 then wait for ever
+		if (Time == 0.0) then
+			TimeCallBack = nil
+		end
+	
+		-- We transform the position to point.
+		Body_SetPosition(State.Node, Position_GetPosition(Node_Find(Node_Find(DockMaster.DockPath), "pos_2")))
+		-- This flag indicates whether we have activateed the shield guard or not.
+		State.Thread.Dock_ShieldGuardActive = 0
+		ApplyModification(State, LV_Docking, "LV_Docking")
+		StoreInnerValue(State, "LD_DockMaster", DockMaster)
+		StoreInnerValue(State, "LD_Time", Time)
+		StoreInnerValue(State, "LD_TimeCallBack", TimeCallBack)
+		StoreInnerValue(State, "LD_TimerHandle", -1)
+		CallFunction(State.Thread, "LD_PlaceInDock", nil)
+	end,
+	
+	-- PURPOSE
+	-- This method is used to dock the vehicle into the building
+	-- It is parallel to the dock of the vessel.
+	
+	DockVehicle = function
+	(
+	State,
+	DockMaster,		-- The dockmaster we use for docking.
+	Time,			-- The time, when we would like to undock.
+	TimeCallBack		-- Callback, the should be activated whent he time has passed.
+	) 
+		-- This flag indicates whether we have activateed the shield guard or not.
+		State.Thread.Dock_ShieldGuardActive = 0
+		ApplyModification(State, LV_Docking, "LV_Docking")
+		-- Remeber the necessarry values.
+		StoreInnerValue(State, "LD_DockMaster", DockMaster)
+		if (Time > 0) then
+			StoreInnerValue(State, "LD_TimeCallBack", TimeCallBack)
+		else
+			StoreInnerValue(State, "LD_TimeCallBack", nil)
+		end
+		StoreInnerValue(State, "LD_Time", Time)
+		StoreInnerValue(State, "LD_TimerHandle", -1)
+
+		CallFunction(State.Thread, "LD_Activate", nil)
+	end,
+
+	-- PURPOSE
+	-- This mathod asks the dock to launch the vessels , that are within the dock.
+	-- One can hand over a thread or a thread block. The thread and the thread blocks are
+	-- compared with the list of the dockmaster and anecesarry actions are initiated.
+	-- This method may also be called for vehicles
+
+	LaunchVessel = function
+	(
+	ThreadOrBlock,		-- The threador block we want to launch the vessel from.
+	DockMaster,		-- The dockmaster, where the vessels might belong to.
+	Command,		-- The command, that should be called, after the vessel has finished launching.
+	Param			-- The parameter of the command, that is handed over after the launch.
+	)
+		local i, thread
+
+
+		
+		-- Let us see if we have a thread or a block.
+		if (ThreadOrBlock.NumOfThreads == nil) then
+			-- We have a thread.
+			if (DockMaster.ListOfVessels[ThreadOrBlock] ~= nil) then
+				CallFunction(ThreadOrBlock, "LD_Undock", {Command, Param})
+			end
+			return
+		else
+			-- In this case we have a complete block
+			for i = 1, ThreadOrBlock.NumOfThreads do
+				thread = ThreadOrBlock[i]
+				if (DockMaster.ListOfVessels[thread] ~= nil) then
+					CallFunction(thread, "LD_Undock", {Command, Param})
+				end
+			end
+			return
+		end
+	end,
+	
+	-- PURPOSE
+	-- This method performs an undock for the vessel and the vehicle.
+	-- It may be used for vessels and vehicles.
+	
+	UndockOwn = function
+	(
+	State,			-- The state we belong to.
+	DockMaster,		-- The dockmaster, where the vessels might belong to.
+	Command,		-- The command, that should be called, after the vessel has finished launching.
+	Param			-- The parameter of the command, that is handed over after the launch.
+	)	
+		CallFunction(State.Thread, "LD_Undock", {Command,Param})
+	end,
+	
+}
+		 	 

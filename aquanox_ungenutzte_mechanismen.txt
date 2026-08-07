@@ -1,0 +1,176 @@
+================================================================================
+WAS AQUANOX 1 KANN, ABER NIE GEZEIGT HAT
+================================================================================
+Stand: 2026-07-27
+Lesefassung zu mod_docu\aquanox1_unused_mechanics.json (530 Eintraege).
+Gegenstueck zu aquanox1_unused_assets.json, das dasselbe fuer Dateien tut:
+dort ungenutzte DATEIEN, hier ungenutzte FAEHIGKEITEN.
+
+WIE GEMESSEN WURDE
+    Exakte Wortsuche im kompilierten Lua-Bytecode aller 74 Missionen und
+    14 Bibliotheken, dazu 1.262 OSDs, 270 .des-Dateien und die
+    Konfigurationen. Grundlage: die Registry mit 398 Kommandos, die
+    468 Engine-Klassen, die 15 Quelltexte aus AquaNox 2 und die
+    Zeichenketten aus Aqua.exe.
+
+ZWEI EINSCHRAENKUNGEN, DIE MAN KENNEN MUSS
+    (1) "Ungenutzt" heisst: kein Originalskript ruft es auf. Es heisst
+        NICHT, dass es funktioniert. Jeder Eintrag ist ungetestet.
+    (2) Lua 4.0 legt Zeichenketten je FUNKTIONSPROTOTYP ab. Eine Zahl
+        bedeutet "in N Funktionen referenziert", nicht "N Aufrufe".
+        Fuer benutzt/unbenutzt zaehlt allein 0 gegen groesser 0.
+
+--------------------------------------------------------------------------------
+DIE FUENF WICHTIGSTEN FUNDE
+--------------------------------------------------------------------------------
+
+1. *** DAS SCHLEICHSYSTEM -- vorhanden, praktisch nie benutzt ***
+   Die Engine unterscheidet DREI Wahrnehmungsarten:
+        Trigger_SetPresenceSphere(node, radius)      Praesenz, Kugel
+        Trigger_SetVisibilityCone(node, ...)         SICHT, Kegel
+        Trigger_SetAcousticSphere(node, radius)      GEHOER, Kugel
+   und meldet jede mit zwei eigenen Callbacks:
+        Trigger_EnterVisible / Trigger_LeaveVisible
+        Trigger_EnterAcoustic / Trigger_LeaveAcoustic
+        Trigger_EnterPresence / Trigger_LeavePresence
+
+   GENAU GEMESSEN, damit die Aussage stimmt:
+        Praesenzkugel    in 20 Missionen gesetzt
+        SICHTKEGEL       in ZWEI  (3n1.sco und inst_fightclub.sco,
+                         beide auf einem Knoten namens "BombTrigger")
+        AKUSTIKKUGEL     in KEINER EINZIGEN
+   Und die sechs Callbacks definiert keine Mission selbst -- sie stehen
+   nur in glue.sco und sensor.sco. Die Auswertung bleibt also durchweg
+   den Bibliotheken ueberlassen; kein Missionsskript reagiert direkt auf
+   Sehen oder Hoeren.
+   Dazu kommen sechs ungenutzte Abschaltfunktionen der SensorLib
+   (DeactivateAvpSensor, DeactivateShotHitSensor, DeactivateEnemyGuard,
+   DeactivateShieldGuard, DeactivateThreatening, DeactivateAvpSensorLeave).
+   => Ein Wachboot mit Sichtkegel, das den Spieler im Schatten NICHT
+      bemerkt, ist skriptbar, ohne eine Zeile Enginecode zu aendern.
+      Der Sichtkegel ist sogar zweimal erprobt worden, das Gehoer nie.
+      Fuer eine Noir-Kampagne ist das der wertvollste Fund dieser Datei.
+
+2. DIE KAMERAFAHRT AUF SCHIENEN
+   CameraLib.CameraMove fuehrt die Kamera einen NOD_Path entlang und
+   meldet jeden erreichten Punkt ueber Camera_MovePosReached. Nie benutzt.
+   Die 31 Missionen mit Zwischenszenen steuern die Kamera stattdessen
+   von Hand ueber die Camera_-Kommandos.
+   => Fertiges Werkzeug fuer Zwischenszenen, das nur niemand angefasst hat.
+
+3. VIER FUENFTEL DER ANDOCK-VERWALTUNG
+   Die DockLib bringt eine vollstaendige Verwaltung mit zaehlendem
+   Semaphor mit: Warteschlange, Freigabe, Platzierung, Ablegen.
+        PlaceInDock        3x benutzt
+        Undock             0x
+        ClearForDocking    0x
+        ReleaseShip        0x
+        ContainsVessel     0x
+   => Stationsanfluege als Missionsrahmen waeren damit gebaut.
+
+4. 131 UNGENUTZTE SKRIPTKOMMANDOS
+   Von 398 Kommandos rufen die Missionen 111 direkt auf, weitere 102
+   werden von den Bibliotheken benutzt. 185 bleiben uebrig, davon 48
+   Mehrspieler (ANT_) und 6 engineintern. Bleiben 131 echte.
+   Die interessantesten Gruppen:
+        Light_*        6 Kommandos -- schaltbare, farbige Lichter mit
+                       Kegel und zwei Radien. KEIN Originalskript setzt
+                       je ein Licht.
+        Camera_       10 Kommandos ueber die 11 benutzten hinaus
+        Emitter_ / ParticleEmitter_   12 -- Partikel zur Laufzeit steuern
+        Mine_          3 -- Minen als Sperren
+        Trigger_       2 -- eben die Sicht- und Akustikzonen
+        Vessel_       25 -- Feinsteuerung, u.a. Vessel_Dock,
+                       Vessel_DockAndLeave, Vessel_AttackOverride
+        PhysicalCharacter_  12 -- die Bionten-Steuerung
+        Turret_       12 -- Geschuetztuerme
+
+5. ZWOELF NIE ERZEUGTE KNOTENKLASSEN
+   Klassen, die die Engine kennt, die aber kein Skript und kein OSD je
+   anlegt. Die auffaelligsten:
+        NOD_FX_Shockwave    812 B   Druckwelle
+        NOD_Mine           2000 B   Mine
+        NOD_FX_Dipol        820 B   zum Sprungverhalten
+        NOD_EscapePod       820 B   Rettungskapsel als eigener Knoten
+        NOD_Buzzer         1100 B   Buzzer-Munition
+        NOD_Torpedo        1996 B
+        NOD_Gun            1152 B
+   (Nicht mitgezaehlt sind 392 Klassen, die nur die 16-Byte-Traeger der
+   Skriptkommandos sind, und die abstrakten Basisklassen.)
+
+--------------------------------------------------------------------------------
+WEITERE FUNDE
+--------------------------------------------------------------------------------
+UNGENUTZTE VERHALTEN
+    GooseMarchStat / GooseMarchPat    Gaensemarsch, beide Fassungen
+    ProtectedMultiPatrol              bewachtes Mehrzonen-Patrouillieren
+    ComplexGotoAttack                 Wegfahren mit Angriffsbereitschaft
+    ComplexGotoStatus                 Fortschritt eines Wegs abfragen
+    DipolLib.Jump                     Sprungverhalten, Zweck unbekannt
+    TriangleUpper, Tunnel             zwei der neun Formationen
+
+22 NIE AUSGEWERTETE EREIGNISSE
+    Die Engine sendet sie, die Bibliotheken behandeln sie -- aber keine
+    Mission definiert sie selbst. Darunter:
+        Body_InformShotHit            Treffer registrieren
+        Body_KinShieldBarrierReached  Schild unter Schwelle
+        Body_EMPParalyzed             durch EMP gelaehmt
+        Player_UnderAttack            Spieler wird angegriffen
+        WayPoint_InformEntered        Wegpunkt erreicht
+        PhysicalCharacter_Stripped    Kreatur entwaffnet
+    => Wer auf so etwas reagieren will, kann das direkt tun, statt es
+       ueber ein Bibliotheksverhalten zu erschlagen.
+
+29 NIE GESETZTE SCHALTER
+    ren_terrain_dshadow, ren_terrain_bumpmap, ren_rays_enable,
+    ren_objectprelit_bumpmap, ren_plankton_detail und andere.
+    Ueber die Konsole oder die Proxy-DLL zur Laufzeit umschaltbar --
+    ein einfacher Weg, die Beleuchtung zu erproben (siehe
+    aquanox_beleuchtung.txt).
+
+FUENF CALLBACKS, DIE ES IN AQUANOX 1 GAR NICHT GIBT
+    Player_InformShipID, Player_InformKeyUsed, Player_KinShieldBelow,
+    Body_ObjectDestroyedBy, ShieldedBody_InformEmpShieldBelow
+    Sie stehen in AquaNox 2s Quelltexten, aber weder in AN1s Missionen
+    noch in Aqua.exe. Wer sie definiert, wartet vergeblich -- ohne
+    Fehlermeldung.
+
+--------------------------------------------------------------------------------
+EINE KORREKTUR IN EIGENER SACHE
+--------------------------------------------------------------------------------
+Eine erste Auswertung hatte behauptet, die GESAMTE FormationLib mit ihren
+neun Formationen sei ungenutzt. Das war FALSCH und ist im Handoff v91
+richtiggestellt.
+Geprueft worden waren nur DeclareAsLeader und FollowInFormation -- beide
+tatsaechlich 0. Die Missionen rufen die Formationen aber ueber
+CreateFormation auf, und zwar in 40 der 74 Missionen:
+    Triangle 32x   Line 9x   Row 8x   InverseTriangle 7x
+    XForm 4x   Claw 4x   Cross 1x
+    dazu VesselGotoInFormationFromTo 83x
+Ungenutzt sind nur TriangleUpper und Tunnel.
+LEHRE: Welcher Name der Einstiegspunkt einer Bibliothek ist, laesst sich
+nicht aus dem Quelltext erraten -- es ist zu messen.
+
+--------------------------------------------------------------------------------
+DIE DATEI SELBST
+--------------------------------------------------------------------------------
+mod_docu\aquanox1_unused_mechanics.json
+    530 Eintraege in zehn Kategorien:
+        unused_internal   158   bibliotheksinterne Zustaende (nur
+                                zur Vollstaendigkeit)
+        unused_command    131   Skriptkommandos
+        unused_api         61   aufrufbare Bibliotheksfunktionen
+        unused_behaviour   53   weitere Verhalten
+        multiplayer_only   48   ANT_-Kommandos
+        unset_switch       29   Renderschalter
+        unused_callback    22   Ereignisse
+        unused_node_class  12   Knotenklassen
+        engine_internal     6
+        unused_subsystem    5   ganze Teilsysteme
+        an2_only_callback   5   in AN1 nicht vorhanden
+    Jeder Eintrag traegt Name, Signatur, Messwerte und eine Einschaetzung
+    des Nutzens fuer Nachtschicht.
+
+================================================================================
+ENDE
+================================================================================

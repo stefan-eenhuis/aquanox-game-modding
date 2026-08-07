@@ -1,0 +1,166 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the older one.
+--------------------------------------------------------------------
+
+
+
+-- The state for the older one goto.
+OO_Goto =
+{
+	PhysicalCharacter_GotoArrived = function(State, Path)
+	local callback
+	
+		callback = GetInnerValue(State, "OO_CallBack")
+		RestoreModification(State, "OO_Goto")
+		CallFunction(State.Thread, callback)
+	end,	
+	
+	
+	StopBehavior = function(State)
+		LibList.OldOne_Basis.GotoStop(State)
+	end,
+	
+}
+
+-- The state for the attack.
+OO_Attack =
+{
+	PhysicalCharacter_AttackCompleted = function(State)
+	local callback
+	
+		callback = GetInnerValue(State, "OO_CallBack")
+		RestoreModification(State, "OO_Attack")
+		CallFunction(State.Thread, callback)
+	end,	
+	
+	
+	StopBehavior = function(State)
+		LibList.OldOne_Basis.AttackStop(State)
+	end,	
+
+
+}
+
+OO_Sink =
+{
+	
+	Vessel_SinkFinished = function(State)
+	local callback
+	
+		callback = GetInnerValue(State, "OO_CallBack")
+		RestoreModification(State, "OO_Sink")
+		CallFunction(State.Thread, callback)
+	
+	end,
+	
+	StopBehavior = function(State)
+		LibList.OldOne_Basis.SinkStop(State)
+	end,	
+}
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the turret stzuff.
+LibList.OldOne_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the commands for the oldone goto
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This method performs a goto for the oldone
+	Goto = function
+	(
+		State,
+		Path,			-- The path we want to follow.
+		Velocity,		-- The velocity we want to follow.
+		CallBack		-- The callback we issue upon arrival.	
+	)
+		ApplyModification(State, OO_Goto, "OO_Goto")
+		StoreInnerValue(State, "OO_CallBack", CallBack)
+		PhysicalCharacter_GotoStart(State.Node, Path, Velocity)
+	end,
+	
+	-- PURPOSE
+	-- This is a special command, that is issued for the goto
+	-- with an indiacated starting and ending position.
+	GotoFromTo = function
+	(
+		State,		
+		Path,		-- The path we want to follow.
+		StartPosition,	-- The postion we want to start from.
+		EndPosition,	-- The position we end at.
+		Velocity,	-- The ttravel velocitywe apply.
+		CallBack	-- The callbackwe issue upon arrival.
+	)
+		ApplyModification(State, OO_Goto, "OO_Goto")
+		StoreInnerValue(State, "OO_CallBack", CallBack)
+		PhysicalCharacter_GotoStart(State.Node, Path, StartPosition, EndPosition, Velocity)
+	end,
+	
+	-- PURPOSE
+	-- Stops the actual goto command.
+	GotoStop = function(State)
+		-- First we check, if we have to deregister
+		if (not(IsNotLastModification(State, "OO_Goto"))) then
+			RestoreModification(State, "OO_Goto")
+		end
+	end,
+	
+	-- PURPOSE
+	-- Performs a manoeverable attack for the olde one.
+	Attack = function
+	(
+		State,		-- The state we are in.
+		Target,		-- The target node we want to attack.
+		PatrolArea,	-- The referencee to the patrol area, where the attack takes place.
+		CallBack	-- The callback that should be activate, when the object is destroyed.
+	)
+	
+		ApplyModification(State, OO_Attack, "OO_Attack")
+		StoreInnerValue(State, "OO_CallBack", CallBack)
+		PhysicalCharacter_Attack(State.Node, Target, PatrolArea)
+	end,
+	
+	-- PURPOSE
+	-- Stops the actual attack command.
+	AttackStop = function(State)
+		-- First we check, if we have to deregister
+		if (not(IsNotLastModification(State, "OO_Attack"))) then
+			RestoreModification(State, "OO_Attack")
+		end
+	end,
+	
+	
+	-- PURPOSE
+	-- Starts the sinking command
+	Sink = function
+	(
+		State,		-- The state we are in.
+		Position,	-- The position we want to sink to
+		Speed,		-- The spped we want to sink with,
+		CallBack	-- The callback, that should be called when finished.
+	)	
+	
+		ApplyModification(State, OO_Sink, "OO_Sink")
+		StoreInnerValue(State, "OO_CallBack", CallBack)
+		Vessel_Sink(State.Node, Position, Speed)
+	end,
+	
+	-- PURPOSE
+	-- Stops the sinking of the object.
+	SinkStop = function(State)
+		-- First we check, if we have to deregister
+		if (not(IsNotLastModification(State, "OO_Sink"))) then
+			RestoreModification(State, "OO_Sink")
+		end
+	end,
+		 
+	
+}
+		 	 

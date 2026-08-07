@@ -1,0 +1,225 @@
+================================================================================
+AQUANOX 2: REVELATION -- ANALYSE FUER DAS MODDING VON TEIL 1
+Handoff-Datei, Version 5
+================================================================================
+Erstellt: 2026-07-27
+Thema dieser Runde: das AN2-Programm selbst (AN2.dat) und die Restassets
+Vorgaenger: v4 (Missionsaufbau), v3 (Lua-Quelltexte), v2 (Levelportierung),
+            v1 (Bestandsaufnahme)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+1. AN2.dat -- Programmstruktur
+--------------------------------------------------------------------------------
+                        AquaNox 1              AquaNox 2
+    Datei               Aqua.exe 2,44 MB       AN2.dat 3,70 MB
+    ImageBase           0x400000               0x400000
+    .text               1.992 KB               3.076 KB
+    .rdata                 60 KB                 284 KB
+    .data                 588 KB                 346 KB
+    .reloc              (keine)                   196 KB
+    Grafik              Direct3D 8             Direct3D 9
+    Audio               Miles                  FMOD
+    Lua                 4.0                    4.0.1
+    Kompression         (keine)                zlib 1.1.4
+
+DER INTERNE BUILD-PFAD STEHT IM BINARY:
+    c:\massive\develop\intern\main\aqua\src\aqua_main\
+        Release MaxOptimization\aquaRELOPT.pdb
+Das Projekt hiess intern schlicht "aqua" -- AN2 ist derselbe Quellbaum wie
+AN1, nicht eine Neuentwicklung. Das deckt sich mit allem, was v2 bis v4
+ueber die Formatkompatibilitaet ergeben haben.
+
+Wichtig fuer eine Proxy-DLL: AN2 importiert DINPUT8.dll (wie AN1), rendert
+aber mit D3D9. Der Ansatz aus der AN1-Hauptreihe Abschnitt 119 traegt also
+grundsaetzlich, Renderer-Hooks muessten neu geschrieben werden.
+
+--------------------------------------------------------------------------------
+2. KOMMANDOVERGLEICH -- vollstaendig
+--------------------------------------------------------------------------------
+Methode: alle NOD_*-Strings beider Programme gegenuebergestellt.
+    AN1  465 NOD_-Strings, davon 416 kommandoartig
+    AN2  504 NOD_-Strings, davon 462 kommandoartig
+Gegenprobe: 371 der 398 verifizierten AN1-Registry-Kommandos haben einen
+NOD_-String; die restlichen 27 (Gun_*, Stream_*) tragen keinen.
+
+*** NUR IN AN2: 67 -- davon sind aber 21 blosse UMBENENNUNGEN ***
+    AN1 Light_SetColor              -> AN2 FX_Light_SetColor
+    AN1 ParticleEmitter_SetPPS      -> AN2 FX_ParticleEmitter_SetPPS
+    AN1 Game_SetCausticTerrain      -> AN2 Game_SetCausticTerrainNormal/-Micro
+AN2 hat die Effektklassen unter ein FX_-Praefix gruppiert. Dieselbe
+Faehigkeit, anderer Name.
+
+ECHTE NEUERUNGEN VON AN2 (nach Themen):
+
+  Zielsystem (4)
+      Game_PrimaryObjectiveReached / _Failed
+      Game_BonusObjectiveReached   / _Failed
+      AN1 hat dafuer nur Game_SetTaskTextKey.
+
+  Klang (2)
+      Game_PlaySound
+      FX_SoundBox + _SetBox + _Activate + _Deactivate   -> Klangzonen
+
+  Spott/Funk (6)
+      Vessel_Taunt_Activate  / _Deactivate
+      Vehicle_Taunt_Activate / _Deactivate
+      Generic_Taunt_Activate / _Deactivate
+
+  Schild (4)
+      ShieldedBody_SetShieldBarrier
+      ShieldedBody_InformKinShieldBelow / _InformEmpShieldBelow
+      ShieldedBody_SetFriendlyFireMode
+
+  Spieler/Schluessel (4)
+      Player_DefineKeyLocation, Player_InformKeyUsed
+      Player_InformShipID, Player_KinShieldBelow
+
+  Optik (3)
+      Game_SetEnvironmentCubeMap, Game_SetNPCHitFactor,
+      Game_SetDecompressionRange
+
+  Sonstiges
+      FX_Stream_SetDamageParameters    Stroemung, die Schaden macht
+      Mine_SetOnOffDuration, Trash_SetOnOffDuration
+      Vessel_CollisionGenerics
+      Vehicle_AttackTurrets / _Stop
+      Body_ObjectDestroyedBy, Body_SetObservedDestroyer
+      Turret_Dipol* (5), Generic_Dipol* (4)
+
+*** NUR IN AN1: 21 -- davon 16 Umbenennungen, 5 echte Verluste ***
+Die einzige Faehigkeit, die AN2 WEGGEFALLEN ist, ist das BIO-SCHILD:
+      Body_SetBioShield / Body_GetBioShield
+      Body_BioShieldBarrierReached
+      Body_RequestBioInfo / Body_RejectBioInfo
+Passt zur Erzaehlung: in AN1 sind die Bionten der Hauptgegner.
+
+KLASSEN: AN1 49 mit einfachem NOD_-Namen, AN2 42.
+    nur AN2: NOD_Decoration, NOD_Turret
+    nur AN1: NOD_BuzzerLauncher, NOD_TorpedoLauncher (in AN2 als NOD_NPC_*),
+             NOD_Cone, NOD_Flare, NOD_Halo, NOD_Hud, NOD_Light,
+             NOD_ParticleEmitter, NOD_Trail (in AN2 als NOD_FX_*)
+
+FAZIT: AN2 ist kein grosser Sprung im Skriptvokabular. Der Zuwachs betrifft
+Missionsziele, Optik und ein paar Komfortmeldungen. Fuer Nachtschicht fehlt
+AN1 praktisch nichts.
+
+--------------------------------------------------------------------------------
+3. *** DAS FUNKSPRUCHSYSTEM VON AN1 -- vollstaendig zugaenglich ***
+--------------------------------------------------------------------------------
+Der praktisch wertvollste Fund dieser Runde. AN1 hat ein komplettes System
+fuer Funkdialoge, und es ist in 313 Faellen in den Originalmissionen benutzt.
+
+DIE DATEI: dat\sty\mtake_<mission>_d.des -- KLARTEXT, direkt bearbeitbar.
+
+    [Table]
+    {
+        NumOfTake = 17
+        [Take0]
+        {
+            // 1H1-ELF1
+            Key    = 1
+            Person = 90
+            Text   = "Okay, dann zeig mal, was du kannst. Ich habe dir auf
+                      den Truemmerhaufen einen Navigationspunkt gesetzt."
+            Wav    = "d\mtake\c1\k1m01d0001"
+            Mood   = 1
+        }
+        ...
+    }
+
+    Key    Schluessel, ueber den das Skript den Take anspricht
+    Person Sprecher; verweist auf dat\sty\person_d.des
+    Text   der eingeblendete Text
+    Wav    Pfad der Sprachaufnahme ohne Endung.
+           "ff_dummy" nimmt einen Platzhalter -- so laeuft es auch
+           OHNE eigene Aufnahme.
+    Mood   Stimmung; verweist auf die Mood-Tabelle
+
+DIE ANBINDUNG:
+    Game_LoadMTake(node, "dat/sty/mtake_nachtschicht_d.des")   im InitLayout
+    SendRadioMessageTake(Sender, Receiver, Key)                aus glue.scr
+    Game_SendRadioMessageTake(targetNode, node, node, int32)   Engine-Kommando
+    Game_VocalMessage(targetNode, int8, int8, int8)
+    Game_SetTaskTextKey(targetNode, int32, float, float)       Auftragstext
+
+WIR HABEN DAS SCHON BENUTZT: aquanox6.pak enthaelt bereits
+dat\sty\mtake_sp_narrow_d.des mit vier eigenen Takes (Key 9201..9204,
+Person 90, Wav "ff_dummy"). Das Verfahren ist also erprobt.
+
+=> Fuer Nachtschicht heisst das: Dialoge sind eine Textdatei. Sprecher,
+   Stimmung und Auftragstexte inklusive. Ohne eine einzige Tonaufnahme.
+
+--------------------------------------------------------------------------------
+4. KLANGZONEN: AN1 hat sie, aber nur ueber OSD
+--------------------------------------------------------------------------------
+AN2s FX_SoundBox hat in AN1 ein Gegenstueck:
+    NOD_FX_Sound              @0x00613d1c, Basis NOD_Node, Groesse 148
+    NOD_FX_Sound_SetPosition  @0x006173a4
+    NOD_FX_Sound_SetRadius
+
+ABER: Die Lua-Namen FX_Sound_SetPosition / _SetRadius stehen NICHT als
+Strings in Aqua.exe und sind damit nicht als Skriptkommando aufrufbar.
+Kein einziges der Missionsskripte benutzt sie.
+
+DAFUER: 47 OSD-Dateien enthalten einen fx_sound-Abschnitt, darunter
+    atl_brainfire, atl_tank1, atl_tank2, cra_bomb, cra_raupe, cra_tank,
+    des_brainfire ...
+=> In AN1 wird eine positionierte Klangquelle ueber das OSD eines Objekts
+   konfiguriert, nicht per Skript. Fuer Nachtschicht: ein Objekt mit
+   fx_sound-Kind platzieren, statt eine Zone zu skripten.
+   NICHT ERPROBT.
+
+--------------------------------------------------------------------------------
+5. LOKALISIERUNG
+--------------------------------------------------------------------------------
+    AN1: 66 Dateien in dat\sty, alle .des, 63 davon mit Kuerzel "_d"
+         -> die vorliegende Fassung ist die deutsche
+    AN2: 232 .loc-Dateien, davon 174 unter "en" und 58 "templates"
+         -> die vorliegende AN2-Fassung ist NUR ENGLISCH
+         Format: UTF-16 mit BOM, sonst dieselbe Struktur
+         [Table] { [Acknowledge0] { Key = 1  Text = "..." } }
+
+Das bestaetigt v1 Abschnitt 7D: AN2s 2.435 Sprachdateien sind englisch und
+fuer eine deutsche Kampagne nicht direkt brauchbar.
+
+--------------------------------------------------------------------------------
+6. RESTASSETS
+--------------------------------------------------------------------------------
+    .fnt  87 Schriften. Magic "FN", dann Version/Anzahl/Glyphenzahl.
+          Aufgeteilt in glyphset_00000..n je Sprache und Schriftschnitt.
+    .loc  siehe Abschnitt 5
+    .usi.bin 131 -- kompiliertes GUI, per -compileusi aus .usi erzeugt
+    .vid  26 / .bik 6 -- Video
+    .ssc   1 -- binaerer SED-Szenengraph (v4 Abschnitt 7)
+
+Neue Subsystem-Praefixe in AN2s Strings, die AN1 nicht hat:
+    VFW_ (125)  DirectShow-Fehlercodes, ohne Belang
+    USI_  (22)  das GUI-System
+    AUI_  (10)  Aqua-Oberflaeche (AUI_Observer_Briefing usw.)
+    FPS_   (2)
+
+--------------------------------------------------------------------------------
+7. EMPFEHLUNG
+--------------------------------------------------------------------------------
+(1) FUNKDIALOGE FUER NACHTSCHICHT (Abschnitt 3). Das ist der Baustein mit
+    dem besten Verhaeltnis von Aufwand zu Wirkung: eine Klartextdatei, ein
+    Game_LoadMTake im Aufbau, danach SendRadioMessageTake an den passenden
+    Stellen. Fuer eine Noir-Kampagne, die von Stimme und Text lebt, ist das
+    das Rueckgrat.
+
+(2) AN2.dat NICHT WEITER DISASSEMBLIEREN. Der Kommandovergleich ist jetzt
+    vollstaendig und zeigt: es gibt dort nichts, was Nachtschicht braucht
+    und AN1 nicht hat. Weitere Arbeit an AN2.dat lohnt nur, wenn AN2 selbst
+    das Ziel wird.
+
+(3) OFFEN AUS FRUEHEREN RUNDEN, unveraendert:
+    * Mesh-Rendering AN2 -> AN1 ("AN2 REPARIERT" ungetestet)
+    * Renn-KI mit AN2-Rennprofil (eingespielt, ungefahren)
+    * Levelportierung AN1 -> AN2 (Werkzeug bereit, nicht ausgefuehrt)
+    * Levelvorlage aus v4 (nicht im Spiel geprueft)
+
+================================================================================
+ENDE -- Version 5
+================================================================================

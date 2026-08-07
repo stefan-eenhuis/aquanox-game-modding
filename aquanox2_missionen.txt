@@ -1,0 +1,177 @@
+================================================================================
+DIE MISSIONEN VON AQUANOX 2 -- INHALT UND BAUWEISE
+================================================================================
+Stand: 2026-07-27
+Lesefassung zu mod_docu\aquanox2_missions.json (224 KB).
+Gegenstueck zu aquanox_missionen.txt / aquanox1_missions.json.
+
+WAS DRINSTEHT
+    33 Kampagnenmissionen (24 Haupt-, 6 Neben-, 3 Bonusmissionen) mit
+    englischem Namen, Briefing, taktischem Hinweis, allen Haupt- und
+    BONUSZIELEN samt Belohnungen, 585 Funkspruechen im Klartext und
+    einer technischen Auswertung. Dazu 9 Instant-Action-Level.
+    Jede Mission hat zusaetzlich eine englische Kurzzusammenfassung.
+
+WOHER DIE ANGABEN STAMMEN
+    dat\sty\mission.des        Skriptpfad, Briefingschluessel und die
+                               Goal/BonusGoal-Bloecke mit EngineID und
+                               RewardInventory
+    dat\sty\en\mission.loc     der englische Text zu jedem Ziel
+    dat\sty\en\briefing.loc    Name, BriefingText und HintText, mit
+                               //mission:-Kommentaren -- MASSGEBLICH
+    dat\sty\mtake_<id>.des     Sprecher, Wav-Pfad, Stimmung
+    dat\sty\en\mtake_<id>.loc  der Text der Funksprueche
+    dat\sty\en\person.loc      loest die Sprecher-IDs auf
+    der Lua-Bytecode der 33 Missionsskripte
+    GameFAQs (limraz, Xiaopang666) und das AquaNox-Fandom-Wiki nur zur
+    Gegenprobe. BEI WIDERSPRUCH GILT DIE SPIELDATEI.
+
+EINE BEOBACHTUNG ZUR ARCHITEKTUR
+    AN2 trennt konsequent zwischen Struktur und Text: alles Uebersetzbare
+    steht in .loc-Dateien (UTF-16 LE mit BOM), alles Strukturelle in
+    .des (Latin-1). Ein Funkspruch besteht deshalb aus ZWEI Eintraegen,
+    die ueber den Key zusammengehoeren -- Text in der .loc, Sprecher und
+    Wav in der .des. AquaNox 1 hat beides in einer Datei.
+    Das ist der Grund, warum AN2 in mehr Sprachen erschienen ist.
+
+--------------------------------------------------------------------------------
+DIE KAMPAGNE
+--------------------------------------------------------------------------------
+KAP 1 (7 Missionen)
+    1H1  S.O.S.                     Tutorial, Hank Bellows' Notruf
+    1H2  Terror at Lima II          erste Kampfmission, drei NAV-Punkte
+    1H3  Dr. Finch                  Finch befreien und eskortieren
+    1H4  Stoney in a Fix            Eerie eskortieren, Stoney bergen
+    1H5  Mighty Maggie              ein besseres Boot beschaffen
+    1N1  The Intrepido              Goons befreien
+    1N2  The Supply Line            zwei Frachter stoppen
+
+KAP 2 (4)
+    2B1  The Race                   Rennen gegen Stoney Fox
+    2H1  Machina Antarctica         Finch zum Aussenposten eskortieren
+    2H2  Chow Lung                  Harvester gegen Chow Lung halten
+    2H3  Swedenborg's Getaway       Swedenborg laehmen, nicht zerstoeren
+
+KAP 3 (9 -- das breiteste Kapitel)
+    3B1  Redbeard's El Dorado       Redbeards Lager ueberfallen
+    3H1  The Attack                 Harvester verteidigen (kuerzeste, 87 KB)
+    3H2  The Convoy                 Militaerkonvoi eskortieren
+    3H3  Asylum Patrol              Patrouille mit May Ling
+    3H4  Hell's Vortex              den Abgrund erkunden, Biont toeten
+    3H5  To be or not to be...      Lt. Hamlet und die EMP-Bomben
+    3N1  Pirates                    El Topos Verteidigung stuetzen
+    3N2  Plunder                    Atlantik-Aussenposten ausraeumen
+    3N3  Freeman                    Freeman zum EnTroPoint eskortieren
+
+KAP 4 (5)
+    4H1  Crawlers and Angels        Angelina befreien
+    4H2  The Treasure Hunt          Lopez' Schatz orten
+    4H3  Captain Lopez' Treasure    Amitab eskortieren (627 KB)
+    4H4  The Order Mercenaries      Ordenssoeldner, Bomben
+    4H5  Angelina's Revelation      zweite Welle, Titelmission
+
+KAP 5 (5)
+    5B1  Drake's Revenge            Rache an Redbeard
+    5H1  The Deimos                 Lunats Werft, Deimos eskortieren
+    5H2  The Museum of the Modern Age  Energierelais, Wartungstunnel
+    5H3  The Gate Key               Navy-HQ, Keller, Generator
+                                    GROESSTE MISSION: 690 KB
+    5N1  Vastian Griegh             Transport ueberfallen
+
+KAP 6 (3)
+    6H1  Strega's Rage              Harvester gegen Strega halten
+    6H2  Blood Feud                 Duell gegen Queen Strega
+    6H3  The Angel's Tears          Finale, Stone Sepulchre
+
+--------------------------------------------------------------------------------
+*** DER GROSSE UNTERSCHIED ZU AQUANOX 1: DAS ZIELSYSTEM ***
+--------------------------------------------------------------------------------
+AquaNox 2 hat ein FOERMLICHES Missionszielsystem, AquaNox 1 nicht.
+
+    48 Hauptziele und 33 BONUSZIELE ueber 33 Missionen.
+    Jedes Ziel hat
+        EngineID          die Nummer, unter der das Skript es meldet
+        Text              was im Menue steht ("Finch escorted")
+        RewardInventory   welche Gegenstaende es genau einbringt,
+                          als Key/Count-Paare
+
+Beispiel 1H2 "Terror at Lima II":
+    Ziele        NAV Point 1 cleared / 2 cleared / 3 cleared
+    Bonusziele   NeoYuppie Bomber destroyed
+                 Freighter secured
+    und jedes mit eigener Belohnung.
+
+IN AQUANOX 1 GIBT ES DAS NICHT. Dort ist der Briefingtext die einzige
+Aussage darueber, was zu tun ist, und es gibt keinen Belohnungs-
+mechanismus. Fuer eine eigene Kampagne ist das die brauchbarste Idee
+aus AN2 -- sie liesse sich in AN1 nachbauen, indem man den Zustand in
+Lua fuehrt und die Belohnung ueber das Inventar vergibt.
+
+VERTEILUNG DER BONUSZIELE
+    Kap 1  1,3 je Mission        Kap 4  0,4
+    Kap 2  1,2                   Kap 5  0,6
+    Kap 3  1,6 (Hoechstwert)     Kap 6  0 (keine)
+Die Bonusziele haeufen sich in den freien Kapiteln und verschwinden zum
+Finale hin ganz -- dort gibt es nur noch die Haupthandlung.
+
+--------------------------------------------------------------------------------
+WIE EINE MISSION GEBAUT IST
+--------------------------------------------------------------------------------
+DER UNTERBAU IST DERSELBE WIE IN AQUANOX 1.
+GuardArea und ComplexGoto tragen auch hier das Spiel, die
+Verhaltensbibliothek ist dieselbe. Wer AquaNox-1-Missionen bauen kann,
+kann auch AquaNox-2-Missionen bauen -- das bestaetigt noch einmal, dass
+beide Spiele denselben Quellbaum haben.
+
+DREI MISSIONSARTEN statt zwei:
+    H  Hauptmission    24
+    N  Nebenmission     6
+    B  Bonusmission     3   <- in AquaNox 1 nicht vorhanden
+
+UMFANG
+    Skript       Mittel 250 KB, Median 217, von 87 (3H1) bis 690 (5H3)
+    Funksprueche Mittel 17,7, von 0 (3B1) bis 39 (1H3); 585 insgesamt
+    Kapitel      1: 239 KB   2: 187   3: 212   4: 327   5: 386   6: 201
+    Anders als AquaNox 1 (wo erst Kapitel 6 explodiert) waechst AN2
+    gleichmaessiger und faellt zum Finale wieder ab.
+
+EINE MISSION MIT ZWEITEM SKRIPT
+    5H1 "The Deimos" bringt neopolis_neu.sco mit -- und dazu
+    neopolis_neu.scr, den KOMMENTIERTEN QUELLTEXT (292 KB, 8.504 Zeilen).
+    Das ist die einzige vollstaendige Mission im Klartext, die wir haben,
+    und die Grundlage der Missionsanalyse in Handoff v91 Abschnitt 125.
+
+DIE STIMMEN
+    Amitab          204 Funksprueche   (mehr als ein Drittel)
+    Stoney           79
+    Nat              56
+    Angelina         45
+    Queen Strega     28
+    Fuzzyhead        26
+    May Ling         25
+    Animal           20
+    Dasselbe Muster wie in AquaNox 1, wo Sally 171 von 576 hat: EINE
+    Stimme traegt die Kampagne durchgehend.
+
+DAS WAHRNEHMUNGSSYSTEM
+    Trigger_SetPresenceSphere    in 18 von 33 Missionen
+    Trigger_SetVisibilityCone    in  2
+    Trigger_SetAcousticSphere    in  1
+    Also auch in AquaNox 2 fast ungenutzt -- aber immerhin wird die
+    Akustikkugel hier EINMAL gesetzt, in AquaNox 1 kein einziges Mal.
+
+--------------------------------------------------------------------------------
+EIN FUND AM RANDE
+--------------------------------------------------------------------------------
+Das Zieltext-Feld der letzten Mission 6H3 "The Angel's Tears" enthaelt
+im ausgelieferten Spiel den Platzhalter "NOT AVAILABLE" -- eine
+unfertige Lokalisierungszeichenkette, die es in die Verkaufsfassung
+geschafft hat. Der Kommentar am Kopf von mission.loc erklaert sie:
+"Wenn noch nicht verfügbar folgender Text: NICHT VERFÜGBAR".
+
+Und 5N1 heisst "Vastian Griegh" -- genau wie Mission 4N2 in AquaNox 1.
+Eine bewusste Rueckverweisung auf den Vorgaenger.
+
+================================================================================
+ENDE
+================================================================================

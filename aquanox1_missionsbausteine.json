@@ -1,0 +1,1388 @@
+{
+ "titel": "AquaNox 1 -- Missionsbausteine, gemessen",
+ "beschreibung": "Gezaehlt ueber die 3.236 Triggerknoten der 30 Kampagnenmissionen. 'bibliothek' ist die eigentliche Baukastenliste: in wievielen Knoten der jeweilige Bibliotheksaufruf vorkommt.",
+ "bibliothek": {
+  "DipolLib.InUtero_Normal": 950,
+  "VesselAttackLib.GuardArea": 650,
+  "DipolLib.LeaveSimulation": 331,
+  "DipolLib.InUtero_DipolIn": 329,
+  "DipolLib.DipolJumpOut": 146,
+  "CameraLib.Wait": 98,
+  "TurretLib.Attack": 96,
+  "VesselGotoLib.MultiPatrol": 79,
+  "SensorLib.ActivateAvpSensorComplex": 74,
+  "VesselAttackLib.GuardAreaRespawn": 64,
+  "FormationLib.PlaceFormationPath": 58,
+  "FormationLib.VesselGotoInFormationFromTo": 48,
+  "FormationLib.CreateFormation": 37,
+  "VehicleGotoLib.MultiPatrol": 35,
+  "VehicleAttackLib.GuardArea": 34,
+  "VesselAttackLib.ClearArea": 29,
+  "DipolLib.InUtero_VehicleDipolIn": 28,
+  "MiscLib.Infiltrate": 21,
+  "MiscLib.MilkRunGoto": 19,
+  "MiscLib.FollowProtect": 14,
+  "MiscLib.MilkRunPatrol": 11,
+  "DockLib.CreateDockMaster": 8,
+  "VesselAttackLib.ClearAreaFrom": 7,
+  "OldOneLib.Attack": 7,
+  "DockLib.Dock": 6,
+  "DipolLib.InUtero_DipolInRelative": 6,
+  "MiscLib.UnInfiltrate": 4,
+  "DipolLib.InUtero_Undock": 3,
+  "DockLib.PlaceInDock": 3,
+  "OldOneLib.Goto": 3,
+  "SensorLib.ActivateAvpSensorComplexLeave": 1,
+  "DockLib.UndockOwn": 1,
+  "DockLib.DockVehicle": 1,
+  "VesselAttackLib.GotoAttack": 1,
+  "OldOneLib.Sink": 1
+ },
+ "einzelkommandos": {
+  "StopAllActiveBehaviours_AndCall": 1495,
+  "Node_LeaveSimulation": 1306,
+  "DipolLib.InUtero_Normal": 950,
+  "VesselAttackLib.GuardArea": 650,
+  "DipolLib.LeaveSimulation": 331,
+  "DipolLib.InUtero_DipolIn": 329,
+  "Vessel_CollisionTerrain": 162,
+  "DipolLib.DipolJumpOut": 146,
+  "ShieldedBody_MakeInvulnerable": 128,
+  "Script_Log": 108,
+  "Game_SetWayPoint": 102,
+  "CameraLib.Wait": 98,
+  "TurretLib.Attack": 96,
+  "Turret_SetAngleArea": 96,
+  "Game_PlayMusic": 94,
+  "Body_SetEmpShield": 90,
+  "SED_SetTaskTextKey": 86,
+  "VesselGotoLib.MultiPatrol": 79,
+  "ShieldedBody_MakeVulnerable": 78,
+  "SensorLib.ActivateAvpSensorComplex": 74,
+  "Body_ActivateEscapePod": 72,
+  "Game_MissionEnd": 69,
+  "NOD_NodeRef": 66,
+  "Camera_LookAt": 65,
+  "VesselAttackLib.GuardAreaRespawn": 64,
+  "Camera_MoveTo": 61,
+  "Director_EndCutscene": 59,
+  "Director_BeginCutscene": 58,
+  "FormationLib.PlaceFormationPath": 58,
+  "Camera_Cut": 57,
+  "Camera_RollTo": 56,
+  "WayPoint_Attach": 55,
+  "WayPoint_SetTakeKey_Activate": 55,
+  "WayPoint_SetTakeKey_Enter": 55,
+  "WayPoint_SetTakeKey_Inside": 55,
+  "WayPoint_SetTakeKey_Leave": 55,
+  "WayPoint_SetTakeKey_Outside": 55,
+  "ShieldedBody_MakeSelectiveVulnerableAgainst": 53,
+  "Camera_ZoomTo": 52,
+  "Vessel_AttackTurrets": 49,
+  "FormationLib.VesselGotoInFormationFromTo": 48,
+  "Body_SetKineticShield": 41,
+  "Vessel_CollisionObjects": 39,
+  "FormationLib.CreateFormation": 37,
+  "VehicleGotoLib.MultiPatrol": 35,
+  "Node_Find": 35,
+  "ShieldedBody_SetLogarithmicMode": 35,
+  "VehicleAttackLib.GuardArea": 34,
+  "Body_AddItem": 30,
+  "Game_LoadProgress_Enter": 30,
+  "Game_LoadProgress_Leave": 30,
+  "VesselAttackLib.ClearArea": 29,
+  "DipolLib.InUtero_VehicleDipolIn": 28,
+  "MiscLib.Infiltrate": 21,
+  "MiscLib.MilkRunGoto": 19,
+  "Node_EnterSimulation": 17,
+  "Stream_SetCurrentSpeed": 17,
+  "Stream_SetTurbulenceFrequency": 17,
+  "MiscLib.FollowProtect": 14,
+  "Camera_MoveInto": 12,
+  "MiscLib.MilkRunPatrol": 11,
+  "ShieldedBody_DeactivateSelectiveVulnerability": 10,
+  "Character_StartAnimation": 10,
+  "PhysicalCharacter_AttackTurrets": 10,
+  "PhysicalCharacter_StartAnimation": 10,
+  "Gun_SetDogBullet": 9,
+  "Gun_SetSniperBullet": 9,
+  "DockLib.CreateDockMaster": 8,
+  "VesselAttackLib.ClearAreaFrom": 7,
+  "OldOneLib.Attack": 7,
+  "DockLib.Dock": 6,
+  "DipolLib.InUtero_DipolInRelative": 6,
+  "PhysicalCharacter_SetSpecialCollisionPartner": 6,
+  "Camera_ShakeHit": 5,
+  "Player_SuppressFF": 5,
+  "Camera_ZoomAt": 4,
+  "Body_GetPosition": 4,
+  "Body_SetPosition": 4,
+  "MiscLib.UnInfiltrate": 4,
+  "Vessel_SuspendCollisionReaction": 4,
+  "DipolLib.InUtero_Undock": 3,
+  "DockLib.PlaceInDock": 3,
+  "OldOneLib.Goto": 3,
+  "Vessel_AttackTurretsStop": 2,
+  "ShieldedBody_CoupleFather": 2,
+  "ShieldedBody_DeepDestruct": 2,
+  "PhysicalCharacter_SetHitPropability": 2,
+  "Vehicle_ParkPatrol": 1,
+  "SensorLib.ActivateAvpSensorComplexLeave": 1,
+  "Turret_SetAcousticMode": 1,
+  "DockLib.UndockOwn": 1,
+  "Camera_LookAhead": 1,
+  "DockLib.DockVehicle": 1,
+  "VesselAttackLib.GotoAttack": 1,
+  "Vessel_DeactivateTurningInEmp": 1,
+  "ShieldedBody_SetLogarithmicModeStop": 1,
+  "Character_StopAnimation": 1,
+  "OldOneLib.Sink": 1,
+  "PhysicalCharacter_LookToObject": 1
+ },
+ "haeufigste_signaturen": [
+  {
+   "kommandos": [
+    "DipolLib.InUtero_DipolIn",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 111,
+   "beispiele": [
+    [
+     "1h2",
+     "o4796",
+     6756
+    ],
+    [
+     "2h1",
+     "o7091",
+     10687
+    ],
+    [
+     "2h1",
+     "o7136",
+     10739
+    ],
+    [
+     "2n3",
+     "o1370",
+     1851
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 107,
+   "beispiele": [
+    [
+     "1h1",
+     "o4226",
+     4963
+    ],
+    [
+     "1h1",
+     "o4264",
+     5017
+    ],
+    [
+     "1h1",
+     "o4300",
+     5079
+    ],
+    [
+     "1h1",
+     "o4336",
+     5141
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 103,
+   "beispiele": [
+    [
+     "1h2",
+     "o4845",
+     6884
+    ],
+    [
+     "1h2",
+     "o4901",
+     7007
+    ],
+    [
+     "1h3",
+     "o6914",
+     6797
+    ],
+    [
+     "1h3",
+     "o6969",
+     6908
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Body_SetEmpShield",
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "TurretLib.Attack",
+    "Turret_SetAngleArea"
+   ],
+   "anzahl": 77,
+   "beispiele": [
+    [
+     "2h1",
+     "o3645",
+     4951
+    ],
+    [
+     "2h1",
+     "o3678",
+     5016
+    ],
+    [
+     "2h1",
+     "o3716",
+     5088
+    ],
+    [
+     "2h1",
+     "o3754",
+     5160
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Script_Log"
+   ],
+   "anzahl": 72,
+   "beispiele": [
+    [
+     "1h1",
+     "o2",
+     2804
+    ],
+    [
+     "1h2",
+     "o2",
+     2981
+    ],
+    [
+     "1h2",
+     "o10",
+     3676
+    ],
+    [
+     "1n2",
+     "o1007",
+     3195
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 72,
+   "beispiele": [
+    [
+     "6h1",
+     "o4643",
+     9707
+    ],
+    [
+     "6h1",
+     "o4691",
+     9793
+    ],
+    [
+     "6h1",
+     "o5024",
+     10480
+    ],
+    [
+     "6h1",
+     "o5063",
+     10566
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "SensorLib.ActivateAvpSensorComplex",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 56,
+   "beispiele": [
+    [
+     "1h1",
+     "o3556",
+     3863
+    ],
+    [
+     "1h1",
+     "o6878",
+     10187
+    ],
+    [
+     "1h2",
+     "o4219",
+     5404
+    ],
+    [
+     "1h2",
+     "o4225",
+     5499
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "ShieldedBody_MakeSelectiveVulnerableAgainst",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 41,
+   "beispiele": [
+    [
+     "3h4",
+     "o2127",
+     3855
+    ],
+    [
+     "5n2",
+     "o1121",
+     3421
+    ],
+    [
+     "5n2",
+     "o1130",
+     3518
+    ],
+    [
+     "5n2",
+     "o1178",
+     3607
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_DipolIn",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 35,
+   "beispiele": [
+    [
+     "6h2",
+     "o6587",
+     10217
+    ],
+    [
+     "6h2",
+     "o6636",
+     10303
+    ],
+    [
+     "6h2",
+     "o6684",
+     10389
+    ],
+    [
+     "6h2",
+     "o6732",
+     10475
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 35,
+   "beispiele": [
+    [
+     "6h4",
+     "o6015",
+     14848
+    ],
+    [
+     "6h4",
+     "o6019",
+     14911
+    ],
+    [
+     "6h4",
+     "o6067",
+     14974
+    ],
+    [
+     "6h4",
+     "o6115",
+     15037
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Game_SetWayPoint"
+   ],
+   "anzahl": 33,
+   "beispiele": [
+    [
+     "1h3",
+     "o7157",
+     7231
+    ],
+    [
+     "1h4",
+     "o974",
+     5449
+    ],
+    [
+     "1h4",
+     "o976",
+     5490
+    ],
+    [
+     "2h1",
+     "o6447",
+     8634
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_DipolIn",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea",
+    "VesselGotoLib.MultiPatrol"
+   ],
+   "anzahl": 31,
+   "beispiele": [
+    [
+     "6h3",
+     "o2217",
+     5555
+    ],
+    [
+     "6h3",
+     "o2263",
+     5726
+    ],
+    [
+     "6h3",
+     "o2312",
+     5848
+    ],
+    [
+     "6h3",
+     "o2361",
+     5970
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "ShieldedBody_MakeInvulnerable",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselGotoLib.MultiPatrol",
+    "Vessel_CollisionObjects",
+    "Vessel_CollisionTerrain"
+   ],
+   "anzahl": 30,
+   "beispiele": [
+    [
+     "6h1",
+     "o2963",
+     6130
+    ],
+    [
+     "6h1",
+     "o3011",
+     6232
+    ],
+    [
+     "6h1",
+     "o3059",
+     6334
+    ],
+    [
+     "6h1",
+     "o3107",
+     6436
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "NOD_NodeRef",
+    "StopAllActiveBehaviours_AndCall",
+    "WayPoint_Attach",
+    "WayPoint_SetTakeKey_Activate",
+    "WayPoint_SetTakeKey_Enter",
+    "WayPoint_SetTakeKey_Inside",
+    "WayPoint_SetTakeKey_Leave",
+    "WayPoint_SetTakeKey_Outside"
+   ],
+   "anzahl": 27,
+   "beispiele": [
+    [
+     "1h1",
+     "o6778",
+     9091
+    ],
+    [
+     "1h4",
+     "o977",
+     5510
+    ],
+    [
+     "2h1",
+     "o7184",
+     10798
+    ],
+    [
+     "2h1",
+     "o7233",
+     10837
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_DipolIn",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea",
+    "Vessel_CollisionTerrain"
+   ],
+   "anzahl": 25,
+   "beispiele": [
+    [
+     "1h4",
+     "o747",
+     4960
+    ],
+    [
+     "1h4",
+     "o796",
+     5062
+    ],
+    [
+     "1h4",
+     "o844",
+     5153
+    ],
+    [
+     "1h4",
+     "o892",
+     5244
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea",
+    "Vessel_CollisionTerrain"
+   ],
+   "anzahl": 23,
+   "beispiele": [
+    [
+     "1h2",
+     "o5321",
+     8179
+    ],
+    [
+     "1h2",
+     "o5345",
+     8317
+    ],
+    [
+     "1h2",
+     "o5395",
+     8453
+    ],
+    [
+     "1h2",
+     "o5445",
+     8589
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Body_AddItem",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 22,
+   "beispiele": [
+    [
+     "1h1",
+     "o4211",
+     4766
+    ],
+    [
+     "1h2",
+     "o5240",
+     7972
+    ],
+    [
+     "1h3",
+     "o7109",
+     7190
+    ],
+    [
+     "1h4",
+     "o940",
+     5335
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Game_LoadProgress_Enter",
+    "Game_LoadProgress_Leave",
+    "Node_Find"
+   ],
+   "anzahl": 22,
+   "beispiele": [
+    [
+     "1h2",
+     "o5601",
+     9507
+    ],
+    [
+     "1h4",
+     "o3951",
+     8671
+    ],
+    [
+     "1n2",
+     "o1880",
+     4620
+    ],
+    [
+     "2h1",
+     "o8260",
+     12603
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "CameraLib.Wait",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 19,
+   "beispiele": [
+    [
+     "1h2",
+     "o5571",
+     9096
+    ],
+    [
+     "1h2",
+     "o5582",
+     9290
+    ],
+    [
+     "1h4",
+     "o3949",
+     8626
+    ],
+    [
+     "1n2",
+     "o1868",
+     4456
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.DipolJumpOut",
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 18,
+   "beispiele": [
+    [
+     "2h3",
+     "o3595",
+     4539
+    ],
+    [
+     "2h3",
+     "o3644",
+     4624
+    ],
+    [
+     "2h3",
+     "o3693",
+     4709
+    ],
+    [
+     "2h3",
+     "o3928",
+     5193
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "ShieldedBody_MakeInvulnerable",
+    "ShieldedBody_MakeVulnerable",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 18,
+   "beispiele": [
+    [
+     "6h2",
+     "o8657",
+     14021
+    ],
+    [
+     "6h2",
+     "o8706",
+     14156
+    ],
+    [
+     "6h2",
+     "o8755",
+     14291
+    ],
+    [
+     "6h2",
+     "o8804",
+     14426
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VehicleGotoLib.MultiPatrol"
+   ],
+   "anzahl": 17,
+   "beispiele": [
+    [
+     "1h2",
+     "o4990",
+     7448
+    ],
+    [
+     "1h2",
+     "o5059",
+     7511
+    ],
+    [
+     "1h2",
+     "o5098",
+     7582
+    ],
+    [
+     "1h2",
+     "o5137",
+     7653
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Game_MissionEnd",
+    "Script_Log"
+   ],
+   "anzahl": 17,
+   "beispiele": [
+    [
+     "1h4",
+     "o2",
+     1859
+    ],
+    [
+     "2h2",
+     "o2",
+     1496
+    ],
+    [
+     "2h3",
+     "o2",
+     2102
+    ],
+    [
+     "2n3",
+     "o2",
+     1086
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.DipolJumpOut",
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea",
+    "Vessel_CollisionTerrain"
+   ],
+   "anzahl": 16,
+   "beispiele": [
+    [
+     "3h1",
+     "o2729",
+     7016
+    ],
+    [
+     "3h1",
+     "o2773",
+     7124
+    ],
+    [
+     "3h1",
+     "o2822",
+     7233
+    ],
+    [
+     "3h1",
+     "o2871",
+     7342
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "SED_SetTaskTextKey"
+   ],
+   "anzahl": 15,
+   "beispiele": [
+    [
+     "1h2",
+     "o5288",
+     8007
+    ],
+    [
+     "2h1",
+     "o6450",
+     8788
+    ],
+    [
+     "2h1",
+     "o6455",
+     8899
+    ],
+    [
+     "2h2",
+     "o371",
+     2306
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_VehicleDipolIn",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VehicleGotoLib.MultiPatrol"
+   ],
+   "anzahl": 15,
+   "beispiele": [
+    [
+     "3h2",
+     "o1731",
+     5524
+    ],
+    [
+     "3h2",
+     "o1779",
+     5587
+    ],
+    [
+     "3h2",
+     "o1818",
+     5646
+    ],
+    [
+     "3h2",
+     "o1857",
+     5709
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Body_ActivateEscapePod",
+    "DipolLib.InUtero_DipolIn",
+    "DipolLib.LeaveSimulation",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 15,
+   "beispiele": [
+    [
+     "4h3",
+     "o6810",
+     9431
+    ],
+    [
+     "4h3",
+     "o6853",
+     9516
+    ],
+    [
+     "4h3",
+     "o6901",
+     9610
+    ],
+    [
+     "4h3",
+     "o6949",
+     9704
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "ShieldedBody_MakeInvulnerable",
+    "ShieldedBody_MakeVulnerable",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 14,
+   "beispiele": [
+    [
+     "1h3",
+     "o33",
+     4085
+    ],
+    [
+     "2h3",
+     "o2903",
+     2970
+    ],
+    [
+     "2h3",
+     "o2939",
+     3056
+    ],
+    [
+     "3h4",
+     "o2321",
+     4206
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_VehicleDipolIn",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VehicleAttackLib.GuardArea"
+   ],
+   "anzahl": 13,
+   "beispiele": [
+    [
+     "3h4",
+     "o2699",
+     5068
+    ],
+    [
+     "3h4",
+     "o2750",
+     5149
+    ],
+    [
+     "3h4",
+     "o2789",
+     5223
+    ],
+    [
+     "3h4",
+     "o3307",
+     6129
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VehicleAttackLib.GuardArea"
+   ],
+   "anzahl": 13,
+   "beispiele": [
+    [
+     "4h3",
+     "o7576",
+     11039
+    ],
+    [
+     "4h3",
+     "o7640",
+     11120
+    ],
+    [
+     "4h3",
+     "o7679",
+     11194
+    ],
+    [
+     "4h3",
+     "o7718",
+     11268
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "CameraLib.Wait",
+    "Game_PlayMusic",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 12,
+   "beispiele": [
+    [
+     "1h1",
+     "o6876",
+     10028
+    ],
+    [
+     "3h4",
+     "o3637",
+     7032
+    ],
+    [
+     "3n1",
+     "o2235",
+     3585
+    ],
+    [
+     "4h3",
+     "o8185",
+     12834
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 12,
+   "beispiele": [
+    [
+     "1n2",
+     "o1876",
+     4573
+    ],
+    [
+     "4h3",
+     "o8154",
+     12314
+    ],
+    [
+     "4h3",
+     "o8159",
+     12364
+    ],
+    [
+     "5h4",
+     "o3290",
+     5727
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardAreaRespawn"
+   ],
+   "anzahl": 12,
+   "beispiele": [
+    [
+     "3h2",
+     "o2555",
+     6741
+    ],
+    [
+     "3h2",
+     "o2603",
+     6800
+    ],
+    [
+     "3h2",
+     "o2651",
+     6859
+    ],
+    [
+     "3h2",
+     "o2699",
+     6918
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Game_MissionEnd"
+   ],
+   "anzahl": 11,
+   "beispiele": [
+    [
+     "1h3",
+     "o2",
+     3166
+    ],
+    [
+     "1n1",
+     "o2",
+     1038
+    ],
+    [
+     "1n2",
+     "o1010",
+     3215
+    ],
+    [
+     "2n2",
+     "o2",
+     1657
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.DipolJumpOut",
+    "DipolLib.InUtero_DipolIn",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardAreaRespawn"
+   ],
+   "anzahl": 11,
+   "beispiele": [
+    [
+     "1n2",
+     "o1616",
+     3838
+    ],
+    [
+     "1n2",
+     "o1664",
+     3931
+    ],
+    [
+     "1n2",
+     "o1714",
+     4046
+    ],
+    [
+     "1n2",
+     "o1760",
+     4128
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.DipolJumpOut",
+    "DipolLib.InUtero_DipolIn",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.GuardArea"
+   ],
+   "anzahl": 11,
+   "beispiele": [
+    [
+     "2h2",
+     "o1861",
+     5696
+    ],
+    [
+     "2h2",
+     "o1906",
+     5782
+    ],
+    [
+     "3h1",
+     "o3117",
+     7907
+    ],
+    [
+     "3h1",
+     "o3165",
+     8000
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Node_EnterSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "Stream_SetCurrentSpeed",
+    "Stream_SetTurbulenceFrequency"
+   ],
+   "anzahl": 10,
+   "beispiele": [
+    [
+     "2h3",
+     "o2975",
+     3142
+    ],
+    [
+     "6h1",
+     "o1801",
+     3929
+    ],
+    [
+     "6h1",
+     "o1803",
+     3976
+    ],
+    [
+     "6h1",
+     "o1805",
+     4023
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "DipolLib.LeaveSimulation",
+    "MiscLib.MilkRunPatrol",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall"
+   ],
+   "anzahl": 10,
+   "beispiele": [
+    [
+     "6h1",
+     "o6612",
+     13167
+    ],
+    [
+     "6h1",
+     "o6660",
+     13235
+    ],
+    [
+     "6h1",
+     "o6708",
+     13303
+    ],
+    [
+     "6h1",
+     "o6756",
+     13371
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "Game_PlayMusic"
+   ],
+   "anzahl": 9,
+   "beispiele": [
+    [
+     "1h2",
+     "o27",
+     4008
+    ],
+    [
+     "1h4",
+     "o3948",
+     8606
+    ],
+    [
+     "2h2",
+     "o357",
+     2008
+    ],
+    [
+     "3h1",
+     "o26",
+     1710
+    ]
+   ]
+  },
+  {
+   "kommandos": [
+    "DipolLib.InUtero_Normal",
+    "Node_LeaveSimulation",
+    "StopAllActiveBehaviours_AndCall",
+    "VesselAttackLib.ClearArea",
+    "VesselAttackLib.GuardArea",
+    "Vessel_CollisionTerrain"
+   ],
+   "anzahl": 9,
+   "beispiele": [
+    [
+     "1h2",
+     "o5176",
+     7724
+    ],
+    [
+     "1h2",
+     "o5188",
+     7852
+    ],
+    [
+     "1h3",
+     "o6814",
+     6556
+    ],
+    [
+     "1h3",
+     "o6864",
+     6678
+    ]
+   ]
+  }
+ ]
+}

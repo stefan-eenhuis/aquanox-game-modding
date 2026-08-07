@@ -1,0 +1,3759 @@
+{
+ "_source": "GOG Aqua.exe, RegisterClass @0x43e1b0, 471 Aufrufstellen",
+ "_method": "Argumente als ROHBYTES rueckwaerts gelesen (0x68 push imm32 / 0x6A push imm8) ab der Aufrufstelle. Reine Disassemblierung scheitert an 16 Stellen, weil dort direkt davor eine Sprungtabelle steht - x86 ist nicht rueckwaerts dekodierbar.",
+ "_signature": "RegisterClass(baseName, className, factory, size), ecx = RTI-Objekt",
+ "count": 468,
+ "by_base": {
+  "RTI_Class": 10,
+  "NOD_MessagePrototype": 399,
+  "NOD_ShieldedBody": 16,
+  "NOD_Node": 17,
+  "NOD_Body": 26
+ },
+ "classes": [
+  {
+   "class": "COD_Emitter",
+   "base": "RTI_Class",
+   "size_bytes": 128,
+   "factory": "0x435810",
+   "rti_object": "0x6635d0",
+   "register_site": "0x4357d9"
+  },
+  {
+   "class": "COD_Light",
+   "base": "RTI_Class",
+   "size_bytes": 92,
+   "factory": "0x437e80",
+   "rti_object": "0x6635f8",
+   "register_site": "0x437e46"
+  },
+  {
+   "class": "COD_Physical",
+   "base": "RTI_Class",
+   "size_bytes": 48,
+   "factory": "0x4390d0",
+   "rti_object": "0x663620",
+   "register_site": "0x439096"
+  },
+  {
+   "class": "NOD_ANT_Client_ConnectAborted",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7a80",
+   "rti_object": "0x66ce00",
+   "register_site": "0x4c7a46"
+  },
+  {
+   "class": "NOD_ANT_Client_ConnectCompleted",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7910",
+   "rti_object": "0x66cdc0",
+   "register_site": "0x4c78d6"
+  },
+  {
+   "class": "NOD_ANT_Client_DuplicationComplete",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7d60",
+   "rti_object": "0x66ce30",
+   "register_site": "0x4c7d26"
+  },
+  {
+   "class": "NOD_ANT_Client_MapChange",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7ed0",
+   "rti_object": "0x66ce60",
+   "register_site": "0x4c7e96"
+  },
+  {
+   "class": "NOD_ANT_Client_SessionTerminated",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7bf0",
+   "rti_object": "0x66ce88",
+   "register_site": "0x4c7bb6"
+  },
+  {
+   "class": "NOD_ANT_Message_AskForPlayerRecreation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47c400",
+   "rti_object": "0x668750",
+   "register_site": "0x47c3c6"
+  },
+  {
+   "class": "NOD_ANT_Message_AuthenticateFailure",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x481c10",
+   "rti_object": "0x668670",
+   "register_site": "0x481bd6"
+  },
+  {
+   "class": "NOD_ANT_Message_AuthenticateQuery",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4810c0",
+   "rti_object": "0x668630",
+   "register_site": "0x481086"
+  },
+  {
+   "class": "NOD_ANT_Message_AuthenticateReply",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x481640",
+   "rti_object": "0x6687f0",
+   "register_site": "0x481606"
+  },
+  {
+   "class": "NOD_ANT_Message_BodyAnglesUpdate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47f910",
+   "rti_object": "0x668700",
+   "register_site": "0x47f8d6"
+  },
+  {
+   "class": "NOD_ANT_Message_BodyUpdate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47cac0",
+   "rti_object": "0x668600",
+   "register_site": "0x47ca86"
+  },
+  {
+   "class": "NOD_ANT_Message_ClientIsLeft",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47c260",
+   "rti_object": "0x6686e0",
+   "register_site": "0x47c226"
+  },
+  {
+   "class": "NOD_ANT_Message_CreateObject",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47b7a0",
+   "rti_object": "0x668328",
+   "register_site": "0x47b766"
+  },
+  {
+   "class": "NOD_ANT_Message_CreatePlayerOnClient",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47c570",
+   "rti_object": "0x668780",
+   "register_site": "0x47c536"
+  },
+  {
+   "class": "NOD_ANT_Message_CreateTorpedoOnServer",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47da20",
+   "rti_object": "0x6687b0",
+   "register_site": "0x47d9e6"
+  },
+  {
+   "class": "NOD_ANT_Message_DestroyNode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47e560",
+   "rti_object": "0x668690",
+   "register_site": "0x47e526"
+  },
+  {
+   "class": "NOD_ANT_Message_ObjectStateChange",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47bd60",
+   "rti_object": "0x668350",
+   "register_site": "0x47bd26"
+  },
+  {
+   "class": "NOD_ANT_Message_ObjectWasKilled",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47ea10",
+   "rti_object": "0x6683f0",
+   "register_site": "0x47e9d6"
+  },
+  {
+   "class": "NOD_ANT_Message_SendClientInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47bfe0",
+   "rti_object": "0x6682f0",
+   "register_site": "0x47bfa6"
+  },
+  {
+   "class": "NOD_ANT_Message_SendGameInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x480a30",
+   "rti_object": "0x668500",
+   "register_site": "0x4809f6"
+  },
+  {
+   "class": "NOD_ANT_Message_SendServerInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x480df0",
+   "rti_object": "0x6686c0",
+   "register_site": "0x480db6"
+  },
+  {
+   "class": "NOD_ANT_Message_SendVoice",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47feb0",
+   "rti_object": "0x6684b0",
+   "register_site": "0x47fe76"
+  },
+  {
+   "class": "NOD_ANT_Message_SetBandwidth",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47e870",
+   "rti_object": "0x668410",
+   "register_site": "0x47e836"
+  },
+  {
+   "class": "NOD_ANT_Message_SetClientInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47fc70",
+   "rti_object": "0x6682c8",
+   "register_site": "0x47fc36"
+  },
+  {
+   "class": "NOD_ANT_Message_SetNodeFlags",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47e6d0",
+   "rti_object": "0x668520",
+   "register_site": "0x47e696"
+  },
+  {
+   "class": "NOD_ANT_Message_ShieldUpdateAbsolute",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47d820",
+   "rti_object": "0x6683d0",
+   "register_site": "0x47d7e6"
+  },
+  {
+   "class": "NOD_ANT_Message_ShieldUpdateRelative",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47d540",
+   "rti_object": "0x6684e0",
+   "register_site": "0x47d506"
+  },
+  {
+   "class": "NOD_ANT_Message_SimpleExplosion",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x480820",
+   "rti_object": "0x668490",
+   "register_site": "0x4807e6"
+  },
+  {
+   "class": "NOD_ANT_Message_SpawnBullet",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47d0a0",
+   "rti_object": "0x6685d0",
+   "register_site": "0x47d066"
+  },
+  {
+   "class": "NOD_ANT_Message_SpawnBuzzerOnClient",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47ebb0",
+   "rti_object": "0x6683b0",
+   "register_site": "0x47eb76"
+  },
+  {
+   "class": "NOD_ANT_Message_SpawnSplash",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47ffd0",
+   "rti_object": "0x668460",
+   "register_site": "0x47ff96"
+  },
+  {
+   "class": "NOD_ANT_Message_SpawnTorpedoOnClient",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47de70",
+   "rti_object": "0x668550",
+   "register_site": "0x47de36"
+  },
+  {
+   "class": "NOD_ANT_Message_TimeStamp",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x47bae0",
+   "rti_object": "0x6685a0",
+   "register_site": "0x47baa6"
+  },
+  {
+   "class": "NOD_ANT_Message_TorpedoImpactEffect",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x480390",
+   "rti_object": "0x668380",
+   "register_site": "0x480356"
+  },
+  {
+   "class": "NOD_ANT_Rules_ChangeTeam",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7770",
+   "rti_object": "0x66cce0",
+   "register_site": "0x4c7736"
+  },
+  {
+   "class": "NOD_ANT_Rules_ConnectCompleted",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6e00",
+   "rti_object": "0x66ccc0",
+   "register_site": "0x4c6dc6"
+  },
+  {
+   "class": "NOD_ANT_Rules_EventCTF",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7280",
+   "rti_object": "0x66cd40",
+   "register_site": "0x4c7246"
+  },
+  {
+   "class": "NOD_ANT_Rules_RulesPlayerInfoUpdate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7160",
+   "rti_object": "0x66cd00",
+   "register_site": "0x4c7126"
+  },
+  {
+   "class": "NOD_ANT_Rules_RulesPlayerUpdate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c7040",
+   "rti_object": "0x66cca0",
+   "register_site": "0x4c7006"
+  },
+  {
+   "class": "NOD_ANT_Rules_RulesTeamUpdate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6f20",
+   "rti_object": "0x66cd90",
+   "register_site": "0x4c6ee6"
+  },
+  {
+   "class": "NOD_ANT_Rules_StartTime",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 0,
+   "factory": "0x4c75c0",
+   "rti_object": "0x66cc70",
+   "register_site": "0x4c7586"
+  },
+  {
+   "class": "NOD_ANT_Server_RemoteConsole",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6ce0",
+   "rti_object": "0x66cb58",
+   "register_site": "0x4c6ca6"
+  },
+  {
+   "class": "NOD_ANT_Server_RemoteJoined",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c65a0",
+   "rti_object": "0x66cbb8",
+   "register_site": "0x4c6566"
+  },
+  {
+   "class": "NOD_ANT_Server_RemoteLeft",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6740",
+   "rti_object": "0x66cb98",
+   "register_site": "0x4c6706"
+  },
+  {
+   "class": "NOD_ANT_Server_SessionTerminated",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c68e0",
+   "rti_object": "0x66cb28",
+   "register_site": "0x4c68a6"
+  },
+  {
+   "class": "NOD_ANT_Server_StartScenegraphDuplication",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6a00",
+   "rti_object": "0x66cb78",
+   "register_site": "0x4c69c6"
+  },
+  {
+   "class": "NOD_ANT_Server_StartScenegraphSync",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6b70",
+   "rti_object": "0x66cc18",
+   "register_site": "0x4c6b36"
+  },
+  {
+   "class": "NOD_Attachment",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 972,
+   "factory": "0x4aa0f0",
+   "rti_object": "0x668f00",
+   "register_site": "0x4aa0b9"
+  },
+  {
+   "class": "NOD_Body",
+   "base": "NOD_Node",
+   "size_bytes": 800,
+   "factory": "0x4670c0",
+   "rti_object": "0x668078",
+   "register_site": "0x467089"
+  },
+  {
+   "class": "NOD_Body_ActivateEscapePod",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5c50",
+   "rti_object": "0x66c7c0",
+   "register_site": "0x4c5c16"
+  },
+  {
+   "class": "NOD_Body_ActivateShieldGuard",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3a40",
+   "rti_object": "0x66c960",
+   "register_site": "0x4c3a06"
+  },
+  {
+   "class": "NOD_Body_AddItem",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c55b0",
+   "rti_object": "0x66c630",
+   "register_site": "0x4c5576"
+  },
+  {
+   "class": "NOD_Body_AddItemInteger",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5700",
+   "rti_object": "0x66c2c0",
+   "register_site": "0x4c56c6"
+  },
+  {
+   "class": "NOD_Body_BioShieldBarrierReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4810",
+   "rti_object": "0x66c3a0",
+   "register_site": "0x4c47d6"
+  },
+  {
+   "class": "NOD_Body_DeactivateEscapePod",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5d70",
+   "rti_object": "0x66cab8",
+   "register_site": "0x4c5d36"
+  },
+  {
+   "class": "NOD_Body_DeactivateShieldGuard",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3b60",
+   "rti_object": "0x66cb08",
+   "register_site": "0x4c3b26"
+  },
+  {
+   "class": "NOD_Body_EMPParalyzed",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5440",
+   "rti_object": "0x66c5b0",
+   "register_site": "0x4c5406"
+  },
+  {
+   "class": "NOD_Body_EmpShieldBarrierReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4420",
+   "rti_object": "0x66c330",
+   "register_site": "0x4c43e6"
+  },
+  {
+   "class": "NOD_Body_EnemyArrival",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4c90",
+   "rti_object": "0x66c6a0",
+   "register_site": "0x4c4c56"
+  },
+  {
+   "class": "NOD_Body_EnemyArrivalPatrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c51b0",
+   "rti_object": "0x66c360",
+   "register_site": "0x4c5176"
+  },
+  {
+   "class": "NOD_Body_EscapePodEjected",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5fb0",
+   "rti_object": "0x66c660",
+   "register_site": "0x4c5f76"
+  },
+  {
+   "class": "NOD_Body_ForceEjection",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5e90",
+   "rti_object": "0x66c8b0",
+   "register_site": "0x4c5e56"
+  },
+  {
+   "class": "NOD_Body_Freeze",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6480",
+   "rti_object": "0x66c380",
+   "register_site": "0x4c6446"
+  },
+  {
+   "class": "NOD_Body_GetBioShield",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c35c0",
+   "rti_object": "0x66ca00",
+   "register_site": "0x4c3586"
+  },
+  {
+   "class": "NOD_Body_GetEmpShield",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3890",
+   "rti_object": "0x66c520",
+   "register_site": "0x4c3856"
+  },
+  {
+   "class": "NOD_Body_GetKineticShield",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c32f0",
+   "rti_object": "0x66c4e0",
+   "register_site": "0x4c32b6"
+  },
+  {
+   "class": "NOD_Body_GetPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2660",
+   "rti_object": "0x66ca50",
+   "register_site": "0x4c2626"
+  },
+  {
+   "class": "NOD_Body_InformEnemies",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c49c0",
+   "rti_object": "0x66c680",
+   "register_site": "0x4c4986"
+  },
+  {
+   "class": "NOD_Body_InformEnemyPatrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4e00",
+   "rti_object": "0x66c490",
+   "register_site": "0x4c4dc6"
+  },
+  {
+   "class": "NOD_Body_InformShotHit",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2fd0",
+   "rti_object": "0x66c860",
+   "register_site": "0x4c2f96"
+  },
+  {
+   "class": "NOD_Body_KinShieldBarrierReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4030",
+   "rti_object": "0x66c2f0",
+   "register_site": "0x4c3ff6"
+  },
+  {
+   "class": "NOD_Body_ObjectDestroyed",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3c80",
+   "rti_object": "0x66c3c0",
+   "register_site": "0x4c3c46"
+  },
+  {
+   "class": "NOD_Body_RejectBioInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c46f0",
+   "rti_object": "0x66c810",
+   "register_site": "0x4c46b6"
+  },
+  {
+   "class": "NOD_Body_RejectEmpInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4300",
+   "rti_object": "0x66c400",
+   "register_site": "0x4c42c6"
+  },
+  {
+   "class": "NOD_Body_RejectEnemies",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c4b20",
+   "rti_object": "0x66c920",
+   "register_site": "0x4c4ae6"
+  },
+  {
+   "class": "NOD_Body_RejectEnemyPatrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5040",
+   "rti_object": "0x66c8d0",
+   "register_site": "0x4c5006"
+  },
+  {
+   "class": "NOD_Body_RejectKinInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3f10",
+   "rti_object": "0x66c9a0",
+   "register_site": "0x4c3ed6"
+  },
+  {
+   "class": "NOD_Body_RejectShotHits",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2eb0",
+   "rti_object": "0x66c580",
+   "register_site": "0x4c2e76"
+  },
+  {
+   "class": "NOD_Body_RequestBioInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c45d0",
+   "rti_object": "0x66ca78",
+   "register_site": "0x4c4596"
+  },
+  {
+   "class": "NOD_Body_RequestEmpInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c41e0",
+   "rti_object": "0x66c3e0",
+   "register_site": "0x4c41a6"
+  },
+  {
+   "class": "NOD_Body_RequestKinInfo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3df0",
+   "rti_object": "0x66c460",
+   "register_site": "0x4c3db6"
+  },
+  {
+   "class": "NOD_Body_RequestShotHits",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2d90",
+   "rti_object": "0x66ca30",
+   "register_site": "0x4c2d56"
+  },
+  {
+   "class": "NOD_Body_SetBioShield",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c34a0",
+   "rti_object": "0x66c6e0",
+   "register_site": "0x4c3466"
+  },
+  {
+   "class": "NOD_Body_SetCS",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c29a0",
+   "rti_object": "0x66c700",
+   "register_site": "0x4c2966"
+  },
+  {
+   "class": "NOD_Body_SetCargoKey",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5970",
+   "rti_object": "0x66ca98",
+   "register_site": "0x4c5936"
+  },
+  {
+   "class": "NOD_Body_SetEmpShield",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c3770",
+   "rti_object": "0x66c7a0",
+   "register_site": "0x4c3736"
+  },
+  {
+   "class": "NOD_Body_SetFriendOrFoeID",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5320",
+   "rti_object": "0x66c9c0",
+   "register_site": "0x4c52e6"
+  },
+  {
+   "class": "NOD_Body_SetKinEscapeBarrier",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6360",
+   "rti_object": "0x66c730",
+   "register_site": "0x4c6326"
+  },
+  {
+   "class": "NOD_Body_SetKineticShield",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c31a0",
+   "rti_object": "0x66c6c0",
+   "register_site": "0x4c3166"
+  },
+  {
+   "class": "NOD_Body_SetMesh",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2880",
+   "rti_object": "0x66cad8",
+   "register_site": "0x4c2846"
+  },
+  {
+   "class": "NOD_Body_SetNameKey",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c5b30",
+   "rti_object": "0x66c7f0",
+   "register_site": "0x4c5af6"
+  },
+  {
+   "class": "NOD_Body_SetOrientation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2540",
+   "rti_object": "0x66c500",
+   "register_site": "0x4c2506"
+  },
+  {
+   "class": "NOD_Body_SetPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2420",
+   "rti_object": "0x66c980",
+   "register_site": "0x4c23e6"
+  },
+  {
+   "class": "NOD_Body_StartEscapeBehaviour",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6120",
+   "rti_object": "0x66c4b0",
+   "register_site": "0x4c60e6"
+  },
+  {
+   "class": "NOD_Body_StopEscapeBehaviour",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c6240",
+   "rti_object": "0x66c750",
+   "register_site": "0x4c6206"
+  },
+  {
+   "class": "NOD_Bullet",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 1208,
+   "factory": "0x471eb0",
+   "rti_object": "0x668208",
+   "register_site": "0x471e79"
+  },
+  {
+   "class": "NOD_Buzzer",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 1100,
+   "factory": "0x46d020",
+   "rti_object": "0x668138",
+   "register_site": "0x46cfe9"
+  },
+  {
+   "class": "NOD_BuzzerLauncher",
+   "base": "NOD_Body",
+   "size_bytes": 820,
+   "factory": "0x4a9cf0",
+   "rti_object": "0x668ed0",
+   "register_site": "0x4a9cb9"
+  },
+  {
+   "class": "NOD_Camera",
+   "base": "NOD_Body",
+   "size_bytes": 3724,
+   "factory": "0x443c50",
+   "rti_object": "0x667700",
+   "register_site": "0x443c19"
+  },
+  {
+   "class": "NOD_Camera_Cut",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c1890",
+   "rti_object": "0x66be90",
+   "register_site": "0x4c1856"
+  },
+  {
+   "class": "NOD_Camera_LookAhead",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c09e0",
+   "rti_object": "0x66bf90",
+   "register_site": "0x4c09a6"
+  },
+  {
+   "class": "NOD_Camera_LookAt",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c03b0",
+   "rti_object": "0x66c080",
+   "register_site": "0x4c0376"
+  },
+  {
+   "class": "NOD_Camera_LookFrom",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c0020",
+   "rti_object": "0x66c1e0",
+   "register_site": "0x4bffe6"
+  },
+  {
+   "class": "NOD_Camera_MoveInto",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bfe90",
+   "rti_object": "0x66c050",
+   "register_site": "0x4bfe56"
+  },
+  {
+   "class": "NOD_Camera_MoveTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c01b0",
+   "rti_object": "0x66bf70",
+   "register_site": "0x4c0176"
+  },
+  {
+   "class": "NOD_Camera_MoveToAnglesAbs",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": null,
+   "factory": "0x4c15c0",
+   "rti_object": "0x66c180",
+   "register_site": "0x4c1586"
+  },
+  {
+   "class": "NOD_Camera_MoveToAnglesRel",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c12f0",
+   "rti_object": "0x66bf00",
+   "register_site": "0x4c12b6"
+  },
+  {
+   "class": "NOD_Camera_MoveToAnglesRelIgnoreBC",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c1bf0",
+   "rti_object": "0x66be40",
+   "register_site": "0x4c1bb6"
+  },
+  {
+   "class": "NOD_Camera_RollAhead",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c0b00",
+   "rti_object": "0x66c1a0",
+   "register_site": "0x4c0ac6"
+  },
+  {
+   "class": "NOD_Camera_RollFrom",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c0830",
+   "rti_object": "0x66bf40",
+   "register_site": "0x4c07f6"
+  },
+  {
+   "class": "NOD_Camera_RollTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": null,
+   "factory": "0x4c05f0",
+   "rti_object": "0x66bfb0",
+   "register_site": "0x4c05b6"
+  },
+  {
+   "class": "NOD_Camera_SetBackPlane",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bfb30",
+   "rti_object": "0x66beb0",
+   "register_site": "0x4bfaf6"
+  },
+  {
+   "class": "NOD_Camera_SetFrontPlane",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bfce0",
+   "rti_object": "0x66c0f0",
+   "register_site": "0x4bfca6"
+  },
+  {
+   "class": "NOD_Camera_ShakeHit",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c0c50",
+   "rti_object": "0x66bf20",
+   "register_site": "0x4c0c16"
+  },
+  {
+   "class": "NOD_Camera_ShakeTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c0da0",
+   "rti_object": "0x66bee0",
+   "register_site": "0x4c0d66"
+  },
+  {
+   "class": "NOD_Camera_ShakeViewHit",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c19b0",
+   "rti_object": "0x66c000",
+   "register_site": "0x4c1976"
+  },
+  {
+   "class": "NOD_Camera_ShakeViewTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c1ad0",
+   "rti_object": "0x66c200",
+   "register_site": "0x4c1a96"
+  },
+  {
+   "class": "NOD_Camera_SwingAtLissajous",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c2000",
+   "rti_object": "0x66c120",
+   "register_site": "0x4c1fc6"
+  },
+  {
+   "class": "NOD_Camera_ZoomAt",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4c11d0",
+   "rti_object": "0x66c0d0",
+   "register_site": "0x4c1196"
+  },
+  {
+   "class": "NOD_Camera_ZoomTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": null,
+   "factory": "0x4c0ef0",
+   "rti_object": "0x66bfe0",
+   "register_site": "0x4c0eb6"
+  },
+  {
+   "class": "NOD_Character_StartAnimation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd000",
+   "rti_object": "0x66cf00",
+   "register_site": "0x4ccfc6"
+  },
+  {
+   "class": "NOD_Character_StopAnimation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd120",
+   "rti_object": "0x66cf30",
+   "register_site": "0x4cd0e6"
+  },
+  {
+   "class": "NOD_Cockpit",
+   "base": "NOD_Node",
+   "size_bytes": 8616,
+   "factory": "0x447920",
+   "rti_object": "0x667720",
+   "register_site": "0x4478e9"
+  },
+  {
+   "class": "NOD_Cone",
+   "base": "NOD_Body",
+   "size_bytes": 816,
+   "factory": "0x4a96c0",
+   "rti_object": "0x668ea8",
+   "register_site": "0x4a9689"
+  },
+  {
+   "class": "NOD_Console",
+   "base": "NOD_Node",
+   "size_bytes": 1280,
+   "factory": "0x453e10",
+   "rti_object": "0x667e58",
+   "register_site": "0x453dd9"
+  },
+  {
+   "class": "NOD_Console_Activate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf850",
+   "rti_object": "0x66bdd8",
+   "register_site": "0x4bf816"
+  },
+  {
+   "class": "NOD_Console_Deactivate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf9c0",
+   "rti_object": "0x66bdf8",
+   "register_site": "0x4bf986"
+  },
+  {
+   "class": "NOD_Console_Input",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf6b0",
+   "rti_object": "0x66be20",
+   "register_site": "0x4bf676"
+  },
+  {
+   "class": "NOD_Director",
+   "base": "NOD_Node",
+   "size_bytes": 88,
+   "factory": "0x4a9540",
+   "rti_object": "0x668e80",
+   "register_site": "0x4a9506"
+  },
+  {
+   "class": "NOD_Director_BeginCutscene",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf470",
+   "rti_object": "0x66bd60",
+   "register_site": "0x4bf436"
+  },
+  {
+   "class": "NOD_Director_EndCutscene",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf590",
+   "rti_object": "0x66bd80",
+   "register_site": "0x4bf556"
+  },
+  {
+   "class": "NOD_Directory",
+   "base": "NOD_Node",
+   "size_bytes": 88,
+   "factory": "0x4a93e0",
+   "rti_object": "0x668e58",
+   "register_site": "0x4a93a6"
+  },
+  {
+   "class": "NOD_Emitter_GetSoundEmissionLevel",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf2c0",
+   "rti_object": "0x66bca8",
+   "register_site": "0x4bf286"
+  },
+  {
+   "class": "NOD_Emitter_GetVisibilityBlockingStatus",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4beff0",
+   "rti_object": "0x66bcc8",
+   "register_site": "0x4befb6"
+  },
+  {
+   "class": "NOD_Emitter_GetVisibilityStatus",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bed20",
+   "rti_object": "0x66bc38",
+   "register_site": "0x4bece6"
+  },
+  {
+   "class": "NOD_Emitter_SetSoundEmissionLevel",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bf1a0",
+   "rti_object": "0x66bc68",
+   "register_site": "0x4bf166"
+  },
+  {
+   "class": "NOD_Emitter_SetVisibilityBlockingStatus",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4beed0",
+   "rti_object": "0x66bcf8",
+   "register_site": "0x4bee96"
+  },
+  {
+   "class": "NOD_Emitter_SetVisibilityStatus",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bebc0",
+   "rti_object": "0x66bc88",
+   "register_site": "0x4beb86"
+  },
+  {
+   "class": "NOD_EscapePod",
+   "base": "NOD_Body",
+   "size_bytes": 820,
+   "factory": "0x46c590",
+   "rti_object": "0x668118",
+   "register_site": "0x46c559"
+  },
+  {
+   "class": "NOD_FX_Dipol",
+   "base": "NOD_Body",
+   "size_bytes": 820,
+   "factory": "0x46f500",
+   "rti_object": "0x6681b0",
+   "register_site": "0x46f4c9"
+  },
+  {
+   "class": "NOD_FX_Infiltrate",
+   "base": "NOD_Node",
+   "size_bytes": 148,
+   "factory": "0x4a7b10",
+   "rti_object": "0x668dd8",
+   "register_site": "0x4a7ad9"
+  },
+  {
+   "class": "NOD_FX_Light",
+   "base": "NOD_Body",
+   "size_bytes": 808,
+   "factory": "0x4a74a0",
+   "rti_object": "0x668db0",
+   "register_site": "0x4a7469"
+  },
+  {
+   "class": "NOD_FX_Plankton",
+   "base": "NOD_Body",
+   "size_bytes": 812,
+   "factory": "0x4a7030",
+   "rti_object": "0x668d88",
+   "register_site": "0x4a6ff9"
+  },
+  {
+   "class": "NOD_FX_Plant",
+   "base": "NOD_Body",
+   "size_bytes": 1728,
+   "factory": "0x4a49a0",
+   "rti_object": "0x668d58",
+   "register_site": "0x4a4969"
+  },
+  {
+   "class": "NOD_FX_Plant_SetMap",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bea30",
+   "rti_object": "0x66bbf0",
+   "register_site": "0x4be9f6"
+  },
+  {
+   "class": "NOD_FX_Rays",
+   "base": "NOD_Body",
+   "size_bytes": 868,
+   "factory": "0x4a2880",
+   "rti_object": "0x668d30",
+   "register_site": "0x4a2849"
+  },
+  {
+   "class": "NOD_FX_Seeder",
+   "base": "NOD_Body",
+   "size_bytes": 932,
+   "factory": "0x49f5f0",
+   "rti_object": "0x668d08",
+   "register_site": "0x49f5b9"
+  },
+  {
+   "class": "NOD_FX_Shockwave",
+   "base": "NOD_Body",
+   "size_bytes": 812,
+   "factory": "0x49eb60",
+   "rti_object": "0x668ce0",
+   "register_site": "0x49eb29"
+  },
+  {
+   "class": "NOD_FX_Sky",
+   "base": "NOD_Node",
+   "size_bytes": 152,
+   "factory": "0x49e630",
+   "rti_object": "0x668cb8",
+   "register_site": "0x49e5f9"
+  },
+  {
+   "class": "NOD_FX_Sound",
+   "base": "NOD_Node",
+   "size_bytes": 148,
+   "factory": "0x49e100",
+   "rti_object": "0x668c90",
+   "register_site": "0x49e0c9"
+  },
+  {
+   "class": "NOD_FX_Sound_SetPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be7f0",
+   "rti_object": "0x66bb88",
+   "register_site": "0x4be7b6"
+  },
+  {
+   "class": "NOD_FX_Sound_SetRadius",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be910",
+   "rti_object": "0x66bba8",
+   "register_site": "0x4be8d6"
+  },
+  {
+   "class": "NOD_FX_Spawn",
+   "base": "NOD_Body",
+   "size_bytes": 868,
+   "factory": "0x46ae30",
+   "rti_object": "0x6680e8",
+   "register_site": "0x46adf9"
+  },
+  {
+   "class": "NOD_FX_Stream",
+   "base": "NOD_Node",
+   "size_bytes": 140,
+   "factory": "0x49d900",
+   "rti_object": "0x668c70",
+   "register_site": "0x49d8c9"
+  },
+  {
+   "class": "NOD_FX_Stream_SetBoxExtension",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd5a0",
+   "rti_object": "0x66d098",
+   "register_site": "0x4cd566"
+  },
+  {
+   "class": "NOD_FX_Stream_SetCurrentDirection",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd7b0",
+   "rti_object": "0x66d040",
+   "register_site": "0x4cd776"
+  },
+  {
+   "class": "NOD_FX_Stream_SetCurrentDirectionNetwork",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cdc80",
+   "rti_object": "0x66cfe0",
+   "register_site": "0x4cdc46"
+  },
+  {
+   "class": "NOD_FX_Stream_SetCurrentSpeed",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cda80",
+   "rti_object": "0x66d070",
+   "register_site": "0x4cda46"
+  },
+  {
+   "class": "NOD_FX_Stream_SetTurbulenceFrequency",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd8d0",
+   "rti_object": "0x66cfc0",
+   "register_site": "0x4cd896"
+  },
+  {
+   "class": "NOD_Flare",
+   "base": "NOD_Body",
+   "size_bytes": 840,
+   "factory": "0x4a8a70",
+   "rti_object": "0x668e28",
+   "register_site": "0x4a8a39"
+  },
+  {
+   "class": "NOD_Fungus",
+   "base": "NOD_Body",
+   "size_bytes": 848,
+   "factory": "0x4a7ea0",
+   "rti_object": "0x668e00",
+   "register_site": "0x4a7e69"
+  },
+  {
+   "class": "NOD_Game",
+   "base": "NOD_Node",
+   "size_bytes": 708,
+   "factory": "0x454450",
+   "rti_object": "0x667e80",
+   "register_site": "0x454419"
+  },
+  {
+   "class": "NOD_Game_CreateClientScript",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c600",
+   "rti_object": "0x667a00",
+   "register_site": "0x44c5c6"
+  },
+  {
+   "class": "NOD_Game_EndGame",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44b7b0",
+   "rti_object": "0x667870",
+   "register_site": "0x44b776"
+  },
+  {
+   "class": "NOD_Game_GetEnemyMatrixElement",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44bcb0",
+   "rti_object": "0x667af0",
+   "register_site": "0x44bc76"
+  },
+  {
+   "class": "NOD_Game_LoadFog",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44acf0",
+   "rti_object": "0x667bd0",
+   "register_site": "0x44acb6"
+  },
+  {
+   "class": "NOD_Game_LoadMTake",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44cec0",
+   "rti_object": "0x6679c0",
+   "register_site": "0x44ce86"
+  },
+  {
+   "class": "NOD_Game_LoadMusic",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44cc80",
+   "rti_object": "0x667810",
+   "register_site": "0x44cc46"
+  },
+  {
+   "class": "NOD_Game_LoadProgress_Advance",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44d9a0",
+   "rti_object": "0x667cd0",
+   "register_site": "0x44d966"
+  },
+  {
+   "class": "NOD_Game_LoadProgress_Enter",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44d860",
+   "rti_object": "0x667d40",
+   "register_site": "0x44d826"
+  },
+  {
+   "class": "NOD_Game_LoadProgress_Leave",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44dac0",
+   "rti_object": "0x6678c0",
+   "register_site": "0x44da86"
+  },
+  {
+   "class": "NOD_Game_LoadScenario",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44aa60",
+   "rti_object": "0x667990",
+   "register_site": "0x44aa26"
+  },
+  {
+   "class": "NOD_Game_LoadScript",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44a8a0",
+   "rti_object": "0x667c10",
+   "register_site": "0x44a866"
+  },
+  {
+   "class": "NOD_Game_LoadServerScript",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44cfe0",
+   "rti_object": "0x667d20",
+   "register_site": "0x44cfa6"
+  },
+  {
+   "class": "NOD_Game_LoadTextTable",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c770",
+   "rti_object": "0x667920",
+   "register_site": "0x44c736"
+  },
+  {
+   "class": "NOD_Game_LoadTextures",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44ab80",
+   "rti_object": "0x667850",
+   "register_site": "0x44ab46"
+  },
+  {
+   "class": "NOD_Game_MissionEnd",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44d580",
+   "rti_object": "0x667a20",
+   "register_site": "0x44d546"
+  },
+  {
+   "class": "NOD_Game_PlayMusic",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44aea0",
+   "rti_object": "0x667830",
+   "register_site": "0x44ae66"
+  },
+  {
+   "class": "NOD_Game_ResetEnemyMatrix",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44bf10",
+   "rti_object": "0x667a80",
+   "register_site": "0x44bed6"
+  },
+  {
+   "class": "NOD_Game_SendRadioMessageTake",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c030",
+   "rti_object": "0x667b10",
+   "register_site": "0x44bff6"
+  },
+  {
+   "class": "NOD_Game_SetAmbientLight",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c920",
+   "rti_object": "0x667cb0",
+   "register_site": "0x44c8e6"
+  },
+  {
+   "class": "NOD_Game_SetCameraValues",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44d3a0",
+   "rti_object": "0x667b60",
+   "register_site": "0x44d366"
+  },
+  {
+   "class": "NOD_Game_SetCausticBuilding",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44b3f0",
+   "rti_object": "0x6678e0",
+   "register_site": "0x44b3b6"
+  },
+  {
+   "class": "NOD_Game_SetCausticObject",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44b210",
+   "rti_object": "0x667c60",
+   "register_site": "0x44b1d6"
+  },
+  {
+   "class": "NOD_Game_SetCausticTerrain",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44b030",
+   "rti_object": "0x667c40",
+   "register_site": "0x44aff6"
+  },
+  {
+   "class": "NOD_Game_SetDecompressionHeight",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c180",
+   "rti_object": "0x6677a8",
+   "register_site": "0x44c146"
+  },
+  {
+   "class": "NOD_Game_SetEnemyMatrixElement",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44bab0",
+   "rti_object": "0x667950",
+   "register_site": "0x44ba76"
+  },
+  {
+   "class": "NOD_Game_SetFog",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44b5d0",
+   "rti_object": "0x6677f0",
+   "register_site": "0x44b596"
+  },
+  {
+   "class": "NOD_Game_SetLightCache",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44b8d0",
+   "rti_object": "0x6677d0",
+   "register_site": "0x44b896"
+  },
+  {
+   "class": "NOD_Game_SetParallelLightB",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44cb60",
+   "rti_object": "0x667d90",
+   "register_site": "0x44cb26"
+  },
+  {
+   "class": "NOD_Game_SetParallelLightT",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44ca40",
+   "rti_object": "0x667de0",
+   "register_site": "0x44ca06"
+  },
+  {
+   "class": "NOD_Game_SetPlayBackFile",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44d740",
+   "rti_object": "0x667c80",
+   "register_site": "0x44d706"
+  },
+  {
+   "class": "NOD_Game_SetTaskTextKey",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44dbe0",
+   "rti_object": "0x667ac0",
+   "register_site": "0x44dba6"
+  },
+  {
+   "class": "NOD_Game_SetTerrainDepth",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c330",
+   "rti_object": "0x6679e0",
+   "register_site": "0x44c2f6"
+  },
+  {
+   "class": "NOD_Game_SetWayPoint",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44c4e0",
+   "rti_object": "0x667db8",
+   "register_site": "0x44c4a6"
+  },
+  {
+   "class": "NOD_Game_TextMessage",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44d170",
+   "rti_object": "0x667890",
+   "register_site": "0x44d136"
+  },
+  {
+   "class": "NOD_Game_VocalMessage",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x44dd30",
+   "rti_object": "0x667a60",
+   "register_site": "0x44dcf6"
+  },
+  {
+   "class": "NOD_Generic",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 1168,
+   "factory": "0x49c590",
+   "rti_object": "0x668c40",
+   "register_site": "0x49c559"
+  },
+  {
+   "class": "NOD_Group",
+   "base": "NOD_Node",
+   "size_bytes": 88,
+   "factory": "0x49c4d0",
+   "rti_object": "0x668c20",
+   "register_site": "0x49c496"
+  },
+  {
+   "class": "NOD_Gun",
+   "base": "NOD_Body",
+   "size_bytes": 1152,
+   "factory": "0x473ec0",
+   "rti_object": "0x668260",
+   "register_site": "0x473e89"
+  },
+  {
+   "class": "NOD_Gun_Part",
+   "base": "NOD_Body",
+   "size_bytes": 964,
+   "factory": "0x49a940",
+   "rti_object": "0x668bf0",
+   "register_site": "0x49a909"
+  },
+  {
+   "class": "NOD_Halo",
+   "base": "NOD_Body",
+   "size_bytes": 840,
+   "factory": "0x499ba0",
+   "rti_object": "0x668bc8",
+   "register_site": "0x499b69"
+  },
+  {
+   "class": "NOD_Hud",
+   "base": "NOD_Node",
+   "size_bytes": 1048,
+   "factory": "0x452f40",
+   "rti_object": "0x667e30",
+   "register_site": "0x452f09"
+  },
+  {
+   "class": "NOD_ItemBox_PlayRespawnSound",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be560",
+   "rti_object": "0x66bb00",
+   "register_site": "0x4be526"
+  },
+  {
+   "class": "NOD_ItemBox_SetItemCount",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be6d0",
+   "rti_object": "0x66bb30",
+   "register_site": "0x4be696"
+  },
+  {
+   "class": "NOD_ItemBox_SetRespawnCount",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be440",
+   "rti_object": "0x66bb58",
+   "register_site": "0x4be406"
+  },
+  {
+   "class": "NOD_ItemBox_SetRespawnDelay",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be320",
+   "rti_object": "0x66bae0",
+   "register_site": "0x4be2e6"
+  },
+  {
+   "class": "NOD_LaserWall_SetWallExtensionX",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd240",
+   "rti_object": "0x66cf98",
+   "register_site": "0x4cd206"
+  },
+  {
+   "class": "NOD_LaserWall_SetWallExtensionZ",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4cd3f0",
+   "rti_object": "0x66cf58",
+   "register_site": "0x4cd3b6"
+  },
+  {
+   "class": "NOD_Laserwall",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 960,
+   "factory": "0x498a60",
+   "rti_object": "0x668b78",
+   "register_site": "0x498a29"
+  },
+  {
+   "class": "NOD_Light",
+   "base": "NOD_Body",
+   "size_bytes": 860,
+   "factory": "0x4993c0",
+   "rti_object": "0x668ba0",
+   "register_site": "0x499389"
+  },
+  {
+   "class": "NOD_Light_SetColor",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be200",
+   "rti_object": "0x66ba58",
+   "register_site": "0x4be1c6"
+  },
+  {
+   "class": "NOD_Light_SetCone",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bdb70",
+   "rti_object": "0x66b998",
+   "register_site": "0x4bdb36"
+  },
+  {
+   "class": "NOD_Light_SetMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4be0c0",
+   "rti_object": "0x66b9f8",
+   "register_site": "0x4be086"
+  },
+  {
+   "class": "NOD_Light_SetR1",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bde80",
+   "rti_object": "0x66ba38",
+   "register_site": "0x4bde46"
+  },
+  {
+   "class": "NOD_Light_SetR2",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bdfa0",
+   "rti_object": "0x66ba90",
+   "register_site": "0x4bdf66"
+  },
+  {
+   "class": "NOD_Light_Switch",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bda50",
+   "rti_object": "0x66b9c8",
+   "register_site": "0x4bda16"
+  },
+  {
+   "class": "NOD_Message",
+   "base": "RTI_Class",
+   "size_bytes": 408,
+   "factory": "0x4c8250",
+   "rti_object": "0x66cec8",
+   "register_site": "0x4c8219"
+  },
+  {
+   "class": "NOD_MessagePrototype",
+   "base": "RTI_Class",
+   "size_bytes": 16,
+   "factory": "0x4c7ff0",
+   "rti_object": "0x66cea8",
+   "register_site": "0x4c7fb6"
+  },
+  {
+   "class": "NOD_Mine",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 2000,
+   "factory": "0x497550",
+   "rti_object": "0x668b58",
+   "register_site": "0x497519"
+  },
+  {
+   "class": "NOD_Mine_Activate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bd660",
+   "rti_object": "0x66b920",
+   "register_site": "0x4bd626"
+  },
+  {
+   "class": "NOD_Mine_Deactivate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bd780",
+   "rti_object": "0x66b900",
+   "register_site": "0x4bd746"
+  },
+  {
+   "class": "NOD_Mine_IsActive",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bd8a0",
+   "rti_object": "0x66b950",
+   "register_site": "0x4bd866"
+  },
+  {
+   "class": "NOD_NPC_Gun",
+   "base": "NOD_Body",
+   "size_bytes": 936,
+   "factory": "0x496940",
+   "rti_object": "0x668b28",
+   "register_site": "0x496909"
+  },
+  {
+   "class": "NOD_NPC_Gun_AddPhase",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bbd30",
+   "rti_object": "0x66b5f0",
+   "register_site": "0x4bbcf6"
+  },
+  {
+   "class": "NOD_NPC_Gun_FlushPhases",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bbc10",
+   "rti_object": "0x66b580",
+   "register_site": "0x4bbbd6"
+  },
+  {
+   "class": "NOD_NPC_Gun_SetBullet",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bba90",
+   "rti_object": "0x66b618",
+   "register_site": "0x4bba56"
+  },
+  {
+   "class": "NOD_NPC_Gun_SetDogBullet",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bbfa0",
+   "rti_object": "0x66b560",
+   "register_site": "0x4bbf66"
+  },
+  {
+   "class": "NOD_NPC_Gun_SetSniperBullet",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bbe50",
+   "rti_object": "0x66b5a0",
+   "register_site": "0x4bbe16"
+  },
+  {
+   "class": "NOD_Node",
+   "base": "RTI_Class",
+   "size_bytes": 88,
+   "factory": "0x4412a0",
+   "rti_object": "0x6636a0",
+   "register_site": "0x441266"
+  },
+  {
+   "class": "NOD_Node_AddSon",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc590",
+   "rti_object": "0x66b7f8",
+   "register_site": "0x4bc556"
+  },
+  {
+   "class": "NOD_Node_CreateNode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc6b0",
+   "rti_object": "0x66b678",
+   "register_site": "0x4bc676"
+  },
+  {
+   "class": "NOD_Node_EnterSimulation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc300",
+   "rti_object": "0x66b888",
+   "register_site": "0x4bc2c6"
+  },
+  {
+   "class": "NOD_Node_Find",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bca70",
+   "rti_object": "0x66b718",
+   "register_site": "0x4bca36"
+  },
+  {
+   "class": "NOD_Node_GetName",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc8c0",
+   "rti_object": "0x66b6f8",
+   "register_site": "0x4bc886"
+  },
+  {
+   "class": "NOD_Node_GetNumOfSons",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bcdd0",
+   "rti_object": "0x66b658",
+   "register_site": "0x4bcd96"
+  },
+  {
+   "class": "NOD_Node_GetPath",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bcc20",
+   "rti_object": "0x66b6b8",
+   "register_site": "0x4bcbe6"
+  },
+  {
+   "class": "NOD_Node_GetSon",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bd150",
+   "rti_object": "0x66b758",
+   "register_site": "0x4bd116"
+  },
+  {
+   "class": "NOD_Node_GetSonName",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bd300",
+   "rti_object": "0x66b788",
+   "register_site": "0x4bd2c6"
+  },
+  {
+   "class": "NOD_Node_GetTime",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bd4b0",
+   "rti_object": "0x66b868",
+   "register_site": "0x4bd476"
+  },
+  {
+   "class": "NOD_Node_LeaveSimulation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc470",
+   "rti_object": "0x66b8c8",
+   "register_site": "0x4bc436"
+  },
+  {
+   "class": "NOD_Node_ParseIniFile",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc1e0",
+   "rti_object": "0x66b818",
+   "register_site": "0x4bc1a6"
+  },
+  {
+   "class": "NOD_Node_SetName",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bc0c0",
+   "rti_object": "0x66b838",
+   "register_site": "0x4bc086"
+  },
+  {
+   "class": "NOD_Node_SubSon",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bcfa0",
+   "rti_object": "0x66b7d8",
+   "register_site": "0x4bcf66"
+  },
+  {
+   "class": "NOD_ParticleEmitter",
+   "base": "NOD_Body",
+   "size_bytes": 1088,
+   "factory": "0x46ed00",
+   "rti_object": "0x668188",
+   "register_site": "0x46ecc9"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetAccelerationOffset",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb370",
+   "rti_object": "0x66b440",
+   "register_site": "0x4bb336"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetCone",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb930",
+   "rti_object": "0x66b460",
+   "register_site": "0x4bb8f6"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetConeAngle",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb6d0",
+   "rti_object": "0x66b4b0",
+   "register_site": "0x4bb696"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetFriction",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb490",
+   "rti_object": "0x66b518",
+   "register_site": "0x4bb456"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetLifeTime",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb250",
+   "rti_object": "0x66b490",
+   "register_site": "0x4bb216"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetPPS",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb5b0",
+   "rti_object": "0x66b4e0",
+   "register_site": "0x4bb576"
+  },
+  {
+   "class": "NOD_ParticleEmitter_SetVelocity",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bb810",
+   "rti_object": "0x66b410",
+   "register_site": "0x4bb7d6"
+  },
+  {
+   "class": "NOD_Path",
+   "base": "NOD_Node",
+   "size_bytes": 88,
+   "factory": "0x496520",
+   "rti_object": "0x668b00",
+   "register_site": "0x4964e6"
+  },
+  {
+   "class": "NOD_Path_GetPositionOrientation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4baec0",
+   "rti_object": "0x66b3b8",
+   "register_site": "0x4bae86"
+  },
+  {
+   "class": "NOD_PatrolArea",
+   "base": "NOD_Node",
+   "size_bytes": 128,
+   "factory": "0x496100",
+   "rti_object": "0x668ad8",
+   "register_site": "0x4960c9"
+  },
+  {
+   "class": "NOD_PatrolArea_BindNode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4bada0",
+   "rti_object": "0x66b360",
+   "register_site": "0x4bad66"
+  },
+  {
+   "class": "NOD_PatrolArea_GetDiameter",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4babf0",
+   "rti_object": "0x66b2a0",
+   "register_site": "0x4babb6"
+  },
+  {
+   "class": "NOD_PatrolArea_SetMaxZ",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4baad0",
+   "rti_object": "0x66b320",
+   "register_site": "0x4baa96"
+  },
+  {
+   "class": "NOD_PatrolArea_SetMinZ",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba9b0",
+   "rti_object": "0x66b2d0",
+   "register_site": "0x4ba976"
+  },
+  {
+   "class": "NOD_PatrolArea_SetPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba770",
+   "rti_object": "0x66b300",
+   "register_site": "0x4ba736"
+  },
+  {
+   "class": "NOD_PatrolArea_SetRadius",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba890",
+   "rti_object": "0x66b340",
+   "register_site": "0x4ba856"
+  },
+  {
+   "class": "NOD_PhysicalCharacter",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 2932,
+   "factory": "0x494180",
+   "rti_object": "0x668ab8",
+   "register_site": "0x494149"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_Attack",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba070",
+   "rti_object": "0x66ae38",
+   "register_site": "0x4ba036"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_AttackCompleted",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba210",
+   "rti_object": "0x66b1e0",
+   "register_site": "0x4ba1d6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_AttackTurrets",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9830",
+   "rti_object": "0x66af20",
+   "register_site": "0x4b97f6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_AttackTurretsStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b99e0",
+   "rti_object": "0x66b180",
+   "register_site": "0x4b99a6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoArrived",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8b40",
+   "rti_object": "0x66b160",
+   "register_site": "0x4b8b06"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8e60",
+   "rti_object": "0x66b0e0",
+   "register_site": "0x4b8e26"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoPosReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8cd0",
+   "rti_object": "0x66aeb0",
+   "register_site": "0x4b8c96"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoStart",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b88a0",
+   "rti_object": "0x66b200",
+   "register_site": "0x4b8866"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoStartFromPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8ff0",
+   "rti_object": "0x66b060",
+   "register_site": "0x4b8fb6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoStartFromTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b91a0",
+   "rti_object": "0x66b090",
+   "register_site": "0x4b9166"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_GotoStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8a20",
+   "rti_object": "0x66b0b0",
+   "register_site": "0x4b89e6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_LookTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9370",
+   "rti_object": "0x66ae10",
+   "register_site": "0x4b9336"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_LookToObject",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9d40",
+   "rti_object": "0x66b100",
+   "register_site": "0x4b9d06"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_LookToOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b95a0",
+   "rti_object": "0x66ae80",
+   "register_site": "0x4b9566"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_SensorActivated",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9710",
+   "rti_object": "0x66ae60",
+   "register_site": "0x4b96d6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_SetHitPropability",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba4f0",
+   "rti_object": "0x66b140",
+   "register_site": "0x4ba4b6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_SetSpecialCollisionPartner",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba610",
+   "rti_object": "0x66b000",
+   "register_site": "0x4ba5d6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_SonarDestroyed",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9f00",
+   "rti_object": "0x66aee0",
+   "register_site": "0x4b9ec6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_StartAnimation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8630",
+   "rti_object": "0x66b1b0",
+   "register_site": "0x4b85f6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_StopAnimation",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8780",
+   "rti_object": "0x66b020",
+   "register_site": "0x4b8746"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_Stripped",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ba380",
+   "rti_object": "0x66b040",
+   "register_site": "0x4ba346"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_SwitchToGoing",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9c20",
+   "rti_object": "0x66af40",
+   "register_site": "0x4b9be6"
+  },
+  {
+   "class": "NOD_PhysicalCharacter_SwitchToStanding",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b9b00",
+   "rti_object": "0x66af80",
+   "register_site": "0x4b9ac6"
+  },
+  {
+   "class": "NOD_Player",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 6008,
+   "factory": "0x45ccb0",
+   "rti_object": "0x667f28",
+   "register_site": "0x45cc79"
+  },
+  {
+   "class": "NOD_Player_ActivateFF",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8370",
+   "rti_object": "0x66ac10",
+   "register_site": "0x4b8336"
+  },
+  {
+   "class": "NOD_Player_FirstWarning",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b76a0",
+   "rti_object": "0x66ac30",
+   "register_site": "0x4b7666"
+  },
+  {
+   "class": "NOD_Player_ImportInventoryInteger",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b80e0",
+   "rti_object": "0x66acb0",
+   "register_site": "0x4b80a6"
+  },
+  {
+   "class": "NOD_Player_LeftAttack",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7c60",
+   "rti_object": "0x66acf0",
+   "register_site": "0x4b7c26"
+  },
+  {
+   "class": "NOD_Player_PlunderItems",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7dd0",
+   "rti_object": "0x66ad40",
+   "register_site": "0x4b7d96"
+  },
+  {
+   "class": "NOD_Player_RefreshPickupState",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8490",
+   "rti_object": "0x66ac60",
+   "register_site": "0x4b8456"
+  },
+  {
+   "class": "NOD_Player_SecondWarning",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7810",
+   "rti_object": "0x66ad20",
+   "register_site": "0x4b77d6"
+  },
+  {
+   "class": "NOD_Player_SuppressFF",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b8250",
+   "rti_object": "0x66adc0",
+   "register_site": "0x4b8216"
+  },
+  {
+   "class": "NOD_Player_ThirdWarning",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7980",
+   "rti_object": "0x66ad70",
+   "register_site": "0x4b7946"
+  },
+  {
+   "class": "NOD_Player_TorpedoAlarm",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7f40",
+   "rti_object": "0x66ac90",
+   "register_site": "0x4b7f06"
+  },
+  {
+   "class": "NOD_Player_UnderAttack",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7af0",
+   "rti_object": "0x66ada0",
+   "register_site": "0x4b7ab6"
+  },
+  {
+   "class": "NOD_Position",
+   "base": "NOD_Node",
+   "size_bytes": 116,
+   "factory": "0x493f10",
+   "rti_object": "0x668a88",
+   "register_site": "0x493ed6"
+  },
+  {
+   "class": "NOD_Position_GetPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7360",
+   "rti_object": "0x66ab80",
+   "register_site": "0x4b7326"
+  },
+  {
+   "class": "NOD_Position_SetCS",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7580",
+   "rti_object": "0x66abc8",
+   "register_site": "0x4b7546"
+  },
+  {
+   "class": "NOD_Position_SetPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7140",
+   "rti_object": "0x66ab30",
+   "register_site": "0x4b7106"
+  },
+  {
+   "class": "NOD_Position_SetRadius",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7250",
+   "rti_object": "0x66aba0",
+   "register_site": "0x4b7216"
+  },
+  {
+   "class": "NOD_Scenario",
+   "base": "NOD_Node",
+   "size_bytes": 88,
+   "factory": "0x493d90",
+   "rti_object": "0x668a60",
+   "register_site": "0x493d56"
+  },
+  {
+   "class": "NOD_Script",
+   "base": "NOD_Node",
+   "size_bytes": 30396,
+   "factory": "0x48d2c0",
+   "rti_object": "0x668a20",
+   "register_site": "0x48d289"
+  },
+  {
+   "class": "NOD_Script_BindThread",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6bb0",
+   "rti_object": "0x66aa98",
+   "register_site": "0x4b6b76"
+  },
+  {
+   "class": "NOD_Script_SetScript",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6a20",
+   "rti_object": "0x66aa78",
+   "register_site": "0x4b69e6"
+  },
+  {
+   "class": "NOD_Script_SetTimer",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6d60",
+   "rti_object": "0x66ab00",
+   "register_site": "0x4b6d26"
+  },
+  {
+   "class": "NOD_Script_StopTimer",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b7000",
+   "rti_object": "0x66aa48",
+   "register_site": "0x4b6fc6"
+  },
+  {
+   "class": "NOD_Script_UnBindThread",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6eb0",
+   "rti_object": "0x66aab8",
+   "register_site": "0x4b6e76"
+  },
+  {
+   "class": "NOD_ShieldedBody",
+   "base": "NOD_Body",
+   "size_bytes": 948,
+   "factory": "0x48b7f0",
+   "rti_object": "0x6689f8",
+   "register_site": "0x48b7b9"
+  },
+  {
+   "class": "NOD_ShieldedBody_CoupleFather",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6900",
+   "rti_object": "0x66a898",
+   "register_site": "0x4b68c6"
+  },
+  {
+   "class": "NOD_ShieldedBody_DeactivateSelectiveVulnerability",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6480",
+   "rti_object": "0x66aa00",
+   "register_site": "0x4b6446"
+  },
+  {
+   "class": "NOD_ShieldedBody_DeepDestruct",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b67e0",
+   "rti_object": "0x66a968",
+   "register_site": "0x4b67a6"
+  },
+  {
+   "class": "NOD_ShieldedBody_MakeInvulnerable",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6120",
+   "rti_object": "0x66a9b8",
+   "register_site": "0x4b60e6"
+  },
+  {
+   "class": "NOD_ShieldedBody_MakeSelectiveVulnerableAgainst",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6360",
+   "rti_object": "0x66a8d8",
+   "register_site": "0x4b6326"
+  },
+  {
+   "class": "NOD_ShieldedBody_MakeVulnerable",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b6240",
+   "rti_object": "0x66a9d8",
+   "register_site": "0x4b6206"
+  },
+  {
+   "class": "NOD_ShieldedBody_SetLogarithmicMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b65a0",
+   "rti_object": "0x66a998",
+   "register_site": "0x4b6566"
+  },
+  {
+   "class": "NOD_ShieldedBody_SetLogarithmicModeStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b66c0",
+   "rti_object": "0x66a8b8",
+   "register_site": "0x4b6686"
+  },
+  {
+   "class": "NOD_SplashDamage",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 1016,
+   "factory": "0x468890",
+   "rti_object": "0x668098",
+   "register_site": "0x468859"
+  },
+  {
+   "class": "NOD_Terrain",
+   "base": "NOD_Body",
+   "size_bytes": 1268,
+   "factory": "0x442650",
+   "rti_object": "0x6676d8",
+   "register_site": "0x442619"
+  },
+  {
+   "class": "NOD_Terrain_LoadTerrain",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5f90",
+   "rti_object": "0x66a858",
+   "register_site": "0x4b5f56"
+  },
+  {
+   "class": "NOD_Terrain_SetPoly",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5e70",
+   "rti_object": "0x66a838",
+   "register_site": "0x4b5e36"
+  },
+  {
+   "class": "NOD_Torpedo",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 1996,
+   "factory": "0x46fb70",
+   "rti_object": "0x6681e0",
+   "register_site": "0x46fb39"
+  },
+  {
+   "class": "NOD_TorpedoLauncher",
+   "base": "NOD_Body",
+   "size_bytes": 808,
+   "factory": "0x48b2f0",
+   "rti_object": "0x6689d0",
+   "register_site": "0x48b2b9"
+  },
+  {
+   "class": "NOD_Trail",
+   "base": "NOD_Body",
+   "size_bytes": 920,
+   "factory": "0x46ddf0",
+   "rti_object": "0x668160",
+   "register_site": "0x46ddb9"
+  },
+  {
+   "class": "NOD_Trash",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 1260,
+   "factory": "0x469a80",
+   "rti_object": "0x6680c8",
+   "register_site": "0x469a49"
+  },
+  {
+   "class": "NOD_Trigger",
+   "base": "NOD_Body",
+   "size_bytes": 1116,
+   "factory": "0x48afa0",
+   "rti_object": "0x6689a8",
+   "register_site": "0x48af69"
+  },
+  {
+   "class": "NOD_Trigger_ActivateSensor",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4fc0",
+   "rti_object": "0x66a620",
+   "register_site": "0x4b4f86"
+  },
+  {
+   "class": "NOD_Trigger_EnterAcoustic",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b56d0",
+   "rti_object": "0x66a750",
+   "register_site": "0x4b5696"
+  },
+  {
+   "class": "NOD_Trigger_EnterPresence",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": null,
+   "factory": "0x4b5390",
+   "rti_object": "0x66a4f8",
+   "register_site": "0x4b5356"
+  },
+  {
+   "class": "NOD_Trigger_EnterVisible",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5a10",
+   "rti_object": "0x66a6c0",
+   "register_site": "0x4b59d6"
+  },
+  {
+   "class": "NOD_Trigger_LeaveAcoustic",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5870",
+   "rti_object": "0x66a808",
+   "register_site": "0x4b5836"
+  },
+  {
+   "class": "NOD_Trigger_LeavePresence",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5530",
+   "rti_object": "0x66a7c8",
+   "register_site": "0x4b54f6"
+  },
+  {
+   "class": "NOD_Trigger_LeaveVisible",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5bb0",
+   "rti_object": "0x66a600",
+   "register_site": "0x4b5b76"
+  },
+  {
+   "class": "NOD_Trigger_SetAcousticSensibility",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b48e0",
+   "rti_object": "0x66a770",
+   "register_site": "0x4b48a6"
+  },
+  {
+   "class": "NOD_Trigger_SetAcousticSphere",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b47c0",
+   "rti_object": "0x66a6e0",
+   "register_site": "0x4b4786"
+  },
+  {
+   "class": "NOD_Trigger_SetBoxMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5d50",
+   "rti_object": "0x66a640",
+   "register_site": "0x4b5d16"
+  },
+  {
+   "class": "NOD_Trigger_SetInterestList",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b5200",
+   "rti_object": "0x66a710",
+   "register_site": "0x4b51c6"
+  },
+  {
+   "class": "NOD_Trigger_SetPresenceSphere",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4a00",
+   "rti_object": "0x66a7a8",
+   "register_site": "0x4b49c6"
+  },
+  {
+   "class": "NOD_Trigger_SetVisibilityBlockingStatus",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4ea0",
+   "rti_object": "0x66a5a0",
+   "register_site": "0x4b4e66"
+  },
+  {
+   "class": "NOD_Trigger_SetVisibilityCone",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4b20",
+   "rti_object": "0x66a520",
+   "register_site": "0x4b4ae6"
+  },
+  {
+   "class": "NOD_Trigger_SetVisibilityConeRelative",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4d80",
+   "rti_object": "0x66a730",
+   "register_site": "0x4b4d46"
+  },
+  {
+   "class": "NOD_Trigger_StopSensor",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b50e0",
+   "rti_object": "0x66a548",
+   "register_site": "0x4b50a6"
+  },
+  {
+   "class": "NOD_Turret_Base",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 3260,
+   "factory": "0x488ca0",
+   "rti_object": "0x668988",
+   "register_site": "0x488c69"
+  },
+  {
+   "class": "NOD_Turret_Base_ComplexAttack",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3970",
+   "rti_object": "0x66a1c0",
+   "register_site": "0x4b3936"
+  },
+  {
+   "class": "NOD_Turret_Base_ComplexAttackOver",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3b40",
+   "rti_object": "0x66a298",
+   "register_site": "0x4b3b06"
+  },
+  {
+   "class": "NOD_Turret_Base_ComplexAttackOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3cb0",
+   "rti_object": "0x66a3a8",
+   "register_site": "0x4b3c76"
+  },
+  {
+   "class": "NOD_Turret_Base_DirectAttack",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4360",
+   "rti_object": "0x66a268",
+   "register_site": "0x4b4326"
+  },
+  {
+   "class": "NOD_Turret_Base_DirectAttackStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4530",
+   "rti_object": "0x66a208",
+   "register_site": "0x4b44f6"
+  },
+  {
+   "class": "NOD_Turret_Base_EnteringCastratedMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3f40",
+   "rti_object": "0x66a248",
+   "register_site": "0x4b3f06"
+  },
+  {
+   "class": "NOD_Turret_Base_Follow",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3020",
+   "rti_object": "0x66a418",
+   "register_site": "0x4b2fe6"
+  },
+  {
+   "class": "NOD_Turret_Base_FollowFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b32e0",
+   "rti_object": "0x66a2f8",
+   "register_site": "0x4b32a6"
+  },
+  {
+   "class": "NOD_Turret_Base_FollowOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3170",
+   "rti_object": "0x66a348",
+   "register_site": "0x4b3136"
+  },
+  {
+   "class": "NOD_Turret_Base_LeavingCastratedMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b40b0",
+   "rti_object": "0x66a488",
+   "register_site": "0x4b4076"
+  },
+  {
+   "class": "NOD_Turret_Base_Patrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b35c0",
+   "rti_object": "0x66a4c8",
+   "register_site": "0x4b3586"
+  },
+  {
+   "class": "NOD_Turret_Base_PatrolFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b36e0",
+   "rti_object": "0x66a228",
+   "register_site": "0x4b36a6"
+  },
+  {
+   "class": "NOD_Turret_Base_PatrolOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3850",
+   "rti_object": "0x66a1e8",
+   "register_site": "0x4b3816"
+  },
+  {
+   "class": "NOD_Turret_Base_SetAcousticMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b46a0",
+   "rti_object": "0x66a458",
+   "register_site": "0x4b4666"
+  },
+  {
+   "class": "NOD_Turret_Base_SetAngleArea",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3e20",
+   "rti_object": "0x66a4a8",
+   "register_site": "0x4b3de6"
+  },
+  {
+   "class": "NOD_Turret_Base_SetPrimaryTarget",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b4220",
+   "rti_object": "0x66a368",
+   "register_site": "0x4b41e6"
+  },
+  {
+   "class": "NOD_Turret_Base_TargetLost",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b3450",
+   "rti_object": "0x66a3c8",
+   "register_site": "0x4b3416"
+  },
+  {
+   "class": "NOD_Turret_Gun",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 2144,
+   "factory": "0x488200",
+   "rti_object": "0x668960",
+   "register_site": "0x4881c9"
+  },
+  {
+   "class": "NOD_Vehicle",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 3028,
+   "factory": "0x486c40",
+   "rti_object": "0x668938",
+   "register_site": "0x486c09"
+  },
+  {
+   "class": "NOD_Vehicle_AttackOver",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b21b0",
+   "rti_object": "0x66a080",
+   "register_site": "0x4b2176"
+  },
+  {
+   "class": "NOD_Vehicle_AttackOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2320",
+   "rti_object": "0x669dc0",
+   "register_site": "0x4b22e6"
+  },
+  {
+   "class": "NOD_Vehicle_AttackPatrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2040",
+   "rti_object": "0x66a030",
+   "register_site": "0x4b2006"
+  },
+  {
+   "class": "NOD_Vehicle_AvoidanceObjects",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0da0",
+   "rti_object": "0x669e70",
+   "register_site": "0x4b0d66"
+  },
+  {
+   "class": "NOD_Vehicle_AvoidanceTerrain",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0ec0",
+   "rti_object": "0x669fb0",
+   "register_site": "0x4b0e86"
+  },
+  {
+   "class": "NOD_Vehicle_CollisionObjects",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0b40",
+   "rti_object": "0x669f60",
+   "register_site": "0x4b0b06"
+  },
+  {
+   "class": "NOD_Vehicle_CollisionTerrain",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0c80",
+   "rti_object": "0x669da0",
+   "register_site": "0x4b0c46"
+  },
+  {
+   "class": "NOD_Vehicle_DipolIn",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2c10",
+   "rti_object": "0x66a060",
+   "register_site": "0x4b2bd6"
+  },
+  {
+   "class": "NOD_Vehicle_DipolInFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2d30",
+   "rti_object": "0x66a0f0",
+   "register_site": "0x4b2cf6"
+  },
+  {
+   "class": "NOD_Vehicle_EnteringCastratedMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2490",
+   "rti_object": "0x669d30",
+   "register_site": "0x4b2456"
+  },
+  {
+   "class": "NOD_Vehicle_Goto",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1110",
+   "rti_object": "0x669ed0",
+   "register_site": "0x4b10d6"
+  },
+  {
+   "class": "NOD_Vehicle_GotoArrived",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1390",
+   "rti_object": "0x669f90",
+   "register_site": "0x4b1356"
+  },
+  {
+   "class": "NOD_Vehicle_GotoFromPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1840",
+   "rti_object": "0x669fd0",
+   "register_site": "0x4b1806"
+  },
+  {
+   "class": "NOD_Vehicle_GotoFromTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b19a0",
+   "rti_object": "0x669d70",
+   "register_site": "0x4b1966"
+  },
+  {
+   "class": "NOD_Vehicle_GotoOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b16b0",
+   "rti_object": "0x66a0c0",
+   "register_site": "0x4b1676"
+  },
+  {
+   "class": "NOD_Vehicle_GotoPosReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1520",
+   "rti_object": "0x669cb0",
+   "register_site": "0x4b14e6"
+  },
+  {
+   "class": "NOD_Vehicle_GotoStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1270",
+   "rti_object": "0x669cf0",
+   "register_site": "0x4b1236"
+  },
+  {
+   "class": "NOD_Vehicle_LeavingCastratedMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b25b0",
+   "rti_object": "0x669eb0",
+   "register_site": "0x4b2576"
+  },
+  {
+   "class": "NOD_Vehicle_NonCollideAvoid",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0fe0",
+   "rti_object": "0x66a140",
+   "register_site": "0x4b0fa6"
+  },
+  {
+   "class": "NOD_Vehicle_ParkPatrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b27f0",
+   "rti_object": "0x669de0",
+   "register_site": "0x4b27b6"
+  },
+  {
+   "class": "NOD_Vehicle_ParkPatrolFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2930",
+   "rti_object": "0x669e10",
+   "register_site": "0x4b28f6"
+  },
+  {
+   "class": "NOD_Vehicle_ParkPatrolOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2aa0",
+   "rti_object": "0x66a000",
+   "register_site": "0x4b2a66"
+  },
+  {
+   "class": "NOD_Vehicle_Patrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1c40",
+   "rti_object": "0x669c38",
+   "register_site": "0x4b1c06"
+  },
+  {
+   "class": "NOD_Vehicle_PatrolFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1ed0",
+   "rti_object": "0x669c60",
+   "register_site": "0x4b1e96"
+  },
+  {
+   "class": "NOD_Vehicle_PatrolOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1d60",
+   "rti_object": "0x669c90",
+   "register_site": "0x4b1d26"
+  },
+  {
+   "class": "NOD_Vehicle_SetPrimaryTarget",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b26d0",
+   "rti_object": "0x669cd0",
+   "register_site": "0x4b2696"
+  },
+  {
+   "class": "NOD_Vehicle_Stop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b1b10",
+   "rti_object": "0x669f10",
+   "register_site": "0x4b1ad6"
+  },
+  {
+   "class": "NOD_Vehicle_StopWithHeading",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b2ea0",
+   "rti_object": "0x669e50",
+   "register_site": "0x4b2e66"
+  },
+  {
+   "class": "NOD_Vessel",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 3696,
+   "factory": "0x484600",
+   "rti_object": "0x668910",
+   "register_site": "0x4845c9"
+  },
+  {
+   "class": "NOD_Vessel_AttackOver",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aef50",
+   "rti_object": "0x669a68",
+   "register_site": "0x4aef16"
+  },
+  {
+   "class": "NOD_Vessel_AttackOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af0c0",
+   "rti_object": "0x669578",
+   "register_site": "0x4af086"
+  },
+  {
+   "class": "NOD_Vessel_AttackPatrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aed50",
+   "rti_object": "0x669a18",
+   "register_site": "0x4aed16"
+  },
+  {
+   "class": "NOD_Vessel_AttackTurrets",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af590",
+   "rti_object": "0x6696e8",
+   "register_site": "0x4af556"
+  },
+  {
+   "class": "NOD_Vessel_AttackTurretsStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af6f0",
+   "rti_object": "0x6692c8",
+   "register_site": "0x4af6b6"
+  },
+  {
+   "class": "NOD_Vessel_AvoidanceObjects",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4abd20",
+   "rti_object": "0x6693e8",
+   "register_site": "0x4abce6"
+  },
+  {
+   "class": "NOD_Vessel_AvoidanceTerrain",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4abe40",
+   "rti_object": "0x6698c8",
+   "register_site": "0x4abe06"
+  },
+  {
+   "class": "NOD_Vessel_CollisionObjects",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4abae0",
+   "rti_object": "0x669748",
+   "register_site": "0x4abaa6"
+  },
+  {
+   "class": "NOD_Vessel_CollisionTerrain",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4abc00",
+   "rti_object": "0x6694f8",
+   "register_site": "0x4abbc6"
+  },
+  {
+   "class": "NOD_Vessel_DeactivateTurningInEmp",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b07e0",
+   "rti_object": "0x669ab8",
+   "register_site": "0x4b07a6"
+  },
+  {
+   "class": "NOD_Vessel_DipolIn",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af950",
+   "rti_object": "0x669688",
+   "register_site": "0x4af916"
+  },
+  {
+   "class": "NOD_Vessel_DipolInFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4afbe0",
+   "rti_object": "0x669558",
+   "register_site": "0x4afba6"
+  },
+  {
+   "class": "NOD_Vessel_DipolOut",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af830",
+   "rti_object": "0x669380",
+   "register_site": "0x4af7f6"
+  },
+  {
+   "class": "NOD_Vessel_DipolOutFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4afa70",
+   "rti_object": "0x6697c8",
+   "register_site": "0x4afa36"
+  },
+  {
+   "class": "NOD_Vessel_Dock",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 0,
+   "factory": "0x4ae6c0",
+   "rti_object": "0x669158",
+   "register_site": "0x4ae686"
+  },
+  {
+   "class": "NOD_Vessel_DockAndLeave",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ae990",
+   "rti_object": "0x669848",
+   "register_site": "0x4ae956"
+  },
+  {
+   "class": "NOD_Vessel_DockingFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aeb10",
+   "rti_object": "0x6691c0",
+   "register_site": "0x4aead6"
+  },
+  {
+   "class": "NOD_Vessel_EnteringCastratedMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af230",
+   "rti_object": "0x669b48",
+   "register_site": "0x4af1f6"
+  },
+  {
+   "class": "NOD_Vessel_EscapeToPosSim",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ae530",
+   "rti_object": "0x669338",
+   "register_site": "0x4ae4f6"
+  },
+  {
+   "class": "NOD_Vessel_EscapeToPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4adef0",
+   "rti_object": "0x669178",
+   "register_site": "0x4adeb6"
+  },
+  {
+   "class": "NOD_Vessel_EscapeToPositionFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ae250",
+   "rti_object": "0x669468",
+   "register_site": "0x4ae216"
+  },
+  {
+   "class": "NOD_Vessel_EscapeToPositionOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ae3c0",
+   "rti_object": "0x669a98",
+   "register_site": "0x4ae386"
+  },
+  {
+   "class": "NOD_Vessel_Escort",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ad720",
+   "rti_object": "0x669918",
+   "register_site": "0x4ad6e6"
+  },
+  {
+   "class": "NOD_Vessel_EscortObjectLost",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ad980",
+   "rti_object": "0x6693a8",
+   "register_site": "0x4ad946"
+  },
+  {
+   "class": "NOD_Vessel_EscortOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4adaf0",
+   "rti_object": "0x669b68",
+   "register_site": "0x4adab6"
+  },
+  {
+   "class": "NOD_Vessel_EscortPosReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4adc60",
+   "rti_object": "0x669288",
+   "register_site": "0x4adc26"
+  },
+  {
+   "class": "NOD_Vessel_FinalizeInfiltrate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0530",
+   "rti_object": "0x6691a0",
+   "register_site": "0x4b04f6"
+  },
+  {
+   "class": "NOD_Vessel_Goto",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ac0a0",
+   "rti_object": "0x669998",
+   "register_site": "0x4ac066"
+  },
+  {
+   "class": "NOD_Vessel_GotoArrived",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ac370",
+   "rti_object": "0x6698f8",
+   "register_site": "0x4ac336"
+  },
+  {
+   "class": "NOD_Vessel_GotoFromPosition",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ac860",
+   "rti_object": "0x669978",
+   "register_site": "0x4ac826"
+  },
+  {
+   "class": "NOD_Vessel_GotoFromTo",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aca60",
+   "rti_object": "0x669250",
+   "register_site": "0x4aca26"
+  },
+  {
+   "class": "NOD_Vessel_GotoOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ac6b0",
+   "rti_object": "0x669b08",
+   "register_site": "0x4ac676"
+  },
+  {
+   "class": "NOD_Vessel_GotoPosReached",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ac500",
+   "rti_object": "0x6691f0",
+   "register_site": "0x4ac4c6"
+  },
+  {
+   "class": "NOD_Vessel_GotoStop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ac250",
+   "rti_object": "0x669788",
+   "register_site": "0x4ac216"
+  },
+  {
+   "class": "NOD_Vessel_Infiltrate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4afd50",
+   "rti_object": "0x669828",
+   "register_site": "0x4afd16"
+  },
+  {
+   "class": "NOD_Vessel_InfiltrateAborted",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0130",
+   "rti_object": "0x669418",
+   "register_site": "0x4b00f6"
+  },
+  {
+   "class": "NOD_Vessel_InfiltrateBegin",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0670",
+   "rti_object": "0x6696c8",
+   "register_site": "0x4b0636"
+  },
+  {
+   "class": "NOD_Vessel_InfiltrateFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4affc0",
+   "rti_object": "0x6695e8",
+   "register_site": "0x4aff86"
+  },
+  {
+   "class": "NOD_Vessel_InfiltrateSuccess",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b03c0",
+   "rti_object": "0x6698a8",
+   "register_site": "0x4b0386"
+  },
+  {
+   "class": "NOD_Vessel_LeavingCastratedMode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af350",
+   "rti_object": "0x669958",
+   "register_site": "0x4af316"
+  },
+  {
+   "class": "NOD_Vessel_NonCollideAvoid",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4abf60",
+   "rti_object": "0x669b88",
+   "register_site": "0x4abf26"
+  },
+  {
+   "class": "NOD_Vessel_Patrol",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4acec0",
+   "rti_object": "0x669358",
+   "register_site": "0x4ace86"
+  },
+  {
+   "class": "NOD_Vessel_PatrolFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ad150",
+   "rti_object": "0x669618",
+   "register_site": "0x4ad116"
+  },
+  {
+   "class": "NOD_Vessel_PatrolOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4acfe0",
+   "rti_object": "0x669538",
+   "register_site": "0x4acfa6"
+  },
+  {
+   "class": "NOD_Vessel_PseudoExplode",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b02a0",
+   "rti_object": "0x669658",
+   "register_site": "0x4b0266"
+  },
+  {
+   "class": "NOD_Vessel_ReactivateCollisionReaction",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0a20",
+   "rti_object": "0x669bc8",
+   "register_site": "0x4b09e6"
+  },
+  {
+   "class": "NOD_Vessel_SetPrimaryTarget",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4af470",
+   "rti_object": "0x6697e8",
+   "register_site": "0x4af436"
+  },
+  {
+   "class": "NOD_Vessel_Sink",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ad2c0",
+   "rti_object": "0x669888",
+   "register_site": "0x4ad286"
+  },
+  {
+   "class": "NOD_Vessel_SinkFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ad410",
+   "rti_object": "0x6694d8",
+   "register_site": "0x4ad3d6"
+  },
+  {
+   "class": "NOD_Vessel_SinkOverride",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ad5b0",
+   "rti_object": "0x669718",
+   "register_site": "0x4ad576"
+  },
+  {
+   "class": "NOD_Vessel_Stop",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4acc80",
+   "rti_object": "0x669ae8",
+   "register_site": "0x4acc46"
+  },
+  {
+   "class": "NOD_Vessel_StopWithHeading",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4acda0",
+   "rti_object": "0x669a48",
+   "register_site": "0x4acd66"
+  },
+  {
+   "class": "NOD_Vessel_StopWithSinking",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4addd0",
+   "rti_object": "0x669488",
+   "register_site": "0x4add96"
+  },
+  {
+   "class": "NOD_Vessel_SuspendCollisionReaction",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4b0900",
+   "rti_object": "0x6695a8",
+   "register_site": "0x4b08c6"
+  },
+  {
+   "class": "NOD_Vessel_Undock",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ae820",
+   "rti_object": "0x6695c8",
+   "register_site": "0x4ae7e6"
+  },
+  {
+   "class": "NOD_Vessel_UndockingFinished",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aec30",
+   "rti_object": "0x6694a8",
+   "register_site": "0x4aebf6"
+  },
+  {
+   "class": "NOD_WayPoint",
+   "base": "NOD_Body",
+   "size_bytes": 1248,
+   "factory": "0x482fb0",
+   "rti_object": "0x6688e8",
+   "register_site": "0x482f79"
+  },
+  {
+   "class": "NOD_WayPoint_Attach",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ab400",
+   "rti_object": "0x669018",
+   "register_site": "0x4ab3c6"
+  },
+  {
+   "class": "NOD_WayPoint_InformActivated",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ab520",
+   "rti_object": "0x669048",
+   "register_site": "0x4ab4e6"
+  },
+  {
+   "class": "NOD_WayPoint_InformDeactivated",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ab690",
+   "rti_object": "0x668fd8",
+   "register_site": "0x4ab656"
+  },
+  {
+   "class": "NOD_WayPoint_InformEntered",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ab800",
+   "rti_object": "0x6690b8",
+   "register_site": "0x4ab7c6"
+  },
+  {
+   "class": "NOD_WayPoint_InformLeft",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ab970",
+   "rti_object": "0x668ff8",
+   "register_site": "0x4ab936"
+  },
+  {
+   "class": "NOD_WayPoint_SetRadius",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aa920",
+   "rti_object": "0x669098",
+   "register_site": "0x4aa8e6"
+  },
+  {
+   "class": "NOD_WayPoint_SetTakeKey_Activate",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aaa40",
+   "rti_object": "0x668f48",
+   "register_site": "0x4aaa06"
+  },
+  {
+   "class": "NOD_WayPoint_SetTakeKey_Enter",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": null,
+   "factory": "0x4ab1c0",
+   "rti_object": "0x668f88",
+   "register_site": "0x4ab186"
+  },
+  {
+   "class": "NOD_WayPoint_SetTakeKey_Inside",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4aab90",
+   "rti_object": "0x668f68",
+   "register_site": "0x4aab56"
+  },
+  {
+   "class": "NOD_WayPoint_SetTakeKey_Leave",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 16,
+   "factory": "0x4ab2e0",
+   "rti_object": "0x669110",
+   "register_site": "0x4ab2a6"
+  },
+  {
+   "class": "NOD_WayPoint_SetTakeKey_Outside",
+   "base": "NOD_MessagePrototype",
+   "size_bytes": 0,
+   "factory": "0x4ab010",
+   "rti_object": "0x668fa8",
+   "register_site": "0x4aafd6"
+  },
+  {
+   "class": "NOD_Wheel",
+   "base": "NOD_ShieldedBody",
+   "size_bytes": 972,
+   "factory": "0x482590",
+   "rti_object": "0x6688c0",
+   "register_site": "0x482559"
+  },
+  {
+   "class": "RTI_Class",
+   "base": "RTI_Class",
+   "size_bytes": 8,
+   "factory": "0x43e4e0",
+   "rti_object": "0x663660",
+   "register_site": "0x43e4a6"
+  },
+  {
+   "class": "SIM_ClassName",
+   "base": "RTI_Class",
+   "size_bytes": 72,
+   "factory": "0x4ce6f0",
+   "rti_object": "0x66d108",
+   "register_site": "0x4ce6b6"
+  },
+  {
+   "class": "SIM_Name",
+   "base": "RTI_Class",
+   "size_bytes": 40,
+   "factory": "0x4cdef0",
+   "rti_object": "0x66d148",
+   "register_site": "0x4cdeb6"
+  },
+  {
+   "class": "SIM_Path",
+   "base": "RTI_Class",
+   "size_bytes": 172,
+   "factory": "0x4ce0c0",
+   "rti_object": "0x66d128",
+   "register_site": "0x4ce089"
+  }
+ ]
+}

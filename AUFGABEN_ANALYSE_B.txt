@@ -1,0 +1,171 @@
+================================================================================
+ZEHN WEITERE ANALYSEAUFGABEN (B1 bis B10)
+================================================================================
+Stand: 2026-07-28, nach Abschluss von A1 bis A10
+
+Kein Spieldurchlauf noetig, keine Entscheidung von dir noetig.
+Sortiert nach Nutzen geteilt durch Aufwand.
+
+VORBEMERKUNG: Die groesste Veraenderung der Lage ist A1. Wir haben
+jetzt 346.125 Zeilen dekompiliertes Lua -- eine Quelle, die noch
+voellig unerschlossen ist. Die ersten drei Aufgaben schoepfen daraus.
+
+--------------------------------------------------------------------------------
+ B1  DAS DEKOMPILAT SYSTEMATISCH AUSWERTEN
+--------------------------------------------------------------------------------
+    Bis gestern kannten wir den Missionsaufbau aus EINEM Beispiel und
+    aus Bytecode-Zaehlungen. Jetzt liegen 74 Missionen im Klartext.
+    ZU TUN: alle 88 Dateien parsen und beantworten, was bisher nur
+    geschaetzt war --
+        Wie sieht eine typische Zustandstabelle wirklich aus?
+        In welcher REIHENFOLGE ruft eine Mission ihre Bausteine?
+        Welche Callback-Kombinationen kommen zusammen vor?
+        Wie werden Wellen, Verstaerkung und Eskalation gebaut?
+        Wie loest eine Mission ihr Ende aus?
+        Welche Parameterwerte sind ueblich (Geschwindigkeiten,
+        Radien, Verzoegerungen)?
+    ERTRAG: Aus "so koennte man es machen" wird "so haben sie es
+    gemacht". Das ist die Grundlage fuer jede eigene Mission und
+    korrigiert vermutlich weitere Annahmen -- die GuardArea-
+    Prioritaeten waren nur der erste Fund dieser Art.
+    AUFWAND: hoch, aber der Ertrag ist der groesste auf dieser Liste.
+
+--------------------------------------------------------------------------------
+ B2  EINE REFERENZMISSION DESTILLIEREN
+--------------------------------------------------------------------------------
+    Aufbauend auf B1: die kleinste vollstaendige Mission (1n1, 2.008
+    Zeilen) Zeile fuer Zeile kommentieren und daraus eine
+    ANNOTIERTE REFERENZ machen -- was tut dieser Block, warum steht er
+    hier, was waere die Alternative.
+    ERTRAG: die Levelvorlage ist bisher aus AN2-Quelltext abgeleitet
+    und im Spiel ungetestet. Eine kommentierte ECHTE Mission ist die
+    verlaesslichere Grundlage.
+
+--------------------------------------------------------------------------------
+ B3  DEN DEKOMPILER VERBESSERN
+--------------------------------------------------------------------------------
+    173 ungeloeste Aufrufe und 14 unstrukturierte Spruenge auf 346.125
+    Zeilen. Das ist wenig, aber die Stellen haeufen sich vermutlich
+    an interessanten Konstruktionen (Schleifen, verschachtelte
+    Bedingungen).
+    ZU TUN: die 187 Stellen einzeln ansehen, die Muster erkennen und
+    den Dekompiler nachziehen. Besonders: while-Schleifen sauber
+    strukturieren statt als Kommentar auszugeben.
+    ERTRAG: bessere Grundlage fuer B1 und B2. Sinnvoll VOR B1, wenn
+    sich zeigt, dass die Luecken an wichtigen Stellen sitzen.
+
+--------------------------------------------------------------------------------
+ B4  FREIE SCHLUESSELBEREICHE ERMITTELN
+--------------------------------------------------------------------------------
+    Fuer eigene Funksprueche, Dialoge, Missionsziele, Gegenstaende und
+    Personen braucht Nachtschicht eigene Schluessel -- und darf dabei
+    keine belegten ueberschreiben.
+    ZU TUN: alle Schluesselraeume durchzaehlen und die Luecken finden:
+        mtake_*.des      Funksprueche je Mission
+        stake_d.des      1..1269 belegt?
+        person_d.des     85 Personen
+        item_d.des       33 Gegenstaende
+        cargo_d.des      ?
+        pilot_d.des, room_d.des, station_d.des
+        die Textschluessel der OSDs (Body_SetNameKey)
+    ERTRAG: eine Tabelle "ab hier ist frei". Ohne sie riskiert jede
+    eigene Datei eine Kollision, die sich als seltsamer Text im Spiel
+    zeigt und schwer zu finden ist.
+    AUFWAND: gering. Praktischer Nutzen: unmittelbar.
+
+--------------------------------------------------------------------------------
+ B5  DAS .fog-FORMAT UND EIGENER NEBEL
+--------------------------------------------------------------------------------
+    Bekannt ist der Aufbau (20 B Kopf, 64x64 Zellen a 256 B, erzeugt
+    aus fog.tga nach fog.des). Ungeprueft ist, ob man ihn SCHREIBEN
+    kann.
+    ZU TUN: einen Schreiber bauen und gegen die 29 Originaldateien
+    verifizieren -- so wie bei terrain_write.py.
+    ERTRAG: Nebel ist fuer eine Noir-Kampagne kein Beiwerk, sondern
+    das Hauptstimmungsmittel. Zusammen mit A9 (Terrain) und den
+    Lichtwerten waere ein eigener Schauplatz vollstaendig.
+
+--------------------------------------------------------------------------------
+ B6  DIE WAFFEN-OSDs UND DAS SCHADENSMODELL
+--------------------------------------------------------------------------------
+    item_d.des nennt 33 Gegenstaende mit Preis und Info-Text. Die
+    tatsaechlichen Werte stehen in den OSDs unter vfx\osd\wea\,
+    bul\, tor\.
+    ZU TUN: alle Waffen-OSDs auswerten und eine Tabelle bauen --
+    Schaden kinetisch/EMP, Reichweite, Nachladezeit, Munition,
+    Zielsuche. Dazu: welche Waffe traegt welches Schiff von Haus aus?
+    ERTRAG: Missionsbalance. Wer eine Wache setzt, sollte wissen, was
+    sie schiesst. Und die Frage, welche Bewaffnung eine Mission
+    voraussetzen darf.
+
+--------------------------------------------------------------------------------
+ B7  DIE 85 PERSONEN UND IHRE ROLLEN
+--------------------------------------------------------------------------------
+    person_d.des kennt 85 Personen mit Namen, Kuerzel, Portraet und
+    Geschlecht. Aus stake (1.269 Zeilen) und mtake (738) laesst sich
+    ableiten, WER WANN spricht und in welcher Beziehung zu Flint
+    steht.
+    ZU TUN: eine Personendatei bauen -- Name, Rolle, erste und letzte
+    Erwaehnung, Anzahl Zeilen, in welchen Missionen, mit welchen
+    Stimmungen.
+    ERTRAG: Nachtschicht spielt im selben Universum. Wer welche Figur
+    weiterverwenden will, muss wissen, ob sie am Ende noch lebt und
+    wie sie redet. Nebenbei faellt ab, welche Portraets frei sind.
+
+--------------------------------------------------------------------------------
+ B8  radar_color.dds UND DIE RADARKARTE ERZEUGEN
+--------------------------------------------------------------------------------
+    Zu A9 fehlt noch die Radarkarte (1024x1024) und
+    radar_height_fin.tga. Beide muessen zum Terrain passen, sonst
+    zeigt das Radar Unsinn.
+    ZU TUN: den Zusammenhang zwischen hmap.tga und den beiden
+    Radardateien bestimmen (vermutlich Skalierung und Einfaerbung)
+    und einen Erzeuger bauen.
+    ERTRAG: schliesst die letzte Luecke fuer ein eigenes Terrain --
+    ausser der Lightmap.
+
+--------------------------------------------------------------------------------
+ B9  EINE ERSATZ-LIGHTMAP BAUEN
+--------------------------------------------------------------------------------
+    Wie SED Lightmaps BERECHNET, wissen wir nicht und werden es
+    vermutlich nicht herausfinden. Aber vielleicht braucht man es
+    nicht.
+    ZU TUN: pruefen, ob eine gleichmaessig helle 2048x2048-DXT3
+    genuegt, damit ein eigenes Terrain ueberhaupt dargestellt wird.
+    Dazu die vorhandenen Lightmaps analysieren: wie hell sind sie im
+    Mittel, gibt es einen neutralen Grauwert, der als Ersatz taugt?
+    ERTRAG: Wenn ja, ist ein eigener Schauplatz komplett -- flacher
+    beleuchtet als die Originale, aber begehbar. Wenn nein, wissen
+    wir, dass eigene Level ohne SED nicht gehen.
+
+--------------------------------------------------------------------------------
+B10  DIE MISSIONSSTATISTIK AUS DEM DEKOMPILAT
+--------------------------------------------------------------------------------
+    Ergaenzt B1 um die Zahlen: Wie viele Objekte, Schiffe, Pfade,
+    Zonen und Zustandstabellen hat eine typische Mission? Wie lang
+    ist eine Mission in Skriptzeilen? Wie viele Funksprueche je
+    Wegpunkt? Welche Verhalten treten zusammen auf?
+    ZU TUN: die 74 dekompilierten Missionen auszaehlen und die
+    Ergebnisse in aquanox1_missions.json nachtragen -- das bisherige
+    Feld "technik" beruht auf Bytecode-Zaehlungen, die nur relatives
+    Gewicht messen. Jetzt sind absolute Zahlen moeglich.
+    ERTRAG: ein realistischer Massstab fuer die eigene Mission. Wenn
+    eine Originalmission 40 Objekte und drei Wachschiffe hat, sollte
+    Nachtschicht nicht mit 200 anfangen.
+
+--------------------------------------------------------------------------------
+MEINE EMPFEHLUNG
+--------------------------------------------------------------------------------
+    B4 ZUERST -- gering an Aufwand, sofort nuetzlich, und ohne diese
+    Tabelle riskiert jede weitere Datei eine Schluesselkollision.
+    DANN B1 mit B10 zusammen: das Dekompilat ist die reichste Quelle,
+    die wir je hatten, und beide Aufgaben lesen dieselben Dateien.
+    B3 dazwischen, falls sich zeigt, dass die Dekompilerluecken an
+    wichtigen Stellen sitzen.
+    B5, B8 und B9 gehoeren zusammen -- sie schliessen gemeinsam die
+    Frage "eigener Schauplatz ja oder nein" ab. B9 ist davon die
+    entscheidende: faellt sie negativ aus, sind B5 und B8 hinfaellig.
+
+================================================================================
+ENDE
+================================================================================

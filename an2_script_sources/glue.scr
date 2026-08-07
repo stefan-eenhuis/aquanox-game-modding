@@ -1,0 +1,1317 @@
+
+-- --------------------------------------------------------------------
+--
+-- GLUE
+--
+-- This script provides functions that glue LUA and the engine.
+-- The functions reside in the global namespace of each LUA script.
+--
+-- ONLY THE WISE(!) MAY CHANGE THIS SOURCE(!)
+--
+-- --------------------------------------------------------------------
+
+-- --------------------------------------------------------------------
+-- Debugging
+-- --------------------------------------------------------------------
+
+-- global debug variable
+G_Debug = 0
+
+-- debugging function
+function Script_Debug(Text, Level)
+	if (Level == nil) then
+		Level = 1
+	end
+	if (G_Debug ~= 0) then
+		Script_LogRaw("[DEBUG] ("..Script_GetFunctionName(Level)..":"..Script_GetLineNumber(Level).."): "..Text)
+	end
+end
+
+-- --------------------------------------------------------------------
+-- Execution of lua scripts
+-- --------------------------------------------------------------------
+
+-- loads the specified terrain
+function LoadTerrain(TerrainName)
+
+	-- check
+	if ( type(TerrainName) ~= "string" ) then
+		Script_Error("TerrainName must be a string")
+		return
+	end
+
+	-- find terrain node
+	local terrain = Node_Find("/terrain")
+
+	-- load terrain
+	Terrain_LoadTerrain(terrain, TerrainName)
+
+end
+
+-- (re)loads all currently registered textures
+function LoadTextures()
+
+	-- find gane node
+	local game = Node_Find("/")
+
+	-- force (re)loading of all textures
+	Game_LoadTextures(game)
+
+end
+
+-- sets the player relative to the specified position
+function SetPlayerToPosition(Scenario, PositionName, OffsetVector)
+
+	-- check
+	if ( tag(Scenario) ~= __Tag_NOD_NodeRef ) then
+		Script_Error("Scenario is invalid")
+		return
+	end
+
+	-- check
+	if ( type(PositionName) ~= "string" ) then
+		Script_Error("PositionName is invalid")
+		return
+	end
+
+	-- check
+	if ( tag(OffsetVector) ~= __Tag_MAT_Vector3 ) then
+		Script_Error("OffsetVector is invalid")
+		return
+	end
+
+	-- find the specified position in the specified scenario
+	local pos = Node_Find(Scenario, PositionName)
+
+	-- get the position vector from the found position
+	local v = Position_GetPosition(pos)
+
+	-- add the offsetvector (if specified) to the postion vector
+	if ( OffsetVector ~= nil ) then
+		v = v + OffsetVector
+	end
+
+	-- find the player
+	local player = Node_Find(Scenario, "/player1")
+
+	-- set the player to the new position
+	Body_SetPosition(player, v)
+
+end
+
+
+-- sets the player to the specified position
+function SetPlayerPosition(Position)
+
+	-- get the position vector from the found position
+	local v = Position_GetPosition(Position)
+
+	-- find the player
+	local player = Node_Find(Scenario, "/player1")
+
+	-- set the player to the new position
+	Body_SetPosition(player, v)
+
+end
+
+-- sets the player to the specified position
+function SetPlayerPositionVector(Position)
+
+	-- find the player
+	local player = Node_Find(Scenario, "/player1")
+
+	-- set the player to the new position
+	Body_SetPosition(player, Position)
+
+end
+
+-- sets the player to the specified position
+function SetPlayerCS(Position, Alpha, Beta, Gamma)
+
+	-- find the player
+	local player = Node_Find(Scenario, "/player1")
+
+	-- set the player to the new position
+	Body_SetCS(player, Position, MAT_Vector3(Alpha, Beta, Gamma))
+
+end
+
+-- returns the game node
+function GetGameNode()
+
+	node = Node_Find("/")
+
+	return ( node )
+
+end
+
+function SetEnemyMatrixElement(I, J, Value)
+
+	Game_SetEnemyMatrixElement(GetGameNode(), I, J, Value)
+
+end
+
+function GetEnemyMatrixElement(I, J)
+
+	return(Game_GetEnemyMatrixElement(GetGameNode(), I, J))
+
+end
+
+
+function SendRadioMessageTake(Sender, Receiver, Key)
+
+	return(Game_SendRadioMessageTake(GetGameNode(), Sender, Receiver, Key))
+	
+end
+
+-- returns the camera node
+function GetCameraNode()
+
+	node = Node_Find("/camera")
+
+	return ( node )
+
+end
+
+-- returns the player node
+function GetPlayerNode()
+
+	node = Node_Find("/player1")
+
+	return ( node )
+
+end
+
+
+-- --------------------------------------------------------------------
+-- Thread
+-- --------------------------------------------------------------------
+
+-- global thread table
+__ThreadTable =
+{
+
+	UniqueID = 0,
+
+}
+
+
+-- bind a script thread to an engine node
+function BindThread(Scenario, NodeName, Thread)
+
+	-- check
+	if ( tag(Scenario) ~= __Tag_NOD_NodeRef ) then
+		Script_Error("BindThread() - Scenario is invalid", 2)
+		return
+	end
+
+	-- check
+	if ( type(NodeName) ~= "string" ) then
+		Script_Error("BindThread() - NodeName '" .. NodeName .. "' is invalid", 2)
+		return
+	end
+
+	-- check
+	if ( type(Thread) ~= "table" ) then
+		Script_Error("BindThread() - Thread is invalid, the nodename is '" .. NodeName .. "'", 2)
+		return
+	end
+
+	-- find node in specified scenario
+	local node = Node_Find(Scenario, NodeName)
+
+	-- set state to nil (initial state)
+	Thread.State = nil
+
+	-- We set the typeid of the Thread should not be defined in a state ( We set amagic number)
+	Thread.TypeId = 666
+
+	-- let engine bind thread to node
+	Thread.__UniqueID = Script_BindThread(node)
+
+	-- set node
+	Thread.Node = node
+
+	-- add thread to global thread table
+	__ThreadTable[Thread.__UniqueID] = Thread
+end
+
+-- unbind a (previously binded) script thread from its engine node
+function UnBindThread(Thread)
+	Script_Error("unbind thread called")
+end
+
+-----------------------------------------------------------------------------------------
+-- Here come special functions of Christoph to make thread handling more comfortable
+-----------------------------------------------------------------------------------------
+
+-- Creates a new thread and jumps to the first state indicated.
+-- The created thread is returned as a back argument.
+function BindEasy(Scenario, NodeName, CommandTable)
+
+	local thread = {}
+
+	-- check
+	if ( tag(Scenario) ~= __Tag_NOD_NodeRef ) then
+		Script_Error("BindThread() - Scenario is invalid", 2)
+		return
+	end
+
+	-- check
+	if ( type(CommandTable) ~= "table" ) then
+		Script_Error("BindEasy() - State is invalid, the nodename is '" .. NodeName .. "'", 2)
+		return
+	end
+
+	-- Bind thread
+	BindThread(Scenario, NodeName, thread)
+
+	-- Sets the command table, where we would like to start
+	thread.CommandTable = CommandTable
+
+	return thread
+end
+
+-- Creates a thread for the player
+function BindPlayer(CommandTable)
+	BindEasy(Node_Find("/"), "player1", CommandTable)
+end
+
+
+-- This method searches for all nodes, that start with the indicated prefix and have
+-- a number ranging from 0 to 99. Threads are created for all those objects and
+-- are bind to the indicates state. The resulting threads are returned in a thread list.
+-- All threads contain the list they primarily belong to and the index within this list.
+
+function BindBlock(Scenario, NodePrefix, NodeSuffix, CommandTable)
+
+	local scanning = 0 --the scanning variables for the node
+	local scanNode	-- the node we scan.
+	-- We create an initial thread list.
+	local threadList = {}
+	-- A local thread, that is created.
+	local thread
+
+	-- check
+	if ( tag(Scenario) ~= __Tag_NOD_NodeRef ) then
+		Script_Error("BindBlock() - Scenario is invalid", 2)
+		return
+	end
+
+	-- check
+	if ( type(NodePrefix) ~= "string" ) then
+		Script_Error("BindBlock() - NodeName '" .. NodeName .. "' is invalid", 2)
+		return
+	end
+
+	-- check
+	if ( type(CommandTable) ~= "table" ) then
+		Script_Error("BindBlock() - State is invalid, the nodename is '" .. NodeName .. "'", 2)
+		return
+	end
+
+
+	threadList.NumOfThreads = 0 -- the amount of threads we store in the list.
+	-- We look for appropriate nodes.
+	for scanning = 1, 99 do
+		scanNode = Node_Find(Scenario, NodePrefix .. scanning ..  NodeSuffix)
+		-- We look, if the node exists
+
+		if ( Script_IsNodeRefValid(scanNode) ) then
+			-- First we create the thread.
+			thread = {}
+			-- set state to nil (initial state)
+			thread.State = nil
+			-- We set the typeid of the Thread should not be defined in a state ( We set amagic number)
+			thread.TypeId = 666
+			-- set node
+			thread.__UniqueID = Script_BindThread(scanNode)
+			-- add thread to global thread table
+			__ThreadTable[thread.__UniqueID] = thread
+			-- set node
+			thread.Node = scanNode
+			-- Sets the command table where we would like to start.
+			thread.CommandTable = CommandTable
+
+			-- Increase the counter for the number of threads.
+			threadList.NumOfThreads = threadList.NumOfThreads + 1
+			-- We store the information into the thread for further accessing.
+			thread.ThreadBlock = threadList
+			thread.ThreadBlockIndex = threadList.NumOfThreads
+
+			-- Set the information into the list.
+			threadList[threadList.NumOfThreads] = thread
+		end
+	end
+
+	return threadList
+end
+
+
+-- This method fuses several threads and blocks, that are handed over in the indicated list.
+function MacroFuse(ThreadBlocks)
+
+	local result = {}
+	local i,j,u
+
+	result.NumOfThreads = 0
+	for i,j in ThreadBlocks do
+		-- First we have to check if it is a blocl or thread.
+		if (j.NumOfThreads == nil) then
+			-- WE have a single thread.
+			result.NumOfThreads = result.NumOfThreads + 1
+			result[result.NumOfThreads] = j
+		else
+			-- We have a block at hand.
+			for u = 1, j.NumOfThreads do
+				result.NumOfThreads = result.NumOfThreads + 1
+				result[result.NumOfThreads] = j[u]
+			end
+		end
+	end
+	return result
+end
+
+
+
+
+-- This method clones a command table, it is used to implement some inheritance methods.
+-- It may also be sued for special instanciating methods.
+function CloneTable(CommandTable)
+
+	local result = {}
+	local index, value
+
+	if (type(CommandTable) ~= "table") then
+		Script_Error("CloneTable() No Table is invalid", 2)
+		return result
+	end
+	for index, value in CommandTable do
+		result[index] = value
+	end
+
+	return result
+end
+
+-- Copys the first table into the second one.
+function CopyTableInto(FirstTable, SecondTable)
+	local index, value
+
+	for index,value in FirstTable do
+		SecondTable[index] = value
+	end
+end
+
+
+-- Clone a command table into parent command table
+function Clone(Parent, Child)
+	local result = CloneTable(Parent)
+
+	CopyTableInto(Child, result)
+
+	return result
+end
+
+-- --------------------------------------------------------------------
+-- Timer Support
+-- --------------------------------------------------------------------
+
+C_ScriptTimer =
+{
+	Start = function(State)
+		State.Thread.__TimerList = {}
+	end,
+
+	Timer = function(State, TimerHandle)
+		local ts
+
+		if State.Thread.__TimerList == nil then
+			Script_Error("[SCRIPTERROR] [ScriptTimer] " .. Script_GetLineNumber(2) .. " the threads timer list is nil")
+			return
+		end
+
+		-- get timer struct
+		ts = State.Thread.__TimerList[TimerHandle]
+		-- remove ts from timer list
+		State.Thread.__TimerList[TimerHandle] = nil
+
+		if ( ts ~= nil ) then
+			-- call the function
+			Script_Debug("[TIME] Function "..ts.CallBack.." for timer "..TimerHandle.." will be executed")
+			CallFunction(ts.ThreadOrBlock, ts.CallBack, ts.Param)
+			return
+		end
+
+		Script_Debug("[TIME] Timer struct for timer "..TimerHandle.." is nil")
+	end
+}
+
+-- set the timer for the specified thread
+function SetTimer(Thread, Delay)
+
+	local handle
+
+	-- Christophs HACK to make the GotoState compatible with Thread and State as first parameter.
+	if (Thread.TypeId ~= 666) then
+		Thread = Thread.Thread
+	end
+
+	-- check if specified thread exists
+	if ( type(Thread) ~= "table" ) then
+		Script_Error("SetTimer() - Thread is invalid", 2)
+		return
+	end
+
+	-- check if delay is a number
+	if ( type(Delay) ~= "number" ) then
+		Script_Error("SetTimer() - Delay is not a number", 2)
+		return
+	end
+
+	-- set timer
+	handle = Script_SetTimer(Thread.__UniqueID, Delay)
+
+	return handle
+end
+
+-- set the timer for the specified thread
+function StopTimer(Thread, TimerHandle)
+
+	-- Christophs HACK to make the GotoState compatible with Thread and State as first parameter.
+	if (Thread.TypeId ~= 666) then
+		Thread = Thread.Thread
+	end
+
+	-- check if specified thread exists
+	if ( type(Thread) ~= "table" ) then
+		Script_Error("StopTimer() - Thread is invalid", 2)
+		return
+	end
+
+	-- check if TimerHandle is a number
+	if ( type(TimerHandle) ~= "number" ) then
+		Script_Error("StopTimer() - TimerHandle is not a number", 2)
+		return
+	end
+
+	Script_StopTimer(Thread.__UniqueID, TimerHandle)
+end
+
+
+-- --------------------------------------------------------------------
+-- Call functions in different states and objects
+-- --------------------------------------------------------------------
+
+-- This evoke function evokes a method at the thread or threadgroup indicated
+-- The function name and one parameter may be handed over.
+
+function CallFunction(ThreadOrBlock, FunctionName, Param)
+
+	local func
+	local state
+	local i
+	local thread
+	
+	
+	-- First we do some plausibility test
+	if (type(ThreadOrBlock) ~= "table") then
+		Script_Error("CallFunction () - Thread or Block is invalid", 2)
+		return
+	end
+
+	-- Now we analyze if we have a block or a thread.
+	if (type(ThreadOrBlock.NumOfThreads) ~= "number") then
+		-- We have a single thread here.
+		state = ThreadOrBlock.State
+		if (type(state) ~= "table") then
+		
+			-- is this a normal block.
+			if (type(ThreadOrBlock) ~= "table") then
+				Script_Error(" CallFunction() - No valid block", 2)
+			end
+		
+			func = ThreadOrBlock[FunctionName]
+			if (type(func) ~= "function") then
+				Script_Error(" CallFunction() - " .. FunctionName .. "is not a valid function", 2)
+			end
+			
+			func(Param)
+			
+		else
+			func = state.CommandTable[FunctionName]
+			if (not(type(func) ~= "function")) then
+				func(state, Param)
+			end
+		end
+
+	else
+		-- We have a complex of threads at hand.
+		for i = 1, ThreadOrBlock.NumOfThreads do
+			thread = ThreadOrBlock[i]
+			state = thread.State
+			if (type(state) ~= "table") then
+				Script_Error("CallFunction() -  Thread has no state")
+				return
+			end
+			func = state.CommandTable[FunctionName]
+			if (not(type(func) ~= "function")) then
+				func(state, Param)
+			end
+		end
+	end
+end
+
+
+-- this does the same as CallFunction, but with an additional delay
+function DelayedFunction(Seconds, ThreadOrBlock, FunctionName, Param)
+
+	local ts = {}
+	local handle
+
+	-- First we do some plausibility test
+	if (type(ThreadOrBlock) ~= "table") then
+		Script_Error("CallFunctionWithDelay () - Thread or Block is invalid", 2)
+		return
+	end
+
+	-- second we do some plausibility test again
+	if (type(Seconds) ~= "number") then
+		Script_Error("CallFunctionWithDelay () - Seconds must be a number", 2)
+		return
+	end
+
+	-- init timer struct
+	ts.ThreadOrBlock = ThreadOrBlock
+	ts.CallBack = FunctionName
+	ts.Param = Param
+
+	-- set timer
+	handle = Script_SetTimer(G_ScriptTimerThread.__UniqueID, Seconds)
+	-- remember receiver, callback and parameters
+	G_ScriptTimerThread.__TimerList[handle] = ts
+
+	return handle
+end
+
+-- stop a delayed call function
+function DelayedFunctionStop(Handle)
+	if (Handle ~= nil) then
+		-- remove corresponding timer struct
+		G_ScriptTimerThread.__TimerList[Handle] = nil
+		-- set timer
+		Script_StopTimer(G_ScriptTimerThread.__UniqueID, Handle)
+	end
+end
+
+-- --------------------------------------------------------------------
+-- Here comes the stuff to request the basic sensor behaviours
+-- --------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+-- Requests a shield guard if used.
+function StartShieldGuard(State) 
+	if (State.Thread.ShieldGuardActive == 0) then
+		Body_ActivateShieldGuard(State.Node)
+	end
+	State.Thread.ShieldGuardActive = State.Thread.ShieldGuardActive + 1
+end
+
+-- Rejects the shield guard. It deactivates it, if we are the last function that called it.
+function StopShieldGuard(State)
+	State.Thread.ShieldGuardActive = State.Thread.ShieldGuardActive - 1
+	if (State.Thread.ShieldGuardActive == 0) then
+		Body_DeactivateShieldGuard(State.Node)
+	end
+end
+
+
+-----------------------------------------------------------------------
+-- Requests a body inform shot hit and activates it if not used before.
+function StartShotHit(State)
+	if (State.Thread.ShotHitActive == 0) then
+		Body_RequestShotHits(State.Node)
+	end
+	State.Thread.ShotHitActive = State.Thread.ShotHitActive + 1
+end
+
+-- Rejects the body inform shot hit and deactivates it, if not used before.
+function StopShotHit(State)
+	State.Thread.ShotHitActive = State.Thread.ShotHitActive - 1
+	if (State.Thread.ShotHitActive == 0) then
+		Body_RejectShotHits(State.Node)
+	end
+end
+
+---------------------------------------------------------
+-- Requests a body inform enemie for the respective node.
+function StartEnemy(State, Distance, FirstPriority, SecondPriority, ThirdPriority, FourthPriority)
+	Body_InformEnemies(State.Node, Distance, FirstPriority, SecondPriority, ThirdPriority, FourthPriority)
+end
+
+-- Rejects a body inform enemy for the respective node.
+function StopEnemy(State)
+		Body_RejectEnemies(State.Node)
+end
+
+
+------------------------------------------------------------------------
+-- Requests a body inform enemie arrival patrol for the respective node.
+function StartEnemyPatrol(State, Mode, Distance, FirstPriority, SecondPriority, ThirdPriority, FourthPriority, PatrolArea)
+	Body_InformEnemyPatrol(State.Node, Mode, Distance, FirstPriority, SecondPriority, ThirdPriority, FourthPriority, PatrolArea)
+end
+
+
+-- Rejects the body inform enemy arrival patrol for the respective node.
+function StopEnemyPatrol(State)
+	Body_RejectEnemyPatrol(State.Node)
+end
+	
+
+	
+----------------------------------------------------------------------------
+-- Here come the functions to modify and activate the sensor behaviours.
+-- Sensor behaviours may be added or removed from the list of behaviours 
+-- associated with the state. The idea is, that every information command for
+-- a sensor passes through the a dispatcher, that routes the command to the
+-- different sensoric behaviours and the command table with the layered 
+-- actor commands. 
+----------------------------------------------------------------------------
+
+-- This function inserts a new sensor behaviour into the system.
+function InsertSensorBehaviour(State, Name, Behaviour)
+	State.Sensors[Name] = Behaviour
+end
+
+
+-- This function removes the sensor behaviour from the system
+function RemoveSensorBehaviour(State, Name)
+	State.Sensors[Name] = nil
+end
+
+
+-- This function checks if the indicated sensor behaviour is running.
+function CheckSensorBehaviour(State, Behaviour)
+	return ((Behaviour == nil) or (State.Sensors[Behaviour] == nil))
+end
+
+------------------------------------------------------------------------
+-- This method invoces a function at all sensor behaviours and 
+-- finally passes it on to the normal behaviour stack.
+-------------------------------------------------------------------------
+
+function InvokeFunction(Name, State, Params)
+	local i,j
+
+	
+	for i,j in State.Sensors do
+		if (j[Name] ~= nil) then
+			j[Name](State, Params)	
+		end	
+	end
+	if (State.CommandTable[Name] ~= nil) then
+		State.CommandTable[Name](State, Params)
+	end
+end
+
+
+--------------------------------------------------------------------------
+-- Here comes the dispatcher table. The dispatcher table passes the callbacks,
+-- that come from different sensoric behaviours to the main state and the higher
+-- level sensoric behaviours.  First we sweep through the sensoric behaviours we
+-- have stored seperately and invoke each function of it and finally we pass
+-- the information to the stack with the active behaviour.
+--------------------------------------------------------------------------
+	
+G_SensorCallbackTable =
+{
+	Body_InformShotHit = function(State, Agressor, Shot)
+		InvokeFunction("Body_InformShotHit",State, Agressor)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		InvokeFunction("Body_ObjectDestroyed", State, nil)
+	end,
+	
+	Body_KinShieldBarrierReached = function(State, Barrier)
+		InvokeFunction("Body_KinShieldBarrierReached", State, Barrier)
+	end,
+	
+	Body_EmpShieldBarrierReached = function(State, Barrier)
+		InvokeFunction("Body_EmpShieldBarrierReached", State, Barrier)
+	end,
+		
+	Body_EscapePodEjected = function(State)
+		InvokeFunction("Body_EscapePodEjected", State)
+	end,
+	
+	Body_EnemyArrival = function(State)
+		InvokeFunction("Body_EnemyArrival", State, nil)
+	end,
+	
+	Body_EnemyArrivalPatrol = function(State)
+		InvokeFunction("Body_EnemyArrivalPatrol", State, nil)
+	end,
+	
+	Trigger_EnterPresence = function(State, Object)
+		InvokeFunction("Trigger_EnterPresence", State, Object)
+	end,
+	
+	Trigger_LeavePresence = function(State, Object)
+		InvokeFunction("Trigger_LeavePresence", State, Object)
+	end,
+	
+	
+	Trigger_EnterAcoustic = function(State, Object)
+		InvokeFunction("Trigger_EnterAcoustic", State, Object)
+	end,
+	
+	Trigger_LeaveAcoustic = function(State, Object)
+		InvokeFunction("Trigger_LeaveAcoustic", State, Object)
+	end,
+	
+	 
+	Trigger_EnterVisible = function(State, Object)
+		InvokeFunction("Trigger_EnterVisible", State, Object)
+	end,
+	
+	Trigger_LeaveVisible = function(State, Object)
+		InvokeFunction("Trigger_LeaveVisible", State, Object)
+	end, 	
+	
+	-- This is the special case for the sonar couple.
+	PhysicalCharacter_SonarDestroyed = function(State)
+		SetEngineValue(State, "Sonar", 1)
+	end,
+	
+	PhysicalCharacter_Stripped = function(State)
+		SetEngineValue(State, "Stripped", 1)
+	end,
+	
+	-- This is the special case, that via are paralyzed by a shot
+	Body_EMPParalyzed = function(State)
+		SetEngineValue(State, "Emp", 1)
+		SetEngineValue(State, "DestEmp", 1)
+		SetEngineValue(State, "EmpJump", 1)
+		SetEngineValue(State, "DestEmpJump", 1)
+	end,
+	
+	-- WayPoint: InformActivated
+	WayPoint_InformActivated = function(State)
+		SetEngineValue(State, "Activated", 1)
+	end,
+	-- WayPoint: InformDeactivated
+	WayPoint_InformDeactivated = function(State)
+		SetEngineValue(State, "Deactivated", 1)
+	end,
+	-- WayPoint: InformEntered
+	WayPoint_InformEntered = function(State)
+		SetEngineValue(State, "Entered", 1)
+	end,
+	-- WayPoint: InformLeft
+	WayPoint_InformLeft = function(State)
+		SetEngineValue(State, "Left", 1)
+	end,
+	
+	-- The player is under attack.
+	Player_UnderAttack = function(State)
+		SetEngineValue(State, "UnderAttack", 1)
+	end,
+	
+	-- The player is not under attack any more.
+	Player_LeftAttack = function(State)
+		SetEngineValue(State, "UnderAttack", 0)
+	end,
+
+	-- The player has a specific ship (1,2,3,4)
+	Player_InformShipID = function(State, ShipID)
+
+		if ( ShipID == 1 ) then
+			SetEngineValue(State, "Ship1", 1)
+		elseif ( ShipID == 2 ) then
+			SetEngineValue(State, "Ship2", 1)
+		elseif ( ShipID == 3 ) then
+			SetEngineValue(State, "Ship3", 1)
+		elseif ( ShipID == 4 ) then
+			SetEngineValue(State, "Ship4", 1)
+		end
+		
+	end,
+
+	-- The player has a successfully used key
+	Player_InformKeyUsed = function(State)
+
+		SetEngineValue(State, "KeyUsed", 1)
+		
+	end,
+	
+	-- The player kinetic shield changed (75,50,25,10)
+	Player_KinShieldBelow = function(State, Percentage)
+
+		if ( Percentage == 75 ) then
+			SetEngineValue(State, "KineticShield75", 1)
+		elseif ( Percentage == 50 ) then
+			SetEngineValue(State, "KineticShield50", 1)
+		elseif ( Percentage == 25 ) then
+			SetEngineValue(State, "KineticShield25", 1)
+		elseif ( Percentage == 10 ) then
+			SetEngineValue(State, "KineticShield10", 1)
+		end
+		
+	end,
+	
+	-- Mapping for destoyer index to engine state
+	Body_ObjectDestroyedBy = function(State, DestroyerID)
+
+		if ( DestroyerID == 1 ) then
+			SetEngineValue(State, "DestroyedBy1", 1)
+		elseif ( DestroyerID == 2 ) then
+			SetEngineValue(State, "DestroyedBy2", 1)
+		elseif ( DestroyerID == 3 ) then
+			SetEngineValue(State, "DestroyedBy3", 1)
+		elseif ( DestroyerID == 4 ) then
+			SetEngineValue(State, "DestroyedBy4", 1)
+		elseif ( DestroyerID == 5 ) then
+			SetEngineValue(State, "DestroyedBy5", 1)
+		elseif ( DestroyerID == 6 ) then
+			SetEngineValue(State, "DestroyedBy6", 1)
+		end
+		
+	end,
+
+	-- Mapping for emp shield trigger of shieldedbody
+	ShieldedBody_InformEmpShieldBelow = function(State, Percentage)
+
+		if ( Percentage == 75 ) then
+			SetEngineValue(State, "EmpShield75", 1)
+		elseif ( Percentage == 50 ) then
+			SetEngineValue(State, "EmpShield50", 1)
+		elseif ( Percentage == 25 ) then
+			SetEngineValue(State, "EmpShield25", 1)
+		elseif ( Percentage == 10 ) then
+			SetEngineValue(State, "EmpShield10", 1)
+		elseif ( Percentage == 0 ) then
+			SetEngineValue(State, "Emp", 1)
+		end
+		
+	end
+	
+}
+
+-----------------------------------------------------------------------------------------
+-- Here comes the library related stuff.
+-----------------------------------------------------------------------------------------
+
+-- The list, where all the loaded librarys are registered.
+LibList = {}
+
+-- This method is intended to load a library from the lib subdirectory.
+-- And returns an object, that my be used for instanciating the necessarry stuff.
+
+function LoadLib(LibName)
+	if (LibList[LibName .. "_Basis"] ~= nil) then
+		return LibList[LibName .. "_Basis"]
+	end
+	--dofile("dat\\script\\Lib\\" .. LibName .. ".sco")
+	Script_DoFile("dat\\script\\Lib\\" .. LibName .. ".sco")
+	return LibList[LibName .. "_Basis"]
+end
+
+
+-- This methid stops all active beahviours that are active now.
+function StopAllActiveBehaviours(State)
+local hlb
+
+
+	hlb = State.HLB
+	-- We sweep through our list of higher level behaviours.
+	-- We have to make an exception for the docking behaviour, as this should not be 
+	-- stopped.
+	while ((hlb.NumOfEntries > 0 ) and ((hlb.CommandTableIndication[hlb.NumOfEntries] ~= "LD_Docking") and 
+		(hlb.CommandTableIndication[hlb.NumOfEntries] ~= "LV_Docking"))) do
+		State.CommandTable.StopBehavior(State)
+	end
+end
+	
+-- PURPOSE
+-- This method stops all active behaviours and activates a callback if
+-- necessarry.	
+function StopAllActiveBehaviours_AndCall(State, CallBack)
+local hlb
+
+
+	hlb = State.HLB
+	-- We sweep through our list of higher level behaviours.
+	-- We have to make an exception for the docking behaviour, as this should not be 
+	-- stopped.
+	while ((hlb.NumOfEntries > 0 ) and ((hlb.CommandTableIndication[hlb.NumOfEntries] ~= "LD_Docking") and 
+		(hlb.CommandTableIndication[hlb.NumOfEntries] ~= "LV_Docking"))) do
+		State.CommandTable.StopBehavior(State)
+	end
+	
+	
+	CallFunction(State.Thread, CallBack)
+end	
+
+
+
+-- PURPOSE
+-- This method sets the engine value to the necessarry value to be indicated 
+-- in the editor.
+function SetEngineValue
+(
+	State, 	-- The actual state we are in.
+	Name, 	-- The name of the Value we want to set
+	Value	-- The value itself we like to insert.
+)
+
+	CallFunction(State.Thread, ("SetStateValue_" .. Name) , Value)
+end
+
+
+-----------------------------------------------------------------------------------------
+-- Here comes the old state related stuff.
+-----------------------------------------------------------------------------------------
+
+-- goto a new state
+function GotoState(Thread, CommandTable)
+
+	-- Christophs HACK to make the GotoState compatible with Thread and State as first parameter.
+	if (Thread.TypeId ~= 666) then
+		Thread = Thread.Thread
+	end
+
+	-- invalidate current state of thread
+	Thread.State = {}
+
+	-- check if specified thread exists
+	if ( type(Thread) ~= "table" ) then
+		Script_Error("GotoState() - Thread is invalid", 2)
+		return
+	end
+
+	-- check if specified state exists
+	if ( type(CommandTable) ~= "table" ) then
+		Script_Error("GotoState() - State is invalid", 2)
+		return
+	end
+
+	-- copy noderef from thread to state
+	Thread.State.Node = Thread.Node
+	-- copy threadref to state
+	Thread.State.Thread = Thread
+
+	-- set new state
+	Thread.State.CommandTable = CommandTable
+
+
+	-- Here comes the stuff to provide dynamic modification of the states command table for use in
+	-- higher level behaviour.
+	Thread.State.HLB =
+	{
+		-- At first there are no entries on the stack.
+		NumOfEntries = 0,
+		-- The stack with the old command tables.
+		OldCommandTable = {},
+		-- The stack with the indications of the command table.
+		CommandTableIndication = {}
+
+	}
+
+	-- Here comes the list with the sensor behaviour
+	Thread.State.Sensors = {}
+
+
+	-- call state start function (if any)
+	if ( type(Thread.State.CommandTable.Start) == "function" ) then
+		Thread.State.CommandTable.Start(Thread.State)
+	end
+
+end
+
+-----------------------------------------------------------------------------------------
+-- Here come some functions to modify the script behaviour.
+-----------------------------------------------------------------------------------------
+
+-- This function checks if the last modification applied
+-- corresponds to the handle handed over.
+function IsNotLastModification(State, Modification)
+	return (State.HLB.CommandTableIndication[State.HLB.NumOfEntries] ~= Modification)
+end
+
+
+-- Applies a modification to the current state, that last state is stored in the stack.
+function ApplyModification(State, NewCommandTable, ModificationName)
+	Script_Debug("[MOD] "..State.Node..": Applying modification "..ModificationName.." Level: "..State.HLB.NumOfEntries)
+	-- First we memoize the old command table.
+	State.HLB.NumOfEntries = State.HLB.NumOfEntries + 1
+	State.HLB.OldCommandTable[State.HLB.NumOfEntries] = State.CommandTable
+	State.HLB.CommandTableIndication[State.HLB.NumOfEntries] = ModificationName
+	-- We generate a copy of the command table and copy the new command table into the old one
+	State.CommandTable = Clone(State.CommandTable, NewCommandTable)
+end
+
+-- Forces a modification all old stuff is forgotten and lost.
+function ForceModification(State, NewCommandTable, ModificationName)
+	Script_Debug("[MOD] "..State.Node..": Force modification "..ModificationName.." Level: "..State.HLB.NumOfEntries)
+	-- First we memoize the old command table.
+	State.HLB.NumOfEntries = State.HLB.NumOfEntries + 1
+	State.HLB.OldCommandTable[State.HLB.NumOfEntries] = State.CommandTable
+	State.HLB.CommandTableIndication[State.HLB.NumOfEntries] = ModificationName
+	-- We generate a copy of the command table.
+	State.CommandTable = CloneTable(NewCommandTable)
+end
+
+-- Restores the modification, that has been applied last.
+function RestoreModification(State, ModificationName)
+	-- We do some precheck for the modifications
+	if (State.HLB.CommandTableIndication[State.HLB.NumOfEntries] ~= ModificationName) then
+		Script_LogRaw("[SCRIPTERROR] [" .. Script_GetLineNumber(2) .. " " .. Script_GetLineNumber(3) .. " " .. State.Node ..  "] RestoreModification()  " .. ModificationName .. " - Modification is invalid")
+		return
+	end
+	-- We restore the command table.
+	State.CommandTable = State.HLB.OldCommandTable[State.HLB.NumOfEntries]
+	State.HLB.OldCommandTable[State.HLB.NumOfEntries] = nil
+	State.HLB.CommandTableIndication[State.HLB.NumOfEntries] = nil
+	State.HLB.NumOfEntries = State.HLB.NumOfEntries - 1
+	Script_Debug("[MOD] "..State.Node..": Restored modification "..ModificationName.." Level: "..State.HLB.NumOfEntries)
+end
+
+-----------------------------------------------------------------------------------------
+-- Some helper functions to set and restore functions in command tables.
+-----------------------------------------------------------------------------------------
+
+-- This function stores a value in the command table
+function StoreInnerValue(State, Name, Value)
+	State.CommandTable[Name] = Value
+end
+
+-- This function retrieves a value from the command table.
+function GetInnerValue(State, Name)
+	return State.CommandTable[Name]
+end
+
+
+-- call trigger function of threads current state (if implemented)
+function TriggerThread(Thread, Arg1, Arg2, Arg3, Arg4)
+
+	-- check if specified thread exists
+	if ( type(Thread) ~= "table" ) then
+		Script_Error("TriggerThread() - Thread is invalid", 2)
+		return
+	end
+
+	-- get command  of thread
+	state = Thread.State
+
+	-- check if specified thread exists
+	if ( type(state) ~= "table" ) then
+		Script_Error("TriggerThread() - Thread has no state", 2)
+		return
+	end
+
+	-- get trigger function of state
+	func = state.CommandTable.Trigger
+
+	-- check if specified state exists
+	if ( type(func) ~= "function" ) then
+		Script_Error("Thread did not implement 'Trigger' function")
+		return
+	end
+
+	-- call function with state as self argument
+	func(state, Arg1, Arg2, Arg3, Arg4)
+
+end
+
+
+-- --------------------------------------------------------------------
+-- basics for overloaded 'tostring' function
+-- --------------------------------------------------------------------
+
+-- nil tag
+__Tag_Nil = tag(nil)
+
+-- num tag
+__Tag_Num = tag(0)
+
+-- a new settagmethod with hook for new methods
+settagmethod_hook = {}
+
+function settagmethod(Tag, Method, TM)
+
+    local fn = settagmethod_hook[Method] or %settagmethod
+
+    return ( fn(Tag, Method, TM) )
+
+end
+
+-- a new tostring with hook for new types
+tostring_hook = {}
+
+function tostring(O)
+
+    local fn = tostring_hook[tag(O)] or %tostring
+
+    return ( fn(O) )
+
+end
+
+-- new "tostring" method
+function settagmethod_hook.tostring(Tag, Method, Fn)
+
+    -- modify tostring()
+    tostring_hook[Tag] = Fn
+
+    -- and '..' operator
+    settagmethod(Tag, "concat", function(a,b) return tostring(a)..tostring(b) end)
+
+end
+
+-- for convenience
+settagmethod(__Tag_Nil, "tostring", function(O) return "<nil>" end)
+
+-- --------------------------------------------------------------------
+-- MAT_Vector3
+-- --------------------------------------------------------------------
+
+-- mat_vector3 tag
+__Tag_MAT_Vector3 = tag(MAT_Vector3())
+
+-- tostring for MAT_Vector3
+settagmethod(__Tag_MAT_Vector3, "tostring", function(O) return format("MAT_Vector3(%g, %g, %g)", O.X, O.Y, O.Z) end)
+
+-- --------------------------------------------------------------------
+-- NOD_NodeRef
+-- --------------------------------------------------------------------
+
+-- nod_noderef tag
+__Tag_NOD_NodeRef = tag(NOD_NodeRef())
+
+-- tostring for NOD_NodeRef
+settagmethod(__Tag_NOD_NodeRef, "tostring", function(O) return Node_GetName(O) end)
+
+-- --------------------------------------------------------------------
+-- engine -> thread -> state -> function access support functions
+-- --------------------------------------------------------------------
+
+-- calls function of thread
+function __BeginPlay(ThreadID)
+
+	local thread = __ThreadTable[ThreadID]
+
+	-- Allocate some counters for sensor support.
+	thread.ShieldGuardActive = 0
+	thread.ShotHitActive = 0
+	
+	-- We call the appropriate start function.
+	if ( type(thread.CommandTable) == "table") then
+		GotoState(thread, thread.CommandTable)
+	elseif ( type(thread.BeginPlay) == "function" ) then
+		thread.BeginPlay(thread)
+	end
+
+end
+
+-- calls function of current state of thread
+function __Timer(ThreadID, TimerHandle)
+
+	local thread = __ThreadTable[ThreadID]
+
+	if ( type(thread.State.CommandTable.Timer) == "function" ) then
+		thread.State.CommandTable.Timer(thread.State, TimerHandle)
+	end
+end
+
+-- returns function and state of current state of thread
+function __GetStateFunction(ThreadID, FunctionName)
+
+	local thread = __ThreadTable[ThreadID]
+
+	
+	if (G_SensorCallbackTable[FunctionName] ~= nil) then
+		func = G_SensorCallbackTable[FunctionName]
+	else
+		func = thread.State.CommandTable[FunctionName]
+	end
+	
+	state = thread.State
+
+	return func, state
+
+end
+
+-- --------------------------------------------------------------------
+-- Startup
+-- --------------------------------------------------------------------
+
+-- default boot function
+function Boot(TerrainName, FogName, PlayerOsdName)
+
+	-- terrainname is now MAPNAME!!!
+
+	-- check
+	if ( type(TerrainName) ~= "string" ) then
+		Script_Error("Boot() - TerrainName must be a string", 2)
+		return
+	end
+
+	-- check
+	if ( type(FogName) ~= "string" ) then
+		Script_Error("Boot() - FogName must be a string", 2)
+		return
+	end
+
+	-- check
+	if ( type(PlayerOsdName) ~= "string" ) then
+		Script_Error("Boot() - PlayerOsdName must be a string")
+		return
+	end
+
+	-- root
+	local root = Node_Find("/")
+
+	-- terrain
+	local node = Node_CreateNode("nod_terrain", "terrain")
+	Node_AddSon(root, node);
+	Node_EnterSimulation(node);
+	Terrain_LoadTerrain(node, "map\\" .. TerrainName .. "\\terrain")
+
+	-- raysystem
+	--local node = Node_CreateNode("nod_raysystem", "rs")
+	--Node_AddSon(root, node);
+	--Node_EnterSimulation(node);
+
+	-- player
+	local node = Node_CreateNode("nod_player", "player1")
+	Body_SetPosition(node, MAT_Vector3(2048.0, 2048.0, 256.0))
+	Body_SetOrientation(node, MAT_Vector3(0, 0, 0))
+	Node_ParseIniFile(node, "osd\\" .. PlayerOsdName .. ".osd")
+	Node_AddSon(root, node);
+	Node_EnterSimulation(node);
+
+	-- camera
+	local node = Node_CreateNode("nod_camera", "camera")
+	Camera_SetBackPlane(node, 1024)
+	Camera_LookFrom(node, "/player1")
+	Node_AddSon(root, node);
+	Node_EnterSimulation(node);
+
+	-- set player
+	Game_SetPlayer(root, "/player1")
+
+	-- set camera
+	Game_SetCamera(root, "/camera")
+
+	-- set console
+	Game_SetConsole(root, "/console")
+
+	-- load fog
+	Game_LoadFog(root, "map\\" .. TerrainName .. "\\fog\\fog")
+
+	-- init timer
+	G_ScriptTimerThread = BindEasy(root, "/script", C_ScriptTimer)
+	
+	-- reset enemy matrix
+	Game_ResetEnemyMatrix(GetGameNode())
+
+end	-- function startup

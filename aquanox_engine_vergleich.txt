@@ -1,0 +1,324 @@
+================================================================================
+AQUANOX 1 GEGEN AQUANOX 2 -- WAS DIE ENGINE WIRKLICH DAZUGEWONNEN HAT
+================================================================================
+Stand: 2026-07-27
+Grundlage: beide Programme disassembliert, beide Klassen- und
+Kommandoregistries extrahiert (aquanox1/2_engine_classes.json,
+aquanox1/2_message_ids.json), Stringbestand vollstaendig verglichen.
+
+DIE KURZANTWORT
+    AN2 ist in der GRAFIK deutlich weiter, in der OBERFLAECHE komplett neu
+    und im SKRIPT geringfuegig reicher. Dafuer hat es beim MEHRSPIELERMODUS
+    und beim KLANG erheblich VERLOREN. Es ist kein durchgehender Fortschritt,
+    sondern eine Verschiebung der Schwerpunkte.
+
+DIE ZAHLEN
+                             AquaNox 1        AquaNox 2      Aenderung
+    .text (Programmcode)      1.992 KB         3.076 KB        +54 %
+    Zeichenketten                6.404            7.516        +17 %
+    Engine-Klassen                 468              536        +15 %
+    Skriptkommandos                398              439        +10 %
+    Summe aller Objektgroessen 112.832 B        128.088 B      +14 %
+    Grafik                    Direct3D 8       Direct3D 9
+    Klang                     Miles            FMOD
+    Lua                       4.0              4.0.1
+    Kompression               keine            zlib 1.1.4
+
+================================================================================
+1. GRAFIK -- hier liegt der eigentliche Sprung
+================================================================================
+
+1a) SHADER   *** in aquanox_beleuchtung.txt Abschnitt 2 praezisiert ***
+    AN1 hat eine Shader-Schnittstelle (DSP_Display::PixelShader_CreateFromMemory,
+    VertexShader_CreateFromFile, Schalter dsp_pixelshader), aber KEINE
+    Shader-Profilnamen im Programm.
+    AN2 enthaelt die vollstaendige Liste der D3D9-Profile:
+        vs_1_0  vs_1_1  vs_2_0
+        ps_1_0  ps_1_1  ps_1_2  ps_1_3  ps_1_4  ps_2_0
+    AN2 kann Vertexshader zusaetzlich aus dem Speicher erzeugen
+    (VertexShader_CreateFromMemory) -- AN1 nur aus Dateien.
+
+    NACHTRAG, der das Bild geraderueckt: AN1 hat sehr wohl Shader, und
+    zwar 84 Stueck, VORKOMPILIERT und in Aqua.exe eingebettet
+    (FILErep_*.vsa / .psa, keine davon liegt als Datei im Spiel).
+    Darunter Pixelshader fuer Gelaende und Pflanzen und je fuenf
+    Varianten fuer null bis vier dynamische Lichtquellen.
+    Der Unterschied ist also nicht "Shader gegen keine Shader", sondern:
+        AN1  liefert fertig uebersetzte Shader mit und ist auf das
+             festgelegt, was 2001 eincompiliert wurde
+        AN2  uebersetzt zur Laufzeit und passt sich der Grafikkarte an
+    Vollstaendige Shaderliste in aquanox_beleuchtung.txt Abschnitt 2.
+
+1b) RENDER-TO-TEXTURE -- die folgenreichste Neuerung
+    Nur AN2:
+        DSP_Display::Texture_CreateRenderTarget()
+        DSP_Display::RenderTarget_SetTarget()
+        DSP_Display::RenderTarget_ResetTarget()
+    Damit kann AN2 in eine Textur zeichnen. Das ist die Voraussetzung fuer
+    Spiegelungen, dynamische Umgebungskarten und Nachbearbeitung -- und es
+    erklaert, warum es Game_SetEnvironmentCubeMap und die 27 envcubemap.dds
+    gibt. AN1 hat davon nichts.
+
+1c) NEUE RENDERSCHALTER (ren_*)
+    AN1 11 Schalter, AN2 19. Nur in AN2:
+        ren_pixellighting          Beleuchtung je Bildpunkt statt je Ecke
+        ren_advanced_pixelshader   erweiterte Pixelshader
+        ren_occlusionculler        Verdeckungsberechnung
+        ren_particle_detail        Detailstufe der Partikel
+        ren_halo_detail            Detailstufe der Leuchtkreise
+        ren_object_slight          zusaetzliche Objektbeleuchtung
+        ren_rendergenerics
+        ren_showcoll               Kollisionskoerper anzeigen (Entwicklung)
+    ren_pixellighting und ren_occlusionculler sind die substanziellen:
+    Per-Pixel-Beleuchtung und das Aussortieren verdeckter Geometrie.
+
+1d) ANZEIGEOPTIONEN (dsp_*)
+    Nur AN2:
+        dsp_fsaaquality        abgestufte Kantenglaettung statt an/aus
+        dsp_gammacorrectionr   Gamma getrennt fuer Rot,
+        dsp_gammacorrectiong   Gruen
+        dsp_gammacorrectionb   und Blau (AN1 hat nur einen Wert)
+        dsp_hyperthreading     Unterstuetzung fuer Hyperthreading-CPUs
+    Dazu DSP_Display::Gamma_SetExponents().
+
+1e) TEXTURSTUFEN
+    AN1 spricht Texturstufen ueber ein einziges SetTextureStageState an.
+    AN2 hat dafuer drei eigene Aufrufe: TextureStage_Set,
+    TextureStage_SetTexture, TextureStage_Disable -- ein feiner
+    aufgeloestes Multitexturing.
+
+1f) KAUSTIK IN ZWEI STUFEN
+    AN1: Game_SetCausticTerrain / -Object / -Building, je zwei Parameter.
+    AN2: dieselben drei, aber getrennt als "Normal" (vier Parameter) und
+    "Micro" (fuenf Parameter). Also grobe und feine Lichtbrechung
+    uebereinander statt eines einzigen Effekts.
+
+1g) WAS AN2 NICHT DAZUGEWONNEN HAT
+    Bumpmapping gibt es in beiden (ren_objectprelit_bumpmap,
+    ren_terrain_bumpmap). Schatten, Stencil, Mipmapping, FSAA, LOD und
+    anisotrope Filterung ebenfalls. Das Fundament ist dasselbe.
+
+================================================================================
+2. OBERFLAECHE -- vollstaendig neu gebaut
+================================================================================
+AN1 hat ein festverdrahtetes Menue (dat\menu\*.des, GUI_TextMenu).
+AN2 hat ein eigenes Oberflaechensystem mit 22 Klassen:
+
+    USI_Node (92 B)
+      USI_Node_Group -> Action, Animation, ListBox, Reference, Sound,
+                        Switch, Window
+        USI_Node_Control -> USI_Node_Button -> Choice, ListBoxItem,
+                            ShowHideButton, Slider
+      USI_Node_Primitive -> Anchor3D, Bitmap, Movie, Text, Video
+    USI_Property
+
+Dazu vier AUI_-Knoten, die Oberflaeche und Spiellogik verbinden
+(ComplexText, DialogText, DragButton, InputMapperButton).
+Die Beschreibung liegt in 131 .usi.bin-Dateien mit einem Vorlagensystem
+(63 wiederverwendete Bausteine).
+=> Fuer AquaNox-1-Modding ohne Belang, aber der groesste einzelne Zuwachs
+   an Programmcode.
+
+================================================================================
+3. SKRIPT -- geringer Zuwachs, kein Umbau
+================================================================================
+398 gegen 439 Kommandos. Nach Subsystem:
+
+    Subsystem        AN1   AN2   Diff
+    Game              35    45   +10
+    Generic            0     6    +6
+    FX                 1     6    +5
+    Turret            17    22    +5
+    Player            11    15    +4
+    ShieldedBody       8    12    +4
+    Vehicle           28    32    +4
+    Vessel            56    59    +3
+    Mine               3     4    +1
+    Stream             5     6    +1
+    Trash              0     1    +1
+    Body              46    43    -3
+
+WICHTIG: Die Skript-NAMEN sind nicht umbenannt worden. Die Klasse heisst
+zwar NOD_FX_Light_SetColor, das Kommando aber weiterhin Light_SetColor --
+genau wie in AN1 (siehe Handoff v8 Abschnitt 3).
+
+DIE ECHTEN NEUERUNGEN, thematisch:
+    Missionsziele    Game_PrimaryObjectiveReached / _Failed
+                     Game_BonusObjectiveReached / _Failed
+                     AN1 hat dafuer nur Game_SetTaskTextKey.
+    Klangzonen       FX_SoundBox mit _SetBox / _Activate / _Deactivate
+                     Game_PlaySound
+    Spott/Funk       Vessel_/Vehicle_/Generic_Taunt_Activate + _Deactivate
+    Schildstufen     ShieldedBody_SetShieldBarrier,
+                     _InformKinShieldBelow, _InformEmpShieldBelow,
+                     _SetFriendlyFireMode
+    Schluessel/Tore  Player_DefineKeyLocation, Player_InformKeyUsed
+    Optik            Game_SetEnvironmentCubeMap, Game_SetNPCHitFactor,
+                     Game_SetDecompressionRange
+    Stroemung        FX_Stream_SetDamageParameters (Stroemung macht Schaden)
+    Schaltbares      Mine_SetOnOffDuration, Trash_SetOnOffDuration
+    Zerstoerer       Body_ObjectDestroyedBy, Body_SetObservedDestroyer
+    Dipol            Turret_Dipol* (5), Generic_Dipol* (4)
+
+WAS AN1 HAT UND AN2 VERLOR: das Bio-Schild, vollstaendig.
+    Body_SetBioShield, Body_GetBioShield, Body_BioShieldBarrierReached,
+    Body_RequestBioInfo, Body_RejectBioInfo
+Passend dazu: in AN1 sind die Bionten der Hauptgegner.
+
+DIE SCHNITTSTELLE WURDE NICHT MAECHTIGER:
+    AN1 im Mittel 1,50 Argumente je Kommando, hoechstens 18
+    AN2 im Mittel 1,51 Argumente je Kommando, hoechstens 18
+    Dieselben 13 Parametertypen, dieselbe Verteilung.
+
+NEUE OBJEKTKLASSEN (ausser Kommandos und Oberflaeche) -- nur elf:
+    NOD_Turret        1.484 B   eigenstaendiger Geschuetzturm
+    NOD_Turbine       1.528 B   Turbine
+    NOD_Decoration      964 B   reine Kulisse mit Schild
+    NOD_FX_SoundBox     344 B   Klangzone
+    NOD_ItemBox       1.224 B   (in AN1 anders eingehaengt)
+    NOD_NPC_BuzzerLauncher / NOD_NPC_TorpedoLauncher
+    NOD_FX_Flare / _Halo / _ParticleEmitter / _Trail
+        -- das sind die AN1-Klassen NOD_Flare, NOD_Halo,
+           NOD_ParticleEmitter, NOD_Trail unter neuem Namen
+
+================================================================================
+4. KLANG -- hier hat AN2 VERLOREN
+================================================================================
+AN1 benutzt Miles Sound System mit EAX:
+    'Creative Labs EAX (TM)'      'Creative Labs EAX 2 (TM)'
+    'CreativeLabs EAX1'           'CreativeLabs EAX2'
+    'EAX environment selection'
+    SND_SoundDevice3D::Effect_SetType()
+    SND_SoundDevice3D::Provider_GetName()
+    'Miles Fast 2D'
+AN2 benutzt FMOD und hat von alledem KEINEN EINZIGEN String.
+
+=> AquaNox 1 kann hardwarebeschleunigten Umgebungshall (EAX 1 und 2) --
+   in einem Unterwasserspiel mit Hallen, Schluchten und Stationen ein
+   hoerbarer Unterschied. AquaNox 2 kann das nicht.
+
+WAS AN2 DAFUER HAT:
+    SND_SoundDevice2D::Stream_Play / _Stop / _HeartBeat
+    21 Erwaehnungen von "ogg" gegen 6 in AN1
+    getrennte Lautstaerkeregler: snd_dialog_volume, snd_radio_volume
+    (AN1 hat nur snd_fx_volume und snd_music_volume)
+    snd_video_usedirectsound
+    ein Doppler-String (AN1 keiner)
+=> AN2 streamt Ogg Vorbis und trennt Dialog, Funk, Effekte und Musik.
+   Das ist Bequemlichkeit, kein Klanggewinn.
+
+================================================================================
+5. MEHRSPIELER -- hier hat AN2 STARK verloren
+================================================================================
+AN1 hat ein vollstaendiges Regelwerk. ANT_Rules allein umfasst 50 Strings:
+    Event_Kill, Event_PlayerJoin, Event_PlayerLeave, Event_PlayerRespawn,
+    Event_Drop, HasFlag, TouchOurFlag, TouchEnemyFlag, ResetFlag,
+    Team_SetFlagStatus, TeamName, OtherTeam,
+    HeartBeat_CheckFragLimit, HeartBeat_CheckTimeLimit,
+    HeartBeat_CheckCaptureLimit, HeartBeat_DroppedFlags,
+    Query_GetPlayerInfo / _GetPlayerState / _GetTeamState
+Dazu ANT_BanList (Laden und Speichern), ANT_GameInfo, ANT_ServerList
+(Sortieren, Rueckrufe), ANT_Report, das GameSpy-Protokoll
+(\\teamplay\\, \\fraglimit\\%d, \\capturelimit\\%d, \\frags_%d\\%d),
+Bonuswertungen (Bonus_Capture, Bonus_FragCarrierAssist,
+Bonus_FragEnemyCarrier) und eine eigene Mehrspieler-Anzeige
+(NOD_Hud_MP_Info::Update_TDM_CTF).
+
+AN2 hat davon fast nichts mehr: 96 ANT_-Strings gegen 124, und die
+Regelwerks-, Bannlisten-, Serverlisten- und Berichtsklassen fehlen
+vollstaendig. Geblieben sind nur Konstantennamen wie FragLimit und
+CaptureLimit sowie die fest eincompilierte Kartenliste, deren Level
+gar nicht mitgeliefert werden (Handoff v2 Abschnitt 5).
+
+=> AquaNox 1 ist das Mehrspielerspiel, AquaNox 2 nicht.
+
+================================================================================
+6. EINGABE -- AN2 klar besser
+================================================================================
+Nur AN2:
+    INP_Mapper::AxisIDToString / ButtonIDToString /
+                StringToAxisID / StringToButtonID
+        -> frei belegbare Achsen und Tasten mit Namensaufloesung
+    INP_Keyboard::KeyCodeToString / StringToKeyCode
+        -> Tastenbelegung als Text speicherbar
+    INP_Joystick::ApplyForces()
+        -> FORCE FEEDBACK
+Dazu acht Belegungsvorlagen (ini\mapping_preset0..7) und acht
+Kalibriervorlagen. AN1 hat nur ctrlsp.des und control_*.des.
+
+================================================================================
+7. WEITERE UNTERSCHIEDE
+================================================================================
+KONFIGURATION
+    AN2 fuehrt CVars ein: ini\video_preset0..4.des mit Eintraegen
+        [CVar0] { Name = "ren_pixellighting"  Type = "s32"  Value = 0 }
+    Fuenf abgestufte Grafikvoreinstellungen. AN1 regelt das ueber
+    dat\menu\performance~.des im Menue.
+
+STORY-SUBSYSTEM
+    AN1 hat STY_Base mit dreizehn Ladefunktionen (Acknowledge, Briefing,
+    Dialog, Difficulty, Item, Mission, Mood, Movie, Option, Person, Room,
+    Ship, Station, Take).
+    AN2 hat es zu STO_ umbenannt (STO_Base::MTake_GetByKey,
+    STO_Dialog::GetDialogPlayerPerson) und um ein Debriefing erweitert,
+    das AN1 nicht kennt (AUI_Observer_Debriefing::RewardPlayer).
+
+VIDEO
+    AN1: Bink ueber D3D8 (_BinkDX8SurfaceType).
+    AN2: Bink UND DirectShow -- 125 VFW_-Fehlercodes, MPEG-Unterstuetzung.
+    Zwei Wiedergabewege statt einem.
+
+GRENZEN
+    AN2 macht Grenzen konfigurierbar und meldet sie:
+        "MaxNumOfPlants is out of range (1-%d)"
+        "MaxNumOfTiles is out of range (1-%d)"
+    AN1 hat dafuer feste Werte.
+
+SPEICHER UND LEISTUNG
+    AN2: zlib-Dekompression (inflate), 29 Cache-Erwaehnungen gegen 19,
+    Hyperthreading-Schalter.
+
+ANIMATION
+    AN1 hat ein Skelettsystem mit Quaternionen und gewichtetem Skinning
+    (dat\animation\*.bor/.boa/.bop, siehe Handoff v7), benutzt fuer die
+    vier Bionten-Bosse. In AN2 fehlen diese Dateien vollstaendig --
+    die Klasse NOD_PhysicalCharacter gibt es dort aber weiterhin und sie
+    ist sogar groesser (3.180 statt 2.932 B).
+
+================================================================================
+8. FAZIT
+================================================================================
+WAS AN2 WIRKLICH BESSER KANN
+    1. Render-to-Texture -- die Grundlage fuer Spiegelungen und
+       Umgebungskarten. Der einzige echte Architektursprung.
+    2. Shader bis Modell 2.0 mit Laufzeituebersetzung.
+    3. Per-Pixel-Beleuchtung und Verdeckungsberechnung.
+    4. Ein freies Oberflaechensystem statt festverdrahteter Menues.
+    5. Frei belegbare Steuerung mit Force Feedback.
+    6. Ein echtes Missionszielsystem statt blosser Aufgabentexte.
+    7. Feiner abgestufte Grafikeinstellungen (CVars, RGB-Gamma, FSAA-Stufen).
+
+WAS AN1 BESSER KANN
+    1. Mehrspieler -- vollstaendiges Regelwerk fuer Deathmatch und CTF
+       mit Teams, Flaggen, Limits, Serverliste und Bannliste.
+    2. EAX-Umgebungshall.
+    3. Das Bio-Schild-System.
+    4. Skelettanimierte Kreaturen (die Daten liegen nur bei AN1).
+
+WAS GLEICH BLIEB
+    Der ganze Unterbau: Knotenbaum, Nachrichtensystem, Lua-Anbindung,
+    Verhaltensbibliotheken, Dateiformate, Kollision, Terrain, Nebel.
+    Die Skriptschnittstelle ist zu ueber 99 Prozent deckungsgleich --
+    von 398 gemeinsamen Kommandos unterscheidet sich genau EINES in der
+    Signatur (ShieldedBody_MakeSelectiveVulnerableAgainst).
+
+WAS DAS FUER UNSER MODDING BEDEUTET
+    Fuer Nachtschicht fehlt AquaNox 1 nichts Wesentliches. Die Punkte, in
+    denen AN2 voraus ist, betreffen Optik und Bedienung -- nicht das, was
+    eine Kampagne braucht. Umgekehrt haette ein Wechsel nach AN2 den
+    Verlust des Mehrspielermodus und des Umgebungshalls zur Folge.
+    Der einzige Grund, AN2 als Ziel zu waehlen, waere die Optik.
+
+================================================================================
+ENDE
+================================================================================

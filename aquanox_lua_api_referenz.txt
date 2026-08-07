@@ -1,0 +1,449 @@
+================================================================================
+AQUANOX -- LUA-API-REFERENZ
+================================================================================
+Quelle: die .scr-Dateien aus den AquaNox-2-PAKs (dat\script\lib\*.scr).
+Das sind die KOMMENTIERTEN ORIGINALQUELLTEXTE der Skriptbibliotheken.
+AquaNox 1 liefert nur die kompilierten .sco aus -- diese Quelltexte sind
+die einzige Dokumentation dieser Schnittstelle, die es gibt.
+
+GUELTIGKEIT FUER AQUANOX 1 -- NACHGEMESSEN, nicht angenommen:
+
+  (1) SIEBEN BIBLIOTHEKEN SIND BYTE-IDENTISCH (SHA-256 ueber beide
+      Fassungen, AN2 direkt aus den PAKs gelesen):
+          camera 2.129 B     misc 26.594 B     oldone 4.452 B
+          synchronization 3.920 B              turret 2.132 B
+          vehicleattack 6.152 B                vesselattack 17.419 B
+      Fuer sie gilt der Quelltext 1:1 auch fuer AquaNox 1.
+
+  (2) DIE UEBRIGEN SIEBEN wurden fuer AN2 ueberarbeitet:
+          vehiclegoto  -20 B      vesselgoto   +68 B
+          dock        +104 B      glue      +1.454 B
+          sensor    -4.112 B      dipol       -624 B
+          formation -6.991 B
+      Dort ist der Quelltext eine sehr nahe, aber nicht garantierte
+      Entsprechung.
+
+  (3) BESONDERS GEPRUEFT: glue -- die wichtigste Bibliothek und gerade
+      nicht identisch. Lua 4.0 legt Funktionsnamen als Strings im
+      Bytecode ab, also direkt nachgezaehlt:
+          glue.scr definiert        58 Funktionen
+          in AN1 nachweisbar        58   <- ALLE
+      Die AN2-Ueberarbeitung hat also ERWEITERT, nichts entfernt.
+      (Durchsucht: 14 Bibliotheken + alle 74 Missionsskripte.)
+
+  (4) *** ACHTUNG: FUENF CALLBACKS GIBT ES IN AQUANOX 1 NICHT ***
+      Von den 29 dokumentierten Ereignis-Callbacks fehlen diese fuenf --
+      weder in einem Missionsskript noch in Aqua.exe (je 0 Treffer):
+          Player_InformShipID          Player_InformKeyUsed
+          Player_KinShieldBelow        Body_ObjectDestroyedBy
+          ShieldedBody_InformEmpShieldBelow
+      Wer sie in einem AN1-Skript definiert, wartet vergeblich: die
+      Engine ruft sie nie auf, und zwar ohne Fehlermeldung.
+
+  Abweichungen im Einzelnen siehe aquanox2_analyse_handoff_v3.txt,
+  die Messungen siehe aquanox_modding_handoff_v91.txt Abschnitt 122a.
+
+Gesichert unter mod_docu\an2_script_sources\ (15 Dateien, 512 KB).
+
+
+================================================================================
+GLUE.scr   1317 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  GLUE
+  This script provides functions that glue LUA and the engine.
+  The functions reside in the global namespace of each LUA script.
+
+  --- 57 globale Funktionen ---
+    Script_Debug(Text, Level)
+        debugging function
+    LoadTerrain(TerrainName)
+        loads the specified terrain
+    LoadTextures()
+        (re)loads all currently registered textures
+    SetPlayerToPosition(Scenario, PositionName, OffsetVector)
+        sets the player relative to the specified position
+    SetPlayerPosition(Position)
+        sets the player to the specified position
+    SetPlayerPositionVector(Position)
+        sets the player to the specified position
+    SetPlayerCS(Position, Alpha, Beta, Gamma)
+        sets the player to the specified position
+    GetGameNode()
+        returns the game node
+    SetEnemyMatrixElement(I, J, Value)
+    GetEnemyMatrixElement(I, J)
+    SendRadioMessageTake(Sender, Receiver, Key)
+    GetCameraNode()
+        returns the camera node
+    GetPlayerNode()
+        returns the player node
+    BindThread(Scenario, NodeName, Thread)
+        bind a script thread to an engine node
+    UnBindThread(Thread)
+        unbind a (previously binded) script thread from its engine node
+    BindEasy(Scenario, NodeName, CommandTable)
+        Creates a new thread and jumps to the first state indicated. The created thread is returned as a back argument
+    BindPlayer(CommandTable)
+        Creates a thread for the player
+    BindBlock(Scenario, NodePrefix, NodeSuffix, CommandTable)
+    MacroFuse(ThreadBlocks)
+        This method fuses several threads and blocks, that are handed over in the indicated list.
+    CloneTable(CommandTable)
+        This method clones a command table, it is used to implement some inheritance methods. It may also be sued for 
+    CopyTableInto(FirstTable, SecondTable)
+        Copys the first table into the second one.
+    Clone(Parent, Child)
+        Clone a command table into parent command table
+    SetTimer(Thread, Delay)
+        set the timer for the specified thread
+    StopTimer(Thread, TimerHandle)
+        set the timer for the specified thread
+    CallFunction(ThreadOrBlock, FunctionName, Param)
+    DelayedFunction(Seconds, ThreadOrBlock, FunctionName, Param)
+        this does the same as CallFunction, but with an additional delay
+    DelayedFunctionStop(Handle)
+        stop a delayed call function
+    StartShieldGuard(State)
+        Requests a shield guard if used.
+    StopShieldGuard(State)
+        Rejects the shield guard. It deactivates it, if we are the last function that called it.
+    StartShotHit(State)
+        Requests a body inform shot hit and activates it if not used before.
+    StopShotHit(State)
+        Rejects the body inform shot hit and deactivates it, if not used before.
+    StartEnemy(State, Distance, FirstPriority, SecondPriority, ThirdPriority, FourthPriority)
+        Requests a body inform enemie for the respective node.
+    StopEnemy(State)
+        Rejects a body inform enemy for the respective node.
+    StartEnemyPatrol(State, Mode, Distance, FirstPriority, SecondPriority, ThirdPriority, FourthPriority, PatrolArea)
+        Requests a body inform enemie arrival patrol for the respective node.
+    StopEnemyPatrol(State)
+        Rejects the body inform enemy arrival patrol for the respective node.
+    InsertSensorBehaviour(State, Name, Behaviour)
+        This function inserts a new sensor behaviour into the system.
+    RemoveSensorBehaviour(State, Name)
+        This function removes the sensor behaviour from the system
+    CheckSensorBehaviour(State, Behaviour)
+        This function checks if the indicated sensor behaviour is running.
+    InvokeFunction(Name, State, Params)
+    LoadLib(LibName)
+    StopAllActiveBehaviours(State)
+        This methid stops all active beahviours that are active now.
+    StopAllActiveBehaviours_AndCall(State, CallBack)
+        This method stops all active behaviours and activates a callback if necessarry.
+    GotoState(Thread, CommandTable)
+        goto a new state
+    IsNotLastModification(State, Modification)
+        This function checks if the last modification applied corresponds to the handle handed over.
+    ApplyModification(State, NewCommandTable, ModificationName)
+        Applies a modification to the current state, that last state is stored in the stack.
+    ForceModification(State, NewCommandTable, ModificationName)
+        Forces a modification all old stuff is forgotten and lost.
+    RestoreModification(State, ModificationName)
+        Restores the modification, that has been applied last.
+    StoreInnerValue(State, Name, Value)
+        This function stores a value in the command table
+    GetInnerValue(State, Name)
+        This function retrieves a value from the command table.
+    TriggerThread(Thread, Arg1, Arg2, Arg3, Arg4)
+        call trigger function of threads current state (if implemented)
+    settagmethod(Tag, Method, TM)
+    tostring(O)
+    settagmethod_hook.tostring(Tag, Method, Fn)
+        new "tostring" method
+    __BeginPlay(ThreadID)
+        calls function of thread
+    __Timer(ThreadID, TimerHandle)
+        calls function of current state of thread
+    __GetStateFunction(ThreadID, FunctionName)
+        returns function and state of current state of thread
+    Boot(TerrainName, FogName, PlayerOsdName)
+        default boot function
+
+  --- 29 Zustands-/Tabellenmethoden ---
+    Start(State)
+    Timer(State, TimerHandle)
+    Body_InformShotHit(State, Agressor, Shot)
+    Body_ObjectDestroyed(State)
+    Body_KinShieldBarrierReached(State, Barrier)
+    Body_EmpShieldBarrierReached(State, Barrier)
+    Body_EscapePodEjected(State)
+    Body_EnemyArrival(State)
+    Body_EnemyArrivalPatrol(State)
+    Trigger_EnterPresence(State, Object)
+    Trigger_LeavePresence(State, Object)
+    Trigger_EnterAcoustic(State, Object)
+    Trigger_LeaveAcoustic(State, Object)
+    Trigger_EnterVisible(State, Object)
+    Trigger_LeaveVisible(State, Object)
+    PhysicalCharacter_SonarDestroyed(State)
+    PhysicalCharacter_Stripped(State)
+    Body_EMPParalyzed(State)
+    WayPoint_InformActivated(State)
+    WayPoint_InformDeactivated(State)
+    WayPoint_InformEntered(State)
+    WayPoint_InformLeft(State)
+    Player_UnderAttack(State)
+    Player_LeftAttack(State)
+    Player_InformShipID(State, ShipID)
+    Player_InformKeyUsed(State)
+    Player_KinShieldBelow(State, Percentage)
+    Body_ObjectDestroyedBy(State, DestroyerID)
+    ShieldedBody_InformEmpShieldBelow(State, Percentage)
+
+================================================================================
+MISC.scr   834 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements diverse helper functions
+  We need some libs.
+
+  --- 21 Zustands-/Tabellenmethoden ---
+    LM_Activate(State)
+    Vessel_EscortObjectLost(State)
+    LM_LeaderArrived(State)
+    LM_Arrived(State)
+    LM_GroupAttack(State)
+    Body_EnemyArrivalPatrol(State)
+    LM_AttackOver(State)
+    StopBehavior(State)
+    PG_Finished(State)
+    PV_Arrived(State)
+    Vessel_InfiltrateFinished(State)
+    Vessel_InfiltrateSuccess(State)
+    Body_ObjectDestroyed(State)
+    Vessel_InfiltrateBegin(State)
+    ComplexGotoAttackStop(State)
+    MilkRunGotoStop(State)
+    MilkRunPatrolStop(State)
+    ProtectedGotoStop(State)
+    ProtectedMultiPatrolStop(State)
+    FollowProtectStop(State)
+    InfiltrateStop(State)
+
+================================================================================
+VESSELGOTO.scr   575 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  This file implements diverse helper functions for the goto
+  behaviour of a vessel.
+  We need the synchronization lib
+
+  --- 15 Zustands-/Tabellenmethoden ---
+    LVG_Activate(State)
+    LVG_StartGoing(State)
+    Vessel_GotoPosReached(State, Path, Node)
+    Vessel_GotoArrived(State, Path)
+    Body_ObjectDestroyed(State)
+    StopBehavior(State)
+    Vessel_PatrolFinished(State)
+    LVG_Process(State)
+    Vessel_SinkFinished(State, Reason)
+    Timer(State, Handle)
+    GooseMarchStatStop(State)
+    GooseMarchPatStop(State)
+    MultiPatrolStop(State)
+    ComplexGotoStop(State, List)
+    ComplexGotoStatus(State)
+
+================================================================================
+VESSELATTACK.scr   508 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements diverse helper functions for the goto
+  behaviour of a vessel.
+  We need the synchronization lib
+
+  --- 14 Zustands-/Tabellenmethoden ---
+    LVA_Activate(State)
+    Vessel_AttackOver(State)
+    Body_EnemyArrivalPatrol(State)
+    Vessel_PatrolFinished(State)
+    StopBehavior(State)
+    Vessel_GotoPosReached(State, Path, Position)
+    Vessel_GotoArrived(State, Path)
+    Body_ObjectDestroyed(State)
+    Vessel_DipolInFinished(State)
+    ClearAreaFromStop(State)
+    ClearAreaStop(State)
+    GuardAreaStop(State)
+    GotoAttackStop(State)
+    GuardAreaRespawnStop(State)
+
+================================================================================
+VEHICLEGOTO.scr   543 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  This file implements diverse helper functions for the goto
+  behaviour of a Vehicle.
+  We need the synchronization lib
+
+  --- 13 Zustands-/Tabellenmethoden ---
+    LCG_Activate(State)
+    LCG_StartGoing(State)
+    Vehicle_GotoPosReached(State, Path, Node)
+    Vehicle_GotoArrived(State, Path)
+    Body_ObjectDestroyed(State)
+    StopBehavior(State)
+    Vehicle_PatrolFinished(State)
+    LCG_Process(State)
+    Timer(State, Handle)
+    GooseMarchStatStop(State)
+    GooseMarchPatStop(State)
+    MultiPatrolStop(State)
+    ComplexGotoStop(State, List)
+
+================================================================================
+VEHICLEATTACK.scr   270 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements diverse helper functions for the goto
+  behaviour of a Vehicle.
+  We need the synchronization lib
+
+  --- 8 Zustands-/Tabellenmethoden ---
+    LCA_Activate(State)
+    Vehicle_AttackOver(State)
+    Body_EnemyArrivalPatrol(State)
+    Vehicle_PatrolFinished(State)
+    StopBehavior(State)
+    ClearAreaFromStop(State)
+    ClearAreaStop(State)
+    GuardAreaStop(State)
+
+================================================================================
+FORMATION.scr   810 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  This file implements diverse helper functions
+  This tabel commands contains the diverse functions for the escort commands.
+  This command is for the simple triangle formation.
+
+  --- 21 Zustands-/Tabellenmethoden ---
+    TriangleUpper(Position, DistToLeadObject, DistBetweenObjects)
+    Triangle(Position, DistToLeadObject, DistBetweenObjects)
+    Line(Position, DistToLeadObject, DistBetweenObjects)
+    Row(Position, DistToLeadObject, DistBetweenObjects)
+    InverseTriangle(Position, DistToLeadObject, DistBetweenObjects)
+    XForm(Position, DistToLeadObject, DistBetweenObjects)
+    Claw(Position, DistToLeadObject, DistBetweenObjects)
+    Cross(Position, DistToLeadObject, DistBetweenObjects)
+    Tunnel(Position, DistToLeadObject, DistBetweenObjects)
+    LF_Activate(State)
+    Body_ObjectDestroyed(State)
+    LF_BreakFormation(State)
+    StopBehavior(State)
+    LF_LeaveFormation(State)
+    Vessel_GotoArrived(State)
+    LF_Stop(State)
+    DeclareAsLeaderStop(State)
+    FollowInFormationStop(State)
+    HasLeader(Formation)
+    VesselGotoInFormationFromToStop(State)
+    VesselGotoInFormationStop(State)
+
+================================================================================
+DOCK.scr   731 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  This file implements functions for the docking proces
+  We need thesynchronization library for the semaphore.
+  The prototype of the dockmaster.
+
+  --- 11 Zustands-/Tabellenmethoden ---
+    ContainsVessel(Thread)
+    LD_Activate(State)
+    LD_ReleaseShip(State, CallBack, Param)
+    Vessel_GotoArrived(State, Path)
+    Timer(State, Handle)
+    LD_ClearForDocking(State)
+    Body_ObjectDestroyed(State)
+    LD_Undock(State, Parameter)
+    LD_PlaceInDock(State)
+    StopBehavior(State)
+    Vehicle_GotoArrived(State, Path)
+
+================================================================================
+DIPOL.scr   216 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  This file implements diverse helper functions for dipol
+  This is a general state, that is used for camera callbacks.
+
+  --- 5 Zustands-/Tabellenmethoden ---
+    Vessel_DipolInFinished(State)
+    Vehicle_DipolInFinished(State)
+    Turret_DipolInFinished(State)
+    StopBehavior(State)
+    JumpStop(State)
+
+================================================================================
+SENSOR.scr   438 Zeilen  [in AN2 ueberarbeitet]
+================================================================================
+  This file implements the functions for the diverse atomic behaviours
+  The behaviour forr the avp sensors.
+
+  --- 19 Zustands-/Tabellenmethoden ---
+    Trigger_EnterPresence(State, Object)
+    Trigger_EnterAcoustic(State, Object)
+    Trigger_EnterVisible(State, Object)
+    Trigger_LeavePresence(State, Object)
+    Trigger_LeaveAcoustic(State, Object)
+    Trigger_LeaveVisible(State, Object)
+    Body_InformShotHit(State, Agressor, Bullet)
+    Body_ObjectDestroyed(State)
+    Body_KinShieldBarrierReached(State, Barrier)
+    Body_EmpShieldBarrierReached(State, Barrier)
+    Body_EscapePodEjected(State)
+    Body_EnemyArrivalPatrol(State)
+    LM_Finalize(State)
+    DeactivateAvpSensor(State)
+    DeactivateAvpSensorLeave(State)
+    DeactivateShotHitSensor(State)
+    DeactivateShieldGuard(State)
+    DeactivateEnemyGuard(State)
+    DeactivateThreatening(State)
+
+================================================================================
+SYNCHRONIZATION.scr   331 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements the library for a counting semaphore
+  a barrier and a switch.
+  This is a single semaphore, that is in raw format.
+
+================================================================================
+CAMERA.scr   136 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements diverse helper functions for the camera
+  If SubPosname is empty, we havereached the end of our path.
+
+  --- 5 Zustands-/Tabellenmethoden ---
+    Camera_MovePosReached(State, PathName, SubPosName)
+    StopBehavior(State)
+    Timer(State)
+    CameraMoveStop(State)
+    WaitStop(State)
+
+================================================================================
+TURRET.scr   110 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements diverse helper functions for the turret
+  The statee for the attack.
+
+  --- 5 Zustands-/Tabellenmethoden ---
+    LT_Activate(State)
+    Body_EnemyArrival(State)
+    Turret_ComplexAttackOver(State)
+    StopBehavior(State)
+    AttackStop(State)
+
+================================================================================
+OLDONE.scr   166 Zeilen  [AN1-identisch]
+================================================================================
+  This file implements diverse helper functions for the older one.
+  The state for the older one goto.
+
+  --- 7 Zustands-/Tabellenmethoden ---
+    PhysicalCharacter_GotoArrived(State, Path)
+    StopBehavior(State)
+    PhysicalCharacter_AttackCompleted(State)
+    Vessel_SinkFinished(State)
+    GotoStop(State)
+    AttackStop(State)
+    SinkStop(State)
+
+================================================================================
+ENDE
+================================================================================

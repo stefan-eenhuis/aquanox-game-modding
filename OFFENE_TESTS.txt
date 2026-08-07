@@ -1,0 +1,375 @@
+================================================================================
+OFFENE TESTS -- was beim naechsten Spieldurchlauf zu pruefen ist
+================================================================================
+Stand: 2026-07-27
+Alles hier ist fertig gebaut und eingespielt bzw. liegt bereit. Es fehlt
+nur der Blick ins laufende Spiel.
+
+--------------------------------------------------------------------------------
+T1  MESH-RENDERING: "AN2 REPARIERT"                        EINGESPIELT
+--------------------------------------------------------------------------------
+    Wo:      Instant Fight -> "< AN2 Polizeischiff >"
+    Was:     drei Boote nebeneinander, HUD-Marke auf dem linken
+             links   "AN2 REPARIERT"        Trailer + Glaettungsgruppe 4
+             mitte   "AN2 Police"           unveraendert
+             rechts  "AN1 Police"           Original zum Vergleich
+    Frage:   Sieht das linke Boot aus wie das rechte?
+    Hintergrund: aquanox2_analyse_handoff_v2.txt Abschnitt 1-3.
+             Textur und DDS-Format sind als Ursache ausgeschlossen.
+             Bleibt die Geometrie. Wenn auch diese Fassung falsch aussieht,
+             wuerde ich den Schiffsport aufgeben.
+
+--------------------------------------------------------------------------------
+T2  RENN-KI MIT AN2-RENNPROFIL                             EINGESPIELT
+--------------------------------------------------------------------------------
+    Wo:      Instant Fight -> "< 1N1 Rennen >"
+    Was:     die beiden Gegner fahren jetzt mit Massives eigenen Rennwerten
+                 MoveFriction    0.09/0.04  ->  10.0
+                 AvoidanceRatio  -0.55/-0.65 -> 0.0
+                 AvoidanceRadius 1.4/1.2     -> 3.0
+             dazu Vessel_AvoidanceTerrain/-Objects explizit gesetzt
+    Frage:   Torkeln und kreisen sie noch?
+    Rueckweg: im Skript G_AIShips auf die _inst-OSDs zurueckstellen
+             (die Originale sind unveraendert).
+    Falls zu zaeh: Zwischenwerte 1.0 oder 3.0 fuer MoveFriction, und
+             TurnPV beim Phobocaster von 270 auf 90 (AN2s Rennwert).
+    Hintergrund: aquanox2_analyse_handoff_v3.txt Abschnitt 6.
+
+--------------------------------------------------------------------------------
+T3  EIGENES 3D-MODELL: der Testwuerfel                     NOCH NICHT EINGESPIELT
+--------------------------------------------------------------------------------
+    Was:     ein von Grund auf geschriebenes .msb -- 24 Vertices,
+             12 Dreiecke, Kantenlaenge 5, Textur gen_metal1_0
+             erzeugt mit mod_docu\tools\msb_write.py
+    Frage:   Erscheint der Wuerfel im Spiel, und ist er texturiert?
+    Warum wichtig: klaert in einem Zug, ob der ganze Weg
+             Blender -> OBJ -> .msb -> AquaNox offen ist. Und wenn er
+             NICHT erscheint, ist ein Wuerfel der denkbar einfachste
+             Testfall, um herauszufinden warum -- womoeglich dieselbe
+             Ursache wie bei T1.
+    LIEGT BEREIT: mod_docu\testcube.msb (1.302 B), noch nicht in der
+    PAK. Sagen Sie Bescheid, dann spiele ich ihn ein.
+    ZUSAMMEN MIT T7 PRUEFEN: dort liegt derselbe Wuerfel im
+    Klartextformat (testcube.msh). Die beiden Tests klaeren dieselbe
+    Frage auf zwei Wegen -- welches Meshformat fuer eigene Modelle
+    taugt. Scheitert der eine, ist der andere der zweite Versuch.
+    Hintergrund: mod_docu\eigene_3d_modelle.txt
+
+--------------------------------------------------------------------------------
+T4  LEVELVORLAGE FUER NACHTSCHICHT                         LIEGT BEREIT
+--------------------------------------------------------------------------------
+    Was:     mod_docu\nachtschicht_level_vorlage.lua
+             Bausteine fuer Objekte, Schiffe, Pfade, Zonen, Tore, dazu
+             ein Wachschiff mit VesselAttackLib.GuardArea
+    Frage:   Greifen die aus AN2-Quelltext abgeleiteten Aufrufe in AN1?
+             Vor allem GuardArea mit seinen drei Zonen.
+    Jeder benutzte Name ist gegen AN1 geprueft, im Spiel getestet ist
+    nichts davon.
+
+--------------------------------------------------------------------------------
+T5  LEVELPORTIERUNG NACH AQUANOX 2                         WERKZEUG BEREIT
+--------------------------------------------------------------------------------
+    Was:     python mod_docu\tools\level_an1_to_an2.py build mp_13 data5.pak
+             dann nach Aquanox2Relevation\pak\ kopieren (Ordner sichern!)
+    Frage:   Nimmt AN2 ein AquaNox-1-Level an?
+    Hintergrund: AN2 hat eine fest eingebaute Kartenliste, die genau
+             AN1s Multiplayer-Level nennt -- und liefert keines davon mit.
+             aquanox2_analyse_handoff_v2.txt Abschnitt 5.
+    NICHT AUSGEFUEHRT, weil es in den AquaNox-2-Ordner schreibt.
+
+--------------------------------------------------------------------------------
+T6  DYNAMISCHES LICHT PER SKRIPT STEUERN                    NUR SKRIPT NOETIG
+--------------------------------------------------------------------------------
+    *** WICHTIGE VORKLAERUNG, die die Fragestellung veraendert hat ***
+    Beim Vorbereiten dieses Tests kam heraus: DYNAMISCHES LICHT LAEUFT
+    IM SPIEL BEREITS. Es wird nur nicht per Skript gesetzt, sondern
+    ueber OSD-Eintraege:
+        nod_light      in 11 OSDs -- ALLE Spielerboote haben einen
+                       Scheinwerfer namens "light_player"
+                       (pla_phobocaster, pla_toiler, pla_avenger,
+                       pla_skipjack, pla_tiburon, pla_vortex,
+                       pla_succubus2, pla_voodoobreath,
+                       pla_drowsymaggie, hi_phobocaster, cra_raupe)
+        nod_fx_light   in 27 OSDs -- jede Explosion hat ein Licht
+                       namens "illuminate" (fx_exp_dying1..19 u.a.)
+    Man SIEHT dynamisches Licht also in jeder Spielminute. Die Frage
+    ist nicht mehr, ob die Engine es kann, sondern ob man es per
+    SKRIPT anlegen und schalten kann -- denn die sechs Light_-Kommandos
+    benutzt kein Originalskript.
+
+    SO SIEHT EINE ORIGINALDEFINITION AUS (aus pla_phobocaster~.osd):
+        child0
+          namecla  = nod_light
+          nameson  = light_player
+          [localcs]
+            translation, rotation0, rotation1, rotation2
+          [visual]
+            type          = omnifast
+            rgb           = r, g, b
+            range         = zwei Werte (entspricht R1 und R2)
+            apertureangle = Oeffnungswinkel
+            intensity     = Staerke
+    Und aus fx_exp_dying10~.osd (Explosionslicht):
+          namecla = nod_fx_light   nameson = illuminate
+          [visual]  type = omni    rgb = ...    range = ...
+          [life]    time = kurz    <- Lichtblitz mit Lebensdauer
+
+    ZWEI WEGE, IN DIESER REIHENFOLGE ZU PROBIEREN:
+
+    WEG A -- der sichere: OSD-Weg, weil die Originale ihn gehen.
+        Ein eigenes Objekt-OSD anlegen, das als child ein nod_light
+        traegt, mit den Feldern oben. Dann per NS_Prop platzieren.
+        Danach ueber Node_Find das Licht holen und mit
+        Light_Switch(licht, 0/1) schalten -- das ist der eigentliche
+        Test: greift das Kommando auf ein OSD-erzeugtes Licht?
+
+    WEG B -- der interessantere: rein per Skript.
+        local licht = Node_CreateNode("nod_fx_light", "testlicht")
+        Node_AddSon(Node_Find(Node_Find("/"),
+                    "Scenario_Dynamic/Object"), licht)
+        Body_SetCS(licht, MAT_Vector3(x,y,z), MAT_Vector3(0,0,0))
+        Light_SetMode(licht, "omni")
+        Light_SetColor(licht, MAT_Vector3(1.0,0.8,0.4),
+                              MAT_Vector3(1.0,0.8,0.4))
+        Light_SetR1(licht, 5.0)
+        Light_SetR2(licht, 40.0)
+        Node_EnterSimulation(licht)
+        Light_Switch(licht, 1)
+      ACHTUNG bei der Klassenwahl: die EXE enthaelt den Hinweis
+      "Legacy class use NOD_FX_Light instead" -- NOD_Light ist die
+      VERALTETE Fassung. Also mit "nod_fx_light" anfangen, nicht mit
+      "nod_light".
+      Moegliche Huerde: die Meldungen 'light "%s" no type given' und
+      "Illegal Light type read" deuten darauf, dass der Typ schon beim
+      Anlegen bekannt sein muss. Falls Weg B scheitert, ist Weg A der
+      Beweis, dass es an der Erzeugung liegt, nicht am Licht selbst.
+
+    WAS DER TEST BRINGT: Wenn Light_Switch und Light_SetColor auf ein
+    Licht greifen, sind Suchscheinwerfer, blinkende Warnlichter und
+    flackernde Wracks fuer Nachtschicht sofort verfuegbar -- und zwar
+    steuerbar, nicht nur dekorativ.
+
+    OBERGRENZE: vier Lichter je Objekt (25 Vertexshader in fuenf
+    Fassungen, Abschnitt 137/139e). Keine Hardwaregrenze, sondern
+    eincompiliert.
+
+    IDEALER FALL FUER DEN HOT-RELOAD (Abschnitt 119): Farbe, Radien und
+    Modus im laufenden Spiel aendern, ohne Neustart. Datei speichern,
+    hinsehen, wieder aendern.
+
+    Hintergrund: mod_docu\aquanox_levelwelt.txt Abschnitt 3,
+                 mod_docu\aquanox_beleuchtung.txt
+
+--------------------------------------------------------------------------------
+T7  NIMMT DIE ENGINE .msh AUCH FUER OBJEKTE?            NUR EINE DATEI NOETIG
+--------------------------------------------------------------------------------
+    Hintergrund: .msh ist Massives Klartext-Meshformat -- der
+             3ds-Max-Export, den der Editor SED eingelesen hat
+             (Abschnitt 139g). Die Engine liest ihn DIREKT, ohne
+             Kompilierung: Aqua.exe fuehrt ".msh" samt konkreter Namen,
+             und vfx\menu\menu.des (31x) sowie vfx\hud\hud.des (7x)
+             verweisen darauf. Alle 41 vorhandenen .msh sind aber
+             HUD und Menue -- KEINE einzige ist ein Levelobjekt.
+    Frage:   Laedt Node_ParseIniFile ein OSD, dessen namemesh auf eine
+             .msh statt einer .msb zeigt?
+    WARUM DAS INTERESSANT IST: .msh ist LESBARER TEXT und traegt MEHR
+             Materialdaten als das kompilierte .msb -- Specular, Shine,
+             Opacity, Transparenzart, Schattierungsmodell. Im .msb
+             bleiben davon nur zwei Texturslots je Block uebrig.
+             Faellt der Test positiv aus, koennte man eigene Modelle
+             mit einem Texteditor schreiben, statt Binaerformat zu
+             erzeugen -- und haette nebenbei Zugriff auf
+             Materialeigenschaften, die uns bisher fehlen.
+
+    *** DIE DATEI LIEGT FERTIG BEREIT: mod_docu\testcube.msh ***
+             3.409 B, 8 Vertices, 12 Polygone, Kantenlaenge 5, Textur
+             gen_metal1_0 -- also derselbe Wuerfel wie T3, nur im
+             anderen Format. Erzeugt mit dem neuen Werkzeug
+             mod_docu\tools\msh_write.py.
+             Beide Wuerfel liegen nebeneinander:
+                 mod_docu\testcube.msb   1.302 B   (T3)
+                 mod_docu\testcube.msh   3.409 B   (T7)
+    SO GEHT ES: testcube.msh nach vfx\msh\ in die PAK legen und in
+             einem OSD
+                 namemesh = testcube.msh
+             eintragen statt .msb. Dann wie T3 platzieren.
+    Der Writer ist gegen die Originale geprueft: alle 21
+             Materialfelder und alle 9 Polygonfelder stimmen mit
+             hud_repair.msh ueberein, Abschnittsaufbau identisch.
+             Was NICHT geprueft ist, ist die Annahme durch die Engine.
+    Aufbau der Datei:
+             [_SED_Detail] { DetailNumber, DetailCount }
+             [Vertex]   { NumOfV = n   V0 = x, y, z   ... }
+             [Material] { NumOfM = n   [SortOrder] { M0 = 0 ... }
+                          [M0] { Name, Diffuse, Specular, Shine,
+                                 ShineStrength, Opacity,
+                                 ShadingType = "Blinn", FalloffType,
+                                 FalloffFactor, OneSided,
+                                 SelfIllumination, TrancparencyType,
+                                 DepthBias, DepthBuffered,
+                                 [Map_Diffuse] { Name, Amount, Bitmap,
+                                   MappingType, TilingU, TilingV,
+                                   Filter } } }
+             [Polygon]  { NumOfP = n
+                          [P0] { G, M, _SED_Mark, V0, V1, V2,
+                                 P0 = u,v   P1 = u,v   P2 = u,v } }
+             G ist die GLAETTUNGSGRUPPE -- das bestaetigt nebenbei die
+             Deutung des hi-Bytes im .msb-Dreiecksflag (Abschnitt 126).
+             TrancparencyType kennt "Filter", "Additive" und
+             "DESTCOLOR_ZERO" (Schreibfehler steht so im Original).
+    Bemerkenswert: die UV-Koordinaten stehen JE ECKE im Polygon, nicht
+             am Vertex wie im .msb. Das Format kann also UV-Naehte ohne
+             Vertexverdopplung -- eleganter als das kompilierte Format.
+    ZUSAMMENHANG MIT T3: falls der Testwuerfel als .msb scheitert, ist
+             .msh der zweite Weg zum selben Ziel. Beide Tests
+             zusammen klaeren, welcher Weg fuer eigene Modelle taugt.
+    Hintergrund: mod_docu\aquanox_sed_editor.txt Abschnitt 6
+
+--------------------------------------------------------------------------------
+SICHERUNGEN
+--------------------------------------------------------------------------------
+    dat\pak\aquanox6.pak.bak-vor-atl_police      Stand vor allen Mesh-Tests
+    dat\pak\aquanox6.pak-vor-chatgpt             aelterer Stand
+    mod_docu\aquanox1_message_ids.json.bak-vor-waypointfix
+
+================================================================================
+
+--------------------------------------------------------------------------------
+T14 LEERER .col-BAUM -- nimmt die Engine ihn an?                 (aus C11)
+--------------------------------------------------------------------------------
+    Warum:   Der Beschleunigungsbaum in .col hat variable Groesse und
+             ist nicht geknackt. Wenn die Engine einen leeren Baum
+             annimmt und auf lineare Suche zurueckfaellt, brauchen wir
+             ihn gar nicht.
+    Was tun: Eine .col mit Permutationsliste, aber leerem Baumteil
+             bauen und ein Objekt damit ins Spiel bringen.
+    Achtung: In Aqua.exe steht KEIN Hinweis auf einen Rueckfall.
+             Absturz ist ein moegliches Ergebnis -- vorher sichern.
+    Ergebnis: nimmt sie ihn an, faellt eine ganze Baustelle weg.
+
+--------------------------------------------------------------------------------
+T15 NumOfMission ERHOEHEN -- liest die Engine den Wert wirklich?  (aus C10)
+--------------------------------------------------------------------------------
+    Warum:   dat\sty\mission_d.des registriert die 30 Kampagnen-
+             missionen. Ist die 30 fest verdrahtet oder wird
+             NumOfMission gelesen? Davon haengt ab, ob Nachtschicht
+             als eigene Missionen antritt oder Originale ersetzen muss.
+    Was tun: NumOfMission = 31 setzen, [Mission30] mit Key = 31 und
+             EngineScript auf eine KOPIE einer Originalmission zeigen
+             lassen. Dann im Menue nachsehen, ob 31 Eintraege da sind.
+    Ergebnis: Wenn ja, ist der Weg fuer sieben eigene Missionen frei.
+             Wenn nein, muessen wir Originale ueberschreiben.
+
+--------------------------------------------------------------------------------
+T16 LAEUFT DER MEHRSPIELERMODUS NOCH?                            (aus C18)
+--------------------------------------------------------------------------------
+    Warum:   AquaNox 1 traegt einen vollstaendigen Mehrspieler-
+             Unterbau: 49 ANT-Netzwerkklassen, DirectPlay8, Team-
+             Deathmatch, Capture the Flag, Sprachuebertragung, und
+             fertig gesetzte Menues (multiplayer.des, network.des,
+             serverlist.des, startserver.des, control_mp~.des).
+             Ob davon im GOG-Stand etwas erreichbar ist: ungeprueft.
+    Was tun: Hauptmenue oeffnen und nachsehen, ob ein Mehrspieler-
+             Eintrag da ist. Falls ja: "Start server" versuchen und
+             mit einer zweiten Instanz auf localhost verbinden.
+    Achtung: DirectPlay8 ist unter Windows 11 nicht mehr standard-
+             maessig installiert. Ein Fehlschlag beweist also nichts
+             ueber das Spiel, nur ueber das Betriebssystem.
+    Ergebnis: Fuer Nachtschicht nicht noetig, aber maplist~.des zeigt,
+             dass Kartenlisten aus Textdateien kommen -- derselbe
+             Mechanismus wie mission_d.des.
+
+--------------------------------------------------------------------------------
+T7 PRAEZISIERT -- .msh statt .msb                       (aus C16, bessere Lage)
+--------------------------------------------------------------------------------
+    NEU:     Die OSDs verweisen in ALLEN 1.650 Faellen auf .msh,
+             obwohl im Spiel die .msb liegt -- die Engine ersetzt die
+             Endung selbst. Der Name im OSD stimmt also schon.
+    Was tun: testcube.msh nach vfx\msh\ legen, im OSD
+             namemesh = testcube.msh eintragen -- und KEINE
+             testcube.msb danebenlegen, sonst gewinnt die.
+
+--------------------------------------------------------------------------------
+T14 PRAEZISIERT -- LEERE .col-DATEIEN GIBT ES IM ORIGINAL       (aus D9)
+--------------------------------------------------------------------------------
+    NEU:     Drei Originaldateien sind 0 Byte gross und das Spiel
+             laeuft damit:
+                 vfx\col\gen_diver.col
+                 vfx\col\gun_doomortar.col
+                 vfx\col\gun_plasmagatlin.col
+    Was tun: Fuer ein eigenes Modell ZUERST eine 0-Byte-.col anlegen
+             (nicht: eine mit leerem Baum) und sehen, ob es laedt.
+             Das ist der belegte Weg, kein Versuch ins Blaue.
+    Offen:   Ob die Engine auch eine .col mit Kopf aber leerem Baum
+             annimmt, ist damit NICHT beantwortet. Fuer den Zweck
+             ist es aber gleichgueltig.
+
+--------------------------------------------------------------------------------
+T17 DER LIGHTMAP-SLOT -- der neue Verdacht beim Modellimport    (aus D8)
+--------------------------------------------------------------------------------
+    Warum:   Byte 8 ist als Ursache ausgeschieden (14.674 von 14.675
+             AN1-Slots haben dort 0, auch die portierte Datei). Der
+             naechste Verdaechtige: ein Material besteht aus ZWEI
+             Slots zu je 80 B, und der zweite traegt in echten
+             AN1-Dateien Flag 0x0200 und den Namen "lightmapN".
+             msb_write.py schreibt dort 0x0000 und einen LEEREN Namen.
+    Was tun: In msb_write.py _slot(0x0000, "") ersetzen durch
+             _slot(0x0200, "lightmap0"), das Testschiff neu bauen und
+             im Spiel ansehen.
+    Ergebnis: Wenn das Schiff dann richtig aussieht, ist der
+             Modellimport geloest -- und der Weg fuer eigene Modelle
+             endgueltig frei.
+
+--------------------------------------------------------------------------------
+T18 EIGENER SCHNELLGEFECHT-EINTRAG als Testrahmen              (aus D10)
+--------------------------------------------------------------------------------
+    Warum:   dat\menu\instantfightlist~.des listet acht Gefechte mit
+             numofentry, fightname und path -- derselbe Aufbau wie
+             mission_d.des. Ein eigener Eintrag startet ein Skript
+             DIREKT, ohne Kampagne und ohne Speicherstand. Das waere
+             der schnellste Testrahmen fuer alles Weitere.
+    Was tun: numofentry auf 9 setzen, entry8 mit fightname
+             "< Nachtschicht Test >" und path auf eine Kopie einer
+             Originalmission zeigen lassen.
+    Nebenbei: Die Eintraege 4 bis 6 zeigen, dass Einzelspieler-
+             Skripte in MEHRSPIELER-Kartenordnern liegen duerfen
+             (sp_narrow in map\mp_06_dm\). Die Ordnerstruktur ist
+             also freier als gedacht.
+
+--------------------------------------------------------------------------------
+T17 PRAEZISIERT -- DER LIGHTMAP-NAME IST GEKLAERT                (aus E5)
+--------------------------------------------------------------------------------
+    NEU:     "lightmap6" im zweiten Materialslot ist ein DATEINAME
+             ohne Endung. Die Texturen liegen unter
+                 map\<Level>\Ltex\lightmap0.dds .. lightmap16.dds
+             209 Stueck im ganzen Spiel; 1N1 hat vier. Der Pfad
+             kommt aus dem __InitLayout jeder Mission:
+                 Game_SetLightCache(node, "map/1N1/Lmsh/",
+                                          "map/1N1/Ltex/")
+    Was tun: In msb_write.py _slot(0x0000, "") ersetzen durch
+             _slot(0x0200, "lightmap0") -- der Name muss auf eine
+             Textur zeigen, die im Ltex-Ordner DES LEVELS liegt,
+             in dem das Objekt erscheinen soll.
+    Variante B: Bewegliche Objekte (Schiffe) haben keine Lightmap.
+             Wenn Variante A scheitert, ist zu pruefen, wie ein
+             nod_vessel seinen zweiten Slot fuellt -- dort steht
+             moeglicherweise etwas anderes als bei Kulisse.
+    Ergebnis: Loest das den Modellimport, ist der Weg fuer eigene
+             Modelle endgueltig frei.
+
+--------------------------------------------------------------------------------
+T19 EIGENE KAMPAGNENKETTE IN option~.des                        (aus E1)
+--------------------------------------------------------------------------------
+    Warum:   dat\sty\option~.des steuert die ganze Kampagne: 309
+             Optionen, verkettet ueber AddOption. Fuer Nachtschicht
+             muessen dort sieben mission-Optionen entstehen.
+             ACHTUNG: die Datei ist im GEKOCHTEN .des-Binaerformat,
+             nicht Klartext -- anders als mission_d.des und
+             station_d.des. descook.py liest den Kopf, aber noch
+             nicht den Inhalt.
+    Was tun: ZUERST pruefen, ob die Engine auch eine KLARTEXT-Fassung
+             von option~.des annimmt (so wie mission_d.des eine ist).
+             Falls ja, ist der Rest einfach. Falls nein, muss
+             descook.py zum Schreiben ertuechtigt werden.
+    Ergebnis: Ohne diesen Schritt laesst sich Nachtschicht nur als
+             Schnellgefecht spielen (T18), nicht als Kampagne.

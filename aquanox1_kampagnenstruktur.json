@@ -1,0 +1,5084 @@
+{
+ "titel": "AquaNox 1 -- die Kampagnenstruktur",
+ "beschreibung": "dat/sty/option~.des ist der Zustandsautomat der Kampagne. Jede Option hat einen Typ (dialog, briefing, mission, station, movie, clip, quitgame), einen eigenen key, einen typekey (der auf den Eintrag der jeweiligen Tabelle verweist -- bei type=mission auf den Key in mission_d.des) und eine Liste von Kommandos, die andere Optionen freischalten (AddOption), entfernen (SubOption), aktivieren/deaktivieren oder Geld geben (AddCredit).",
+ "anzahl_optionen": 309,
+ "optionen_nach_typ": {
+  "dialog": 206,
+  "station": 23,
+  "mission": 32,
+  "movie": 6,
+  "clip": 1,
+  "briefing": 40,
+  "quitgame": 1
+ },
+ "optionen": [
+  {
+   "option": 0,
+   "type": "dialog",
+   "key": 1,
+   "typekey": 1,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    1,
+    2000,
+    1000,
+    2,
+    148,
+    150,
+    155
+   ]
+  },
+  {
+   "option": 1,
+   "type": "station",
+   "key": 1000,
+   "typekey": 3,
+   "commands": [],
+   "command_keys": [
+    3
+   ]
+  },
+  {
+   "option": 2,
+   "type": "dialog",
+   "key": 2,
+   "typekey": 2,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    2,
+    3,
+    139,
+    149
+   ]
+  },
+  {
+   "option": 3,
+   "type": "dialog",
+   "key": 3,
+   "typekey": 3,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    3,
+    4
+   ]
+  },
+  {
+   "option": 4,
+   "type": "dialog",
+   "key": 4,
+   "typekey": 4,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    4,
+    2001,
+    1001,
+    1002
+   ]
+  },
+  {
+   "option": 5,
+   "type": "mission",
+   "key": 1001,
+   "typekey": 1,
+   "commands": [
+    "SubOption",
+    "AddOption",
+    "SubOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    1,
+    139,
+    5,
+    149,
+    153
+   ]
+  },
+  {
+   "option": 6,
+   "type": "station",
+   "key": 1002,
+   "typekey": 2,
+   "commands": [],
+   "command_keys": [
+    2
+   ]
+  },
+  {
+   "option": 7,
+   "type": "dialog",
+   "key": 5,
+   "typekey": 5,
+   "commands": [
+    "AddOption",
+    "AddCredit"
+   ],
+   "command_keys": [
+    5,
+    6
+   ]
+  },
+  {
+   "option": 8,
+   "type": "dialog",
+   "key": 6,
+   "typekey": 6,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    6,
+    2002,
+    1004,
+    1003,
+    140,
+    141
+   ]
+  },
+  {
+   "option": 9,
+   "type": "station",
+   "key": 1003,
+   "typekey": 4,
+   "commands": [],
+   "command_keys": [
+    4
+   ]
+  },
+  {
+   "option": 10,
+   "type": "mission",
+   "key": 1004,
+   "typekey": 2,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    2,
+    7,
+    157,
+    158
+   ]
+  },
+  {
+   "option": 11,
+   "type": "dialog",
+   "key": 7,
+   "typekey": 7,
+   "commands": [
+    "AddOption",
+    "AddCredit"
+   ],
+   "command_keys": [
+    7,
+    8
+   ]
+  },
+  {
+   "option": 12,
+   "type": "dialog",
+   "key": 8,
+   "typekey": 8,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    8,
+    9
+   ]
+  },
+  {
+   "option": 13,
+   "type": "dialog",
+   "key": 9,
+   "typekey": 9,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    9
+   ]
+  },
+  {
+   "option": 14,
+   "type": "dialog",
+   "key": 2003,
+   "typekey": null,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    1006,
+    1005
+   ]
+  },
+  {
+   "option": 15,
+   "type": "station",
+   "key": 1005,
+   "typekey": 2,
+   "commands": [],
+   "command_keys": [
+    2
+   ]
+  },
+  {
+   "option": 16,
+   "type": "mission",
+   "key": 1006,
+   "typekey": 3,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    3,
+    11,
+    143,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159
+   ]
+  },
+  {
+   "option": 17,
+   "type": "dialog",
+   "key": 11,
+   "typekey": 11,
+   "commands": [
+    "AddOption",
+    "AddCredit"
+   ],
+   "command_keys": [
+    11,
+    12
+   ]
+  },
+  {
+   "option": 18,
+   "type": "dialog",
+   "key": 12,
+   "typekey": 12,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    12,
+    2004,
+    1008,
+    1007,
+    143
+   ]
+  },
+  {
+   "option": 19,
+   "type": "station",
+   "key": 1007,
+   "typekey": 3,
+   "commands": [],
+   "command_keys": [
+    3
+   ]
+  },
+  {
+   "option": 20,
+   "type": "mission",
+   "key": 1008,
+   "typekey": 4,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    4,
+    13,
+    159,
+    161
+   ]
+  },
+  {
+   "option": 21,
+   "type": "dialog",
+   "key": 13,
+   "typekey": 13,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    13,
+    14,
+    145,
+    160
+   ]
+  },
+  {
+   "option": 22,
+   "type": "dialog",
+   "key": 14,
+   "typekey": 14,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    14,
+    2005,
+    1009,
+    15
+   ]
+  },
+  {
+   "option": 23,
+   "type": "station",
+   "key": 1009,
+   "typekey": 1,
+   "commands": [],
+   "command_keys": [
+    1
+   ]
+  },
+  {
+   "option": 24,
+   "type": "dialog",
+   "key": 15,
+   "typekey": 15,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    15,
+    16
+   ]
+  },
+  {
+   "option": 25,
+   "type": "dialog",
+   "key": 16,
+   "typekey": 16,
+   "commands": [
+    "SubAllOptions",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    16,
+    2006,
+    1011,
+    1010
+   ]
+  },
+  {
+   "option": 26,
+   "type": "station",
+   "key": 1010,
+   "typekey": 13,
+   "commands": [],
+   "command_keys": [
+    13
+   ]
+  },
+  {
+   "option": 27,
+   "type": "movie",
+   "key": 1011,
+   "typekey": 2,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    2,
+    17,
+    162,
+    174
+   ]
+  },
+  {
+   "option": 28,
+   "type": "dialog",
+   "key": 139,
+   "typekey": 139,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    139,
+    140
+   ]
+  },
+  {
+   "option": 29,
+   "type": "dialog",
+   "key": 140,
+   "typekey": 140,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    140,
+    2007,
+    6,
+    1012,
+    1002
+   ]
+  },
+  {
+   "option": 30,
+   "type": "mission",
+   "key": 1012,
+   "typekey": 5,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    5,
+    141
+   ]
+  },
+  {
+   "option": 31,
+   "type": "dialog",
+   "key": 141,
+   "typekey": 141,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    141,
+    142,
+    6
+   ]
+  },
+  {
+   "option": 32,
+   "type": "dialog",
+   "key": 142,
+   "typekey": 142,
+   "commands": [
+    "AddCredit"
+   ],
+   "command_keys": [
+    142
+   ]
+  },
+  {
+   "option": 33,
+   "type": "dialog",
+   "key": 143,
+   "typekey": 143,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    143,
+    2008,
+    12,
+    1013,
+    1002
+   ]
+  },
+  {
+   "option": 34,
+   "type": "mission",
+   "key": 1013,
+   "typekey": 6,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    6,
+    144,
+    12
+   ]
+  },
+  {
+   "option": 35,
+   "type": "dialog",
+   "key": 144,
+   "typekey": 144,
+   "commands": [
+    "AddCredit"
+   ],
+   "command_keys": [
+    144
+   ]
+  },
+  {
+   "option": 36,
+   "type": "dialog",
+   "key": 145,
+   "typekey": 145,
+   "commands": [],
+   "command_keys": [
+    145
+   ]
+  },
+  {
+   "option": 37,
+   "type": "dialog",
+   "key": 148,
+   "typekey": 148,
+   "commands": [],
+   "command_keys": [
+    148
+   ]
+  },
+  {
+   "option": 38,
+   "type": "dialog",
+   "key": 149,
+   "typekey": 149,
+   "commands": [],
+   "command_keys": [
+    149
+   ]
+  },
+  {
+   "option": 39,
+   "type": "dialog",
+   "key": 150,
+   "typekey": 150,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    150,
+    151
+   ]
+  },
+  {
+   "option": 40,
+   "type": "dialog",
+   "key": 151,
+   "typekey": 151,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    151,
+    152
+   ]
+  },
+  {
+   "option": 41,
+   "type": "dialog",
+   "key": 152,
+   "typekey": 152,
+   "commands": [],
+   "command_keys": [
+    152
+   ]
+  },
+  {
+   "option": 42,
+   "type": "dialog",
+   "key": 153,
+   "typekey": 153,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    153,
+    154
+   ]
+  },
+  {
+   "option": 43,
+   "type": "dialog",
+   "key": 154,
+   "typekey": 154,
+   "commands": [],
+   "command_keys": [
+    154
+   ]
+  },
+  {
+   "option": 44,
+   "type": "dialog",
+   "key": 155,
+   "typekey": 155,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    155,
+    156
+   ]
+  },
+  {
+   "option": 45,
+   "type": "dialog",
+   "key": 156,
+   "typekey": 156,
+   "commands": [],
+   "command_keys": [
+    156
+   ]
+  },
+  {
+   "option": 46,
+   "type": "dialog",
+   "key": 157,
+   "typekey": 157,
+   "commands": [],
+   "command_keys": [
+    157
+   ]
+  },
+  {
+   "option": 47,
+   "type": "dialog",
+   "key": 158,
+   "typekey": 158,
+   "commands": [],
+   "command_keys": [
+    158
+   ]
+  },
+  {
+   "option": 48,
+   "type": "dialog",
+   "key": 159,
+   "typekey": 159,
+   "commands": [],
+   "command_keys": [
+    159
+   ]
+  },
+  {
+   "option": 49,
+   "type": "dialog",
+   "key": 160,
+   "typekey": 160,
+   "commands": [],
+   "command_keys": [
+    160
+   ]
+  },
+  {
+   "option": 50,
+   "type": "dialog",
+   "key": 161,
+   "typekey": 161,
+   "commands": [],
+   "command_keys": [
+    161
+   ]
+  },
+  {
+   "option": 51,
+   "type": "dialog",
+   "key": 17,
+   "typekey": 17,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    17,
+    18
+   ]
+  },
+  {
+   "option": 52,
+   "type": "dialog",
+   "key": 18,
+   "typekey": 18,
+   "commands": [
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    18,
+    19,
+    162
+   ]
+  },
+  {
+   "option": 53,
+   "type": "dialog",
+   "key": 19,
+   "typekey": 19,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    19,
+    2009,
+    1100,
+    20,
+    170,
+    175
+   ]
+  },
+  {
+   "option": 54,
+   "type": "station",
+   "key": 1100,
+   "typekey": 11,
+   "commands": [],
+   "command_keys": [
+    11
+   ]
+  },
+  {
+   "option": 55,
+   "type": "dialog",
+   "key": 20,
+   "typekey": 20,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    20,
+    21
+   ]
+  },
+  {
+   "option": 56,
+   "type": "dialog",
+   "key": 21,
+   "typekey": 21,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    21,
+    22
+   ]
+  },
+  {
+   "option": 57,
+   "type": "dialog",
+   "key": 22,
+   "typekey": 22,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    22,
+    23,
+    163,
+    164,
+    165,
+    167
+   ]
+  },
+  {
+   "option": 58,
+   "type": "dialog",
+   "key": 23,
+   "typekey": 23,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    23,
+    24
+   ]
+  },
+  {
+   "option": 59,
+   "type": "dialog",
+   "key": 24,
+   "typekey": 24,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    24,
+    25,
+    177
+   ]
+  },
+  {
+   "option": 60,
+   "type": "dialog",
+   "key": 25,
+   "typekey": 25,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    25,
+    26,
+    165,
+    166
+   ]
+  },
+  {
+   "option": 61,
+   "type": "dialog",
+   "key": 26,
+   "typekey": 26,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    26,
+    27
+   ]
+  },
+  {
+   "option": 62,
+   "type": "dialog",
+   "key": 27,
+   "typekey": 27,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    27,
+    2010,
+    1101,
+    1102
+   ]
+  },
+  {
+   "option": 63,
+   "type": "mission",
+   "key": 1101,
+   "typekey": 7,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    7,
+    28,
+    170,
+    171,
+    172,
+    175,
+    177,
+    176
+   ]
+  },
+  {
+   "option": 64,
+   "type": "station",
+   "key": 1102,
+   "typekey": null,
+   "commands": [],
+   "command_keys": []
+  },
+  {
+   "option": 65,
+   "type": "dialog",
+   "key": 28,
+   "typekey": 28,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    28,
+    2011,
+    1103,
+    1102,
+    168
+   ]
+  },
+  {
+   "option": 66,
+   "type": "mission",
+   "key": 1103,
+   "typekey": 8,
+   "commands": [
+    "AddOption",
+    "ActivateOption",
+    "AddOption",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    8,
+    29,
+    168,
+    173,
+    168
+   ]
+  },
+  {
+   "option": 67,
+   "type": "dialog",
+   "key": 29,
+   "typekey": 29,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    29,
+    30,
+    167,
+    168,
+    169
+   ]
+  },
+  {
+   "option": 68,
+   "type": "dialog",
+   "key": 30,
+   "typekey": 30,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    30,
+    2012,
+    1104,
+    1102
+   ]
+  },
+  {
+   "option": 69,
+   "type": "mission",
+   "key": 1104,
+   "typekey": 9,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    9,
+    31
+   ]
+  },
+  {
+   "option": 70,
+   "type": "dialog",
+   "key": 31,
+   "typekey": 31,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    31,
+    32
+   ]
+  },
+  {
+   "option": 71,
+   "type": "dialog",
+   "key": 32,
+   "typekey": 32,
+   "commands": [
+    "SubAllOptions",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    32,
+    2013,
+    1106,
+    1105
+   ]
+  },
+  {
+   "option": 72,
+   "type": "station",
+   "key": 1105,
+   "typekey": 6,
+   "commands": [],
+   "command_keys": [
+    6
+   ]
+  },
+  {
+   "option": 73,
+   "type": "movie",
+   "key": 1106,
+   "typekey": 3,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    3,
+    33,
+    180,
+    189
+   ]
+  },
+  {
+   "option": 74,
+   "type": "dialog",
+   "key": 162,
+   "typekey": 162,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    162,
+    163
+   ]
+  },
+  {
+   "option": 75,
+   "type": "dialog",
+   "key": 163,
+   "typekey": 163,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    163,
+    2014,
+    1107,
+    1100,
+    22
+   ]
+  },
+  {
+   "option": 76,
+   "type": "mission",
+   "key": 1107,
+   "typekey": null,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    164
+   ]
+  },
+  {
+   "option": 77,
+   "type": "dialog",
+   "key": 164,
+   "typekey": 164,
+   "commands": [
+    "AddCredit",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    164,
+    22
+   ]
+  },
+  {
+   "option": 78,
+   "type": "dialog",
+   "key": 165,
+   "typekey": 165,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    165,
+    2015,
+    1108,
+    1100,
+    25
+   ]
+  },
+  {
+   "option": 79,
+   "type": "mission",
+   "key": 1108,
+   "typekey": 11,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    11,
+    166
+   ]
+  },
+  {
+   "option": 80,
+   "type": "dialog",
+   "key": 166,
+   "typekey": 166,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    166,
+    25
+   ]
+  },
+  {
+   "option": 81,
+   "type": "dialog",
+   "key": 167,
+   "typekey": 167,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    167,
+    168
+   ]
+  },
+  {
+   "option": 82,
+   "type": "dialog",
+   "key": 168,
+   "typekey": 168,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption",
+    "DeactivateOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    168,
+    2016,
+    1109,
+    1102,
+    28,
+    1103,
+    29
+   ]
+  },
+  {
+   "option": 83,
+   "type": "mission",
+   "key": 1109,
+   "typekey": 12,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    12,
+    169
+   ]
+  },
+  {
+   "option": 84,
+   "type": "dialog",
+   "key": 169,
+   "typekey": 169,
+   "commands": [
+    "AddCredit",
+    "ActivateOption",
+    "ActivateOption",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    169,
+    28,
+    1103,
+    29
+   ]
+  },
+  {
+   "option": 85,
+   "type": "dialog",
+   "key": 170,
+   "typekey": 170,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    170,
+    171
+   ]
+  },
+  {
+   "option": 86,
+   "type": "dialog",
+   "key": 171,
+   "typekey": 171,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    171,
+    172
+   ]
+  },
+  {
+   "option": 87,
+   "type": "dialog",
+   "key": 172,
+   "typekey": 172,
+   "commands": [],
+   "command_keys": [
+    172
+   ]
+  },
+  {
+   "option": 88,
+   "type": "dialog",
+   "key": 173,
+   "typekey": 173,
+   "commands": [],
+   "command_keys": [
+    173
+   ]
+  },
+  {
+   "option": 89,
+   "type": "dialog",
+   "key": 174,
+   "typekey": 174,
+   "commands": [],
+   "command_keys": [
+    174
+   ]
+  },
+  {
+   "option": 90,
+   "type": "dialog",
+   "key": 175,
+   "typekey": 175,
+   "commands": [],
+   "command_keys": [
+    175
+   ]
+  },
+  {
+   "option": 91,
+   "type": "dialog",
+   "key": 175,
+   "typekey": 175,
+   "commands": [],
+   "command_keys": [
+    175
+   ]
+  },
+  {
+   "option": 92,
+   "type": "dialog",
+   "key": 177,
+   "typekey": 177,
+   "commands": [],
+   "command_keys": [
+    177
+   ]
+  },
+  {
+   "option": 93,
+   "type": "dialog",
+   "key": 176,
+   "typekey": 176,
+   "commands": [],
+   "command_keys": [
+    176
+   ]
+  },
+  {
+   "option": 94,
+   "type": "dialog",
+   "key": 178,
+   "typekey": 178,
+   "commands": [],
+   "command_keys": [
+    178
+   ]
+  },
+  {
+   "option": 95,
+   "type": "dialog",
+   "key": 179,
+   "typekey": 179,
+   "commands": [],
+   "command_keys": [
+    179
+   ]
+  },
+  {
+   "option": 96,
+   "type": "dialog",
+   "key": 33,
+   "typekey": 33,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    33,
+    34
+   ]
+  },
+  {
+   "option": 97,
+   "type": "dialog",
+   "key": 34,
+   "typekey": 34,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    34,
+    2017,
+    1200,
+    35,
+    196,
+    197
+   ]
+  },
+  {
+   "option": 98,
+   "type": "station",
+   "key": 1200,
+   "typekey": 9,
+   "commands": [],
+   "command_keys": [
+    9
+   ]
+  },
+  {
+   "option": 99,
+   "type": "dialog",
+   "key": 35,
+   "typekey": 35,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    35,
+    36,
+    180,
+    181,
+    189
+   ]
+  },
+  {
+   "option": 100,
+   "type": "dialog",
+   "key": 36,
+   "typekey": 36,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    36,
+    37,
+    198
+   ]
+  },
+  {
+   "option": 101,
+   "type": "dialog",
+   "key": 37,
+   "typekey": 37,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    37,
+    38
+   ]
+  },
+  {
+   "option": 102,
+   "type": "dialog",
+   "key": 38,
+   "typekey": 38,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    38,
+    39
+   ]
+  },
+  {
+   "option": 103,
+   "type": "dialog",
+   "key": 39,
+   "typekey": 39,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    39,
+    40
+   ]
+  },
+  {
+   "option": 104,
+   "type": "dialog",
+   "key": 40,
+   "typekey": 40,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    40,
+    2018,
+    1202,
+    1201,
+    182,
+    183,
+    184
+   ]
+  },
+  {
+   "option": 105,
+   "type": "station",
+   "key": 1201,
+   "typekey": 7,
+   "commands": [],
+   "command_keys": [
+    7
+   ]
+  },
+  {
+   "option": 106,
+   "type": "mission",
+   "key": 1202,
+   "typekey": 13,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    13,
+    41,
+    190,
+    191,
+    193,
+    196,
+    197,
+    198
+   ]
+  },
+  {
+   "option": 107,
+   "type": "dialog",
+   "key": 41,
+   "typekey": 41,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    41,
+    42
+   ]
+  },
+  {
+   "option": 108,
+   "type": "dialog",
+   "key": 42,
+   "typekey": 42,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    42,
+    43
+   ]
+  },
+  {
+   "option": 109,
+   "type": "dialog",
+   "key": 43,
+   "typekey": 43,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    43,
+    44,
+    185
+   ]
+  },
+  {
+   "option": 110,
+   "type": "dialog",
+   "key": 44,
+   "typekey": 44,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    44,
+    45
+   ]
+  },
+  {
+   "option": 111,
+   "type": "dialog",
+   "key": 45,
+   "typekey": 45,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    45,
+    46
+   ]
+  },
+  {
+   "option": 112,
+   "type": "dialog",
+   "key": 46,
+   "typekey": 46,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    46,
+    47
+   ]
+  },
+  {
+   "option": 113,
+   "type": "dialog",
+   "key": 47,
+   "typekey": 47,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    47,
+    2019,
+    1204,
+    1203
+   ]
+  },
+  {
+   "option": 114,
+   "type": "station",
+   "key": 1203,
+   "typekey": 5,
+   "commands": [],
+   "command_keys": [
+    5
+   ]
+  },
+  {
+   "option": 115,
+   "type": "mission",
+   "key": 1204,
+   "typekey": 14,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    14,
+    48,
+    192,
+    193,
+    195,
+    255,
+    256,
+    185
+   ]
+  },
+  {
+   "option": 116,
+   "type": "dialog",
+   "key": 48,
+   "typekey": 48,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    48,
+    49
+   ]
+  },
+  {
+   "option": 117,
+   "type": "dialog",
+   "key": 49,
+   "typekey": 49,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    49,
+    2020,
+    1205,
+    1203
+   ]
+  },
+  {
+   "option": 118,
+   "type": "mission",
+   "key": 1205,
+   "typekey": 15,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    15,
+    50,
+    194,
+    199,
+    255
+   ]
+  },
+  {
+   "option": 119,
+   "type": "dialog",
+   "key": 50,
+   "typekey": 50,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    50,
+    2021,
+    1206,
+    1203
+   ]
+  },
+  {
+   "option": 120,
+   "type": "mission",
+   "key": 1206,
+   "typekey": 16,
+   "commands": [
+    "AddOption",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    16,
+    51,
+    255
+   ]
+  },
+  {
+   "option": 121,
+   "type": "dialog",
+   "key": 51,
+   "typekey": 51,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    51,
+    52
+   ]
+  },
+  {
+   "option": 122,
+   "type": "dialog",
+   "key": 52,
+   "typekey": 52,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    52,
+    53
+   ]
+  },
+  {
+   "option": 123,
+   "type": "dialog",
+   "key": 53,
+   "typekey": 53,
+   "commands": [
+    "SubAllOptions",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    53,
+    2022,
+    1208,
+    1207
+   ]
+  },
+  {
+   "option": 124,
+   "type": "station",
+   "key": 1207,
+   "typekey": 19,
+   "commands": [],
+   "command_keys": [
+    19
+   ]
+  },
+  {
+   "option": 125,
+   "type": "movie",
+   "key": 1208,
+   "typekey": 4,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    4,
+    54,
+    202,
+    217,
+    219,
+    220
+   ]
+  },
+  {
+   "option": 126,
+   "type": "dialog",
+   "key": 180,
+   "typekey": 180,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    180,
+    181
+   ]
+  },
+  {
+   "option": 127,
+   "type": "dialog",
+   "key": 181,
+   "typekey": 181,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    181,
+    182
+   ]
+  },
+  {
+   "option": 128,
+   "type": "dialog",
+   "key": 182,
+   "typekey": 182,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    182,
+    183
+   ]
+  },
+  {
+   "option": 129,
+   "type": "dialog",
+   "key": 183,
+   "typekey": 183,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    183,
+    2023,
+    1209,
+    1200,
+    40
+   ]
+  },
+  {
+   "option": 130,
+   "type": "mission",
+   "key": 1209,
+   "typekey": 17,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    17,
+    184
+   ]
+  },
+  {
+   "option": 131,
+   "type": "dialog",
+   "key": 184,
+   "typekey": 184,
+   "commands": [
+    "AddCredit",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    184,
+    40
+   ]
+  },
+  {
+   "option": 132,
+   "type": "dialog",
+   "key": 185,
+   "typekey": 185,
+   "commands": [],
+   "command_keys": [
+    185
+   ]
+  },
+  {
+   "option": 133,
+   "type": "dialog",
+   "key": 189,
+   "typekey": 189,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    189,
+    190
+   ]
+  },
+  {
+   "option": 134,
+   "type": "dialog",
+   "key": 190,
+   "typekey": 190,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    190,
+    191
+   ]
+  },
+  {
+   "option": 135,
+   "type": "dialog",
+   "key": 191,
+   "typekey": 191,
+   "commands": [],
+   "command_keys": [
+    191
+   ]
+  },
+  {
+   "option": 136,
+   "type": "dialog",
+   "key": 192,
+   "typekey": 192,
+   "commands": [],
+   "command_keys": [
+    192
+   ]
+  },
+  {
+   "option": 137,
+   "type": "dialog",
+   "key": 193,
+   "typekey": 193,
+   "commands": [],
+   "command_keys": [
+    193
+   ]
+  },
+  {
+   "option": 138,
+   "type": "dialog",
+   "key": 194,
+   "typekey": 194,
+   "commands": [],
+   "command_keys": [
+    194
+   ]
+  },
+  {
+   "option": 139,
+   "type": "dialog",
+   "key": 195,
+   "typekey": 195,
+   "commands": [],
+   "command_keys": [
+    195
+   ]
+  },
+  {
+   "option": 140,
+   "type": "dialog",
+   "key": 196,
+   "typekey": 196,
+   "commands": [],
+   "command_keys": [
+    196
+   ]
+  },
+  {
+   "option": 141,
+   "type": "dialog",
+   "key": 197,
+   "typekey": 197,
+   "commands": [],
+   "command_keys": [
+    197
+   ]
+  },
+  {
+   "option": 142,
+   "type": "dialog",
+   "key": 198,
+   "typekey": 198,
+   "commands": [],
+   "command_keys": [
+    198
+   ]
+  },
+  {
+   "option": 143,
+   "type": "dialog",
+   "key": 199,
+   "typekey": 199,
+   "commands": [],
+   "command_keys": [
+    199
+   ]
+  },
+  {
+   "option": 144,
+   "type": "dialog",
+   "key": 200,
+   "typekey": 200,
+   "commands": [],
+   "command_keys": [
+    200
+   ]
+  },
+  {
+   "option": 145,
+   "type": "dialog",
+   "key": 201,
+   "typekey": 201,
+   "commands": [],
+   "command_keys": [
+    201
+   ]
+  },
+  {
+   "option": 146,
+   "type": "dialog",
+   "key": 255,
+   "typekey": 255,
+   "commands": [],
+   "command_keys": [
+    255
+   ]
+  },
+  {
+   "option": 147,
+   "type": "dialog",
+   "key": 256,
+   "typekey": 256,
+   "commands": [],
+   "command_keys": [
+    256
+   ]
+  },
+  {
+   "option": 148,
+   "type": "dialog",
+   "key": 54,
+   "typekey": 54,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    54,
+    55,
+    208
+   ]
+  },
+  {
+   "option": 149,
+   "type": "dialog",
+   "key": 55,
+   "typekey": 55,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    55,
+    56,
+    218
+   ]
+  },
+  {
+   "option": 150,
+   "type": "dialog",
+   "key": 56,
+   "typekey": 56,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    56,
+    57,
+    211,
+    217
+   ]
+  },
+  {
+   "option": 151,
+   "type": "dialog",
+   "key": 57,
+   "typekey": 57,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    57,
+    58
+   ]
+  },
+  {
+   "option": 152,
+   "type": "dialog",
+   "key": 58,
+   "typekey": 58,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    58,
+    2024,
+    1301,
+    1300,
+    202,
+    203,
+    204
+   ]
+  },
+  {
+   "option": 153,
+   "type": "station",
+   "key": 1300,
+   "typekey": 22,
+   "commands": [],
+   "command_keys": [
+    22
+   ]
+  },
+  {
+   "option": 154,
+   "type": "mission",
+   "key": 1301,
+   "typekey": 18,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    18,
+    59,
+    208,
+    209,
+    210,
+    211,
+    215,
+    218
+   ]
+  },
+  {
+   "option": 155,
+   "type": "dialog",
+   "key": 59,
+   "typekey": 59,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    59,
+    60,
+    205
+   ]
+  },
+  {
+   "option": 156,
+   "type": "dialog",
+   "key": 60,
+   "typekey": 60,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    60,
+    61
+   ]
+  },
+  {
+   "option": 157,
+   "type": "dialog",
+   "key": 61,
+   "typekey": 61,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    61,
+    2025,
+    1303,
+    1302,
+    205,
+    206,
+    207
+   ]
+  },
+  {
+   "option": 158,
+   "type": "station",
+   "key": 1302,
+   "typekey": 23,
+   "commands": [],
+   "command_keys": [
+    23
+   ]
+  },
+  {
+   "option": 159,
+   "type": "mission",
+   "key": 1303,
+   "typekey": 19,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    19,
+    62,
+    212,
+    215,
+    216
+   ]
+  },
+  {
+   "option": 160,
+   "type": "dialog",
+   "key": 62,
+   "typekey": 62,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    62,
+    65
+   ]
+  },
+  {
+   "option": 161,
+   "type": "dialog",
+   "key": 65,
+   "typekey": 65,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    65,
+    2026,
+    1305,
+    1304
+   ]
+  },
+  {
+   "option": 162,
+   "type": "station",
+   "key": 1304,
+   "typekey": 19,
+   "commands": [],
+   "command_keys": [
+    19
+   ]
+  },
+  {
+   "option": 163,
+   "type": "mission",
+   "key": 1305,
+   "typekey": 20,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    20,
+    67,
+    213,
+    216,
+    217
+   ]
+  },
+  {
+   "option": 164,
+   "type": "dialog",
+   "key": 67,
+   "typekey": 67,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    67,
+    68,
+    214
+   ]
+  },
+  {
+   "option": 165,
+   "type": "dialog",
+   "key": 68,
+   "typekey": 68,
+   "commands": [
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    68,
+    69,
+    217
+   ]
+  },
+  {
+   "option": 166,
+   "type": "dialog",
+   "key": 69,
+   "typekey": 69,
+   "commands": [
+    "SubAllOptions",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    69,
+    2027,
+    1307,
+    1306
+   ]
+  },
+  {
+   "option": 167,
+   "type": "station",
+   "key": 1306,
+   "typekey": 40,
+   "commands": [
+    "SetSecondStationKey"
+   ],
+   "command_keys": [
+    40,
+    6
+   ]
+  },
+  {
+   "option": 168,
+   "type": "movie",
+   "key": 1307,
+   "typekey": 5,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    5,
+    70,
+    230
+   ]
+  },
+  {
+   "option": 169,
+   "type": "dialog",
+   "key": 202,
+   "typekey": 202,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    202,
+    203
+   ]
+  },
+  {
+   "option": 170,
+   "type": "dialog",
+   "key": 203,
+   "typekey": 203,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    203,
+    2028,
+    1308,
+    1304,
+    58
+   ]
+  },
+  {
+   "option": 171,
+   "type": "mission",
+   "key": 1308,
+   "typekey": 21,
+   "commands": [
+    "AddOption",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    21,
+    204,
+    58
+   ]
+  },
+  {
+   "option": 172,
+   "type": "dialog",
+   "key": 204,
+   "typekey": 204,
+   "commands": [
+    "AddCredit"
+   ],
+   "command_keys": [
+    204
+   ]
+  },
+  {
+   "option": 173,
+   "type": "dialog",
+   "key": 205,
+   "typekey": 205,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    205,
+    206
+   ]
+  },
+  {
+   "option": 174,
+   "type": "dialog",
+   "key": 206,
+   "typekey": 206,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "DeactivateOption"
+   ],
+   "command_keys": [
+    206,
+    2029,
+    1309,
+    1300,
+    61
+   ]
+  },
+  {
+   "option": 175,
+   "type": "mission",
+   "key": 1309,
+   "typekey": 22,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    22,
+    207
+   ]
+  },
+  {
+   "option": 176,
+   "type": "dialog",
+   "key": 207,
+   "typekey": 207,
+   "commands": [
+    "AddCredit",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    207,
+    61
+   ]
+  },
+  {
+   "option": 177,
+   "type": "dialog",
+   "key": 208,
+   "typekey": 208,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    208,
+    209
+   ]
+  },
+  {
+   "option": 178,
+   "type": "dialog",
+   "key": 209,
+   "typekey": 209,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    209,
+    210
+   ]
+  },
+  {
+   "option": 179,
+   "type": "dialog",
+   "key": 210,
+   "typekey": 210,
+   "commands": [],
+   "command_keys": [
+    210
+   ]
+  },
+  {
+   "option": 180,
+   "type": "dialog",
+   "key": 211,
+   "typekey": 211,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    211,
+    212
+   ]
+  },
+  {
+   "option": 181,
+   "type": "dialog",
+   "key": 212,
+   "typekey": 212,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    212,
+    213
+   ]
+  },
+  {
+   "option": 182,
+   "type": "dialog",
+   "key": 213,
+   "typekey": 213,
+   "commands": [],
+   "command_keys": [
+    213
+   ]
+  },
+  {
+   "option": 183,
+   "type": "dialog",
+   "key": 214,
+   "typekey": 214,
+   "commands": [],
+   "command_keys": [
+    214
+   ]
+  },
+  {
+   "option": 184,
+   "type": "dialog",
+   "key": 215,
+   "typekey": 215,
+   "commands": [],
+   "command_keys": [
+    215
+   ]
+  },
+  {
+   "option": 185,
+   "type": "dialog",
+   "key": 216,
+   "typekey": 216,
+   "commands": [],
+   "command_keys": [
+    216
+   ]
+  },
+  {
+   "option": 186,
+   "type": "dialog",
+   "key": 217,
+   "typekey": 217,
+   "commands": [],
+   "command_keys": [
+    217
+   ]
+  },
+  {
+   "option": 187,
+   "type": "dialog",
+   "key": 218,
+   "typekey": 218,
+   "commands": [],
+   "command_keys": [
+    218
+   ]
+  },
+  {
+   "option": 188,
+   "type": "dialog",
+   "key": 219,
+   "typekey": 219,
+   "commands": [],
+   "command_keys": [
+    219
+   ]
+  },
+  {
+   "option": 189,
+   "type": "dialog",
+   "key": 220,
+   "typekey": 220,
+   "commands": [],
+   "command_keys": [
+    220
+   ]
+  },
+  {
+   "option": 190,
+   "type": "dialog",
+   "key": 70,
+   "typekey": 70,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    70,
+    2030,
+    1400,
+    71,
+    223
+   ]
+  },
+  {
+   "option": 191,
+   "type": "station",
+   "key": 1400,
+   "typekey": 41,
+   "commands": [
+    "SetSecondStationKey"
+   ],
+   "command_keys": [
+    41,
+    9
+   ]
+  },
+  {
+   "option": 192,
+   "type": "dialog",
+   "key": 71,
+   "typekey": 71,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    71,
+    72,
+    223,
+    230,
+    233
+   ]
+  },
+  {
+   "option": 193,
+   "type": "dialog",
+   "key": 72,
+   "typekey": 72,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    72,
+    73
+   ]
+  },
+  {
+   "option": 194,
+   "type": "dialog",
+   "key": 73,
+   "typekey": 73,
+   "commands": [
+    "AddOption",
+    "ActivateOption"
+   ],
+   "command_keys": [
+    73,
+    74,
+    231
+   ]
+  },
+  {
+   "option": 195,
+   "type": "dialog",
+   "key": 74,
+   "typekey": 74,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    74,
+    75
+   ]
+  },
+  {
+   "option": 196,
+   "type": "dialog",
+   "key": 75,
+   "typekey": 75,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    75,
+    2031,
+    1402,
+    1401
+   ]
+  },
+  {
+   "option": 197,
+   "type": "station",
+   "key": 1401,
+   "typekey": 42,
+   "commands": [
+    "SetSecondStationKey"
+   ],
+   "command_keys": [
+    42,
+    5
+   ]
+  },
+  {
+   "option": 198,
+   "type": "mission",
+   "key": 1402,
+   "typekey": 23,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    23,
+    76,
+    229,
+    231,
+    233,
+    234,
+    238
+   ]
+  },
+  {
+   "option": 199,
+   "type": "dialog",
+   "key": 76,
+   "typekey": 76,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    76,
+    77,
+    232
+   ]
+  },
+  {
+   "option": 200,
+   "type": "dialog",
+   "key": 77,
+   "typekey": 77,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    77,
+    78
+   ]
+  },
+  {
+   "option": 201,
+   "type": "dialog",
+   "key": 78,
+   "typekey": 78,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    78,
+    79,
+    235
+   ]
+  },
+  {
+   "option": 202,
+   "type": "dialog",
+   "key": 79,
+   "typekey": 79,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    79,
+    80,
+    221
+   ]
+  },
+  {
+   "option": 203,
+   "type": "dialog",
+   "key": 80,
+   "typekey": 80,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    80,
+    2032,
+    1403,
+    1401
+   ]
+  },
+  {
+   "option": 204,
+   "type": "mission",
+   "key": 1403,
+   "typekey": 24,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "ActivateOption",
+    "SubOption",
+    "ActivateOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    24,
+    81,
+    221,
+    222,
+    235,
+    236,
+    237
+   ]
+  },
+  {
+   "option": 205,
+   "type": "dialog",
+   "key": 81,
+   "typekey": 81,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    81,
+    84
+   ]
+  },
+  {
+   "option": 206,
+   "type": "dialog",
+   "key": 84,
+   "typekey": 84,
+   "commands": [
+    "AddCredit",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    84,
+    2033,
+    1404,
+    1401,
+    222
+   ]
+  },
+  {
+   "option": 207,
+   "type": "mission",
+   "key": 1404,
+   "typekey": 25,
+   "commands": [
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    25,
+    85,
+    236
+   ]
+  },
+  {
+   "option": 208,
+   "type": "dialog",
+   "key": 85,
+   "typekey": 85,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    85,
+    86
+   ]
+  },
+  {
+   "option": 209,
+   "type": "dialog",
+   "key": 86,
+   "typekey": 86,
+   "commands": [
+    "AddCredit",
+    "SubAllOptions",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    86,
+    2035,
+    1406,
+    1405
+   ]
+  },
+  {
+   "option": 210,
+   "type": "station",
+   "key": 1405,
+   "typekey": 43,
+   "commands": [
+    "SetSecondStationKey"
+   ],
+   "command_keys": [
+    43,
+    19
+   ]
+  },
+  {
+   "option": 211,
+   "type": "movie",
+   "key": 1406,
+   "typekey": 6,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    6,
+    115,
+    241,
+    250,
+    251,
+    252,
+    253
+   ]
+  },
+  {
+   "option": 212,
+   "type": "dialog",
+   "key": 221,
+   "typekey": 221,
+   "commands": [
+    "DeactivateOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    221,
+    222,
+    222
+   ]
+  },
+  {
+   "option": 213,
+   "type": "dialog",
+   "key": 222,
+   "typekey": 222,
+   "commands": [],
+   "command_keys": [
+    222
+   ]
+  },
+  {
+   "option": 214,
+   "type": "dialog",
+   "key": 223,
+   "typekey": 223,
+   "commands": [
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    223,
+    2030,
+    1400,
+    2034,
+    1407,
+    1400
+   ]
+  },
+  {
+   "option": 215,
+   "type": "mission",
+   "key": 1407,
+   "typekey": 26,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    26,
+    224
+   ]
+  },
+  {
+   "option": 216,
+   "type": "dialog",
+   "key": 224,
+   "typekey": 224,
+   "commands": [
+    "AddCredit"
+   ],
+   "command_keys": [
+    224
+   ]
+  },
+  {
+   "option": 217,
+   "type": "dialog",
+   "key": 225,
+   "typekey": 225,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    225,
+    226
+   ]
+  },
+  {
+   "option": 218,
+   "type": "dialog",
+   "key": 226,
+   "typekey": 226,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    226,
+    1408,
+    1401
+   ]
+  },
+  {
+   "option": 219,
+   "type": "mission",
+   "key": 1408,
+   "typekey": 26,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    26,
+    257
+   ]
+  },
+  {
+   "option": 220,
+   "type": "dialog",
+   "key": 257,
+   "typekey": 257,
+   "commands": [
+    "AddCredit"
+   ],
+   "command_keys": [
+    257
+   ]
+  },
+  {
+   "option": 221,
+   "type": "dialog",
+   "key": 227,
+   "typekey": 227,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    227,
+    228
+   ]
+  },
+  {
+   "option": 222,
+   "type": "dialog",
+   "key": 228,
+   "typekey": 228,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    228,
+    1409,
+    1401
+   ]
+  },
+  {
+   "option": 223,
+   "type": "mission",
+   "key": 1409,
+   "typekey": 26,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    26,
+    258
+   ]
+  },
+  {
+   "option": 224,
+   "type": "dialog",
+   "key": 258,
+   "typekey": 258,
+   "commands": [],
+   "command_keys": [
+    258
+   ]
+  },
+  {
+   "option": 225,
+   "type": "dialog",
+   "key": 229,
+   "typekey": 229,
+   "commands": [],
+   "command_keys": [
+    229
+   ]
+  },
+  {
+   "option": 226,
+   "type": "dialog",
+   "key": 230,
+   "typekey": 230,
+   "commands": [
+    "DeactivateOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    230,
+    231,
+    231
+   ]
+  },
+  {
+   "option": 227,
+   "type": "dialog",
+   "key": 231,
+   "typekey": 231,
+   "commands": [],
+   "command_keys": [
+    231
+   ]
+  },
+  {
+   "option": 228,
+   "type": "dialog",
+   "key": 232,
+   "typekey": 232,
+   "commands": [],
+   "command_keys": [
+    232
+   ]
+  },
+  {
+   "option": 229,
+   "type": "dialog",
+   "key": 233,
+   "typekey": 233,
+   "commands": [],
+   "command_keys": [
+    233
+   ]
+  },
+  {
+   "option": 230,
+   "type": "dialog",
+   "key": 234,
+   "typekey": 234,
+   "commands": [],
+   "command_keys": [
+    234
+   ]
+  },
+  {
+   "option": 231,
+   "type": "dialog",
+   "key": 235,
+   "typekey": 235,
+   "commands": [
+    "DeactivateOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    235,
+    236,
+    236
+   ]
+  },
+  {
+   "option": 232,
+   "type": "dialog",
+   "key": 236,
+   "typekey": 236,
+   "commands": [],
+   "command_keys": [
+    236
+   ]
+  },
+  {
+   "option": 233,
+   "type": "dialog",
+   "key": 237,
+   "typekey": 237,
+   "commands": [],
+   "command_keys": [
+    237
+   ]
+  },
+  {
+   "option": 234,
+   "type": "dialog",
+   "key": 238,
+   "typekey": 238,
+   "commands": [],
+   "command_keys": [
+    238
+   ]
+  },
+  {
+   "option": 235,
+   "type": "dialog",
+   "key": 115,
+   "typekey": 115,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    115,
+    2036,
+    1500,
+    1405
+   ]
+  },
+  {
+   "option": 236,
+   "type": "mission",
+   "key": 1500,
+   "typekey": 27,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    27,
+    116,
+    247
+   ]
+  },
+  {
+   "option": 237,
+   "type": "dialog",
+   "key": 116,
+   "typekey": 116,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    116,
+    239
+   ]
+  },
+  {
+   "option": 238,
+   "type": "dialog",
+   "key": 239,
+   "typekey": 239,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    239,
+    117
+   ]
+  },
+  {
+   "option": 239,
+   "type": "dialog",
+   "key": 117,
+   "typekey": 117,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    117,
+    2037,
+    1501,
+    1506
+   ]
+  },
+  {
+   "option": 240,
+   "type": "station",
+   "key": 1506,
+   "typekey": 44,
+   "commands": [
+    "SetSecondStationKey"
+   ],
+   "command_keys": [
+    44,
+    19
+   ]
+  },
+  {
+   "option": 241,
+   "type": "mission",
+   "key": 1501,
+   "typekey": 28,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "AddOption",
+    "AddOption",
+    "AddOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    28,
+    118,
+    241,
+    242,
+    243,
+    245,
+    253
+   ]
+  },
+  {
+   "option": 242,
+   "type": "dialog",
+   "key": 118,
+   "typekey": 118,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    118,
+    1502
+   ]
+  },
+  {
+   "option": 243,
+   "type": "clip",
+   "key": 1502,
+   "typekey": 7,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    7,
+    119
+   ]
+  },
+  {
+   "option": 244,
+   "type": "dialog",
+   "key": 119,
+   "typekey": 119,
+   "commands": [
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    119,
+    120,
+    246
+   ]
+  },
+  {
+   "option": 245,
+   "type": "dialog",
+   "key": 120,
+   "typekey": 120,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    120,
+    121
+   ]
+  },
+  {
+   "option": 246,
+   "type": "dialog",
+   "key": 121,
+   "typekey": 121,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    121,
+    240
+   ]
+  },
+  {
+   "option": 247,
+   "type": "dialog",
+   "key": 240,
+   "typekey": 240,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    240,
+    2038,
+    1504,
+    1503
+   ]
+  },
+  {
+   "option": 248,
+   "type": "station",
+   "key": 1503,
+   "typekey": 45,
+   "commands": [
+    "SetSecondStationKey"
+   ],
+   "command_keys": [
+    45,
+    23
+   ]
+  },
+  {
+   "option": 249,
+   "type": "mission",
+   "key": 1504,
+   "typekey": 29,
+   "commands": [
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "SubOption",
+    "AddOption",
+    "SubOption",
+    "SubOption",
+    "SubOption"
+   ],
+   "command_keys": [
+    29,
+    122,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252
+   ]
+  },
+  {
+   "option": 250,
+   "type": "dialog",
+   "key": 122,
+   "typekey": 122,
+   "commands": [
+    "AddCredit",
+    "AddOption"
+   ],
+   "command_keys": [
+    122,
+    123
+   ]
+  },
+  {
+   "option": 251,
+   "type": "dialog",
+   "key": 123,
+   "typekey": 123,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    123,
+    125
+   ]
+  },
+  {
+   "option": 252,
+   "type": "dialog",
+   "key": 125,
+   "typekey": 125,
+   "commands": [
+    "AddOption",
+    "AddOption",
+    "SubOption",
+    "AddOption",
+    "AddOption"
+   ],
+   "command_keys": [
+    125,
+    2039,
+    1505,
+    244,
+    2100,
+    2200
+   ]
+  },
+  {
+   "option": 253,
+   "type": "mission",
+   "key": 1505,
+   "typekey": 30,
+   "commands": [],
+   "command_keys": [
+    30
+   ]
+  },
+  {
+   "option": 254,
+   "type": "dialog",
+   "key": 241,
+   "typekey": 241,
+   "commands": [],
+   "command_keys": [
+    241
+   ]
+  },
+  {
+   "option": 255,
+   "type": "dialog",
+   "key": 242,
+   "typekey": 242,
+   "commands": [],
+   "command_keys": [
+    242
+   ]
+  },
+  {
+   "option": 256,
+   "type": "dialog",
+   "key": 243,
+   "typekey": 243,
+   "commands": [],
+   "command_keys": [
+    243
+   ]
+  },
+  {
+   "option": 257,
+   "type": "dialog",
+   "key": 244,
+   "typekey": 244,
+   "commands": [],
+   "command_keys": [
+    244
+   ]
+  },
+  {
+   "option": 258,
+   "type": "dialog",
+   "key": 245,
+   "typekey": 245,
+   "commands": [],
+   "command_keys": [
+    245
+   ]
+  },
+  {
+   "option": 259,
+   "type": "dialog",
+   "key": 246,
+   "typekey": 246,
+   "commands": [],
+   "command_keys": [
+    246
+   ]
+  },
+  {
+   "option": 260,
+   "type": "dialog",
+   "key": 247,
+   "typekey": 247,
+   "commands": [
+    "AddOption"
+   ],
+   "command_keys": [
+    247,
+    248
+   ]
+  },
+  {
+   "option": 261,
+   "type": "dialog",
+   "key": 248,
+   "typekey": 248,
+   "commands": [],
+   "command_keys": [
+    248
+   ]
+  },
+  {
+   "option": 262,
+   "type": "dialog",
+   "key": 249,
+   "typekey": 249,
+   "commands": [],
+   "command_keys": [
+    249
+   ]
+  },
+  {
+   "option": 263,
+   "type": "dialog",
+   "key": 250,
+   "typekey": 250,
+   "commands": [],
+   "command_keys": [
+    250
+   ]
+  },
+  {
+   "option": 264,
+   "type": "dialog",
+   "key": 251,
+   "typekey": 251,
+   "commands": [],
+   "command_keys": [
+    251
+   ]
+  },
+  {
+   "option": 265,
+   "type": "dialog",
+   "key": 252,
+   "typekey": 252,
+   "commands": [],
+   "command_keys": [
+    252
+   ]
+  },
+  {
+   "option": 266,
+   "type": "dialog",
+   "key": 253,
+   "typekey": 253,
+   "commands": [],
+   "command_keys": [
+    253
+   ]
+  },
+  {
+   "option": 267,
+   "type": "briefing",
+   "key": 2000,
+   "typekey": 1,
+   "commands": [],
+   "command_keys": [
+    1
+   ]
+  },
+  {
+   "option": 268,
+   "type": "briefing",
+   "key": 2001,
+   "typekey": 2,
+   "commands": [],
+   "command_keys": [
+    2
+   ]
+  },
+  {
+   "option": 269,
+   "type": "briefing",
+   "key": 2002,
+   "typekey": 3,
+   "commands": [],
+   "command_keys": [
+    3
+   ]
+  },
+  {
+   "option": 270,
+   "type": "briefing",
+   "key": 2003,
+   "typekey": 4,
+   "commands": [],
+   "command_keys": [
+    4
+   ]
+  },
+  {
+   "option": 271,
+   "type": "briefing",
+   "key": 2004,
+   "typekey": 5,
+   "commands": [],
+   "command_keys": [
+    5
+   ]
+  },
+  {
+   "option": 272,
+   "type": "briefing",
+   "key": 2005,
+   "typekey": 6,
+   "commands": [],
+   "command_keys": [
+    6
+   ]
+  },
+  {
+   "option": 273,
+   "type": "briefing",
+   "key": 2006,
+   "typekey": 7,
+   "commands": [],
+   "command_keys": [
+    7
+   ]
+  },
+  {
+   "option": 274,
+   "type": "briefing",
+   "key": 2007,
+   "typekey": 8,
+   "commands": [],
+   "command_keys": [
+    8
+   ]
+  },
+  {
+   "option": 275,
+   "type": "briefing",
+   "key": 2008,
+   "typekey": 9,
+   "commands": [],
+   "command_keys": [
+    9
+   ]
+  },
+  {
+   "option": 276,
+   "type": "briefing",
+   "key": 2009,
+   "typekey": null,
+   "commands": [],
+   "command_keys": []
+  },
+  {
+   "option": 277,
+   "type": "briefing",
+   "key": 2010,
+   "typekey": 11,
+   "commands": [],
+   "command_keys": [
+    11
+   ]
+  },
+  {
+   "option": 278,
+   "type": "briefing",
+   "key": 2011,
+   "typekey": 12,
+   "commands": [],
+   "command_keys": [
+    12
+   ]
+  },
+  {
+   "option": 279,
+   "type": "briefing",
+   "key": 2012,
+   "typekey": 13,
+   "commands": [],
+   "command_keys": [
+    13
+   ]
+  },
+  {
+   "option": 280,
+   "type": "briefing",
+   "key": 2013,
+   "typekey": 14,
+   "commands": [],
+   "command_keys": [
+    14
+   ]
+  },
+  {
+   "option": 281,
+   "type": "briefing",
+   "key": 2014,
+   "typekey": 15,
+   "commands": [],
+   "command_keys": [
+    15
+   ]
+  },
+  {
+   "option": 282,
+   "type": "briefing",
+   "key": 2015,
+   "typekey": 16,
+   "commands": [],
+   "command_keys": [
+    16
+   ]
+  },
+  {
+   "option": 283,
+   "type": "briefing",
+   "key": 2016,
+   "typekey": 17,
+   "commands": [],
+   "command_keys": [
+    17
+   ]
+  },
+  {
+   "option": 284,
+   "type": "briefing",
+   "key": 2017,
+   "typekey": 18,
+   "commands": [],
+   "command_keys": [
+    18
+   ]
+  },
+  {
+   "option": 285,
+   "type": "briefing",
+   "key": 2018,
+   "typekey": 19,
+   "commands": [],
+   "command_keys": [
+    19
+   ]
+  },
+  {
+   "option": 286,
+   "type": "briefing",
+   "key": 2019,
+   "typekey": 20,
+   "commands": [],
+   "command_keys": [
+    20
+   ]
+  },
+  {
+   "option": 287,
+   "type": "briefing",
+   "key": 2020,
+   "typekey": 21,
+   "commands": [],
+   "command_keys": [
+    21
+   ]
+  },
+  {
+   "option": 288,
+   "type": "briefing",
+   "key": 2021,
+   "typekey": 22,
+   "commands": [],
+   "command_keys": [
+    22
+   ]
+  },
+  {
+   "option": 289,
+   "type": "briefing",
+   "key": 2022,
+   "typekey": 23,
+   "commands": [],
+   "command_keys": [
+    23
+   ]
+  },
+  {
+   "option": 290,
+   "type": "briefing",
+   "key": 2023,
+   "typekey": 24,
+   "commands": [],
+   "command_keys": [
+    24
+   ]
+  },
+  {
+   "option": 291,
+   "type": "briefing",
+   "key": 2024,
+   "typekey": 25,
+   "commands": [],
+   "command_keys": [
+    25
+   ]
+  },
+  {
+   "option": 292,
+   "type": "briefing",
+   "key": 2025,
+   "typekey": 26,
+   "commands": [],
+   "command_keys": [
+    26
+   ]
+  },
+  {
+   "option": 293,
+   "type": "briefing",
+   "key": 2026,
+   "typekey": 27,
+   "commands": [],
+   "command_keys": [
+    27
+   ]
+  },
+  {
+   "option": 294,
+   "type": "briefing",
+   "key": 2027,
+   "typekey": 28,
+   "commands": [],
+   "command_keys": [
+    28
+   ]
+  },
+  {
+   "option": 295,
+   "type": "briefing",
+   "key": 2028,
+   "typekey": 29,
+   "commands": [],
+   "command_keys": [
+    29
+   ]
+  },
+  {
+   "option": 296,
+   "type": "briefing",
+   "key": 2029,
+   "typekey": 30,
+   "commands": [],
+   "command_keys": [
+    30
+   ]
+  },
+  {
+   "option": 297,
+   "type": "briefing",
+   "key": 2030,
+   "typekey": 31,
+   "commands": [],
+   "command_keys": [
+    31
+   ]
+  },
+  {
+   "option": 298,
+   "type": "briefing",
+   "key": 2031,
+   "typekey": 32,
+   "commands": [],
+   "command_keys": [
+    32
+   ]
+  },
+  {
+   "option": 299,
+   "type": "briefing",
+   "key": 2032,
+   "typekey": 33,
+   "commands": [],
+   "command_keys": [
+    33
+   ]
+  },
+  {
+   "option": 300,
+   "type": "briefing",
+   "key": 2033,
+   "typekey": 34,
+   "commands": [],
+   "command_keys": [
+    34
+   ]
+  },
+  {
+   "option": 301,
+   "type": "briefing",
+   "key": 2034,
+   "typekey": 35,
+   "commands": [],
+   "command_keys": [
+    35
+   ]
+  },
+  {
+   "option": 302,
+   "type": "briefing",
+   "key": 2035,
+   "typekey": 36,
+   "commands": [],
+   "command_keys": [
+    36
+   ]
+  },
+  {
+   "option": 303,
+   "type": "briefing",
+   "key": 2036,
+   "typekey": 37,
+   "commands": [],
+   "command_keys": [
+    37
+   ]
+  },
+  {
+   "option": 304,
+   "type": "briefing",
+   "key": 2037,
+   "typekey": 38,
+   "commands": [],
+   "command_keys": [
+    38
+   ]
+  },
+  {
+   "option": 305,
+   "type": "briefing",
+   "key": 2038,
+   "typekey": 39,
+   "commands": [],
+   "command_keys": [
+    39
+   ]
+  },
+  {
+   "option": 306,
+   "type": "briefing",
+   "key": 2039,
+   "typekey": 40,
+   "commands": [],
+   "command_keys": [
+    40
+   ]
+  },
+  {
+   "option": 307,
+   "type": "movie",
+   "key": 2100,
+   "typekey": 8,
+   "commands": [],
+   "command_keys": [
+    8
+   ]
+  },
+  {
+   "option": 308,
+   "type": "quitgame",
+   "key": 2200,
+   "typekey": 666,
+   "commands": [],
+   "command_keys": [
+    666
+   ]
+  }
+ ],
+ "stationen": [
+  {
+   "key": 1,
+   "name": "Entropoint II",
+   "territory": 1,
+   "depth": 1036,
+   "script": "map\\1n2\\script\\sta_entropointII",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entropoint2.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 2,
+   "name": "Magellan",
+   "territory": 1,
+   "depth": 5423,
+   "script": "map\\1h2\\script\\sta_magellan",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_magellan.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 3,
+   "name": "Topo's Asylum",
+   "territory": 1,
+   "depth": 2826,
+   "script": "map\\1h1\\script\\sta_eltopo",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_eltopo.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 4,
+   "name": "Vespucci",
+   "territory": 1,
+   "depth": 4988,
+   "script": "map\\1h3\\script\\sta_vespucci",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_vespucci.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 5,
+   "name": "Atacama City",
+   "territory": 2,
+   "depth": 5285,
+   "script": "map\\3h3\\script\\sta_atacama",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_atacama.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 6,
+   "name": "Entropoint VI",
+   "territory": 2,
+   "depth": 923,
+   "script": "map\\1n2\\script\\sta_entropointVI",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entropoint6.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 7,
+   "name": "Lima 1",
+   "territory": 2,
+   "depth": 1728,
+   "script": "map\\3h2\\script\\sta_lima1",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_lima1.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 8,
+   "name": "Lima 2",
+   "territory": 2,
+   "depth": 2283,
+   "script": "map\\3h2\\script\\sta_lima1",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_lima1.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 9,
+   "name": "Scavenger",
+   "territory": 2,
+   "depth": 2540,
+   "script": "map\\5n2\\script\\sta_scavenger",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_scavenger.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 10,
+   "name": "EnTrOx HQ",
+   "territory": 4,
+   "depth": 1280,
+   "script": "map\\2n3\\script\\sta_entroxhq",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entroxhq.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 11,
+   "name": "Speicherkraftwerk",
+   "territory": 4,
+   "depth": 1528,
+   "script": "map\\2h3\\script\\sta_speicherkw",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_storage.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 12,
+   "name": "Gotham",
+   "territory": 4,
+   "depth": 1483,
+   "script": "map\\2n3\\script\\sta_entroxhq",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entroxhq.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 13,
+   "name": "Entropoint",
+   "territory": 4,
+   "depth": 1064,
+   "script": "map\\1n2\\script\\sta_entropoint",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entropoint.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 19,
+   "name": "Neopolis",
+   "territory": 6,
+   "depth": 2203,
+   "script": "map\\4n2\\script\\sta_neopolis",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_neopolis.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 20,
+   "name": "Jules 1",
+   "territory": 6,
+   "depth": 2426,
+   "script": "map\\4n1\\script\\sta_deepdraft1",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_neopolis.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 21,
+   "name": "Entropoint IX",
+   "territory": 6,
+   "depth": 1043,
+   "script": "map\\1n2\\script\\sta_entropointIX",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entropoint9.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 22,
+   "name": "Deepdraft 2",
+   "territory": 6,
+   "depth": 4585,
+   "script": "map\\4h2\\script\\sta_deepdraft2",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_deepdraft2.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 23,
+   "name": "Deepdraft 1",
+   "territory": 6,
+   "depth": 4585,
+   "script": "map\\4n1\\script\\sta_deepdraft1",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_deepdraft1.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 30,
+   "name": "Intercom",
+   "territory": 11,
+   "depth": 0,
+   "script": "map\\1n2\\script\\sta_entropoint",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_eltopo.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 40,
+   "name": "Entropoint VI",
+   "territory": 2,
+   "depth": 923,
+   "script": "map\\1n2\\script\\sta_entropointVI",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_entropoint6.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 41,
+   "name": "Scavenger",
+   "territory": 2,
+   "depth": 2540,
+   "script": "map\\5n2\\script\\sta_scavenger",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_scavenger.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 42,
+   "name": "Atacama City",
+   "territory": 2,
+   "depth": 5285,
+   "script": "map\\3h3\\script\\sta_atacama",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_atacama.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 43,
+   "name": "Neopolis",
+   "territory": 6,
+   "depth": 2203,
+   "script": "map\\4n2\\script\\sta_neopolis",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_neopolis.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 44,
+   "name": "Neopolis",
+   "territory": 6,
+   "depth": 2203,
+   "script": "map\\4n2\\script\\sta_neopolis",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_neopolis.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  },
+  {
+   "key": 45,
+   "name": "Deepdraft 1",
+   "territory": 6,
+   "depth": 4585,
+   "script": "map\\4n1\\script\\sta_deepdraft1",
+   "logo": "vfx\\menu\\picture\\menu_station_logo_deepdraft1.tga",
+   "bgsound": "sfx\\sample\\music\\music_ambient.sam"
+  }
+ ],
+ "personen": [
+  {
+   "key": 1,
+   "name": "Emerald Flint",
+   "kurz": "Flint",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head01.tga"
+  },
+  {
+   "key": 2,
+   "name": "Charlotte Gillmore",
+   "kurz": "Gillmore",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head02.tga"
+  },
+  {
+   "key": 3,
+   "name": "Sobinoso Chaka",
+   "kurz": "Chaka",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head03.tga"
+  },
+  {
+   "key": 4,
+   "name": "Iwan King",
+   "kurz": "King",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head04.tga"
+  },
+  {
+   "key": 5,
+   "name": "Samuel Korhonen",
+   "kurz": "Korhonen",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head05.tga"
+  },
+  {
+   "key": 6,
+   "name": "Commodore Sool",
+   "kurz": "Sool",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head06.tga"
+  },
+  {
+   "key": 8,
+   "name": "Sergej Chang",
+   "kurz": "Chang",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head08.tga"
+  },
+  {
+   "key": 9,
+   "name": "Admiral Cox",
+   "kurz": "Cox",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head09.tga"
+  },
+  {
+   "key": 10,
+   "name": "Commander Farelli",
+   "kurz": "Farelli",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head10.tga"
+  },
+  {
+   "key": 11,
+   "name": "Kristina Lloyd",
+   "kurz": "Lloyd",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head11.tga"
+  },
+  {
+   "key": 12,
+   "name": "Fritz Rasmussen",
+   "kurz": "Rasmussen",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head12.tga"
+  },
+  {
+   "key": 13,
+   "name": "El Topo",
+   "kurz": "El Topo",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head13.tga"
+  },
+  {
+   "key": 14,
+   "name": "Leo van der Waal",
+   "kurz": "van der Waal",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head14.tga"
+  },
+  {
+   "key": 15,
+   "name": "Lt.(JG) Flavio Picollini",
+   "kurz": "Picollini",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head15.tga"
+  },
+  {
+   "key": 16,
+   "name": "Cpt. Eliza deGrange",
+   "kurz": "deGrange",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head16.tga"
+  },
+  {
+   "key": 17,
+   "name": "Lt. Boston Harper",
+   "kurz": "Harper",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head17.tga"
+  },
+  {
+   "key": 18,
+   "name": "Lt.(JG) Lisa Bonham",
+   "kurz": "Bonham",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head18.tga"
+  },
+  {
+   "key": 19,
+   "name": "Braumeister",
+   "kurz": "Braumeister",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head19.tga"
+  },
+  {
+   "key": 20,
+   "name": "Chris Krüger",
+   "kurz": "Krüger",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head20.tga"
+  },
+  {
+   "key": 22,
+   "name": "Creole",
+   "kurz": "Creole",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head22.tga"
+  },
+  {
+   "key": 23,
+   "name": "Entropoint Lady",
+   "kurz": "Entropoint Lady",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head23.tga"
+  },
+  {
+   "key": 24,
+   "name": "Tubby Escobar",
+   "kurz": "Escobar",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head24.tga"
+  },
+  {
+   "key": 25,
+   "name": "Freeman",
+   "kurz": "Freeman",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head25.tga"
+  },
+  {
+   "key": 26,
+   "name": "Glo Zee",
+   "kurz": "Glo Zee",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head26.tga"
+  },
+  {
+   "key": 28,
+   "name": "Nameless",
+   "kurz": "Nameless",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head28.tga"
+  },
+  {
+   "key": 29,
+   "name": "Neru",
+   "kurz": "Neru",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head29.tga"
+  },
+  {
+   "key": 30,
+   "name": "Paghda",
+   "kurz": "Paghda",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head30.tga"
+  },
+  {
+   "key": 31,
+   "name": "Perry Lasalle",
+   "kurz": "Lasalle",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head31.tga"
+  },
+  {
+   "key": 32,
+   "name": "Ralf Razor",
+   "kurz": "Razor",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head32.tga"
+  },
+  {
+   "key": 33,
+   "name": "Diddi Spengler",
+   "kurz": "Spengler",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head33.tga"
+  },
+  {
+   "key": 34,
+   "name": "Terry The Blaster",
+   "kurz": "Terry",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head34.tga"
+  },
+  {
+   "key": 35,
+   "name": "Velasquez",
+   "kurz": "Velasquez",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head35.tga"
+  },
+  {
+   "key": 36,
+   "name": "Homo Aquaticus R3G5",
+   "kurz": "Homo Aquaticus",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head36.tga"
+  },
+  {
+   "key": 37,
+   "name": "Werner von Punch",
+   "kurz": "Punch",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head37.tga"
+  },
+  {
+   "key": 38,
+   "name": "Atahualpa Jones",
+   "kurz": "Jones",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head38.tga"
+  },
+  {
+   "key": 39,
+   "name": "Yalla Rangun",
+   "kurz": "Rangun",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head39.tga"
+  },
+  {
+   "key": 40,
+   "name": "Patty",
+   "kurz": "Patty",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head40.tga"
+  },
+  {
+   "key": 41,
+   "name": "Natalie Corazon",
+   "kurz": "Corazon",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head41.tga"
+  },
+  {
+   "key": 42,
+   "name": "Will Saddler",
+   "kurz": "Saddler",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head42.tga"
+  },
+  {
+   "key": 43,
+   "name": "Old Charly",
+   "kurz": "Old Charly",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head43.tga"
+  },
+  {
+   "key": 44,
+   "name": "Leoni",
+   "kurz": "Leoni",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head44.tga"
+  },
+  {
+   "key": 45,
+   "name": "Philip Soveso",
+   "kurz": "Soveso",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head45.tga"
+  },
+  {
+   "key": 46,
+   "name": "EnTroPol",
+   "kurz": "EnTroPol",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head46.tga"
+  },
+  {
+   "key": 47,
+   "name": "Kiz",
+   "kurz": "Kiz",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head47.tga"
+  },
+  {
+   "key": 48,
+   "name": "Reisender",
+   "kurz": "Reisender",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head48.tga"
+  },
+  {
+   "key": 49,
+   "name": "Vanessa Brown",
+   "kurz": "Brown",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head49.tga"
+  },
+  {
+   "key": 50,
+   "name": "Geologe",
+   "kurz": "Geologe",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head50.tga"
+  },
+  {
+   "key": 51,
+   "name": "Maria Lubbock",
+   "kurz": "Lubbock",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head51.tga"
+  },
+  {
+   "key": 52,
+   "name": "Lasse Bormil",
+   "kurz": "Bormil",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head52.tga"
+  },
+  {
+   "key": 53,
+   "name": "Olga Sislaja",
+   "kurz": "Sislaja",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head53.tga"
+  },
+  {
+   "key": 55,
+   "name": "Mick Flaherty",
+   "kurz": "Flaherty",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head55.tga"
+  },
+  {
+   "key": 56,
+   "name": "Hadespriester",
+   "kurz": "Hadespriester",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head56.tga"
+  },
+  {
+   "key": 57,
+   "name": "Lebensmitteldesignerin",
+   "kurz": "L.-Designerin",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head57.tga"
+  },
+  {
+   "key": 58,
+   "name": "Silvio Tesla",
+   "kurz": "Tesla",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head58.tga"
+  },
+  {
+   "key": 59,
+   "name": "Juan Lafayette",
+   "kurz": "Lafayette",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head59.tga"
+  },
+  {
+   "key": 60,
+   "name": "Frog",
+   "kurz": "Frog",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head60.tga"
+  },
+  {
+   "key": 61,
+   "name": "Shakti",
+   "kurz": "Shakti",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head61.tga"
+  },
+  {
+   "key": 62,
+   "name": "Miriam",
+   "kurz": "Miriam",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head62.tga"
+  },
+  {
+   "key": 63,
+   "name": "Barkeeper Joe",
+   "kurz": "Barkeeper Joe",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head63.tga"
+  },
+  {
+   "key": 64,
+   "name": "Service Girl",
+   "kurz": "Service Girl",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head64.tga"
+  },
+  {
+   "key": 65,
+   "name": "Drogendealer",
+   "kurz": "Drogendealer",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head65.tga"
+  },
+  {
+   "key": 66,
+   "name": "Vastian Griegh",
+   "kurz": "Griegh",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head66.tga"
+  },
+  {
+   "key": 67,
+   "name": "Wirt",
+   "kurz": "Wirt",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head67.tga"
+  },
+  {
+   "key": 68,
+   "name": "Barlady Terry",
+   "kurz": "Barlady Terry",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head68.tga"
+  },
+  {
+   "key": 69,
+   "name": "Laasu al Haschid",
+   "kurz": "Al Haschid",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head69.tga"
+  },
+  {
+   "key": 70,
+   "name": "Jane Brooklyn",
+   "kurz": "Brooklyn",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head70.tga"
+  },
+  {
+   "key": 71,
+   "name": "Maggie Svenson",
+   "kurz": "Svenson",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head71.tga"
+  },
+  {
+   "key": 72,
+   "name": "Fletcher",
+   "kurz": "Fletcher",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head72.tga"
+  },
+  {
+   "key": 73,
+   "name": "Enrico Cortez",
+   "kurz": "Cortez",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head73.tga"
+  },
+  {
+   "key": 74,
+   "name": "Service Girl",
+   "kurz": "Service Girl",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head74.tga"
+  },
+  {
+   "key": 75,
+   "name": "Barkeeper",
+   "kurz": "Barkeeper",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head75.tga"
+  },
+  {
+   "key": 76,
+   "name": "Marina Selwick",
+   "kurz": "Selwick",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head76.tga"
+  },
+  {
+   "key": 77,
+   "name": "Carlos Bergman",
+   "kurz": "Bergman",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head77.tga"
+  },
+  {
+   "key": 78,
+   "name": "Brother Edge",
+   "kurz": "Edge",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head78.tga"
+  },
+  {
+   "key": 79,
+   "name": "MacGrath",
+   "kurz": "MacGrath",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head79.tga"
+  },
+  {
+   "key": 80,
+   "name": "Service Girl Jennie",
+   "kurz": "Jennie",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head80.tga"
+  },
+  {
+   "key": 81,
+   "name": "Museumswärter",
+   "kurz": "Museumswärter",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head81.tga"
+  },
+  {
+   "key": 82,
+   "name": "Kellner",
+   "kurz": "Kellner",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head82.tga"
+  },
+  {
+   "key": 83,
+   "name": "MacSilver",
+   "kurz": "MacSilver",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head83.tga"
+  },
+  {
+   "key": 84,
+   "name": "Bestatter",
+   "kurz": "Bestatter",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head84.tga"
+  },
+  {
+   "key": 85,
+   "name": "Cato Chung",
+   "kurz": "Chung",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head85.tga"
+  },
+  {
+   "key": 86,
+   "name": "Ellen Suhawa",
+   "kurz": "Suhawa",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head86.tga"
+  },
+  {
+   "key": 90,
+   "name": "Sally",
+   "kurz": "Sally",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head90.tga"
+  },
+  {
+   "key": 91,
+   "name": "Sonstige",
+   "kurz": "Sonstige",
+   "sex": "male",
+   "bild": ""
+  },
+  {
+   "key": 92,
+   "name": "Credits",
+   "kurz": "Credits",
+   "sex": "male",
+   "bild": "vfx\\menu\\picture\\menu_talk_head92.tga"
+  }
+ ],
+ "filme": [
+  {
+   "key": 1,
+   "name": "Intro",
+   "moviename": "vfx\\mov\\1f1.bik"
+  },
+  {
+   "key": 2,
+   "name": "EnTrOx",
+   "moviename": "vfx\\mov\\1f2.bik"
+  },
+  {
+   "key": 3,
+   "name": "Die Tornado-Zone",
+   "moviename": "vfx\\mov\\2f1.bik"
+  },
+  {
+   "key": 4,
+   "name": "Alarm in Neopolis",
+   "moviename": "vfx\\mov\\3f1.bik"
+  },
+  {
+   "key": 5,
+   "name": "Flint verfolgt Sool",
+   "moviename": "vfx\\mov\\4f1.bik"
+  },
+  {
+   "key": 6,
+   "name": "Das Inferno beginnt",
+   "moviename": "vfx\\mov\\5f1.bik"
+  },
+  {
+   "key": 7,
+   "name": "Reise ins Herz der Finsternis",
+   "moviename": "vfx\\mov\\6f1.bik"
+  },
+  {
+   "key": 8,
+   "name": "Finale",
+   "moviename": "vfx\\mov\\6f2.bik"
+  }
+ ],
+ "schwierigkeitsgrade": [
+  {
+   "key": 1,
+   "text": "LEICHT",
+   "description": "Für Landratten"
+  },
+  {
+   "key": 2,
+   "text": "NORMAL",
+   "description": "Für erfahrene Skipper"
+  },
+  {
+   "key": 3,
+   "text": "SCHWER",
+   "description": "Captain's Business"
+  },
+  {
+   "key": 4,
+   "text": "SEHR SCHWER",
+   "description": "Admiralsklasse"
+  },
+  {
+   "key": 5,
+   "text": "INFERNO",
+   "description": "Dead-Eye Flint's Job"
+  }
+ ]
+}

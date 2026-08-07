@@ -1,0 +1,529 @@
+{
+ "_source": "GOG Aqua.exe SHA256 EE061C4F...",
+ "_method": "Je Szeneklasse ist ReceiveMessage = Vtable +0x2c bekannt (Handoff 95). Es werden NUR Sprungtabellen DIREKT in dieser Funktion ausgewertet (Tiefe 0); folgt man aufgerufenen Funktionen, streuen Basisklassen- und Komponenten-Switches ueber denselben ID-Block ein und ueberschreiben die richtigen Adressen. Zweistufige Switches werden aufgeloest, wobei die Byte-Indextabelle SOWOHL als `movzx` ALS AUCH als `xor ecx,ecx / mov cl, byte ptr [...]` vorkommt -- nur auf movzx zu pruefen liefert eine verschobene, falsche Tabelle.",
+ "_verification": "16 von 17 Stichproben stimmen mit Handoff 37/51/52/54 und der handdekodierten NOD_Body-Tabelle ueberein. Die 17. (Trigger_SetPresenceSphere) fehlt, weil NOD_Trigger in ein Komponentenobjekt weiterleitet.",
+ "_coverage": "104 von 398 Kommandos; die AI-Subsysteme (Vessel/Vehicle/Turret/PhysicalCharacter/Trigger/Player) leiten in Komponentenobjekte weiter und sind hier NICHT enthalten.",
+ "count": 104,
+ "handlers": {
+  "Body_AddItem": {
+   "handler": "0x46792b",
+   "owner_class": "NOD_Body",
+   "message_id": 1034
+  },
+  "Body_AddItemInteger": {
+   "handler": "0x46795e",
+   "owner_class": "NOD_Body",
+   "message_id": 1035
+  },
+  "Body_Freeze": {
+   "handler": "0x46796f",
+   "owner_class": "NOD_Body",
+   "message_id": 1045
+  },
+  "Body_GetBioShield": {
+   "handler": "0x467870",
+   "owner_class": "NOD_Body",
+   "message_id": 1011
+  },
+  "Body_GetEmpShield": {
+   "handler": "0x4678ec",
+   "owner_class": "NOD_Body",
+   "message_id": 1013
+  },
+  "Body_GetKineticShield": {
+   "handler": "0x4677e1",
+   "owner_class": "NOD_Body",
+   "message_id": 1009
+  },
+  "Body_GetPosition": {
+   "handler": "0x467748",
+   "owner_class": "NOD_Body",
+   "message_id": 1002
+  },
+  "Body_SetBioShield": {
+   "handler": "0x467833",
+   "owner_class": "NOD_Body",
+   "message_id": 1010
+  },
+  "Body_SetCS": {
+   "handler": "0x4676db",
+   "owner_class": "NOD_Body",
+   "message_id": 1004
+  },
+  "Body_SetCargoKey": {
+   "handler": "0x46794d",
+   "owner_class": "NOD_Body",
+   "message_id": 1036
+  },
+  "Body_SetEmpShield": {
+   "handler": "0x4678af",
+   "owner_class": "NOD_Body",
+   "message_id": 1012
+  },
+  "Body_SetKineticShield": {
+   "handler": "0x46776d",
+   "owner_class": "NOD_Body",
+   "message_id": 1008
+  },
+  "Body_SetNameKey": {
+   "handler": "0x46793c",
+   "owner_class": "NOD_Body",
+   "message_id": 1037
+  },
+  "Body_SetOrientation": {
+   "handler": "0x467674",
+   "owner_class": "NOD_Body",
+   "message_id": 1001
+  },
+  "Body_SetPosition": {
+   "handler": "0x46761c",
+   "owner_class": "NOD_Body",
+   "message_id": 1000
+  },
+  "Camera_Cut": {
+   "handler": "0x444cdb",
+   "owner_class": "NOD_Camera",
+   "message_id": 7016
+  },
+  "Camera_LookAhead": {
+   "handler": "0x444b84",
+   "owner_class": "NOD_Camera",
+   "message_id": 7008
+  },
+  "Camera_LookAt": {
+   "handler": "0x444b20",
+   "owner_class": "NOD_Camera",
+   "message_id": 7005
+  },
+  "Camera_LookFrom": {
+   "handler": "0x444b13",
+   "owner_class": "NOD_Camera",
+   "message_id": 7003
+  },
+  "Camera_MoveInto": {
+   "handler": "0x444b06",
+   "owner_class": "NOD_Camera",
+   "message_id": 7002
+  },
+  "Camera_MoveTo": {
+   "handler": "0x444af9",
+   "owner_class": "NOD_Camera",
+   "message_id": 7004
+  },
+  "Camera_MoveToAnglesAbs": {
+   "handler": "0x444cce",
+   "owner_class": "NOD_Camera",
+   "message_id": 7015
+  },
+  "Camera_MoveToAnglesRel": {
+   "handler": "0x444cc1",
+   "owner_class": "NOD_Camera",
+   "message_id": 7014
+  },
+  "Camera_MoveToAnglesRelIgnoreBC": {
+   "handler": "0x444d8b",
+   "owner_class": "NOD_Camera",
+   "message_id": 7019
+  },
+  "Camera_RollAhead": {
+   "handler": "0x444bb9",
+   "owner_class": "NOD_Camera",
+   "message_id": 7009
+  },
+  "Camera_RollFrom": {
+   "handler": "0x444b77",
+   "owner_class": "NOD_Camera",
+   "message_id": 7007
+  },
+  "Camera_RollTo": {
+   "handler": "0x444b2d",
+   "owner_class": "NOD_Camera",
+   "message_id": 7006
+  },
+  "Camera_SetBackPlane": {
+   "handler": "0x444a85",
+   "owner_class": "NOD_Camera",
+   "message_id": 7000
+  },
+  "Camera_SetFrontPlane": {
+   "handler": "0x444a11",
+   "owner_class": "NOD_Camera",
+   "message_id": 7001
+  },
+  "Camera_ShakeHit": {
+   "handler": "0x444c06",
+   "owner_class": "NOD_Camera",
+   "message_id": 7010
+  },
+  "Camera_ShakeTo": {
+   "handler": "0x444c13",
+   "owner_class": "NOD_Camera",
+   "message_id": 7011
+  },
+  "Camera_ShakeViewHit": {
+   "handler": "0x444d17",
+   "owner_class": "NOD_Camera",
+   "message_id": 7017
+  },
+  "Camera_ShakeViewTo": {
+   "handler": "0x444d7e",
+   "owner_class": "NOD_Camera",
+   "message_id": 7018
+  },
+  "Camera_SwingAtLissajous": {
+   "handler": "0x444d98",
+   "owner_class": "NOD_Camera",
+   "message_id": 7020
+  },
+  "Camera_ZoomAt": {
+   "handler": "0x444cb4",
+   "owner_class": "NOD_Camera",
+   "message_id": 7013
+  },
+  "Camera_ZoomTo": {
+   "handler": "0x444c78",
+   "owner_class": "NOD_Camera",
+   "message_id": 7012
+  },
+  "Game_CreateClientScript": {
+   "handler": "0x455355",
+   "owner_class": "NOD_Game",
+   "message_id": 11024
+  },
+  "Game_EndGame": {
+   "handler": "0x455542",
+   "owner_class": "NOD_Game",
+   "message_id": 11014
+  },
+  "Game_GetEnemyMatrixElement": {
+   "handler": "0x4555d8",
+   "owner_class": "NOD_Game",
+   "message_id": 11018
+  },
+  "Game_LoadFog": {
+   "handler": "0x4553d0",
+   "owner_class": "NOD_Game",
+   "message_id": 11006
+  },
+  "Game_LoadMTake": {
+   "handler": "0x4557a8",
+   "owner_class": "NOD_Game",
+   "message_id": 11030
+  },
+  "Game_LoadMusic": {
+   "handler": "0x4553f2",
+   "owner_class": "NOD_Game",
+   "message_id": 11029
+  },
+  "Game_LoadProgress_Advance": {
+   "handler": "0x455822",
+   "owner_class": "NOD_Game",
+   "message_id": 11039
+  },
+  "Game_LoadProgress_Enter": {
+   "handler": "0x4557ec",
+   "owner_class": "NOD_Game",
+   "message_id": 11038
+  },
+  "Game_LoadProgress_Leave": {
+   "handler": "0x455833",
+   "owner_class": "NOD_Game",
+   "message_id": 11040
+  },
+  "Game_LoadScript": {
+   "handler": "0x455344",
+   "owner_class": "NOD_Game",
+   "message_id": 11000
+  },
+  "Game_LoadServerScript": {
+   "handler": "0x455366",
+   "owner_class": "NOD_Game",
+   "message_id": 11031
+  },
+  "Game_LoadTextTable": {
+   "handler": "0x455764",
+   "owner_class": "NOD_Game",
+   "message_id": 11025
+  },
+  "Game_LoadTextures": {
+   "handler": "0x455377",
+   "owner_class": "NOD_Game",
+   "message_id": 11005
+  },
+  "Game_MissionEnd": {
+   "handler": "0x4557ca",
+   "owner_class": "NOD_Game",
+   "message_id": 11036
+  },
+  "Game_PlayMusic": {
+   "handler": "0x4553e1",
+   "owner_class": "NOD_Game",
+   "message_id": 11009
+  },
+  "Game_ResetEnemyMatrix": {
+   "handler": "0x455639",
+   "owner_class": "NOD_Game",
+   "message_id": 11019
+  },
+  "Game_SendRadioMessageTake": {
+   "handler": "0x45566c",
+   "owner_class": "NOD_Game",
+   "message_id": 11020
+  },
+  "Game_SetAmbientLight": {
+   "handler": "0x455775",
+   "owner_class": "NOD_Game",
+   "message_id": 11026
+  },
+  "Game_SetCameraValues": {
+   "handler": "0x4554cf",
+   "owner_class": "NOD_Game",
+   "message_id": 11035
+  },
+  "Game_SetCausticBuilding": {
+   "handler": "0x45548b",
+   "owner_class": "NOD_Game",
+   "message_id": 11012
+  },
+  "Game_SetCausticObject": {
+   "handler": "0x455447",
+   "owner_class": "NOD_Game",
+   "message_id": 11011
+  },
+  "Game_SetCausticTerrain": {
+   "handler": "0x455403",
+   "owner_class": "NOD_Game",
+   "message_id": 11010
+  },
+  "Game_SetDecompressionHeight": {
+   "handler": "0x4556cd",
+   "owner_class": "NOD_Game",
+   "message_id": 11021
+  },
+  "Game_SetEnemyMatrixElement": {
+   "handler": "0x45557d",
+   "owner_class": "NOD_Game",
+   "message_id": 11017
+  },
+  "Game_SetFog": {
+   "handler": "0x4554fe",
+   "owner_class": "NOD_Game",
+   "message_id": 11013
+  },
+  "Game_SetLightCache": {
+   "handler": "0x45556c",
+   "owner_class": "NOD_Game",
+   "message_id": 11016
+  },
+  "Game_SetParallelLightB": {
+   "handler": "0x455797",
+   "owner_class": "NOD_Game",
+   "message_id": 11028
+  },
+  "Game_SetParallelLightT": {
+   "handler": "0x455786",
+   "owner_class": "NOD_Game",
+   "message_id": 11027
+  },
+  "Game_SetPlayBackFile": {
+   "handler": "0x4557db",
+   "owner_class": "NOD_Game",
+   "message_id": 11037
+  },
+  "Game_SetTaskTextKey": {
+   "handler": "0x455844",
+   "owner_class": "NOD_Game",
+   "message_id": 11041
+  },
+  "Game_SetTerrainDepth": {
+   "handler": "0x4556fd",
+   "owner_class": "NOD_Game",
+   "message_id": 11022
+  },
+  "Game_SetWayPoint": {
+   "handler": "0x45572d",
+   "owner_class": "NOD_Game",
+   "message_id": 11023
+  },
+  "Game_TextMessage": {
+   "handler": "0x4557b9",
+   "owner_class": "NOD_Game",
+   "message_id": 11034
+  },
+  "Game_VocalMessage": {
+   "handler": "0x455855",
+   "owner_class": "NOD_Game",
+   "message_id": 11042
+  },
+  "Node_AddSon": {
+   "handler": "0x441597",
+   "owner_class": "NOD_Director",
+   "message_id": 5004
+  },
+  "Node_CreateNode": {
+   "handler": "0x4415cb",
+   "owner_class": "NOD_Director",
+   "message_id": 5005
+  },
+  "Node_EnterSimulation": {
+   "handler": "0x4417d3",
+   "owner_class": "NOD_Director",
+   "message_id": 5002
+  },
+  "Node_Find": {
+   "handler": "0x441668",
+   "owner_class": "NOD_Director",
+   "message_id": 5007
+  },
+  "Node_GetName": {
+   "handler": "0x441534",
+   "owner_class": "NOD_Director",
+   "message_id": 5006
+  },
+  "Node_GetNumOfSons": {
+   "handler": "0x441738",
+   "owner_class": "NOD_Director",
+   "message_id": 5009
+  },
+  "Node_GetPath": {
+   "handler": "0x4416cb",
+   "owner_class": "NOD_Director",
+   "message_id": 5008
+  },
+  "Node_GetSon": {
+   "handler": "0x441763",
+   "owner_class": "NOD_Director",
+   "message_id": 5011
+  },
+  "Node_GetSonName": {
+   "handler": "0x44178d",
+   "owner_class": "NOD_Director",
+   "message_id": 5012
+  },
+  "Node_GetTime": {
+   "handler": "0x4417ba",
+   "owner_class": "NOD_Director",
+   "message_id": 5013
+  },
+  "Node_LeaveSimulation": {
+   "handler": "0x4417e7",
+   "owner_class": "NOD_Director",
+   "message_id": 5003
+  },
+  "Node_ParseIniFile": {
+   "handler": "0x44154c",
+   "owner_class": "NOD_Director",
+   "message_id": 5001
+  },
+  "Node_SetName": {
+   "handler": "0x441509",
+   "owner_class": "NOD_Director",
+   "message_id": 5000
+  },
+  "Node_SubSon": {
+   "handler": "0x441750",
+   "owner_class": "NOD_Director",
+   "message_id": 5010
+  },
+  "Script_BindThread": {
+   "handler": "0x48d81d",
+   "owner_class": "NOD_Script",
+   "message_id": 2001
+  },
+  "Script_SetScript": {
+   "handler": "0x48d814",
+   "owner_class": "NOD_Script",
+   "message_id": 2000
+  },
+  "Script_SetTimer": {
+   "handler": "0x48d82f",
+   "owner_class": "NOD_Script",
+   "message_id": 2002
+  },
+  "Script_StopTimer": {
+   "handler": "0x48d838",
+   "owner_class": "NOD_Script",
+   "message_id": 2004
+  },
+  "Script_UnBindThread": {
+   "handler": "0x48d826",
+   "owner_class": "NOD_Script",
+   "message_id": 2003
+  },
+  "ShieldedBody_CoupleFather": {
+   "handler": "0x48d0a5",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33007
+  },
+  "ShieldedBody_DeactivateSelectiveVulnerability": {
+   "handler": "0x48cfed",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33003
+  },
+  "ShieldedBody_DeepDestruct": {
+   "handler": "0x48d06d",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33006
+  },
+  "ShieldedBody_MakeInvulnerable": {
+   "handler": "0x48ced0",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33000
+  },
+  "ShieldedBody_MakeSelectiveVulnerableAgainst": {
+   "handler": "0x48cf7e",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33002
+  },
+  "ShieldedBody_MakeVulnerable": {
+   "handler": "0x48cf27",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33001
+  },
+  "ShieldedBody_SetLogarithmicMode": {
+   "handler": "0x48d008",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33004
+  },
+  "ShieldedBody_SetLogarithmicModeStop": {
+   "handler": "0x48d054",
+   "owner_class": "NOD_Attachment",
+   "message_id": 33005
+  },
+  "WayPoint_Attach": {
+   "handler": "0x484351",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35006
+  },
+  "WayPoint_SetRadius": {
+   "handler": "0x484231",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35000
+  },
+  "WayPoint_SetTakeKey_Activate": {
+   "handler": "0x48425f",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35001
+  },
+  "WayPoint_SetTakeKey_Enter": {
+   "handler": "0x4842a7",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35004
+  },
+  "WayPoint_SetTakeKey_Inside": {
+   "handler": "0x484337",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35002
+  },
+  "WayPoint_SetTakeKey_Leave": {
+   "handler": "0x4842ef",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35005
+  },
+  "WayPoint_SetTakeKey_Outside": {
+   "handler": "0x484344",
+   "owner_class": "NOD_WayPoint",
+   "message_id": 35003
+  }
+ }
+}

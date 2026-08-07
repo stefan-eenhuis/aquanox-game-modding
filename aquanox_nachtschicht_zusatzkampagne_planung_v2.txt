@@ -1,0 +1,978 @@
+AquaNox: Nachtschicht — Zusatzkampagne / Planungsdatei
+==========================================================
+
+Zweck dieser Datei
+------------------
+Diese Datei sammelt die bisher im Projekt erarbeiteten Informationen zur geplanten
+inoffiziellen AquaNox-1-Zusatzkampagne "AquaNox: Nachtschicht".
+
+Sie ist als reine Kampagnen-/Missionsdesign-Übergabe gedacht, getrennt von den
+technischen Modding-Handoffs zu PAK, SCO, DES, OSD, Audio und Script-Diagnose.
+
+Stand:
+    Nach Iteration 27 (Start-Funkspruch GELÖST) + Exe-Analyse-Session 4.
+    Version: 2   (Konvention: bei jeder Überarbeitung um 1 hochzählen)
+    Technischer Bezug: aquanox_modding_handoff_v4.txt, Abschnitte 62/64/67/69
+
+Arbeitstitel:
+    AquaNox: Nachtschicht
+
+Grundidee:
+    Eine düstere, noir-artige Zusatzkampagne im AquaNox-1-Universum.
+    Fokus auf Nachteinsätze, Schmuggel, Polizeipräsenz, zivile Zonen, moralische
+    Graubereiche, Bionten-/Marentis-Spuren und eine Eskalation bis zu einer
+    größeren politischen/faktionellen Krise.
+
+Stil:
+    - Unterwasser-Noir
+    - Neon, Dunkelheit, Funkverkehr, Radarspannung
+    - weniger "Arena", mehr inszenierte Missionen
+    - kleine, machbare Missionsprototypen statt sofort vollwertiger Kampagne
+    - Fokus auf spielbare Systeme, die AquaNox 1 bereits kann
+
+
+========================================================================
+1. Kampagnenstruktur
+========================================================================
+
+Geplante Missionen:
+
+    1. Schlick über Neopolis
+    2. Die Mitternachtsroute
+    3. Neon unter Glas
+    4. Brainfires Echo
+    5. Tote Brüder, lebende Schwestern
+    6. Opals Gericht
+    7. Die Nacht über Aqua
+
+Zusätzlich:
+    - mögliche Epilog-Varianten
+    - optionale moralische Ausgänge
+    - mögliche unterschiedliche Funk-/Textausgaben je nach Missionszustand
+
+
+========================================================================
+2. Leitmotiv und Erzählrahmen
+========================================================================
+
+Die Kampagne soll sich wie eine Nachtschicht anfühlen:
+
+    - Aufträge beginnen klein und lokal.
+    - Der Spieler startet mit scheinbar einfachen Einsätzen.
+    - Über mehrere Missionen werden größere Zusammenhänge sichtbar.
+    - Polizeifunk, Konzerninteressen, Bionten-/Marentis-Spuren und alte Kriegsreste
+      überlagern sich.
+    - Am Ende steht eine Entscheidung oder Eskalation, die Aqua politisch und
+      ökologisch betrifft.
+
+Mögliche Motive:
+
+    - alte Schuld unter neuen Städten
+    - Konzerne vs. freie Stationen
+    - Polizeigewalt / Sicherheitsstaat
+    - Schmuggler als notwendiges Übel
+    - Bionten nicht nur als Gegner
+    - Marentis-/Alttechnologie als bedrohliche Erinnerung
+    - Emerald als Pilot zwischen Pflicht, Profit und Gewissen
+
+
+========================================================================
+3. Wiederkehrende Figuren / Stimmen
+========================================================================
+
+Aktueller TTS-/Funkstil:
+
+    German sci-fi radio operator. Calm, focused, slightly tense.
+    Short military radio delivery. Clean pronunciation. No overacting.
+    Female voice. Slightly synthetic computer sound style.
+
+Geplante Funkspruch-Rolle:
+
+    - weibliche Operator-/Dispatcher-Stimme
+    - leicht synthetischer Computerklang
+    - ruhig, fokussiert, leicht angespannt
+    - keine übertriebene Schauspielstimme
+    - geeignet für Nachtschicht-Atmosphäre
+
+Beispiel-Introtext:
+
+    Nachtschicht beginnt. Emerald, wir haben vier Toiler-Signaturen im Sektor.
+    Keine Verstärkung, keine Zeugen — nur du und das Radar.
+    Räum den Bereich, bevor hier noch jemand aufwacht.
+
+Wichtige Audio-Erkenntnis:
+    Custom-MP3 + eigener MTake + SendRadioMessageTake funktionieren bestätigt aus
+    einem aktiven Gameplay-Callback UND (seit Iteration 27) aus dem Start(state)
+    eines engine-gebundenen Live-Threads. ns_op_intro_narrow.mp3 mit Key 9200 spielt
+    im Spiel.
+
+Für die Kampagne bedeutet das:
+    Dialog/Funk ist technisch realistisch umsetzbar, wenn er an bewiesene
+    Callbacks, Trigger, Killcounter, Wegpunkte oder Timer nach Gameplay-Events
+    gebunden wird.
+
+
+========================================================================
+4. Mission 1 — Schlick über Neopolis
+========================================================================
+
+Grundidee:
+    Einstieg in die Kampagne. Ein scheinbar einfacher Bergungs-/Aufklärungseinsatz
+    in einem verschmutzten Außenbereich von Neopolis. Der Spieler untersucht Wracks,
+    Datenbojen oder Container und stößt auf Hinweise, dass mehr dahintersteckt.
+
+Atmosphäre:
+    - trübes Wasser
+    - Industrieabfall
+    - schwache Signalquellen
+    - wenig Gegner am Anfang
+    - Fokus auf Radar, Waypoints und Funksprüche
+
+Mögliche Gameplay-Systeme:
+
+    - Salvage / Bergung
+    - Data Buoys
+    - Container / Wrackteile
+    - Rescue Pods / Escape Pods
+    - Waypoint-Führung
+    - Trigger beim Annähern
+    - kleine Gegnerwelle nach Fund
+    - Missionsabschluss über eingesammelte/aktivierte Objekte
+
+Technisch passende Funktionen/Systeme:
+
+    - Game_SetWayPoint
+    - WayPoint_Attach
+    - Body_AddItem
+    - Body_SetCargoKey
+    - Body_ActivateEscapePod
+    - Trigger-/Presence-Zonen
+    - SendRadioMessageTake
+    - Game_SetTaskTextKey / SED_SetTaskTextKey
+    - Killcounter / Objektcounter
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Spieler startet mit Operator-Funk.
+        Aufgabe: "Untersuche die Signalbojen im Schlickfeld."
+
+    Phase 2:
+        Spieler scannt/erreicht 2–3 Objekte.
+        Funksprüche geben erste Hinweise.
+
+    Phase 3:
+        Feindliche Toiler-/Piraten- oder Bergungseinheit erscheint.
+
+    Phase 4:
+        Spieler zerstört Gegner oder schützt Escape Pod.
+
+    Phase 5:
+        Abschlussfunk:
+            "Das war kein normaler Schrott. Jemand wollte, dass das hier unten bleibt."
+
+Geeignete Modding-Prototyp-Basis:
+    - 1N1 als einfache Testarena
+    - 5N2 als bessere Salvage-/Escape-Pod-Vorlage
+    - später eigenes Missionslayout
+
+
+========================================================================
+5. Mission 2 — Die Mitternachtsroute
+========================================================================
+
+Grundidee:
+    Konvoi-/Schmuggelroute in der Nacht. Der Spieler begleitet oder überwacht
+    einen Transport. Die Route führt durch unsichere Zonen. Angriffe, Scanner,
+    Polizeikontrollen oder Verrat sind möglich.
+
+Atmosphäre:
+    - langsamer Konvoi
+    - Funksprüche zwischen Schiffen
+    - unklare Loyalitäten
+    - Polizei-/Security-Präsenz
+    - Gefahr aus dem Dunkel
+
+Mögliche Gameplay-Systeme:
+
+    - Escort / Konvoi
+    - ProtectedGoto
+    - FollowProtect
+    - Formation
+    - Wegpunktkette
+    - Hinterhalt
+    - Failbedingung bei zerstörtem Frachter
+    - optionale Entscheidung: Polizei meiden oder Konvoi schützen
+
+Technisch passende Funktionen/Systeme:
+
+    - MiscLib.ProtectedGoto
+    - MiscLib.FollowProtect
+    - FormationLib
+    - VesselGotoLib.Goto / ComplexGoto / MultiPatrol
+    - Vessel_Patrol für Ambient-Police
+    - Destroyed-Callback für Frachter-Fail
+    - Game_SetTaskTextKey
+    - SendRadioMessageTake
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Spieler trifft Konvoi.
+
+    Phase 2:
+        Konvoi setzt sich in Bewegung.
+
+    Phase 3:
+        Erste Kontakte auf Radar, aber unklar ob feindlich.
+
+    Phase 4:
+        Angriff auf den Transport.
+
+    Phase 5:
+        Optional Polizei/Security erscheint; moralische Grauzone.
+
+    Phase 6:
+        Konvoi erreicht Zielpunkt oder wird zerstört.
+
+Geeignete Quellmissionen/Analysen:
+    - 5H2 als starke Konvoi-/Freighter-Vorlage
+    - 2H2 für Schutz-/Wingman-Systeme
+    - 2N2 / 4N2 für kleinere Escortmuster
+
+Geeignete Prototyp-Basis:
+    - mp_12 oder mp_10 für Route/Konvoi-Test
+    - später Kampagnenlevel mit längerer Navigation
+
+
+========================================================================
+6. Mission 3 — Neon unter Glas
+========================================================================
+
+Grundidee:
+    City-/Noir-Mission in Lys-9 oder einer ähnlich dichten urbanen Unterwasserzone.
+    Fokus auf Polizeipatrouillen, Verkehr, Verfolgung und das Gefühl einer lebenden
+    Stadt unter Glas.
+
+Atmosphäre:
+    - Neonreklamen
+    - ziviler Traffic
+    - Polizeiboote
+    - enge Stadtkanäle
+    - keine reine Kampfmission
+    - Detektiv-/Noir-Funk
+
+Mögliche Gameplay-Systeme:
+
+    - Ambient-Traffic
+    - Police DirectPatrol
+    - Waypoint-Korridor
+    - kleine Verfolgungssequenz
+    - Sensor-/Alarmzonen
+    - Kollateral-/No-Fire-Spannung
+    - Funksprüche als Ermittlungsrhythmus
+
+Technisch passende Funktionen/Systeme:
+
+    - Vessel_Patrol
+    - Vessel_CollisionTerrain
+    - Trigger_EnterPresence / Visible / Acoustic
+    - SensorLib.ActivateAvpSensorComplex
+    - Game_SetWayPoint
+    - WayPoint_Attach
+    - SendRadioMessageTake
+    - evtl. Game_TextMessage oder MTake-Funksprüche
+
+Wichtige bereits bestätigte Grundlage:
+
+    Iteration 5:
+        Police-/Security-Boote in 1N1 bewegen sich stabil per DirectPatrol.
+        Das ist eine gute technische Basis für "lebendige Stadt".
+
+Geeignete Assets:
+
+    - gen_extra_werbung*
+    - gen_extra_traffic*
+    - Police-/Security-Schiffe:
+        atl_pscout
+        ent_pscout
+        tz_pscout
+        nv_pscout
+    - Dock-/Kai-/Station-Objekte
+    - Habitats / Buildings
+    - Containers / Buoys
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Spieler erreicht Stadtzone.
+
+    Phase 2:
+        Operator meldet verdächtiges Signal.
+
+    Phase 3:
+        Spieler folgt Ziel durch Traffic.
+
+    Phase 4:
+        Polizeifunk wird aktiv.
+        Spieler soll nicht zu viel Kollateralschaden verursachen.
+
+    Phase 5:
+        Ziel entkommt oder wird gestellt.
+        Hinweis auf Brainfire/alte Technologie.
+
+Geeignete Prototyp-Basis:
+    - 1N1 für Mini-City-Test
+    - 5N2 oder 2H1 für größere Umgebungsstruktur
+    - später eigener City-/Lys-9-Prototyp
+
+
+========================================================================
+7. Mission 4 — Brainfires Echo
+========================================================================
+
+Grundidee:
+    Verteidigungs-/Sabotagemission um eine Brainfire- oder Relaisstruktur.
+    Alte Technik sendet ein Signal, das Gegner, Drohnen oder Biontenaktivität
+    anzieht. Der Spieler muss Generatoren, Minenfelder oder Verteidigungsringe
+    überwinden.
+
+Atmosphäre:
+    - unheimliches Signal
+    - alte Maschinen
+    - elektrische/biologische Anomalie
+    - Verteidigungsringe
+    - langsam eskalierende Wellen
+
+Mögliche Gameplay-Systeme:
+
+    - Minefields
+    - Generator-/Shield-Ziele
+    - Defense Rings
+    - Turrets
+    - Techbomber-/Escort-Element
+    - Wellenangriffe
+    - Boss-/Mini-Boss-Aktivierung
+
+Technisch passende Funktionen/Systeme:
+
+    - TurretLib
+    - Vessel_AttackTurrets
+    - ShieldedBody_MakeInvulnerable
+    - ShieldedBody_MakeVulnerable
+    - Generator-/Shield-Callbacks
+    - Body_ObjectDestroyed
+    - Runtime Spawn
+    - Killcounter
+    - SendRadioMessageTake
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Spieler nähert sich Relais.
+
+    Phase 2:
+        Operator warnt vor alten Verteidigungsringen.
+
+    Phase 3:
+        Generatoren müssen zerstört/deaktiviert werden.
+
+    Phase 4:
+        Schutzschild fällt.
+
+    Phase 5:
+        Brainfire-Signal triggert Gegnerwelle.
+
+    Phase 6:
+        Ziel zerstören oder Daten extrahieren.
+
+Geeignete Quellmissionen/Analysen:
+    - Turret-/Generator-/Shield-Analysen
+    - 3H3 / 6H4 / 6H2 als Kandidaten für komplexere Inszenierung
+
+Geeignete Prototyp-Basis:
+    - 3H3
+    - 1N1 für Minimaltest eines Generators+Welle
+
+
+========================================================================
+8. Mission 5 — Tote Brüder, lebende Schwestern
+========================================================================
+
+Grundidee:
+    Station-/Labor-/Biontenmission. Der Spieler entdeckt, dass alte "tote" Feinde
+    oder Fraktionen nicht einfach verschwunden sind. Biologische oder kybernetische
+    Spuren deuten auf eine neue Verbindung zwischen alten Kriegsresten und lebenden
+    Systemen.
+
+Atmosphäre:
+    - Labor
+    - Station
+    - Verfall
+    - biologische Spuren
+    - moralische Unsicherheit
+    - weniger klare Gegnerrollen
+
+Mögliche Gameplay-Systeme:
+
+    - Station-/Dock-Illusion
+    - Triggerkette
+    - Verteidigung von stationären Objekten
+    - Choice-/Branch-Flags
+    - Daten-/Beweisobjekte
+    - kleinere Angriffswellen
+    - Funksprüche mit veränderten Informationen je nach Fund
+
+Technisch passende Funktionen/Systeme:
+
+    - DockLib / Docking-Systeme
+    - Fake station transition
+    - Game_SetTaskTextKey
+    - SendRadioMessageTake
+    - Body_AddItem / Cargo
+    - Trigger
+    - Destroyed-Callbacks
+    - Flags/Counters für Storybranching
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Anflug auf Labor-/Stationstrümmer.
+
+    Phase 2:
+        Suche nach Daten/Überlebenden.
+
+    Phase 3:
+        Defensive Aktivierung oder Biontenkontakt.
+
+    Phase 4:
+        Spieler muss Entscheidung treffen:
+            Daten bergen, Objekt zerstören oder entkommen.
+
+    Phase 5:
+        Konsequenz wird für spätere Missionen gespeichert oder nur im Funk reflektiert.
+
+Geeignete Prototyp-Basis:
+    - 5N2
+    - Station-/Docking-ähnliche Level
+    - Fake-Stationstransition aus Analyse 7
+
+
+========================================================================
+9. Mission 6 — Opals Gericht
+========================================================================
+
+Grundidee:
+    Eine ungewöhnliche Mission mit Bionten-/Schwarm-/Tribunalcharakter.
+    Der Spieler soll nicht einfach alles zerstören. Es geht um Nicht-Aggression,
+    Schutz oder Beweisführung. Opal oder eine biontische Instanz bewertet das
+    Verhalten des Spielers.
+
+Atmosphäre:
+    - fremdartig
+    - ruhig-bedrohlich
+    - moralischer Test
+    - "Gericht" statt Schlacht
+    - Bionten nicht nur als Gegner
+
+Mögliche Gameplay-Systeme:
+
+    - No-fire- oder No-collateral-Regel
+    - Schutz neutraler Einheiten
+    - Biont-Schwarm schützen
+    - EnTrOx-/Konzernwellen abwehren
+    - Fehlbedingung bei Angriff auf neutrale Bionten
+    - alternative Funksprüche je nach Verhalten
+
+Technisch passende Funktionen/Systeme:
+
+    - FoF-/Faction-Logik
+    - neutrale Einheiten
+    - Destroyed-Callbacks als Failbedingung
+    - Killcounter getrennt nach Fraktion
+    - Game_SetTaskTextKey
+    - SendRadioMessageTake
+    - Sensor-/Triggerzonen
+    - FollowProtect / ProtectedGoto falls Schwarm bewegt wird
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Spieler trifft Bionten-/Opal-Zone.
+
+    Phase 2:
+        Operator warnt, nicht zu feuern.
+
+    Phase 3:
+        EnTrOx-/Security-Welle greift an.
+
+    Phase 4:
+        Spieler muss Angreifer zerstören, ohne Bionten zu treffen.
+
+    Phase 5:
+        Opal "richtet" über Verhalten.
+        Ausgang beeinflusst Finale oder Epilog.
+
+Geeignete Prototyp-Basis:
+    - mp_08 oder 5N2
+    - später eigenes neutrales Schutzszenario
+
+
+========================================================================
+10. Mission 7 — Die Nacht über Aqua
+========================================================================
+
+Grundidee:
+    Finale mit faction standoff, alten Systemen, Sensorbojen, Pumpen/Generatoren,
+    möglicherweise Bossphasen und mehreren Ausgängen. Die Nacht über Aqua entscheidet,
+    ob die zuvor gesammelten Hinweise zu Eskalation, Enthüllung oder Eindämmung
+    führen.
+
+Atmosphäre:
+    - groß, angespannt, politisch
+    - mehrere Fraktionen
+    - Funkkanäle überlagern sich
+    - keine einfache Gut/Böse-Lage
+    - technische und moralische Eskalation
+
+Mögliche Gameplay-Systeme:
+
+    - Faction standoff
+    - Sensor buoys
+    - Pump-/Generator-Ziele
+    - Bossphasen
+    - Wellen
+    - Schutz oder Zerstörung kritischer Objekte
+    - alternative Endtexte/Funksprüche
+    - Epilogvarianten
+
+Technisch passende Funktionen/Systeme:
+
+    - Game_SetTaskTextKey
+    - SendRadioMessageTake
+    - Game_SetWayPoint
+    - Runtime Spawn
+    - Killcounter
+    - Generator-/Shield-Systeme
+    - Boss Spawn nach Zielzerstörung
+    - Game_MissionEnd
+    - alternative MissionEnd-/Textpfade
+
+Mögliche Missionsstruktur:
+
+    Phase 1:
+        Spieler erreicht finale Zone.
+
+    Phase 2:
+        Sensorbojen müssen aktiviert/deaktiviert werden.
+
+    Phase 3:
+        Fraktionen erscheinen.
+        Spieler muss entscheiden, wen er bekämpft oder schützt.
+
+    Phase 4:
+        Pumpen/Generatoren verändern Kampffeld.
+
+    Phase 5:
+        Boss/alte Technologie aktiviert sich.
+
+    Phase 6:
+        Abschluss je nach Verlauf:
+            Eindämmung
+            Enthüllung
+            Zerstörung
+            politisch offenes Ende
+
+Geeignete Prototyp-Basis:
+    - 6H4 / 6H2 / 6H3 für größere Inszenierung
+    - 1N1-Minimaltest für Bossphasenlogik
+    - 3H3 für Generator-/Defense-Elemente
+
+
+========================================================================
+11. Level- und Prototypkandidaten
+========================================================================
+
+Empfohlene Prototyp-Reihenfolge:
+
+    1. Lys-9 Mini-Stadt auf 1N1
+        Ziel:
+            Ambient traffic, Polizei, Waypoints, Funk, City-Feeling.
+        Bezug:
+            Mission 3 "Neon unter Glas"
+
+    2. Neopolis Salvage auf 5N2 oder 1N1
+        Ziel:
+            Datenbojen, Escape Pods, Bergung, kleine Gegnerwelle.
+        Bezug:
+            Mission 1 "Schlick über Neopolis"
+
+    3. Konvoi auf mp_12 oder mp_10
+        Ziel:
+            Escort, ProtectedGoto, Fail bei Frachtertod.
+        Bezug:
+            Mission 2 "Die Mitternachtsroute"
+
+    4. Brainfire Defense auf 3H3
+        Ziel:
+            Generatoren, Shield, Turrets, Wellen.
+        Bezug:
+            Mission 4 "Brainfires Echo"
+
+    5. Bionten Tribunal auf mp_08 oder 5N2
+        Ziel:
+            No-fire, neutrale Einheiten schützen, alternative Bewertung.
+        Bezug:
+            Mission 6 "Opals Gericht"
+
+    6. Marek-/Noir-Chase
+        Ziel:
+            Moving target, Waypoints, Trigger, Distanz-/Fluchtlogik.
+        Bezug:
+            Mission 3 oder spätere Zwischenmission.
+
+    7. Finale Standoff
+        Ziel:
+            Sensorbojen, Generatoren, Factions, Bossphasen.
+        Bezug:
+            Mission 7 "Die Nacht über Aqua"
+
+
+========================================================================
+12. Assetfamilien für Nachtschicht
+========================================================================
+
+City / Lys-9 / Neon:
+
+    - gen_extra_werbung*
+    - gen_extra_traffic*
+    - Habitats
+    - Building-/Station-Deko
+    - Dock-/Kai-Objekte
+    - Container
+    - Buoys
+    - Traffic-/Zivilobjekte
+
+Police / Security:
+
+    - atl_pscout
+    - ent_pscout
+    - tz_pscout
+    - nv_pscout
+    - Polizei-Halos rot/blau
+    - Security-Patrols per DirectPatrol
+
+Salvage / Schlick / Wrack:
+
+    - Container
+    - Data Buoys
+    - Escape Pods
+    - ItemBox
+    - Wreck-/Debris-Objekte
+    - Industrie-/Schrott-Assets
+
+Bionten / Marentis / alte Organismen:
+
+    - bio_*
+    - old_*
+    - Schax als squid-/marentisartige Verteidiger
+    - Forneus / Marax / Crocell / Belial als große Organismus-/Bosskandidaten
+    - Brainfire-/Relais-Objekte
+    - Succubus-/Finale-Assets
+
+Defense / Generator / Turret:
+
+    - Turret-OSDs
+    - Generator-/Shield-Objekte
+    - Laserwalls
+    - Gates
+    - Minefield-Objekte
+
+
+========================================================================
+13. Technische Systeme nach Missionsart
+========================================================================
+
+Salvage / Bergung:
+
+    - Body_AddItem
+    - Body_SetCargoKey
+    - Body_ActivateEscapePod
+    - ItemBox  [engine-seitig für Singleplayer bestätigt: nod_itembox ist eine normale
+      NOD_Body-Klasse, das Aufsammeln läuft über den Kollisions-Scan des Spielers und
+      hat KEINE Multiplayer-Sperre. Nur CTF-Flaggenboxen brauchen ANT_Rules und
+      funktionieren im SP nicht. ItemBox_SetRespawnDelay(box,-1) = Einmal-Pickup.]
+    - Trigger beim Annähern
+    - Waypoint_Attach
+    - TaskText
+
+Escort / Konvoi:
+
+    - ProtectedGoto
+    - FollowProtect
+    - FormationLib
+    - Destroyed-Fail
+    - Waypoint-Kette
+    - Radio-Progression
+
+City / Traffic:
+
+    - Vessel_Patrol
+    - Vessel_CollisionTerrain
+    - DirectPatrol
+    - neutrale FoF
+    - Police/Security-Assets
+    - Ambient-Deko
+
+Stealth / Sensor / Alarm:
+
+    - SensorLib.ActivateAvpSensorComplex
+    - Trigger_EnterVisible
+    - Trigger_EnterAcoustic
+    - Trigger_EnterPresence
+    - Alarmwellen
+    - Police escalation
+
+Defense / Generator / Boss:
+
+    - TurretLib
+    - ShieldedBody_MakeInvulnerable
+    - ShieldedBody_MakeVulnerable
+    - Destroyed-Callbacks
+    - Runtime Spawn
+    - Killcounter
+    - Bossphase
+
+Dialog / Funk / Story:
+
+    - MTake-Dateien
+    - SendRadioMessageTake
+    - Game_SetTaskTextKey
+    - Game_SetWayPoint
+    - Flags/Counters
+    - alternative Funksprüche
+    - Custom-MP3 per eigenem MTake-Key
+
+
+========================================================================
+14. Dialog- und Funkkonzept
+========================================================================
+
+Dialogsystem:
+
+    AquaNox eignet sich für Story über Funk, Tasks und Waypoints.
+    Es gibt kein modernes Dialogauswahlsystem, aber Branching ist über
+    Flags, Counter, alternative Funksprüche und MissionEnd möglich.
+
+Technisch bestätigte stabile Funkpfade:
+
+    (a) Missionsstart:
+        gebundener Live-Thread -> Start(state) -> GETGLOBAL + CALL A=1
+        -> SendRadioMessageTake -> eigener MTake-Key -> Custom-MP3
+
+    (b) Während der Mission:
+        aktiver Gameplay-Callback (Kill/Trigger/Entered)
+        -> optional DelayedFunction
+        -> SendRadioMessageTake
+        -> eigener MTake-Key
+        -> Custom-MP3
+
+Für Nachtschicht besonders passend:
+
+    - kurze Operator-Funksprüche
+    - taktische Hinweise
+    - Noir-Kommentare
+    - Polizeifunk-Fragmente
+    - moralische Hinweise ohne lange Cutscenes
+    - Tasks und Waypoints als stille Missionsführung
+
+Beispiel-Take-Dateien:
+
+    ns_op_intro_narrow.mp3
+    ns_op_razor_down.wav/mp3
+    ns_op_mako_down.wav/mp3
+    ns_op_viper_down.wav/mp3
+    ns_op_kraken_down.wav/mp3
+    ns_op_boss_spawn.wav/mp3
+    ns_op_boss_down.wav/mp3
+    ns_op_area_clear.wav/mp3
+    ns_op_police_alert.wav/mp3
+    ns_op_warning_new_contact.wav/mp3
+
+
+========================================================================
+15. Aktueller technischer Bezug zur Start-Intro-Frage — GELÖST
+========================================================================
+
+STATUS GEÄNDERT. Der Start-Funkspruch ist seit Iteration 27 gelöst und im Spiel
+bestätigt. Der frühere Stand dieses Abschnitts ("Presence-Trigger beim Spawn als
+wahrscheinlicher Weg") ist überholt und war sogar falsch.
+
+Bestätigt funktionierend:
+
+    - Custom-MP3 funktioniert.
+    - MTake funktioniert.
+    - SendRadioMessageTake funktioniert.
+    - DelayedFunction aus aktivem Gameplay-Callback funktioniert.
+    - Timer-Callback kann danach Funk abspielen.
+    - NEU: Funk direkt aus dem Start(state) eines engine-gebundenen Live-Threads.
+
+Bestätigt NICHT funktionierend:
+
+    - direkter Funk aus __StartUp
+    - DelayedFunction aus __StartUp (auch nach manueller __TimerList-Init)
+    - Spawn-Waypoint mit WayPoint_SetTakeKey_Enter -> CRASH beim Laden (Iteration 25).
+      Der Presence-/Waypoint-Weg ist damit KEIN einfacher Startpfad, sondern ein Absturz.
+
+Gelöster Standardpfad (Iteration 27):
+
+    engine-gebundener Live-Thread
+    -> Start(state) oder erster Code-Step
+    -> GETGLOBAL-Zugriff auf die globale Funktion (NICHT GETTABLE/GETDOTTED)
+    -> CALL A=1, weil der state-Parameter Stackslot 0 belegt
+    -> SendRadioMessageTake(senderNode, receiverNode, takeKey)
+    -> eigener MTake-Key -> Custom-MP3
+    -> danach läuft der originale Code-Pfad weiter
+
+Bedeutung für Nachtschicht:
+
+    Missionsintros laufen ab sofort über einen gebundenen Live-Thread, nicht über
+    Trigger/Waypoint-Zonen. Trigger und Sensoren bleiben für SPÄTERE Funksprüche
+    innerhalb der Mission die richtige Wahl — nur nicht für den allerersten.
+    Vorgehen bei jedem neuen Intro: erst Script_Log einsetzen, erst wenn der Marker
+    im Log erscheint SendRadioMessageTake ergänzen.
+
+========================================================================
+16. Empfohlene Produktionsreihenfolge
+========================================================================
+
+Phase 1 — Technische Vertikalschnitte:
+(Reihenfolge unverändert; Schnitt 2 ist durch die Exe-Analyse deutlich billiger
+geworden, weil ItemBox-Pickups im SP nachweislich nicht MP-gesperrt sind — der
+ibox_pickup_repair50-Test in sp_1n1 ist der günstigste erste Schritt überhaupt.)
+
+    1. Mini-City / Neon unter Glas auf 1N1
+        - Police DirectPatrol
+        - Traffic-Deko
+        - Funksprüche
+        - einfacher Trigger
+
+    2. Salvage-Prototyp
+        - Data Buoys
+        - ItemBox / Cargo
+        - kleine Gegnerwelle
+        - Abschlussfunk
+
+    3. Konvoi-Prototyp
+        - ProtectedGoto/FollowProtect
+        - Frachter-Fail
+        - Hinterhalt
+
+    4. Defense-Prototyp
+        - Generator
+        - Shield
+        - Turrets
+        - Wellen
+
+    5. Bionten-No-Fire-Prototyp
+        - neutrale Einheiten
+        - Fail bei falschem Kill
+        - alternative Auswertung
+
+Phase 2 — Kampagnenstruktur:
+
+    - Missionen in Reihenfolge bringen.
+    - Funktexte schreiben.
+    - Tasks/Waypoints definieren.
+    - Wiederkehrende Assets vereinheitlichen.
+    - Nachtschicht-Operator-Stimme als roter Faden.
+
+Phase 3 — Polishing:
+
+    - Musik/Mood
+    - Ambient-Objekte
+    - ziviler Verkehr
+    - Polizeifunk
+    - alternative Epiloge
+    - Intro-/Outro-Takes
+
+
+========================================================================
+17. Risiken und offene Punkte
+========================================================================
+
+Offene technische Punkte:
+
+    - ERLEDIGT: Start-Intro-Pfad ist bestätigt (Iteration 27, Bound-Thread Start(state)).
+    - ERLEDIGT: 1N1-Startpfad ist geklärt — sp_1n1 läuft als Instant-Fight-Arena.
+      Fehlerursache damals: Objekte an node71 (TRAFFIC) gehängt, aber über node70
+      gebunden. Vessels an node70, Patrouillenzone an node58.
+    - Trigger-Parenting / SensorLib-Parameter müssen noch erforscht werden.
+    - Presence-/Waypoint-Takes crashen in der bisher probierten Form (Iteration 25);
+      vor Einsatz isoliert testen.
+    - runtime level loading nicht bestätigt
+    - komplexe BindEasy-/MultiPatrol-Transplants können crashen
+    - OSD-Datentypen bleiben gefährlich (BulletType-Crash bei nv_pscout)
+    - Restlärm: SetEngineValue-SCRIPTERRORs im Iteration-27-Log, nicht fatal,
+      sollten vor einer sauberen Release-Version bereinigt werden.
+
+Designrisiken:
+
+    - zu viele neue Systeme in einer Mission vermeiden
+    - erst kleine Prototypen
+    - keine langen Cutscenes erzwingen
+    - Funk/Tasks als primäres Storymittel nutzen
+    - Spielerfreiheit nicht durch fragile Scripts überladen
+
+Stabile Umsetzungsprinzipien:
+
+    - bewiesene Callbacks
+    - kleine isolierte Tests
+    - DirectPatrol für Ambient
+    - Killcounter für Wellen/Boss
+    - MTake für Dialog
+    - Trigger/Waypoint für Missionsfluss
+
+
+========================================================================
+18. Kurzfassung
+========================================================================
+
+"AquaNox: Nachtschicht" ist als düstere Noir-Zusatzkampagne geplant:
+
+    1. Schlick über Neopolis
+        Salvage, Datenbojen, Schlick, erster Hinweis.
+
+    2. Die Mitternachtsroute
+        Konvoi, Schmuggelroute, Hinterhalt, Polizei.
+
+    3. Neon unter Glas
+        Lys-9/City, Neon, Traffic, Police Patrols, Chase.
+
+    4. Brainfires Echo
+        Relais, Generatoren, Defense Rings, Wellen.
+
+    5. Tote Brüder, lebende Schwestern
+        Labor/Station, Bionten-/alte Spuren, moralischer Fund.
+
+    6. Opals Gericht
+        No-fire-/Schutzmission, Bionten-Schwarm, Urteil.
+
+    7. Die Nacht über Aqua
+        Finale, Fraktionen, Sensorbojen, Generatoren, Bossphasen, Epilog.
+
+Technisch realistische Kernsysteme:
+
+    - DirectPatrol für Police/Traffic
+    - Triggers/Sensors für Missionsfluss
+    - MTake + Custom-MP3 für Funk
+    - Killcounter/Destroyed callbacks für Wellen
+    - ProtectedGoto/FollowProtect für Konvoi
+    - Turret/Shield/Generator für Defense
+    - Items/Cargo/Data Buoys für Salvage
+    - Bound-Thread Start(state) als BESTÄTIGTER Start-Intro-Weg (nicht Presence-Trigger)
+
+Wichtigster Produktionssatz:
+
+    Erst kleine spielbare Prototypen bauen,
+    dann daraus die sieben Missionskapitel zusammensetzen.

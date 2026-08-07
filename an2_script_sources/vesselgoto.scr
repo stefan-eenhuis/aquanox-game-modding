@@ -1,0 +1,575 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the goto
+-- behaviour of a vessel.
+--------------------------------------------------------------------
+
+
+-- We need the synchronization lib
+LibSync = LoadLib("Synchronization")
+
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the goose march
+--------------------------------------------------------------------
+
+
+-- A list with semaphores for a vessel
+LVG_Semaphores = {}
+
+-- This is the new state we want to put onto.
+LVG_SimpleGoose =
+{
+	-- This function is activated, when we want to start the goose march
+	LVG_Activate = function(State)
+		Vessel_Stop(State.Node, 1)
+		LibSync.LockSemaphore(State, GetInnerValue(State, "VSG_Semaphore"))
+	end,
+
+	-- This function is activated, if we are allowed to pass.
+	LVG_StartGoing = function(State)
+		Vessel_Goto(State.Node, GetInnerValue(State, "VSG_Path"), GetInnerValue(State, "VSG_Speed") , GetInnerValue(State, "VSG_Radius"))
+	end,
+
+	Vessel_GotoPosReached = function(State, Path, Node)
+		-- We have to see if we have arrived at the critical position
+		if (Node == GetInnerValue(State, "VSG_SyncNode")) then
+			LibSync.FreeSemaphore(State, GetInnerValue(State, "VSG_Semaphore"))
+		end
+	end,
+
+	Vessel_GotoArrived = function(State, Path)
+		-- In this case we have to restore the old envirnonment and return
+		local callback = GetInnerValue(State, "VSG_CallBack")
+		local param = GetInnerValue(State, "VSG_Param")
+
+		RestoreModification(State, "LVG_SimpleGoose")
+		StopShieldGuard(State)
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		LibList.VesselGoto_Basis.GooseMarchStatStop(State)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VesselGoto_Basis.GooseMarchStatStop(State)
+	end,
+
+
+
+}
+
+-- We define the behaviour for the complex goto with synchronization.
+LVG_ComplexGoose =
+{
+
+	LVG_Activate = function(State)
+		Vessel_Patrol(State.Node, GetInnerValue(State, "VCG_PatrolArea") , 
+			 -1.0, GetInnerValue(State, "VCG_PatrolVelocity")  )
+		LibSync.LockSemaphore(State, GetInnerValue(State, "VCG_Semaphore"))
+	end,
+
+	-- This function is activated, if we are allowed to pass.
+	LVG_StartGoing = function(State)
+		Vessel_Goto(State.Node, GetInnerValue(State, "VCG_Path"), GetInnerValue(State, "VCG_Speed") , GetInnerValue(State, "VCG_Radius"))
+	end,
+
+	Vessel_GotoPosReached = function(State, Path, Node)
+		-- We have to see if we have arrived at the critical position
+		if (Node == GetInnerValue(State, "VCG_SyncNode")) then
+			LibSync.FreeSemaphore(State, GetInnerValue(State, "VCG_Semaphore"))
+		end
+	end,
+
+	Vessel_GotoArrived = function(State, Path)
+		-- In this case we have to restore the old envirnonment and return
+		local callback = GetInnerValue(State, "VCG_CallBack")
+		local param = GetInnerValue(State, "VCG_Param")
+
+		RestoreModification(State, "LVG_ComplexGoose")
+		StopShieldGuard(State)
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		LibList.VesselGoto_Basis.GooseMarchPatStop(State)
+	end,	
+	
+	StopBehavior = function(State)
+		LibList.VesselGoto_Basis.GooseMarchPatStop(State)
+	end,
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for multi patrol
+--------------------------------------------------------------------
+
+LVG_MultiPatrol =
+{
+	-- The start function for the behaviour.
+	LVG_Activate = function(State)
+		Vessel_Patrol(State. Node,  GetInnerValue(State, "LMM_ListOfPatrolAreas")[1] ,
+			 GetInnerValue(State, "LMM_CompleteTimeOut"),
+			GetInnerValue(State, "LMM_PatrolVelocity"))
+	end,
+
+	Vessel_PatrolFinished = function(State)
+		local newPos
+
+		-- We have to change directions, if we have reached the end.
+		if ((GetInnerValue(State, "LMM_Position") == 1) and (GetInnerValue(State, "LMM_Direction") == -1)) then
+			StoreInnerValue(State, "LMM_Direction", 1)
+		end
+		if ((GetInnerValue(State, "LMM_Position") == GetInnerValue(State, "LMM_Entries")) and (GetInnerValue(State, "LMM_Direction") == 1)) then
+			StoreInnerValue(State, "LMM_Direction", -1)
+		end
+
+		-- We have to find the new patrol area, where we want to patrol.
+		newPos = GetInnerValue(State, "LMM_Position") + GetInnerValue(State, "LMM_Direction")
+		StoreInnerValue(State, "LMM_Position", newPos)
+
+		-- Finally we can do the patrol
+		Vessel_Patrol(State. Node,  GetInnerValue(State, "LMM_ListOfPatrolAreas")[newPos] , 
+			 GetInnerValue(State, "LMM_CompleteTimeOut"),
+			GetInnerValue(State, "LMM_PatrolVelocity"))
+
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VesselGoto_Basis.MultiPatrolStop(State)
+	end,
+
+
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the information for the complex goto
+--------------------------------------------------------------------
+
+LVG_ComplexGoto =
+{
+
+	LVG_Activate = function(State)
+		GetInnerValue(State, "LVG_Process")(State)
+	end,
+
+	LVG_Process = function(State)
+		local callback, param, list, position, oldPosition, timer
+		-- First we choose which entryy to choose next.
+		if (GetInnerValue(State, "LGU_Entries") == GetInnerValue(State, "LGU_Position")) then
+			-- We have reached the end of the list.
+			if (GetInnerValue(State, "LGU_CallBack") == nil) then
+				-- In this case we have to cycle.
+				StoreInnerValue(State, "LGU_Position", 0)
+			else
+				-- In this case we return
+				timer = GetInnerValue(State, "LGU_Timer")
+				if (timer ~= -1) then
+					StopTimer(State.Thread, timer)
+				end
+				callback = GetInnerValue(State, "LGU_CallBack")
+				param = GetInnerValue(State, "LGU_Param")
+				RestoreModification(State, "LVG_ComplexGoto")
+				CallFunction(State.Thread, callback, param)
+				return
+			end
+		end
+		-- Increment the inner value
+		position = GetInnerValue(State, "LGU_Position") + 1
+		StoreInnerValue(State, "LGU_Position", position)
+		list = GetInnerValue(State, "LGU_ToDoList")[position]
+		oldPosition = GetInnerValue(State, "LGU_OldPosition")
+		-- Now comes the dispatcher for the list.
+		if (list[1] == "Goto") then
+			if (oldPosition ~= nil) then
+				Vessel_GotoFromPosition(State.Node, list[2], oldPosition, list[3], list[4])
+			else
+				Vessel_Goto(State.Node, list[2], list[3], list[4])
+			end
+		elseif (list[1] == "GotoFrom") then
+			if (oldPosition ~= nil) then
+				Vessel_GotoFromPosition(State.Node, list[2], oldPosition, list[4], list[5])
+			else
+				Vessel_GotoFromPosition(State.Node, list[2], list[3], list[4], list[5])
+			end
+		elseif (list[1] == "GotoFromTo") then
+			if (oldPosition ~= nil) then
+				Vessel_GotoFromTo(State.Node, list[2], oldPosition,  list[4], list[5], list[6])
+			else
+				Vessel_GotoFromTo(State.Node, list[2], list[3], list[4], list[5], list[6])
+			end
+		elseif (list[1] == "Sink") then
+			Vessel_Sink(State.Node, list[2], list[3])
+		elseif (list[1] == "Wait") then
+			Vessel_Stop(State.Node, 1)
+			timer = SetTimer(State.Thread, list[2])
+			StoreInnerValue(State, "LGU_Timer", timer)
+		elseif (list[1] == "WaitWithHeading") then
+			Vessel_StopWithHeading(State.Node, list[2], list[3])
+			timer = SetTimer(State.Thread, list[4])
+			StoreInnerValue(State, "LGU_Timer", timer)
+		elseif (list[1] == "ActivateAvoidance") then
+			Vessel_AvoidanceObjects(State.Node, 1)
+			Vessel_AvoidanceTerrain(State.Node, 1)
+			StoreInnerValue(State, "LGU_Avoidance", 1)
+			GetInnerValue(State, "LVG_Process")(State)
+		elseif (list[1] == "DeactivateAvoidance") then
+			Vessel_AvoidanceObjects(State.Node, 0)
+			Vessel_AvoidanceTerrain(State.Node, 0)
+			StoreInnerValue(State, "LGU_Avoidance", 0)
+			GetInnerValue(State, "LVG_Process")(State)
+		else
+			Script_LogRaw("[SCRIPTERROR] [" .. Script_GetLineNumber(2) .. "] ComplexGoto - Unknown commad " .. list[1])
+		end
+		StoreInnerValue(State, "LGU_OldPosition", nil)
+	end,
+
+	Vessel_GotoArrived = function(State, Path, Node)
+		GetInnerValue(State, "LVG_Process")(State)
+	end,
+
+	Vessel_SinkFinished = function(State, Reason)
+		GetInnerValue(State, "LVG_Process")(State)
+	end,
+
+	Timer = function(State, Handle)
+		if ( Handle == GetInnerValue(State, "LGU_Timer") ) then
+			StoreInnerValue(State, "LGU_Timer", -1)
+			GetInnerValue(State, "LVG_Process")(State)
+		end
+	end,
+
+	Vessel_GotoPosReached = function(State, Path, Position)
+		StoreInnerValue(State, "LGU_MemoryPosition", Position)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.VesselGoto_Basis.ComplexGotoStop(State)
+	end,
+
+}
+
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+
+
+-- This library defines the functionality of the synchronization stuff.
+LibList.VesselGoto_Basis =
+{
+
+	--------------------------------------------------------------------
+	-- Here come the commands for the goose march
+	--------------------------------------------------------------------
+
+	-- PURPOSE
+	-- This method activates the goose marh for a simple path.
+	-- We go into stopping mode, if we can not enter the path.
+	--------------------------------
+	-- Info Goose March:
+	-- Kein Sensor,
+	-- Vessel_GotoPosReached, Vessel_GotoArrived ist blocked.
+	--------------------------------
+	GooseMarchStat = function
+	(
+	State,
+	Path, 		-- The path we like to follow.
+	SyncNode, 	-- The node, where new vessel may start if we pass.
+	Speed, 		-- The speed we go with.
+	Radius,		-- The radius impact used for detecting the goto nodes.
+	Callback, 	-- The Callback we activate when we have reched the end.
+	Param		-- Some user data, that is handed back
+	)
+		local node, semaphore
+
+		node = Node_GetPath(Node_Find(State.Node, Path))
+
+		-- First we check, if we have to generate a semaphore for the path.
+		if (LVG_Semaphores[node] == nil) then
+			LVG_Semaphores[node] = LibSync.CreateSemaphore(1, "LVG_StartGoing")
+		end
+
+
+		ApplyModification(State, LVG_SimpleGoose, "LVG_SimpleGoose")
+
+
+		-- We set the necessary semaphore
+		StoreInnerValue(State, "VSG_Semaphore", LVG_Semaphores[node])
+		StoreInnerValue(State, "VSG_Path",	Path)
+		StoreInnerValue(State, "VSG_SyncNode", SyncNode)
+		StoreInnerValue(State, "VSG_CallBack", Callback)
+		StoreInnerValue(State, "VSG_Speed", Speed)
+		StoreInnerValue(State, "VSG_Radius", Radius)
+		StoreInnerValue(State, "VSG_Param", Param)
+		StartShieldGuard(State)
+		CallFunction(State.Thread, "LVG_Activate", nil)
+	end,
+
+	-- PURPOSE
+	-- This method stops the GooseMarchStatBehaviour.
+	GooseMarchStatStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVG_SimpleGoose") then
+			return
+		end
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "VSG_Semaphore"))
+		-- We restore the old command table.
+		StopShieldGuard(State)
+		RestoreModification(State, "LVG_SimpleGoose")
+	end,
+
+
+	-- PURPOSE
+	-- This method perfroms a goose march, where the vessels at the beginning
+	-- perform a patrol in a certin area, unti they can continue.
+	--------------------------------
+	-- Info Goose March:
+	-- Kein Sensor,
+	-- Vessel_GotoPosReached, Vessel_GotoArrived ist blocked.
+	--------------------------------
+	GooseMarchPat = function
+	(
+	State,
+	Path, 			-- The path we like to follow.
+	SyncNode, 		-- The node, where new vessel may start if we pass.
+	Speed, 			-- The speed we go with.
+	Radius,			-- The radius impact used for detecting the goto nodes.
+	PatrolArea,		-- The patrol area we wait in if we can not enter.
+	PatrolVelocity,		-- See vessel patrol
+	Callback, 		-- The Callback we activate when we have reched the end.
+	Param			-- Some user data, that is handed back
+	)
+
+		local node, semaphore
+
+		node = Node_GetPath(Node_Find(State.Node, Path))
+
+		-- First we check, if we have to generate a semaphore for the path.
+		if (LVG_Semaphores[node] == nil) then
+			LVG_Semaphores[node] = LibSync.CreateSemaphore(1, "LVG_StartGoing")
+		end
+
+
+		ApplyModification(State, LVG_ComplexGoose, "LVG_ComplexGoose")
+
+
+		-- We set the necessary semaphore
+		StoreInnerValue(State, "VCG_Semaphore", LVG_Semaphores[node])
+		StoreInnerValue(State, "VCG_Path",	Path)
+		StoreInnerValue(State, "VCG_SyncNode", SyncNode)
+		StoreInnerValue(State, "VCG_CallBack", Callback)
+		StoreInnerValue(State, "VCG_Speed", Speed)
+		StoreInnerValue(State, "VCG_Radius", Radius)
+		StoreInnerValue(State, "VCG_Param", Param)
+		-- the info for the patrol
+		StoreInnerValue(State, "VCG_PatrolArea", PatrolArea)
+		StoreInnerValue(State, "VCG_PatrolVelocity", PatrolVelocity)
+		StartShieldGuard(State)
+		CallFunction(State.Thread, "LVG_Activate", nil)
+	end,
+
+	-- This method stops the GooseMarchPatBehaviour.
+	GooseMarchPatStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVG_ComplexGoose") then
+			return
+		end
+		LibSync.FreeSemaphore(State, GetInnerValue(State, "VCG_Semaphore"))
+		-- We restore the old command table.
+		StopShieldGuard(State)
+		RestoreModification(State, "LVG_ComplexGoose")
+	end,
+
+
+	--------------------------------------------------------------------
+	-- Here comes the information for the multipatrol
+	--------------------------------------------------------------------
+
+	-- PURPOSE
+	-- The multipatrol performs several patrols in different areas,
+	-- It starts with the firt area and walks over to the last area.
+	-- When it has reached the last area, it goes back to the fisrt area.
+	--------------------------------
+	-- Info MultiPatrol:
+	-- Kein Sensor,
+	-- Vessel_PatrolFinished ist blocked.
+	--------------------------------
+	MultiPatrol = function
+	(
+	State,
+	ListOfPatrolAreas,	-- The list of areas, where the patrol should be perfomred in.
+	CompleteTimeOut,	-- When the timeout is passed, we switch over to the next patrol area.
+	PatrolVelocity		-- See vessel patrol.
+	)
+
+	
+		local a,b, counter
+
+		-- We count the number of elements
+		counter = 0
+		for a,b in ListOfPatrolAreas do
+			counter = counter +1
+		end
+		-- We do some plausibility check.
+		if (counter < 2 ) then
+			Script_LogRaw("[SCRIPTERROR] [" .. Script_GetLineNumber(2) .. "] MultiPatrol - At least 2 patrol areas required.")
+			return
+		end
+
+		ApplyModification(State, LVG_MultiPatrol, "LVG_MultiPatrol")
+		-- the info for the patrol.
+		StoreInnerValue(State, "LMM_ListOfPatrolAreas", ListOfPatrolAreas)
+		StoreInnerValue(State, "LMM_CompleteTimeOut", CompleteTimeOut)
+		StoreInnerValue(State, "LMM_PatrolVelocity", PatrolVelocity)
+		-- We set some information, that we for swapping through the areas.
+		StoreInnerValue(State, "LMM_Position", 	1)
+		StoreInnerValue(State, "LMM_Direction", 	1)
+		StoreInnerValue(State, "LMM_Entries",	counter)
+		-- We cna activate the function.
+		CallFunction(State.Thread, "LVG_Activate", nil)
+	end,
+
+	-- This function stops the multipatrol and regenerates the old function.
+	MultiPatrolStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVG_MultiPatrol") then
+			return
+		end
+		-- We restore the old command table.
+		RestoreModification(State, "LVG_MultiPatrol")
+	end,
+
+
+	--------------------------------------------------------------------
+	-- Here comes the information for complex goto
+	--------------------------------------------------------------------
+
+	-- Purpose
+	-- ComplexGoto processes several commands, that are added into a list.
+	-- When tehy have finished the command list, They either switch back or they restart.
+	-- The commands the vessel may process are:
+	-- { "Goto", "path", vel, rad}  the normal goto command.
+	-- { "GotoFrom" , "path", "start", vel, rad}
+	-- { "GotoFromTo", "path", "start", "target", vel, rad}
+	-- { "Sink", "targetnode", velocity}
+	-- { "Wait", time }
+	-- { "WaitWithHeading", "path", "node", time}
+	-- { "ActivateAvoidance" }
+	-- { "DeactivateAvoidance" }
+	--------------------------------
+	-- Info ComplexGoto:
+	-- AvoidanceObjects kann deaktiviert werden.
+	-- Kein Sensor,
+	-- Vessel_GotoArrived, Vessel_SinkFinished, Vessel_GotoPosReached Timer ist blocked.
+	--------------------------------
+	ComplexGoto = function
+	(
+	State,
+	ToDoList, 	-- The list with the commands that should be processed.
+	CallBack,	-- The callback, that is cativated, when the list is finsihed, if nil we cycle through the stuff.
+	Param		-- A parameter, that is activated, when the callback is called.
+	)
+		local a,b, counter
+		-- We count the number of entries in the list.
+		counter = 0
+		for a,b in ToDoList do
+			counter = counter +1
+		end
+		ApplyModification(State, LVG_ComplexGoto, "LVG_ComplexGoto")
+		-- We copy the information
+		StoreInnerValue(State, "LGU_ToDoList", ToDoList)
+		StoreInnerValue(State, "LGU_CallBack", CallBack)
+		StoreInnerValue(State, "LGU_Param", Param)
+		-- We set the counter for the procesing and the maximum number of entries.
+		StoreInnerValue(State, "LGU_Position", 0)
+		StoreInnerValue(State, "LGU_Entries", counter)
+		StoreInnerValue(State, "LGU_Avoidance", 1)
+		StoreInnerValue(State, "LGU_Timer", -1)
+		CallFunction(State.Thread, "LVG_Activate", nil)
+	end,
+
+
+	-- Purpose
+	-- This method restarts a goto after it has been interrupted by a goto stop,
+	-- the list has to be handed over.
+	--------------------------------
+	-- Info ComplexGotoResume:
+	-- AvoidanceObjects kann deaktiviert werden.
+	-- Kein Sensor,
+	-- Vessel_GotoArrived, Vessel_SinkFinished, Vessel_GotoPosReached Timer ist blocked.
+	--------------------------------
+	ComplexGotoResume = function
+	(
+	State,
+	List		-- The list retunred at the complex goto
+	)
+		ApplyModification(State, LVG_ComplexGoto, "LVG_ComplexGoto")
+		-- We copy the information
+		StoreInnerValue(State, "LGU_ToDoList", List.ToDoList)
+		StoreInnerValue(State, "LGU_CallBack", List.CallBack)
+		StoreInnerValue(State, "LGU_Param", List.Param)
+		StoreInnerValue(State, "LGU_Position", List.Position)
+		StoreInnerValue(State, "LGU_Entries", List.Entries)
+		StoreInnerValue(State, "LGU_OldPosition", List.OldPosition)
+		StoreInnerValue(State, "LGU_Avoidance", List.Avoidance)
+		StoreInnerValue(State, "LGU_Timer", -1)
+		Vessel_AvoidanceObjects(State.Node, List.Avoidance)
+		CallFunction(State.Thread, "LVG_Activate", nil)
+	end,
+
+
+	-- PURPOSE
+	-- This function stops the complex goto behaviour.
+	-- It returns a control structure, that may besued to resume the behaviour.
+	ComplexGotoStop = function(State, List )
+
+		local struct, timer
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LVG_ComplexGoto") then
+			return List
+		end
+
+		struct ={}
+		struct.ToDoList = GetInnerValue(State, "LGU_ToDoList")
+		struct.CallBack = GetInnerValue(State, "LGU_CallBack")
+		struct.Param = GetInnerValue(State, "LGU_Param")
+		struct.Position = GetInnerValue(State, "LGU_Position") - 1
+		struct.Entries = GetInnerValue(State, "LGU_Entries")
+		struct.OldPosition = GetInnerValue(State, "LGU_MemoryPosition")
+		struct.Avoidance = GetInnerValue(State, "LGU_Avoidance")
+		-- We deactivate the timer.
+		timer = GetInnerValue(State, "LGU_Timer")
+		if (timer ~= -1) then
+			SetTimer(State.Thread, timer)
+		end
+		-- We restore the old command table.
+		RestoreModification(State, "LVG_ComplexGoto")
+
+		return struct
+
+	end,
+
+	-- PURPOSE
+	-- This function returns the inner status of the goto without stopping the behaviour.
+	ComplexGotoStatus = function(State)
+		local struct
+
+		struct ={}
+		struct.ToDoList = GetInnerValue(State, "LGU_ToDoList")
+		struct.CallBack = GetInnerValue(State, "LGU_CallBack")
+		struct.Param = GetInnerValue(State, "LGU_Param")
+		struct.Position = GetInnerValue(State, "LGU_Position") - 1
+		struct.Entries = GetInnerValue(State, "LGU_Entries")
+		struct.OldPosition = GetInnerValue(State, "LGU_MemoryPosition")
+		struct.Avoidance = GetInnerValue(State, "LGU_Avoidance")
+
+
+		return struct
+	end
+}
+		 	 

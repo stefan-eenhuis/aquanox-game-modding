@@ -1,0 +1,810 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions
+--------------------------------------------------------------------
+
+
+-- This tabel commands contains the diverse functions for the escort commands.
+LF_FormationFunctions =
+{
+	-- This command is for the simple triangle formation.
+	TriangleUpper = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos, ypos, root, zpos
+	
+		root = 0.5773
+		-- First we check if we are on the left wing or on the right wing.
+		if (mod(Position, 2) == 1) then
+			-- We are on the left wing
+			index = (Position - 1) / 2
+			xpos = - root * (DistToLeadObject + index * DistBetweenObjects)
+			ypos = xpos
+		else
+			-- We are on the right wing.
+			index = (Position / 2) - 1
+			xpos = root * (DistToLeadObject + index * DistBetweenObjects)
+			ypos = -   xpos
+		end
+
+		zpos = -ypos
+		
+		return (MAT_Vector3(xpos, ypos, zpos))
+	end,
+
+	-- This command is for the simple triangle formation.
+	Triangle = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos, ypos, root
+	
+		root = 0.70710678
+		-- First we check if we are on the left wing or on the right wing.
+		if (mod(Position, 2) == 1) then
+			-- We are on the left wing
+			index = (Position - 1) / 2
+			xpos = - root * (DistToLeadObject + index * DistBetweenObjects)
+			ypos = xpos
+		else
+			-- We are on the right wing.
+			index = (Position / 2) - 1
+			xpos = root * (DistToLeadObject + index * DistBetweenObjects)
+			ypos = -   xpos
+		end
+		
+		return (MAT_Vector3(xpos, ypos, 0.0))
+	end,
+	
+	Line =  function(Position, DistToLeadObject, DistBetweenObjects)
+		
+		local ypos
+		
+		ypos = DistToLeadObject + Position * DistBetweenObjects
+		return (MAT_Vector3(0.0, - ypos, 0.0))
+		
+	end,
+	
+	Row = function(Position, DistToLeadObject, DistBetweenObjects)
+		local xpos, index
+	
+		if (mod(Position, 2) == 1) then
+			-- We are on the left wing
+			index = (Position - 1) / 2
+			xpos = - (DistToLeadObject + index * DistBetweenObjects)
+		else
+			-- We are on the right wing.
+			index = (Position / 2) - 1
+			xpos = DistToLeadObject + index * DistBetweenObjects
+
+		end
+		return (MAT_Vector3(xpos, 0.0 , 0.0))
+	end,
+	
+	InverseTriangle = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos, ypos, root
+	
+		root = 0.70710678
+		-- First we check if we are on the left wing or on the right wing.
+		if (mod(Position, 2) == 1) then
+			-- We are on the left wing
+			index = (Position - 1) / 2
+			xpos = - root * (DistToLeadObject + index * DistBetweenObjects)
+			ypos = - xpos
+		else
+			-- We are on the right wing.
+			index = (Position / 2) - 1
+			xpos = root * (DistToLeadObject + index * DistBetweenObjects)
+			ypos = xpos
+		end
+		
+		return (MAT_Vector3(xpos, ypos, 0.0))
+	end,
+	
+	XForm = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos,  zpos, root
+	
+		root = 0.70710678
+	
+		if (mod(Position,4) == 0) then
+			index = (Position / 4) - 1
+			xpos = root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = - xpos	
+		elseif (mod(Position,4) == 1) then
+			index = (Position - 1) / 4
+			xpos = - root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = - xpos
+		elseif (mod(Position,4) == 2) then
+			index = (Position - 2) / 4
+			xpos = root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = xpos
+		elseif (mod(Position,4) == 3) then
+			index = (Position - 3) / 4
+			xpos = - root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = xpos
+		end 
+		
+		return (MAT_Vector3(xpos, 0.0 , zpos))
+	end,
+	
+	Claw = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos,  zpos, ypos, root
+	
+		root = 0.577
+	
+		if (mod(Position,4) == 0) then
+			index = (Position / 4) - 1
+			xpos = root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = - xpos	
+			ypos = - xpos 
+		elseif (mod(Position,4) == 1) then
+			index = (Position - 1) / 4
+			xpos = - root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = - xpos
+			ypos = xpos
+		elseif (mod(Position,4) == 2) then
+			index = (Position - 2) / 4
+			xpos = root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = xpos
+			ypos = - xpos
+		elseif (mod(Position,4) == 3) then
+			index = (Position - 3) / 4
+			xpos = - root *  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = xpos
+			ypos = xpos
+		end 
+		
+		return (MAT_Vector3(xpos, ypos , zpos))
+	end,
+	
+	Cross = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos,  zpos, ypos
+	
+	
+		if (mod(Position,6) == 0) then
+			index = (Position / 6) - 1
+			xpos =  (DistToLeadObject + index * DistBetweenObjects)
+			ypos = 0.0
+			zpos = 0.0
+		elseif (mod(Position,6) == 1) then
+			index = (Position - 1) / 6
+			xpos = -  (DistToLeadObject + index * DistBetweenObjects)
+			ypos = 0.0
+			zpos = 0.0
+		elseif (mod(Position,6) == 2) then
+			index = (Position - 2) / 6
+			xpos = 0.0
+			ypos =  (DistToLeadObject + index * DistBetweenObjects)
+			zpos = 0.0
+		elseif (mod(Position,6) == 3) then
+			index = (Position - 3) / 6
+			xpos = 0.0
+			ypos =  - (DistToLeadObject + index * DistBetweenObjects)
+			zpos = 0.0
+		elseif (mod(Position,6) == 4) then
+			index = (Position - 4) / 6
+			xpos = 0.0
+			ypos = 0.0
+			zpos =  (DistToLeadObject + index * DistBetweenObjects)
+		elseif (mod(Position,6) == 5) then
+			index = (Position - 5) / 6
+			xpos = 0.0
+			ypos = 0.0
+			zpos = -  (DistToLeadObject + index * DistBetweenObjects)
+		end 
+		
+		return (MAT_Vector3(xpos, ypos , zpos))
+	end,
+	
+	Tunnel = function(Position, DistToLeadObject, DistBetweenObjects)
+		local index, xpos,  zpos, ypos
+	
+	
+		if (mod(Position,4) == 0) then
+			index = (Position / 4) - 1
+			xpos =  DistToLeadObject / 2
+			ypos = - (DistToLeadObject + index * DistBetweenObjects)
+			
+			zpos = 0.0
+		elseif (mod(Position,4) == 1) then
+			index = (Position - 1) / 4
+			xpos = - DistToLeadObject / 2
+			ypos = - (DistToLeadObject + index * DistBetweenObjects)
+			zpos = 0.0
+		elseif (mod(Position,4) == 2) then
+			index = (Position - 2) / 4
+			xpos = 0.0
+			ypos = - (DistToLeadObject + ( index + 1 ) * DistBetweenObjects) 
+			zpos = DistToLeadObject / 2
+		elseif (mod(Position,4) == 3) then
+			index = (Position - 3) / 4
+			xpos = 0.0
+			ypos = - (DistToLeadObject + ( index + 1 ) * DistBetweenObjects) 
+			zpos = - DistToLeadObject / 2
+		end
+		
+		return (MAT_Vector3(xpos, ypos , zpos))
+	end,
+
+}
+
+
+
+-- The information for the formation
+LF_Formation =
+{
+	-- The formationn type we fly in.
+	FormationType = "",
+	-- Thre break command, that should be called, if the leader wants to quit..
+	BreakCommand = "",
+	-- The command, that should be called if the leader is lost.
+	LeaderLost = "",
+	-- The command, that should not be called to the leader, if the leader is lost.
+	LeaderLostForLeader = "",
+	-- The leader
+	Leader = nil,
+	-- The list with the objects within the formation.
+	ListOfFormation = {},
+	-- The distance of the first escort vessels from the lead object.
+	DistanceToLeadObject = 0,
+	-- The distance between the diverse escort vessels.
+	DistanceBetweenObjects = 0,
+	-- The number of vessels in the formation.
+	NumOfVesselsInFormation = 0,
+	-- The number of positions, that have already been assigned.
+	NumberOfPositionsAssigned = 0,
+	-- Th association list between thread and position.
+	PlaceAssociation = {}
+	
+}
+
+-- The state for the  squad leader.
+LF_Leader =
+{
+
+	LF_Activate = function(State)
+		-- Set the value
+		GetInnerValue(State, "LF_Formation").Leader = State.Thread
+		-- We want to be called if we are destroyed.
+		State.Thread.Formation_ShieldGuardActive = 1
+		StartShieldGuard(State)
+	end,
+	
+	Body_ObjectDestroyed = function(State)
+		local list, i,j, formation
+		
+		-- We have to inform the members of the formation, that the leader is destroyed.
+		list = GetInnerValue(State, "LF_Formation").ListOfFormation
+		formation = GetInnerValue(State, "LF_Formation")
+		-- Some clean up
+		formation.Leader = nil
+		formation.ListOfFormation = {}
+		formation.NumOfVesselsInFormation = 0
+		-- Here we destroy the memory because we can not assign it any more
+		formation.PlaceAssociation = {}
+		formation.NumberOfPositionsAssigned = 0
+		CallFunction(State.Thread, formation.LeaderLostForLeader, nil)
+		for i,j in list do
+			-- We deactivate the bahviour of the other vessels.
+			if (j.State.Thread.Formation_ShieldGuardActive == 1) then
+				j.State.Thread.Formation_ShieldGuardActive = 0
+				StopShieldGuard(j.State)
+			end
+			RestoreModification(j.State, "LF_Follower")
+			CallFunction(j, formation.LeaderLost, nil)
+		end
+		
+	end,	
+	
+	-- Thiscommand is activated, if the leader wants to leave the formation.
+	LF_BreakFormation = function(State)
+		local list, i,j
+		
+		-- We have to inform the members of the formation, that the leader is destroyed.
+		list = GetInnerValue(State, "LF_Formation").ListOfFormation
+		-- Some clean up
+		GetInnerValue(State, "LF_Formation").Leader = nil
+		GetInnerValue(State, "LF_Formation").ListOfFormation = {}
+		GetInnerValue(State, "LF_Formation").NumOfVesselsInFormation = 0
+		for i,j in list do
+			-- We deactivate the bahviour of the other vessels.
+			if (j.State.Thread.Formation_ShieldGuardActive == 1) then
+				j.State.Thread.Formation_ShieldGuardActive = 0
+				StopShieldGuard(j.State)
+			end
+			RestoreModification(j.State, "LF_Follower")
+			-- We call the function for the breaking.
+			CallFunction(j, GetInnerValue(State, "LF_Formation").BreakCommand, nil)
+		end
+		
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Formation_Basis.DeclareAsLeaderStop(State)
+	end,		
+	
+	
+}
+
+-- The stat for the follower in a  formation.
+LF_Follower =
+{
+	-- This function registers with the formation and declares the new escort position.
+ 	LF_Activate = function(State)
+ 		local formation, position, positionNumber
+ 		
+ 		formation = GetInnerValue(State, "FIF_Formation")
+ 		-- First we register with the formation.
+ 		formation.NumOfVesselsInFormation = formation.NumOfVesselsInFormation + 1
+ 		formation.ListOfFormation[formation.NumOfVesselsInFormation] = State.Thread
+		-- Here we check if we have already been in formation.
+		if (formation.PlaceAssociation[State.Thread] ~= nil) then
+			positionNumber = formation.PlaceAssociation[State.Thread]
+			
+		else
+			positionNumber = formation.NumberOfPositionsAssigned
+			formation.NumberOfPositionsAssigned = formation.NumberOfPositionsAssigned + 1
+			formation.PlaceAssociation[State.Thread] = positionNumber
+		end
+ 		-- We activate the shield guard.
+ 		State.Thread.Formation_ShieldGuardActive = 1
+		StartShieldGuard(State)
+ 		-- We start the following command.
+ 		position = LF_FormationFunctions[formation.FormationType]
+ 			(positionNumber + 1, formation.DistanceToLeadObject, 
+ 			formation.DistanceBetweenObjects)
+ 		-- We set the information for the escort.
+ 		Vessel_Escort(State.Node, formation.Leader.Node, position, 20.0)
+ 		-- The information when the escort position is reached, is forgotten anyway.
+ 	end,
+ 	
+ 	
+ 	-- This function should be called, if we leave the formation.
+ 	LF_LeaveFormation = function(State)
+ 		local ownPosition, i,j, formation, position
+ 		
+ 		formation = GetInnerValue(State, "FIF_Formation")
+ 		-- First we find the own position in the formation.
+ 		ownPosition = -1
+ 		for i,j in formation.ListOfFormation do
+ 			if (j == State.Thread) then
+ 				ownPosition = i
+ 			end
+ 		end
+ 		-- We check if we are in the formation any more.
+ 		if (ownPosition == -1) then
+ 			return
+ 		end
+ 		
+ 		formation.NumOfVesselsInFormation = formation.NumOfVesselsInFormation - 1
+ 		-- We move all position one index down and call their function to get to new position.
+ 		for i = ownPosition, formation.NumOfVesselsInFormation do
+ 			formation.ListOfFormation[ i ] = formation.ListOfFormation[ i + 1 ]
+ 			
+ 		end
+ 		formation.ListOfFormation[ formation.NumOfVesselsInFormation + 1] = nil
+ 	end,
+ 	
+ 	Body_ObjectDestroyed = function(State)
+ 		if (State.Thread.Formation_ShieldGuardActive == 1) then
+ 			CallFunction(State.Thread, "LF_LeaveFormation", nil)
+ 		end	
+ 	end,
+ 	
+ 	StopBehavior = function(State)
+		LibList.Formation_Basis.FollowInFormationStop(State)
+	end,
+ 		 
+ 		
+}
+
+-- The state for going in formation
+LF_GotoInFormation =
+{
+	LF_Activate = function(State)
+		local formation
+		
+		formation = GetInnerValue(State, "VGIF_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			Vessel_Goto(State.Node, GetInnerValue(State, "VGIF_Path"), GetInnerValue(State, "VGIF_Velocity"),
+				GetInnerValue(State, "VGIF_Radius")) 
+			FormationLib.DeclareAsLeader(State, formation) 
+		end
+	end,
+	
+	Vessel_GotoArrived = function(State)
+		FormationLib.DeclareAsLeaderStop(State)
+		CallFunction(GetInnerValue(State, "VGIF_Group"), "LF_Stop", nil)
+	end,
+	
+	LF_Stop = function(State)
+		local callback, param
+		
+		callback = GetInnerValue(State, "VGIF_CallBack")
+		param = GetInnerValue(State, "VGIF_Param")
+	
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		FormationLib.FollowInFormationStop(State)
+		
+		-- First we check, if we have to deregister
+		if (not (IsNotLastModification(State, "LF_GotoInFormation"))) then
+			RestoreModification(State, "LF_GotoInFormation") 
+		end
+		CallFunction(State.Thread, callback, param)
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Formation_Basis.VesselGotoInFormationStop(State)
+	end,
+}
+
+-- The state for going in formation
+LF_GotoInFormationFromTo =
+{
+	LF_Activate = function(State)
+		local formation
+		
+		formation = GetInnerValue(State, "VGIF_Formation")
+		if (FormationLib.HasLeader(formation)) then
+			FormationLib.FollowInFormation(State, formation)
+		else
+			Vessel_GotoFromTo(State.Node, GetInnerValue(State, "VGIF_Path"), 
+				GetInnerValue(State, "VGIF_Start"),
+				GetInnerValue(State, "VGIF_End"),
+				GetInnerValue(State, "VGIF_Velocity"),
+				GetInnerValue(State, "VGIF_Radius")) 
+			FormationLib.DeclareAsLeader(State, formation) 
+		end
+	end,
+	
+	Vessel_GotoArrived = function(State)
+		local callback, thread
+		
+		callback = GetInnerValue(State, "VGIF_CallBack")
+		thread = GetInnerValue(State, "VGIF_CameraThread")
+		FormationLib.DeclareAsLeaderStop(State)
+		CallFunction(GetInnerValue(State, "VGIF_Group"), "LF_Stop", nil)
+		CallFunction(thread, callback)
+	end,
+	
+	
+	LF_Stop = function(State)
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		FormationLib.FollowInFormationStop(State)
+		-- First we check, if we have to deregister
+		if (not (IsNotLastModification(State, "LF_GotoInFormationFromTo"))) then
+			RestoreModification(State, "LF_GotoInFormationFromTo") 
+		end
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Formation_Basis.VesselGotoInFormationFromToStop(State)
+	end,
+}
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the miscelangelous stuff.
+LibList.Formation_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the commands for the formation stuff
+	--------------------------------------------------------------------
+	
+	
+	-- PURPOSE
+	-- This method creates a formation with a designated 
+	-- leader, that might not change.
+	CreateFormation = function
+	(
+	FormationType,				-- The type of the formation we want to fly in.
+	BreakCommand,				-- The break command, that should be called, if formation is broken by leader.
+	LeaderLost,					-- The command, that should be called if the leader is destroyed.
+	LeaderLostForLeader,		-- The command called to the leader, that the leader has lost.
+	DistanceToLeadObject,		-- Indicates the distance to the leadobject.
+	DistanceBetweenObjects		-- Indicates the distance between the objects.
+	)
+		local result
+		
+		result = CloneTable(LF_Formation)
+		result.FormationType = FormationType
+		result.ListOfFormation = {}	
+		result.PlaceAssociation = {}
+		result.BreakCommand = BreakCommand
+		result.DistanceToLeadObject = DistanceToLeadObject
+		result.DistanceBetweenObjects = DistanceBetweenObjects
+		result.LeaderLost = LeaderLost
+		result.LeaderLostForLeader = LeaderLostForLeader
+
+		
+		return result
+	
+	end,
+	
+	
+	
+	-- PURPOSE
+	-- This method decalers an object as a leader of a certain formation.
+	-- The leader must declarre itself, before other objects may register with the 
+	-- leader.
+	--------------------------------
+	-- Info DeclareAsLeader:
+	-- aktiviert Shield Guard.
+	-- Body_ObjectDestroyed is blocked.
+	--------------------------------
+	DeclareAsLeader = function
+	(
+	State,
+	Formation	-- The formation we want to become leader of.
+	)
+		
+		State.Thread.Formation_ShieldGuardActive = 0
+		ApplyModification(State, LF_Leader, "LF_Leader")
+		StoreInnerValue(State, "LF_Formation", Formation)
+		CallFunction(State.Thread, "LF_Activate", nil)
+	end,
+	
+	-- PURPOSE
+	-- This is a simple declare as leader command, that is only applicable for the player, as no special 
+	-- Commands are treared here.
+	DeclareAsLeaderPlayer = function
+	(
+	State,
+	Formation	-- The formation the player wants to be a part of.
+	)
+	
+		Formation.Leader = State.Thread
+	end,
+	
+	
+	-- Purpose
+	-- This command removes the status a a leader from the other objects.
+	-- In Static mode, all objects are getting the break formation command.
+	DeclareAsLeaderStop = function(State)
+		
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LF_Leader") then
+			return 
+		end
+	
+		-- First we call the lost leader function
+		CallFunction(State.Thread, "LF_BreakFormation", nil)
+		-- We stop the sensor.
+		if (State.Thread.Formation_ShieldGuardActive == 1) then
+			State.Thread.Formation_ShieldGuardActive = 0
+			StopShieldGuard(State)
+		end
+		-- We return to the normal mode.
+		RestoreModification(State, "LF_Leader")
+	end,
+	
+	-- PURPOSE
+	-- This function places the objects in the list to their corresponding position 
+	PlaceFormation = function
+	(
+	Group,		-- The group of objects we want to place.
+	Formation,	-- The formation we use for placing the object.
+	NodeRef,	-- A node reference we need to place the first object.
+	Heading		-- An indication, wheter we want to look left, up, right, down
+	)
+	local i, position, xpos, ypos, transpos
+	
+	
+		-- First we place the leader of the Formation.
+		transpos = Position_GetPosition(Node_Find(NodeRef))
+		Body_SetPosition(Group[1].Node, transpos)
+		-- We set the oerientation of the lead object.
+		if ( Heading == "left") then
+			Body_SetOrientation(Group[1].Node, MAT_Vector3(90.0, 0.0, 0.0))
+		elseif ( Heading == "up") then
+			Body_SetOrientation(Group[1].Node, MAT_Vector3(0.0, 0.0, 0.0))
+		elseif ( Heading == "right") then
+			Body_SetOrientation(Group[1].Node, MAT_Vector3(-90.0, 0.0, 0.0))
+		elseif ( Heading == "down") then
+			Body_SetOrientation(Group[1].Node, MAT_Vector3(180.0, 0.0, 0.0))
+		end
+		for i = 2, Group.NumOfThreads do
+			position = LF_FormationFunctions[Formation.FormationType]
+ 				(i - 1, Formation.DistanceToLeadObject, 
+ 				Formation.DistanceBetweenObjects)
+ 			finalpos = position
+	 		if ( Heading == "left") then
+	 			xpos = - position.Y
+				ypos = position.X
+				Body_SetOrientation(Group[i].Node, MAT_Vector3(90.0, 0.0, 0.0))
+			elseif ( Heading == "up") then
+				xpos = position.X
+				ypos = position.Y
+				Body_SetOrientation(Group[i].Node, MAT_Vector3(0.0, 0.0, 0.0))
+			elseif ( Heading == "right") then
+				xpos = position.Y
+				ypos = -1.0 * position.X
+				Body_SetOrientation(Group[i].Node, MAT_Vector3(-90.0, 0.0, 0.0))
+			elseif ( Heading == "down") then
+				xpos = position.X
+				ypos = -position.Y
+				Body_SetOrientation(Group[i].Node, MAT_Vector3(180.0, 0.0, 0.0))
+			end
+			Body_SetPosition(Group[i].Node, MAT_Vector3(xpos + transpos.X, ypos + transpos.Y, transpos.Z))
+		end
+	end,
+	
+	
+	-- PURPOSE
+	-- This function places the objects, that the first object is positioned at the starting point
+	-- and the whole formation is looking into the direction of the second starting point.
+	PlaceFormationPath = function
+	(
+	Group,		-- The group of objects we want to place.
+	Formation,	-- The formation we use for placing the object.
+	SimPath		-- The path to he path where we would like to do our orientation.
+	)	
+	
+		local node, position, orientation, offset,i
+		
+		node = Node_Find(Group[1].Node, SimPath)
+		StopAllActiveBehaviours(Group[1].State)
+		-- First we get the position and orientation of the fist vessel.
+		position, orientation = Path_GetPositionOrientation(node, MAT_Vector3(0.0, 0.0, 0.0))
+		-- First we stop the vessel.
+		Vessel_Stop(Group[1].Node, 1)
+		Body_Freeze(Group[1].Node)
+		
+		
+		Body_SetCS(Group[1].Node, position, orientation)
+		-- Then we sweep through the list of the other objects.
+		for i = 2, Group.NumOfThreads do
+			StopAllActiveBehaviours(Group[i].State)
+			Vessel_Stop(Group[i].Node, 1)
+			Body_Freeze(Group[i].Node)
+			offset = LF_FormationFunctions[Formation.FormationType]
+	 			(i - 1, Formation.DistanceToLeadObject, 
+	 			Formation.DistanceBetweenObjects)		
+	 		position, orientation = Path_GetPositionOrientation(node, offset)
+	 		Body_SetCS(Group[i].Node, position, orientation)
+	 	end	
+ 	end,
+				 
+	
+	-- PURPOSE
+	-- This method requests for entering the position in the formation.
+	--------------------------------
+	-- Info DeclareAsLeader:
+	-- aktiviert Shield Guard.
+	-- Body_ObjectDestroyed is blocked.
+	--------------------------------
+	FollowInFormation = function
+	(
+	State,		
+	Formation		-- The formation we want to fly in.
+	)
+	
+		State.Thread.Formation_ShieldGuardActive = 0
+		ApplyModification(State, LF_Follower, "LF_Follower")
+		StoreInnerValue(State, "FIF_Formation", Formation)
+		CallFunction(State.Thread, "LF_Activate", nil)
+	end,
+	
+	
+	-- PURPOSE
+	-- This emthod needs stops the formation behaviour and leaves the formation.
+	FollowInFormationStop = function(State)
+		
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LF_Follower") then
+			return 
+		end
+	
+		CallFunction(State.Thread, "LF_LeaveFormation", nil)
+		-- We stop the sensor.
+		if (State.Thread.Formation_ShieldGuardActive == 1) then
+			State.Thread.Formation_ShieldGuardActive = 0
+			StopShieldGuard(State)
+		end
+		-- We repair he modification
+		RestoreModification(State, "LF_Follower")
+	end,
+	
+	
+	-- PURPOSE
+	-- This method checks if the formation contains a leader
+	HasLeader = function(Formation)
+		return (Formation.Leader ~= nil)
+	end,
+	
+	
+	-- PURPOSE
+	-- This method performs a got in the fomation, the first vessels 
+	-- automatically declares it self as as a leader.
+	--------------------------------
+	-- Info DeclareAsLeader:
+	-- aktiviert Shield Guard.
+	-- Body_ObjectDestroyed, Vessel_GotoArrived  is blocked.
+	--------------------------------
+	VesselGotoInFormation = function
+	(
+	State,
+	Group,			-- The group the vessel belongs to.
+	Formation,		-- The formation we want to fly in.
+	Path,			-- The path we want to go along.
+	Velocity,		-- The velocity we want to fly with.
+	Radius,			-- The sphere radius for the goto.
+	CallBack,		-- The callback, that should be called, if we have arrived.
+	Param			-- A user parameter for callback.
+	)
+	
+		ApplyModification(State, LF_GotoInFormation, "LF_GotoInFormation")
+		StoreInnerValue(State, "VGIF_Formation", Formation)
+		StoreInnerValue(State, "VGIF_Path", Path)
+		StoreInnerValue(State, "VGIF_Velocity", Velocity)
+		StoreInnerValue(State, "VGIF_Radius", Radius)
+		StoreInnerValue(State, "VGIF_CallBack", CallBack)
+		StoreInnerValue(State, "VGIF_Param", Param)
+		StoreInnerValue(State, "VGIF_Group", Group)
+		CallFunction(State.Thread, "LF_Activate", nil)
+	end,
+	
+	VesselGotoInFormationFromTo = function
+	(
+	State,			-- The state for the camera or director.
+	Group,			-- The group the vessel belongs to.
+	Formation,		-- The formation we want to fly in.
+	Path,			-- The path we want to go along.
+	Start,			-- The starting position where we start.
+	End,			-- The ending position, where we end.
+	Velocity,		-- The velocity we want to fly with.
+	Radius,			-- The sphere radius for the goto.
+	CallBack		-- The callback, that should be called, if we have arrived.
+	)
+	local state, i
+		-- We sweep through the goup of the thread.
+		for i = 1, Group.NumOfThreads do
+			state = Group[i].State
+			-- First we stop all active behaviours.
+			StopAllActiveBehaviours(State)
+			-- The we set the new behaviour.
+			ApplyModification(state, LF_GotoInFormationFromTo, "LF_GotoInFormationFromTo")
+			StoreInnerValue(state, "VGIF_CameraThread", State.Thread)
+			StoreInnerValue(state, "VGIF_Formation", Formation)
+			StoreInnerValue(state, "VGIF_Path", Path)
+			StoreInnerValue(state, "VGIF_Start", Start)
+			StoreInnerValue(state, "VGIF_End", End)
+			StoreInnerValue(state, "VGIF_Velocity", Velocity)
+			StoreInnerValue(state, "VGIF_Radius", Radius)
+			StoreInnerValue(state, "VGIF_CallBack", CallBack)
+			StoreInnerValue(state, "VGIF_Group", Group)
+			CallFunction(state.Thread, "LF_Activate", nil)
+		end
+	
+	end, 
+	
+	-- PURPOSE
+	-- Stops the got in formation command.
+	VesselGotoInFormationFromToStop = function(State)
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		FormationLib.DeclareAsLeaderStop(State)
+		FormationLib.FollowInFormationStop(State)
+		
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LF_GotoInFormationFromTo") then
+			return 
+		end
+		RestoreModification(State, "LF_GotoInFormationFromTo")
+	end,
+	
+	-- PURPOSE
+	-- Stops the got in formation command.
+	VesselGotoInFormationStop = function(State)
+		-- As this is a cascadaded behaviour we can not analyze if this is the last modification made.
+		FormationLib.DeclareAsLeaderStop(State)
+		FormationLib.FollowInFormationStop(State)
+		
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LF_GotoInFormation") then
+			return 
+		end
+		RestoreModification(State, "LF_GotoInFormation")
+	end,
+}
+		 	 

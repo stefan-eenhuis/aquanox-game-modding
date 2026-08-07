@@ -1,0 +1,21 @@
+{
+ "game": "AquaNox 1 (GOG Aqua.exe)",
+ "description": "IDs mit eigenem Engine-Handler, aber OHNE registrierten Skript-Prototyp. Geprueft gegen die VOLLSTAENDIGE Prototyp-Liste (398, aus den Name-Gettern).",
+ "important_correction": "Eine fruehere Fassung listete 23 'Cut-Befehle'. 21 davon waren FALSCH-POSITIV - sie HABEN einen Prototyp (z.B. Camera_Cut=7016, Node_LeaveSimulation=5003, Game_LoadScript=11000), der nur in der unvollstaendigen 308er-Liste fehlte. Nach Abgleich mit den 398 echten Prototypen bleiben 2.",
+ "verified_count": 2,
+ "note": "Nur 2 IDs in den bisher dekodierten Bloecken haben eigenen Handler-Code ohne jeden Prototyp - beide im Body-Block, vermutlich interne Gegenstuecke exponierter Befehle (kein sichtbarer Cut-Content). Die Kamera hat KEINE Cut-Befehle - im Gegenteil, sie hat 21 Prototypen (mehr als gedacht).",
+ "commands": [
+  {
+   "message_id": 1017,
+   "handler": "0x54c7f4",
+   "subsystem": "Body",
+   "context": "zwischen Body_ObjectDestroyed(1016) und Body_RejectKinInfo(1018); schreibt Rueckgabe-Flag, fragt Liste via 0x4ba6e0 ab (wie die Request*Info-Befehle)"
+  },
+  {
+   "message_id": 1034,
+   "handler": "0x46792b",
+   "subsystem": "Body",
+   "context": "zwischen Body_EMPParalyzed(1033) und Body_AddItemInteger(1035); baut Struct via 0x467bd0->0x4cdf30 (Item/Status-Setter-Variante)"
+  }
+ ]
+}

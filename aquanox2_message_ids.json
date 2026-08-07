@@ -1,0 +1,4900 @@
+{
+ "_source": "AN2.dat",
+ "_method": "RegisterClass @0x442a40 -> factory -> ctor -> vtable; vt[3]=GetName, vt[4]=GetArgCount, vt[6]=GetParamType (dieselben Slots wie AquaNox 1)",
+ "count": 439,
+ "commands": {
+  "ANT_Client_ConnectAborted": {
+   "class": "NOD_ANT_Client_ConnectAborted",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Client_ConnectAborted()",
+   "lua_call": "ANT_Client_ConnectAborted(targetNode)",
+   "vtable": "0x734128",
+   "factory": "0x4ba630"
+  },
+  "ANT_Client_ConnectCompleted": {
+   "class": "NOD_ANT_Client_ConnectCompleted",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Client_ConnectCompleted()",
+   "lua_call": "ANT_Client_ConnectCompleted(targetNode)",
+   "vtable": "0x734148",
+   "factory": "0x4ba580"
+  },
+  "ANT_Client_DuplicationComplete": {
+   "class": "NOD_ANT_Client_DuplicationComplete",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Client_DuplicationComplete()",
+   "lua_call": "ANT_Client_DuplicationComplete(targetNode)",
+   "vtable": "0x734188",
+   "factory": "0x4ba790"
+  },
+  "ANT_Client_MapChange": {
+   "class": "NOD_ANT_Client_MapChange",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Client_MapChange()",
+   "lua_call": "ANT_Client_MapChange(targetNode)",
+   "vtable": "0x734168",
+   "factory": "0x4ba840"
+  },
+  "ANT_Client_SessionTerminated": {
+   "class": "NOD_ANT_Client_SessionTerminated",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Client_SessionTerminated()",
+   "lua_call": "ANT_Client_SessionTerminated(targetNode)",
+   "vtable": "0x7341a8",
+   "factory": "0x4ba6e0"
+  },
+  "ANT_Message_AskForPlayerRecreation": {
+   "class": "NOD_ANT_Message_AskForPlayerRecreation",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Message_AskForPlayerRecreation()",
+   "lua_call": "ANT_Message_AskForPlayerRecreation(targetNode)",
+   "vtable": "0x73a248",
+   "factory": "0x4743e0"
+  },
+  "ANT_Message_AuthenticateFailure": {
+   "class": "NOD_ANT_Message_AuthenticateFailure",
+   "argc": 4,
+   "params": [
+    "int32",
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "signature": "ANT_Message_AuthenticateFailure(int32, int32, int32, int32)",
+   "lua_call": "ANT_Message_AuthenticateFailure(targetNode, int32, int32, int32, int32)",
+   "vtable": "0x73a1c8",
+   "factory": "0x478fe0"
+  },
+  "ANT_Message_AuthenticateQuery": {
+   "class": "NOD_ANT_Message_AuthenticateQuery",
+   "argc": 9,
+   "params": [
+    "int32",
+    "uint16",
+    "uint16",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "signature": "ANT_Message_AuthenticateQuery(int32, uint16, uint16, int32, int32, int32, int32, int32, int32)",
+   "lua_call": "ANT_Message_AuthenticateQuery(targetNode, int32, uint16, uint16, int32, int32, int32, int32, int32, int32)",
+   "vtable": "0x73a2e8",
+   "factory": "0x478570"
+  },
+  "ANT_Message_AuthenticateReply": {
+   "class": "NOD_ANT_Message_AuthenticateReply",
+   "argc": 12,
+   "params": [
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "int32",
+    "string",
+    "string",
+    "int8",
+    "string"
+   ],
+   "signature": "ANT_Message_AuthenticateReply(int32, int32, int32, int32, int32, int32, int32, int32, string, string, int8, string)",
+   "lua_call": "ANT_Message_AuthenticateReply(targetNode, int32, int32, int32, int32, int32, int32, int32, int32, string, string, int8, string)",
+   "vtable": "0x73a268",
+   "factory": "0x478a40"
+  },
+  "ANT_Message_BodyAnglesUpdate": {
+   "class": "NOD_ANT_Message_BodyAnglesUpdate",
+   "argc": 2,
+   "params": [
+    "float",
+    "MAT_Vector3"
+   ],
+   "signature": "ANT_Message_BodyAnglesUpdate(float, MAT_Vector3)",
+   "lua_call": "ANT_Message_BodyAnglesUpdate(targetNode, float, MAT_Vector3)",
+   "vtable": "0x73a128",
+   "factory": "0x477140"
+  },
+  "ANT_Message_BodyUpdate": {
+   "class": "NOD_ANT_Message_BodyUpdate",
+   "argc": 4,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "signature": "ANT_Message_BodyUpdate(float, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "lua_call": "ANT_Message_BodyUpdate(targetNode, float, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x73a108",
+   "factory": "0x474940"
+  },
+  "ANT_Message_ClientIsLeft": {
+   "class": "NOD_ANT_Message_ClientIsLeft",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "ANT_Message_ClientIsLeft(int8)",
+   "lua_call": "ANT_Message_ClientIsLeft(targetNode, int8)",
+   "vtable": "0x73a088",
+   "factory": "0x4742b0"
+  },
+  "ANT_Message_CreateBuzzerOnServer": {
+   "class": "NOD_ANT_Message_CreateBuzzerOnServer",
+   "argc": 6,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "MAT_Vector3",
+    "int32"
+   ],
+   "signature": "ANT_Message_CreateBuzzerOnServer(float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32)",
+   "lua_call": "ANT_Message_CreateBuzzerOnServer(targetNode, float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32)",
+   "vtable": "0x739fc8",
+   "factory": "0x476b20"
+  },
+  "ANT_Message_CreateObject": {
+   "class": "NOD_ANT_Message_CreateObject",
+   "argc": 5,
+   "params": [
+    "int32",
+    "uint16",
+    "string",
+    "int32",
+    "string"
+   ],
+   "signature": "ANT_Message_CreateObject(int32, uint16, string, int32, string)",
+   "lua_call": "ANT_Message_CreateObject(targetNode, int32, uint16, string, int32, string)",
+   "vtable": "0x73a048",
+   "factory": "0x473b80"
+  },
+  "ANT_Message_CreatePlayerOnClient": {
+   "class": "NOD_ANT_Message_CreatePlayerOnClient",
+   "argc": 5,
+   "params": [
+    "string",
+    "int32",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "string"
+   ],
+   "signature": "ANT_Message_CreatePlayerOnClient(string, int32, MAT_Vector3, MAT_Vector3, string)",
+   "lua_call": "ANT_Message_CreatePlayerOnClient(targetNode, string, int32, MAT_Vector3, MAT_Vector3, string)",
+   "vtable": "0x73a1a8",
+   "factory": "0x474490"
+  },
+  "ANT_Message_CreateTorpedoOnServer": {
+   "class": "NOD_ANT_Message_CreateTorpedoOnServer",
+   "argc": 8,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "int8",
+    "int8",
+    "int32",
+    "int32"
+   ],
+   "signature": "ANT_Message_CreateTorpedoOnServer(float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "lua_call": "ANT_Message_CreateTorpedoOnServer(targetNode, float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "vtable": "0x73a0e8",
+   "factory": "0x475640"
+  },
+  "ANT_Message_DestroyNode": {
+   "class": "NOD_ANT_Message_DestroyNode",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Message_DestroyNode()",
+   "lua_call": "ANT_Message_DestroyNode(targetNode)",
+   "vtable": "0x73a2c8",
+   "factory": "0x4760c0"
+  },
+  "ANT_Message_ObjectStateChange": {
+   "class": "NOD_ANT_Message_ObjectStateChange",
+   "argc": 2,
+   "params": [
+    "int8",
+    "uint16"
+   ],
+   "signature": "ANT_Message_ObjectStateChange(int8, uint16)",
+   "lua_call": "ANT_Message_ObjectStateChange(targetNode, int8, uint16)",
+   "vtable": "0x73a308",
+   "factory": "0x473f40"
+  },
+  "ANT_Message_ObjectWasKilled": {
+   "class": "NOD_ANT_Message_ObjectWasKilled",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ANT_Message_ObjectWasKilled(int32)",
+   "lua_call": "ANT_Message_ObjectWasKilled(targetNode, int32)",
+   "vtable": "0x73a0c8",
+   "factory": "0x476380"
+  },
+  "ANT_Message_SendClientInfo": {
+   "class": "NOD_ANT_Message_SendClientInfo",
+   "argc": 2,
+   "params": [
+    "int8",
+    "int32"
+   ],
+   "signature": "ANT_Message_SendClientInfo(int8, int32)",
+   "lua_call": "ANT_Message_SendClientInfo(targetNode, int8, int32)",
+   "vtable": "0x73a288",
+   "factory": "0x474130"
+  },
+  "ANT_Message_SendGameInfo": {
+   "class": "NOD_ANT_Message_SendGameInfo",
+   "argc": 5,
+   "params": [
+    "int8",
+    "uint16",
+    "uint16",
+    "uint16",
+    "int8"
+   ],
+   "signature": "ANT_Message_SendGameInfo(int8, uint16, uint16, uint16, int8)",
+   "lua_call": "ANT_Message_SendGameInfo(targetNode, int8, uint16, uint16, uint16, int8)",
+   "vtable": "0x73a008",
+   "factory": "0x477fa0"
+  },
+  "ANT_Message_SendServerInfo": {
+   "class": "NOD_ANT_Message_SendServerInfo",
+   "argc": 4,
+   "params": [
+    "string",
+    "int8",
+    "int8",
+    "string"
+   ],
+   "signature": "ANT_Message_SendServerInfo(string, int8, int8, string)",
+   "lua_call": "ANT_Message_SendServerInfo(targetNode, string, int8, int8, string)",
+   "vtable": "0x739fa8",
+   "factory": "0x4782d0"
+  },
+  "ANT_Message_SendVoice": {
+   "class": "NOD_ANT_Message_SendVoice",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Message_SendVoice()",
+   "lua_call": "ANT_Message_SendVoice(targetNode)",
+   "vtable": "0x73a2a8",
+   "factory": "0x477630"
+  },
+  "ANT_Message_SetBandwidth": {
+   "class": "NOD_ANT_Message_SetBandwidth",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ANT_Message_SetBandwidth(int32)",
+   "lua_call": "ANT_Message_SetBandwidth(targetNode, int32)",
+   "vtable": "0x73a168",
+   "factory": "0x4762d0"
+  },
+  "ANT_Message_SetClientInfo": {
+   "class": "NOD_ANT_Message_SetClientInfo",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "int32"
+   ],
+   "signature": "ANT_Message_SetClientInfo(string, string, int32)",
+   "lua_call": "ANT_Message_SetClientInfo(targetNode, string, string, int32)",
+   "vtable": "0x73a328",
+   "factory": "0x477400"
+  },
+  "ANT_Message_SetNodeFlags": {
+   "class": "NOD_ANT_Message_SetNodeFlags",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "ANT_Message_SetNodeFlags(int8)",
+   "lua_call": "ANT_Message_SetNodeFlags(targetNode, int8)",
+   "vtable": "0x73a208",
+   "factory": "0x4761b0"
+  },
+  "ANT_Message_ShieldUpdateAbsolute": {
+   "class": "NOD_ANT_Message_ShieldUpdateAbsolute",
+   "argc": 2,
+   "params": [
+    "int8",
+    "uint32"
+   ],
+   "signature": "ANT_Message_ShieldUpdateAbsolute(int8, uint32)",
+   "lua_call": "ANT_Message_ShieldUpdateAbsolute(targetNode, int8, uint32)",
+   "vtable": "0x73a188",
+   "factory": "0x4754c0"
+  },
+  "ANT_Message_ShieldUpdateRelative": {
+   "class": "NOD_ANT_Message_ShieldUpdateRelative",
+   "argc": 3,
+   "params": [
+    "int8",
+    "uint32",
+    "int32"
+   ],
+   "signature": "ANT_Message_ShieldUpdateRelative(int8, uint32, int32)",
+   "lua_call": "ANT_Message_ShieldUpdateRelative(targetNode, int8, uint32, int32)",
+   "vtable": "0x73a228",
+   "factory": "0x475270"
+  },
+  "ANT_Message_SimpleExplosion": {
+   "class": "NOD_ANT_Message_SimpleExplosion",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "ANT_Message_SimpleExplosion(MAT_Vector3)",
+   "lua_call": "ANT_Message_SimpleExplosion(targetNode, MAT_Vector3)",
+   "vtable": "0x73a0a8",
+   "factory": "0x477df0"
+  },
+  "ANT_Message_SpawnBullet": {
+   "class": "NOD_ANT_Message_SpawnBullet",
+   "argc": 5,
+   "params": [
+    "MAT_Vector3",
+    "int32",
+    "int8",
+    "int8",
+    "int32"
+   ],
+   "signature": "ANT_Message_SpawnBullet(MAT_Vector3, int32, int8, int8, int32)",
+   "lua_call": "ANT_Message_SpawnBullet(targetNode, MAT_Vector3, int32, int8, int8, int32)",
+   "vtable": "0x73a068",
+   "factory": "0x474e70"
+  },
+  "ANT_Message_SpawnBuzzerOnClient": {
+   "class": "NOD_ANT_Message_SpawnBuzzerOnClient",
+   "argc": 7,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "MAT_Vector3",
+    "int32",
+    "int32"
+   ],
+   "signature": "ANT_Message_SpawnBuzzerOnClient(float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32, int32)",
+   "lua_call": "ANT_Message_SpawnBuzzerOnClient(targetNode, float, MAT_Vector3, MAT_Vector3, float, MAT_Vector3, int32, int32)",
+   "vtable": "0x73a028",
+   "factory": "0x4764a0"
+  },
+  "ANT_Message_SpawnSplash": {
+   "class": "NOD_ANT_Message_SpawnSplash",
+   "argc": 3,
+   "params": [
+    "MAT_Vector3",
+    "uint16",
+    "int32"
+   ],
+   "signature": "ANT_Message_SpawnSplash(MAT_Vector3, uint16, int32)",
+   "lua_call": "ANT_Message_SpawnSplash(targetNode, MAT_Vector3, uint16, int32)",
+   "vtable": "0x73a1e8",
+   "factory": "0x4776e0"
+  },
+  "ANT_Message_SpawnTorpedoOnClient": {
+   "class": "NOD_ANT_Message_SpawnTorpedoOnClient",
+   "argc": 8,
+   "params": [
+    "float",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "int8",
+    "int8",
+    "int32",
+    "int32"
+   ],
+   "signature": "ANT_Message_SpawnTorpedoOnClient(float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "lua_call": "ANT_Message_SpawnTorpedoOnClient(targetNode, float, MAT_Vector3, MAT_Vector3, MAT_Vector3, int8, int8, int32, int32)",
+   "vtable": "0x73a348",
+   "factory": "0x475a50"
+  },
+  "ANT_Message_TimeStamp": {
+   "class": "NOD_ANT_Message_TimeStamp",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "ANT_Message_TimeStamp(float, float, float, float)",
+   "lua_call": "ANT_Message_TimeStamp(targetNode, float, float, float, float)",
+   "vtable": "0x739fe8",
+   "factory": "0x473d70"
+  },
+  "ANT_Message_TorpedoImpactEffect": {
+   "class": "NOD_ANT_Message_TorpedoImpactEffect",
+   "argc": 3,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "int32"
+   ],
+   "signature": "ANT_Message_TorpedoImpactEffect(MAT_Vector3, MAT_Vector3, int32)",
+   "lua_call": "ANT_Message_TorpedoImpactEffect(targetNode, MAT_Vector3, MAT_Vector3, int32)",
+   "vtable": "0x73a148",
+   "factory": "0x477a00"
+  },
+  "ANT_Rules_ChangeTeam": {
+   "class": "NOD_ANT_Rules_ChangeTeam",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "ANT_Rules_ChangeTeam(int8)",
+   "lua_call": "ANT_Rules_ChangeTeam(targetNode, int8)",
+   "vtable": "0x737df4",
+   "factory": "0x4a3690"
+  },
+  "ANT_Rules_ConnectCompleted": {
+   "class": "NOD_ANT_Rules_ConnectCompleted",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Rules_ConnectCompleted()",
+   "lua_call": "ANT_Rules_ConnectCompleted(targetNode)",
+   "vtable": "0x737db4",
+   "factory": "0x4a2ff0"
+  },
+  "ANT_Rules_EventCTF": {
+   "class": "NOD_ANT_Rules_EventCTF",
+   "argc": 4,
+   "params": [
+    "int8",
+    "int8",
+    "int8",
+    "int8"
+   ],
+   "signature": "ANT_Rules_EventCTF(int8, int8, int8, int8)",
+   "lua_call": "ANT_Rules_EventCTF(targetNode, int8, int8, int8, int8)",
+   "vtable": "0x737dd4",
+   "factory": "0x4a32b0"
+  },
+  "ANT_Rules_RulesPlayerInfoUpdate": {
+   "class": "NOD_ANT_Rules_RulesPlayerInfoUpdate",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Rules_RulesPlayerInfoUpdate()",
+   "lua_call": "ANT_Rules_RulesPlayerInfoUpdate(targetNode)",
+   "vtable": "0x737e14",
+   "factory": "0x4a3200"
+  },
+  "ANT_Rules_RulesPlayerUpdate": {
+   "class": "NOD_ANT_Rules_RulesPlayerUpdate",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Rules_RulesPlayerUpdate()",
+   "lua_call": "ANT_Rules_RulesPlayerUpdate(targetNode)",
+   "vtable": "0x737e54",
+   "factory": "0x4a3150"
+  },
+  "ANT_Rules_RulesTeamUpdate": {
+   "class": "NOD_ANT_Rules_RulesTeamUpdate",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Rules_RulesTeamUpdate()",
+   "lua_call": "ANT_Rules_RulesTeamUpdate(targetNode)",
+   "vtable": "0x737d94",
+   "factory": "0x4a30a0"
+  },
+  "ANT_Rules_StartTime": {
+   "class": "NOD_ANT_Rules_StartTime",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "ANT_Rules_StartTime(float)",
+   "lua_call": "ANT_Rules_StartTime(targetNode, float)",
+   "vtable": "0x737e34",
+   "factory": "0x4a3560"
+  },
+  "ANT_Server_RemoteConsole": {
+   "class": "NOD_ANT_Server_RemoteConsole",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Server_RemoteConsole()",
+   "lua_call": "ANT_Server_RemoteConsole(targetNode)",
+   "vtable": "0x737b74",
+   "factory": "0x4a3b20"
+  },
+  "ANT_Server_RemoteJoined": {
+   "class": "NOD_ANT_Server_RemoteJoined",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ANT_Server_RemoteJoined(int32)",
+   "lua_call": "ANT_Server_RemoteJoined(targetNode, int32)",
+   "vtable": "0x737b94",
+   "factory": "0x4a37b0"
+  },
+  "ANT_Server_RemoteLeft": {
+   "class": "NOD_ANT_Server_RemoteLeft",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ANT_Server_RemoteLeft(int32)",
+   "lua_call": "ANT_Server_RemoteLeft(targetNode, int32)",
+   "vtable": "0x737b54",
+   "factory": "0x4a3860"
+  },
+  "ANT_Server_SessionTerminated": {
+   "class": "NOD_ANT_Server_SessionTerminated",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Server_SessionTerminated()",
+   "lua_call": "ANT_Server_SessionTerminated(targetNode)",
+   "vtable": "0x737bf4",
+   "factory": "0x4a3910"
+  },
+  "ANT_Server_StartScenegraphDuplication": {
+   "class": "NOD_ANT_Server_StartScenegraphDuplication",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Server_StartScenegraphDuplication()",
+   "lua_call": "ANT_Server_StartScenegraphDuplication(targetNode)",
+   "vtable": "0x737bd4",
+   "factory": "0x4a39c0"
+  },
+  "ANT_Server_StartScenegraphSync": {
+   "class": "NOD_ANT_Server_StartScenegraphSync",
+   "argc": 0,
+   "params": [],
+   "signature": "ANT_Server_StartScenegraphSync()",
+   "lua_call": "ANT_Server_StartScenegraphSync(targetNode)",
+   "vtable": "0x737bb4",
+   "factory": "0x4a3a70"
+  },
+  "Body_ActivateEscapePod": {
+   "class": "NOD_Body_ActivateEscapePod",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_ActivateEscapePod()",
+   "lua_call": "Body_ActivateEscapePod(targetNode)",
+   "vtable": "0x73637c",
+   "factory": "0x4a9f70"
+  },
+  "Body_ActivateShieldGuard": {
+   "class": "NOD_Body_ActivateShieldGuard",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_ActivateShieldGuard()",
+   "lua_call": "Body_ActivateShieldGuard(targetNode)",
+   "vtable": "0x73609c",
+   "factory": "0x4a8bb0"
+  },
+  "Body_AddItem": {
+   "class": "NOD_Body_AddItem",
+   "argc": 2,
+   "params": [
+    "string",
+    "int32"
+   ],
+   "signature": "Body_AddItem(string, int32)",
+   "lua_call": "Body_AddItem(targetNode, string, int32)",
+   "vtable": "0x73629c",
+   "factory": "0x4a9b20"
+  },
+  "Body_AddItemInteger": {
+   "class": "NOD_Body_AddItemInteger",
+   "argc": 2,
+   "params": [
+    "uint16",
+    "uint16"
+   ],
+   "signature": "Body_AddItemInteger(uint16, uint16)",
+   "lua_call": "Body_AddItemInteger(targetNode, uint16, uint16)",
+   "vtable": "0x7361dc",
+   "factory": "0x4a9c00"
+  },
+  "Body_DeactivateEscapePod": {
+   "class": "NOD_Body_DeactivateEscapePod",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_DeactivateEscapePod()",
+   "lua_call": "Body_DeactivateEscapePod(targetNode)",
+   "vtable": "0x7362bc",
+   "factory": "0x4aa020"
+  },
+  "Body_DeactivateShieldGuard": {
+   "class": "NOD_Body_DeactivateShieldGuard",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_DeactivateShieldGuard()",
+   "lua_call": "Body_DeactivateShieldGuard(targetNode)",
+   "vtable": "0x735fdc",
+   "factory": "0x4a8c60"
+  },
+  "Body_EMPParalyzed": {
+   "class": "NOD_Body_EMPParalyzed",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_EMPParalyzed()",
+   "lua_call": "Body_EMPParalyzed(targetNode)",
+   "vtable": "0x73635c",
+   "factory": "0x4a9a30"
+  },
+  "Body_EmpShieldBarrierReached": {
+   "class": "NOD_Body_EmpShieldBarrierReached",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Body_EmpShieldBarrierReached(float)",
+   "lua_call": "Body_EmpShieldBarrierReached(targetNode, float)",
+   "vtable": "0x73613c",
+   "factory": "0x4a91f0"
+  },
+  "Body_EnemyArrival": {
+   "class": "NOD_Body_EnemyArrival",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_EnemyArrival()",
+   "lua_call": "Body_EnemyArrival(targetNode)",
+   "vtable": "0x7363fc",
+   "factory": "0x4a9550"
+  },
+  "Body_EnemyArrivalPatrol": {
+   "class": "NOD_Body_EnemyArrivalPatrol",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_EnemyArrivalPatrol()",
+   "lua_call": "Body_EnemyArrivalPatrol(targetNode)",
+   "vtable": "0x735fbc",
+   "factory": "0x4a98d0"
+  },
+  "Body_EscapePodEjected": {
+   "class": "NOD_Body_EscapePodEjected",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_EscapePodEjected()",
+   "lua_call": "Body_EscapePodEjected(targetNode)",
+   "vtable": "0x7360fc",
+   "factory": "0x4aa180"
+  },
+  "Body_ForceEjection": {
+   "class": "NOD_Body_ForceEjection",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_ForceEjection()",
+   "lua_call": "Body_ForceEjection(targetNode)",
+   "vtable": "0x7361fc",
+   "factory": "0x4aa0d0"
+  },
+  "Body_Freeze": {
+   "class": "NOD_Body_Freeze",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_Freeze()",
+   "lua_call": "Body_Freeze(targetNode)",
+   "vtable": "0x7360bc",
+   "factory": "0x4aa480"
+  },
+  "Body_GetEmpShield": {
+   "class": "NOD_Body_GetEmpShield",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_GetEmpShield()",
+   "lua_call": "Body_GetEmpShield(targetNode)",
+   "vtable": "0x7361bc",
+   "factory": "0x4a8a70"
+  },
+  "Body_GetKineticShield": {
+   "class": "NOD_Body_GetKineticShield",
+   "argc": 1,
+   "params": [
+    "int16"
+   ],
+   "signature": "Body_GetKineticShield(int16)",
+   "lua_call": "Body_GetKineticShield(targetNode, int16)",
+   "vtable": "0x735f7c",
+   "factory": "0x4a8860"
+  },
+  "Body_GetPosition": {
+   "class": "NOD_Body_GetPosition",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_GetPosition()",
+   "lua_call": "Body_GetPosition(targetNode)",
+   "vtable": "0x73617c",
+   "factory": "0x4a7eb0"
+  },
+  "Body_InformEnemies": {
+   "class": "NOD_Body_InformEnemies",
+   "argc": 5,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Body_InformEnemies(float, string, string, string, string)",
+   "lua_call": "Body_InformEnemies(targetNode, float, string, string, string, string)",
+   "vtable": "0x73605c",
+   "factory": "0x4a9320"
+  },
+  "Body_InformEnemyPatrol": {
+   "class": "NOD_Body_InformEnemyPatrol",
+   "argc": 7,
+   "params": [
+    "uint32",
+    "float",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Body_InformEnemyPatrol(uint32, float, string, string, string, string, string)",
+   "lua_call": "Body_InformEnemyPatrol(targetNode, uint32, float, string, string, string, string, string)",
+   "vtable": "0x73633c",
+   "factory": "0x4a9600"
+  },
+  "Body_InformShotHit": {
+   "class": "NOD_Body_InformShotHit",
+   "argc": 2,
+   "params": [
+    "node",
+    "node"
+   ],
+   "signature": "Body_InformShotHit(node, node)",
+   "lua_call": "Body_InformShotHit(targetNode, node, node)",
+   "vtable": "0x73611c",
+   "factory": "0x4a85c0"
+  },
+  "Body_KinShieldBarrierReached": {
+   "class": "NOD_Body_KinShieldBarrierReached",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Body_KinShieldBarrierReached(float)",
+   "lua_call": "Body_KinShieldBarrierReached(targetNode, float)",
+   "vtable": "0x73625c",
+   "factory": "0x4a8f60"
+  },
+  "Body_ObjectDestroyed": {
+   "class": "NOD_Body_ObjectDestroyed",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_ObjectDestroyed()",
+   "lua_call": "Body_ObjectDestroyed(targetNode)",
+   "vtable": "0x73647c",
+   "factory": "0x4a8d10"
+  },
+  "Body_ObjectDestroyedBy": {
+   "class": "NOD_Body_ObjectDestroyedBy",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "Body_ObjectDestroyedBy(uint32)",
+   "lua_call": "Body_ObjectDestroyedBy(targetNode, uint32)",
+   "vtable": "0x73649c",
+   "factory": "0x4aa610"
+  },
+  "Body_RejectEmpInfo": {
+   "class": "NOD_Body_RejectEmpInfo",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_RejectEmpInfo()",
+   "lua_call": "Body_RejectEmpInfo(targetNode)",
+   "vtable": "0x73623c",
+   "factory": "0x4a9140"
+  },
+  "Body_RejectEnemies": {
+   "class": "NOD_Body_RejectEnemies",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_RejectEnemies()",
+   "lua_call": "Body_RejectEnemies(targetNode)",
+   "vtable": "0x735f9c",
+   "factory": "0x4a94a0"
+  },
+  "Body_RejectEnemyPatrol": {
+   "class": "NOD_Body_RejectEnemyPatrol",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_RejectEnemyPatrol()",
+   "lua_call": "Body_RejectEnemyPatrol(targetNode)",
+   "vtable": "0x73607c",
+   "factory": "0x4a9820"
+  },
+  "Body_RejectKinInfo": {
+   "class": "NOD_Body_RejectKinInfo",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_RejectKinInfo()",
+   "lua_call": "Body_RejectKinInfo(targetNode)",
+   "vtable": "0x7362fc",
+   "factory": "0x4a8eb0"
+  },
+  "Body_RejectShotHits": {
+   "class": "NOD_Body_RejectShotHits",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_RejectShotHits()",
+   "lua_call": "Body_RejectShotHits(targetNode)",
+   "vtable": "0x73621c",
+   "factory": "0x4a8510"
+  },
+  "Body_RequestEmpInfo": {
+   "class": "NOD_Body_RequestEmpInfo",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Body_RequestEmpInfo(float)",
+   "lua_call": "Body_RequestEmpInfo(targetNode, float)",
+   "vtable": "0x73615c",
+   "factory": "0x4a9090"
+  },
+  "Body_RequestKinInfo": {
+   "class": "NOD_Body_RequestKinInfo",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Body_RequestKinInfo(float)",
+   "lua_call": "Body_RequestKinInfo(targetNode, float)",
+   "vtable": "0x7363bc",
+   "factory": "0x4a8e00"
+  },
+  "Body_RequestShotHits": {
+   "class": "NOD_Body_RequestShotHits",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_RequestShotHits()",
+   "lua_call": "Body_RequestShotHits(targetNode)",
+   "vtable": "0x7362dc",
+   "factory": "0x4a8460"
+  },
+  "Body_SetCS": {
+   "class": "NOD_Body_SetCS",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "signature": "Body_SetCS(MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Body_SetCS(targetNode, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x73639c",
+   "factory": "0x4a8100"
+  },
+  "Body_SetCargoKey": {
+   "class": "NOD_Body_SetCargoKey",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "int32"
+   ],
+   "signature": "Body_SetCargoKey(uint32, int32)",
+   "lua_call": "Body_SetCargoKey(targetNode, uint32, int32)",
+   "vtable": "0x7360dc",
+   "factory": "0x4a9de0"
+  },
+  "Body_SetEmpShield": {
+   "class": "NOD_Body_SetEmpShield",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Body_SetEmpShield(float)",
+   "lua_call": "Body_SetEmpShield(targetNode, float)",
+   "vtable": "0x7363dc",
+   "factory": "0x4a89c0"
+  },
+  "Body_SetFriendOrFoeID": {
+   "class": "NOD_Body_SetFriendOrFoeID",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "Body_SetFriendOrFoeID(uint32)",
+   "lua_call": "Body_SetFriendOrFoeID(targetNode, uint32)",
+   "vtable": "0x73641c",
+   "factory": "0x4a9980"
+  },
+  "Body_SetKinEscapeBarrier": {
+   "class": "NOD_Body_SetKinEscapeBarrier",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Body_SetKinEscapeBarrier(float)",
+   "lua_call": "Body_SetKinEscapeBarrier(targetNode, float)",
+   "vtable": "0x73619c",
+   "factory": "0x4aa3d0"
+  },
+  "Body_SetKineticShield": {
+   "class": "NOD_Body_SetKineticShield",
+   "argc": 2,
+   "params": [
+    "int16",
+    "float"
+   ],
+   "signature": "Body_SetKineticShield(int16, float)",
+   "lua_call": "Body_SetKineticShield(targetNode, int16, float)",
+   "vtable": "0x73603c",
+   "factory": "0x4a8710"
+  },
+  "Body_SetMesh": {
+   "class": "NOD_Body_SetMesh",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Body_SetMesh(string)",
+   "lua_call": "Body_SetMesh(targetNode, string)",
+   "vtable": "0x73645c",
+   "factory": "0x4a8050"
+  },
+  "Body_SetNameKey": {
+   "class": "NOD_Body_SetNameKey",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "Body_SetNameKey(uint32)",
+   "lua_call": "Body_SetNameKey(targetNode, uint32)",
+   "vtable": "0x73643c",
+   "factory": "0x4a9ec0"
+  },
+  "Body_SetObservedDestroyer": {
+   "class": "NOD_Body_SetObservedDestroyer",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "node"
+   ],
+   "signature": "Body_SetObservedDestroyer(uint32, node)",
+   "lua_call": "Body_SetObservedDestroyer(targetNode, uint32, node)",
+   "vtable": "0x735ffc",
+   "factory": "0x4aa530"
+  },
+  "Body_SetOrientation": {
+   "class": "NOD_Body_SetOrientation",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "Body_SetOrientation(MAT_Vector3)",
+   "lua_call": "Body_SetOrientation(targetNode, MAT_Vector3)",
+   "vtable": "0x73627c",
+   "factory": "0x4a7e00"
+  },
+  "Body_SetPosition": {
+   "class": "NOD_Body_SetPosition",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "Body_SetPosition(MAT_Vector3)",
+   "lua_call": "Body_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x73631c",
+   "factory": "0x4a7d50"
+  },
+  "Body_StartEscapeBehaviour": {
+   "class": "NOD_Body_StartEscapeBehaviour",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_StartEscapeBehaviour()",
+   "lua_call": "Body_StartEscapeBehaviour(targetNode)",
+   "vtable": "0x73601c",
+   "factory": "0x4aa270"
+  },
+  "Body_StopEscapeBehaviour": {
+   "class": "NOD_Body_StopEscapeBehaviour",
+   "argc": 0,
+   "params": [],
+   "signature": "Body_StopEscapeBehaviour()",
+   "lua_call": "Body_StopEscapeBehaviour(targetNode)",
+   "vtable": "0x735f5c",
+   "factory": "0x4aa320"
+  },
+  "Camera_Cut": {
+   "class": "NOD_Camera_Cut",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Camera_Cut(float)",
+   "lua_call": "Camera_Cut(targetNode, float)",
+   "vtable": "0x72d098",
+   "factory": "0x4e5000"
+  },
+  "Camera_LookAhead": {
+   "class": "NOD_Camera_LookAhead",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Camera_LookAhead(float, float)",
+   "lua_call": "Camera_LookAhead(targetNode, float, float)",
+   "vtable": "0x72d158",
+   "factory": "0x4e4470"
+  },
+  "Camera_LookAt": {
+   "class": "NOD_Camera_LookAt",
+   "argc": 4,
+   "params": [
+    "string",
+    "float",
+    "string",
+    "float"
+   ],
+   "signature": "Camera_LookAt(string, float, string, float)",
+   "lua_call": "Camera_LookAt(targetNode, string, float, string, float)",
+   "vtable": "0x72d2d8",
+   "factory": "0x4e3f70"
+  },
+  "Camera_LookFrom": {
+   "class": "NOD_Camera_LookFrom",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Camera_LookFrom(string)",
+   "lua_call": "Camera_LookFrom(targetNode, string)",
+   "vtable": "0x72d178",
+   "factory": "0x4e3d80"
+  },
+  "Camera_MoveInto": {
+   "class": "NOD_Camera_MoveInto",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Camera_MoveInto(string)",
+   "lua_call": "Camera_MoveInto(targetNode, string)",
+   "vtable": "0x72d1f8",
+   "factory": "0x4e3c80"
+  },
+  "Camera_MoveTo": {
+   "class": "NOD_Camera_MoveTo",
+   "argc": 4,
+   "params": [
+    "string",
+    "float",
+    "string",
+    "float"
+   ],
+   "signature": "Camera_MoveTo(string, float, string, float)",
+   "lua_call": "Camera_MoveTo(targetNode, string, float, string, float)",
+   "vtable": "0x72d118",
+   "factory": "0x4e3e80"
+  },
+  "Camera_MoveToAnglesAbs": {
+   "class": "NOD_Camera_MoveToAnglesAbs",
+   "argc": 6,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_MoveToAnglesAbs(string, float, float, float, float, float)",
+   "lua_call": "Camera_MoveToAnglesAbs(targetNode, string, float, float, float, float, float)",
+   "vtable": "0x72d0b8",
+   "factory": "0x4e4cd0"
+  },
+  "Camera_MoveToAnglesRel": {
+   "class": "NOD_Camera_MoveToAnglesRel",
+   "argc": 6,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_MoveToAnglesRel(string, float, float, float, float, float)",
+   "lua_call": "Camera_MoveToAnglesRel(targetNode, string, float, float, float, float, float)",
+   "vtable": "0x72d0d8",
+   "factory": "0x4e4ac0"
+  },
+  "Camera_MoveToAnglesRelIgnoreBC": {
+   "class": "NOD_Camera_MoveToAnglesRelIgnoreBC",
+   "argc": 6,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_MoveToAnglesRelIgnoreBC(string, float, float, float, float, float)",
+   "lua_call": "Camera_MoveToAnglesRelIgnoreBC(targetNode, string, float, float, float, float, float)",
+   "vtable": "0x72d258",
+   "factory": "0x4e5210"
+  },
+  "Camera_RollAhead": {
+   "class": "NOD_Camera_RollAhead",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_RollAhead(float, float, float, float)",
+   "lua_call": "Camera_RollAhead(targetNode, float, float, float, float)",
+   "vtable": "0x72d0f8",
+   "factory": "0x4e4520"
+  },
+  "Camera_RollFrom": {
+   "class": "NOD_Camera_RollFrom",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Camera_RollFrom(string)",
+   "lua_call": "Camera_RollFrom(targetNode, string)",
+   "vtable": "0x72d1b8",
+   "factory": "0x4e4370"
+  },
+  "Camera_RollTo": {
+   "class": "NOD_Camera_RollTo",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "int32"
+   ],
+   "signature": "Camera_RollTo(float, float, int32)",
+   "lua_call": "Camera_RollTo(targetNode, float, float, int32)",
+   "vtable": "0x72d238",
+   "factory": "0x4e41b0"
+  },
+  "Camera_SetBackPlane": {
+   "class": "NOD_Camera_SetBackPlane",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Camera_SetBackPlane(float)",
+   "lua_call": "Camera_SetBackPlane(targetNode, float)",
+   "vtable": "0x72d318",
+   "factory": "0x4e3a20"
+  },
+  "Camera_SetFrontPlane": {
+   "class": "NOD_Camera_SetFrontPlane",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Camera_SetFrontPlane(float)",
+   "lua_call": "Camera_SetFrontPlane(targetNode, float)",
+   "vtable": "0x72d278",
+   "factory": "0x4e3b50"
+  },
+  "Camera_ShakeHit": {
+   "class": "NOD_Camera_ShakeHit",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_ShakeHit(float, float, float, float)",
+   "lua_call": "Camera_ShakeHit(targetNode, float, float, float, float)",
+   "vtable": "0x72d2b8",
+   "factory": "0x4e46a0"
+  },
+  "Camera_ShakeTo": {
+   "class": "NOD_Camera_ShakeTo",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_ShakeTo(float, float, float, float)",
+   "lua_call": "Camera_ShakeTo(targetNode, float, float, float, float)",
+   "vtable": "0x72d218",
+   "factory": "0x4e4750"
+  },
+  "Camera_ShakeViewHit": {
+   "class": "NOD_Camera_ShakeViewHit",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_ShakeViewHit(float, float, float)",
+   "lua_call": "Camera_ShakeViewHit(targetNode, float, float, float)",
+   "vtable": "0x72d298",
+   "factory": "0x4e50b0"
+  },
+  "Camera_ShakeViewTo": {
+   "class": "NOD_Camera_ShakeViewTo",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_ShakeViewTo(float, float, float)",
+   "lua_call": "Camera_ShakeViewTo(targetNode, float, float, float)",
+   "vtable": "0x72d2f8",
+   "factory": "0x4e5160"
+  },
+  "Camera_SwingAtLissajous": {
+   "class": "NOD_Camera_SwingAtLissajous",
+   "argc": 6,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "signature": "Camera_SwingAtLissajous(MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Camera_SwingAtLissajous(targetNode, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x72d1d8",
+   "factory": "0x4e5460"
+  },
+  "Camera_ZoomAt": {
+   "class": "NOD_Camera_ZoomAt",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_ZoomAt(string, float, float)",
+   "lua_call": "Camera_ZoomAt(targetNode, string, float, float)",
+   "vtable": "0x72d138",
+   "factory": "0x4e4990"
+  },
+  "Camera_ZoomTo": {
+   "class": "NOD_Camera_ZoomTo",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Camera_ZoomTo(float, float, float)",
+   "lua_call": "Camera_ZoomTo(targetNode, float, float, float)",
+   "vtable": "0x72d198",
+   "factory": "0x4e4800"
+  },
+  "Character_StartAnimation": {
+   "class": "NOD_Character_StartAnimation",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Character_StartAnimation(string)",
+   "lua_call": "Character_StartAnimation(targetNode, string)",
+   "vtable": "0x72c2f0",
+   "factory": "0x4fa3a0"
+  },
+  "Character_StopAnimation": {
+   "class": "NOD_Character_StopAnimation",
+   "argc": 0,
+   "params": [],
+   "signature": "Character_StopAnimation()",
+   "lua_call": "Character_StopAnimation(targetNode)",
+   "vtable": "0x72c2d0",
+   "factory": "0x4fa450"
+  },
+  "Console_Activate": {
+   "class": "NOD_Console_Activate",
+   "argc": 0,
+   "params": [],
+   "signature": "Console_Activate()",
+   "lua_call": "Console_Activate(targetNode)",
+   "vtable": "0x7302d0",
+   "factory": "0x4d6970"
+  },
+  "Console_Deactivate": {
+   "class": "NOD_Console_Deactivate",
+   "argc": 0,
+   "params": [],
+   "signature": "Console_Deactivate()",
+   "lua_call": "Console_Deactivate(targetNode)",
+   "vtable": "0x7302b0",
+   "factory": "0x4d6a60"
+  },
+  "Console_Input": {
+   "class": "NOD_Console_Input",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "Console_Input(int32)",
+   "lua_call": "Console_Input(targetNode, int32)",
+   "vtable": "0x7302f0",
+   "factory": "0x4d6850"
+  },
+  "Director_BeginCutscene": {
+   "class": "NOD_Director_BeginCutscene",
+   "argc": 0,
+   "params": [],
+   "signature": "Director_BeginCutscene()",
+   "lua_call": "Director_BeginCutscene(targetNode)",
+   "vtable": "0x733904",
+   "factory": "0x4bdca0"
+  },
+  "Director_EndCutscene": {
+   "class": "NOD_Director_EndCutscene",
+   "argc": 0,
+   "params": [],
+   "signature": "Director_EndCutscene()",
+   "lua_call": "Director_EndCutscene(targetNode)",
+   "vtable": "0x7338e4",
+   "factory": "0x4bdd50"
+  },
+  "Emitter_GetSoundEmissionLevel": {
+   "class": "NOD_Emitter_GetSoundEmissionLevel",
+   "argc": 0,
+   "params": [],
+   "signature": "Emitter_GetSoundEmissionLevel()",
+   "lua_call": "Emitter_GetSoundEmissionLevel(targetNode)",
+   "vtable": "0x735d84",
+   "factory": "0x4aabc0"
+  },
+  "Emitter_GetVisibilityBlockingStatus": {
+   "class": "NOD_Emitter_GetVisibilityBlockingStatus",
+   "argc": 0,
+   "params": [],
+   "signature": "Emitter_GetVisibilityBlockingStatus()",
+   "lua_call": "Emitter_GetVisibilityBlockingStatus(targetNode)",
+   "vtable": "0x735d24",
+   "factory": "0x4aa9d0"
+  },
+  "Emitter_GetVisibilityStatus": {
+   "class": "NOD_Emitter_GetVisibilityStatus",
+   "argc": 0,
+   "params": [],
+   "signature": "Emitter_GetVisibilityStatus()",
+   "lua_call": "Emitter_GetVisibilityStatus(targetNode)",
+   "vtable": "0x735d64",
+   "factory": "0x4aa7e0"
+  },
+  "Emitter_SetSoundEmissionLevel": {
+   "class": "NOD_Emitter_SetSoundEmissionLevel",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Emitter_SetSoundEmissionLevel(string)",
+   "lua_call": "Emitter_SetSoundEmissionLevel(targetNode, string)",
+   "vtable": "0x735d04",
+   "factory": "0x4aab10"
+  },
+  "Emitter_SetVisibilityBlockingStatus": {
+   "class": "NOD_Emitter_SetVisibilityBlockingStatus",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Emitter_SetVisibilityBlockingStatus(int8)",
+   "lua_call": "Emitter_SetVisibilityBlockingStatus(targetNode, int8)",
+   "vtable": "0x735d44",
+   "factory": "0x4aa920"
+  },
+  "Emitter_SetVisibilityStatus": {
+   "class": "NOD_Emitter_SetVisibilityStatus",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Emitter_SetVisibilityStatus(int8)",
+   "lua_call": "Emitter_SetVisibilityStatus(targetNode, int8)",
+   "vtable": "0x735da4",
+   "factory": "0x4aa730"
+  },
+  "FX_Plant_SetMap": {
+   "class": "NOD_FX_Plant_SetMap",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "FX_Plant_SetMap(string)",
+   "lua_call": "FX_Plant_SetMap(targetNode, string)",
+   "vtable": "0x735cc0",
+   "factory": "0x4aacf0"
+  },
+  "FX_SoundBox_Activate": {
+   "class": "NOD_FX_SoundBox_Activate",
+   "argc": 0,
+   "params": [],
+   "signature": "FX_SoundBox_Activate()",
+   "lua_call": "FX_SoundBox_Activate(targetNode)",
+   "vtable": "0x732b0c",
+   "factory": "0x4c4fd0"
+  },
+  "FX_SoundBox_Deactivate": {
+   "class": "NOD_FX_SoundBox_Deactivate",
+   "argc": 0,
+   "params": [],
+   "signature": "FX_SoundBox_Deactivate()",
+   "lua_call": "FX_SoundBox_Deactivate(targetNode)",
+   "vtable": "0x732b4c",
+   "factory": "0x4c5080"
+  },
+  "FX_SoundBox_SetBox": {
+   "class": "NOD_FX_SoundBox_SetBox",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "FX_SoundBox_SetBox(float, float, float)",
+   "lua_call": "FX_SoundBox_SetBox(targetNode, float, float, float)",
+   "vtable": "0x732b2c",
+   "factory": "0x4c4f20"
+  },
+  "FX_Sound_SetPosition": {
+   "class": "NOD_FX_Sound_SetPosition",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "FX_Sound_SetPosition(MAT_Vector3)",
+   "lua_call": "FX_Sound_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x735224",
+   "factory": "0x4af320"
+  },
+  "FX_Sound_SetRadius": {
+   "class": "NOD_FX_Sound_SetRadius",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "FX_Sound_SetRadius(float)",
+   "lua_call": "FX_Sound_SetRadius(targetNode, float)",
+   "vtable": "0x735204",
+   "factory": "0x4af470"
+  },
+  "Game_BonusObjectiveFailed": {
+   "class": "NOD_Game_BonusObjectiveFailed",
+   "argc": 3,
+   "params": [
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "signature": "Game_BonusObjectiveFailed(int32, int32, int32)",
+   "lua_call": "Game_BonusObjectiveFailed(targetNode, int32, int32, int32)",
+   "vtable": "0x73b7d4",
+   "factory": "0x469220"
+  },
+  "Game_BonusObjectiveReached": {
+   "class": "NOD_Game_BonusObjectiveReached",
+   "argc": 3,
+   "params": [
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "signature": "Game_BonusObjectiveReached(int32, int32, int32)",
+   "lua_call": "Game_BonusObjectiveReached(targetNode, int32, int32, int32)",
+   "vtable": "0x73b8d4",
+   "factory": "0x469170"
+  },
+  "Game_CreateClientScript": {
+   "class": "NOD_Game_CreateClientScript",
+   "argc": 0,
+   "params": [],
+   "signature": "Game_CreateClientScript()",
+   "lua_call": "Game_CreateClientScript(targetNode)",
+   "vtable": "0x73b614",
+   "factory": "0x467d50"
+  },
+  "Game_EndGame": {
+   "class": "NOD_Game_EndGame",
+   "argc": 0,
+   "params": [],
+   "signature": "Game_EndGame()",
+   "lua_call": "Game_EndGame(targetNode)",
+   "vtable": "0x73b534",
+   "factory": "0x4673e0"
+  },
+  "Game_GetEnemyMatrixElement": {
+   "class": "NOD_Game_GetEnemyMatrixElement",
+   "argc": 2,
+   "params": [
+    "int8",
+    "int8"
+   ],
+   "signature": "Game_GetEnemyMatrixElement(int8, int8)",
+   "lua_call": "Game_GetEnemyMatrixElement(targetNode, int8, int8)",
+   "vtable": "0x73b574",
+   "factory": "0x4676e0"
+  },
+  "Game_LoadFog": {
+   "class": "NOD_Game_LoadFog",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_LoadFog(string)",
+   "lua_call": "Game_LoadFog(targetNode, string)",
+   "vtable": "0x73ba34",
+   "factory": "0x466ad0"
+  },
+  "Game_LoadMTake": {
+   "class": "NOD_Game_LoadMTake",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_LoadMTake(string)",
+   "lua_call": "Game_LoadMTake(targetNode, string)",
+   "vtable": "0x73b554",
+   "factory": "0x468360"
+  },
+  "Game_LoadMusic": {
+   "class": "NOD_Game_LoadMusic",
+   "argc": 2,
+   "params": [
+    "string",
+    "int32"
+   ],
+   "signature": "Game_LoadMusic(string, int32)",
+   "lua_call": "Game_LoadMusic(targetNode, string, int32)",
+   "vtable": "0x73b5f4",
+   "factory": "0x468170"
+  },
+  "Game_LoadProgress_Advance": {
+   "class": "NOD_Game_LoadProgress_Advance",
+   "argc": 0,
+   "params": [],
+   "signature": "Game_LoadProgress_Advance()",
+   "lua_call": "Game_LoadProgress_Advance(targetNode)",
+   "vtable": "0x73b514",
+   "factory": "0x468ad0"
+  },
+  "Game_LoadProgress_Enter": {
+   "class": "NOD_Game_LoadProgress_Enter",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "Game_LoadProgress_Enter(uint32)",
+   "lua_call": "Game_LoadProgress_Enter(targetNode, uint32)",
+   "vtable": "0x73b5b4",
+   "factory": "0x468a00"
+  },
+  "Game_LoadProgress_Leave": {
+   "class": "NOD_Game_LoadProgress_Leave",
+   "argc": 0,
+   "params": [],
+   "signature": "Game_LoadProgress_Leave()",
+   "lua_call": "Game_LoadProgress_Leave(targetNode)",
+   "vtable": "0x73b9b4",
+   "factory": "0x468b80"
+  },
+  "Game_LoadScenario": {
+   "class": "NOD_Game_LoadScenario",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_LoadScenario(string)",
+   "lua_call": "Game_LoadScenario(targetNode, string)",
+   "vtable": "0x73b734",
+   "factory": "0x466970"
+  },
+  "Game_LoadScript": {
+   "class": "NOD_Game_LoadScript",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_LoadScript(string)",
+   "lua_call": "Game_LoadScript(targetNode, string)",
+   "vtable": "0x73b834",
+   "factory": "0x466840"
+  },
+  "Game_LoadServerScript": {
+   "class": "NOD_Game_LoadServerScript",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_LoadServerScript(string)",
+   "lua_call": "Game_LoadServerScript(targetNode, string)",
+   "vtable": "0x73ba14",
+   "factory": "0x468410"
+  },
+  "Game_LoadTextTable": {
+   "class": "NOD_Game_LoadTextTable",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_LoadTextTable(string)",
+   "lua_call": "Game_LoadTextTable(targetNode, string)",
+   "vtable": "0x73b874",
+   "factory": "0x467e00"
+  },
+  "Game_LoadTextures": {
+   "class": "NOD_Game_LoadTextures",
+   "argc": 0,
+   "params": [],
+   "signature": "Game_LoadTextures()",
+   "lua_call": "Game_LoadTextures(targetNode)",
+   "vtable": "0x73b674",
+   "factory": "0x466a20"
+  },
+  "Game_MissionEnd": {
+   "class": "NOD_Game_MissionEnd",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "Game_MissionEnd(int32)",
+   "lua_call": "Game_MissionEnd(targetNode, int32)",
+   "vtable": "0x73b6f4",
+   "factory": "0x468810"
+  },
+  "Game_PlayMusic": {
+   "class": "NOD_Game_PlayMusic",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_PlayMusic(string)",
+   "lua_call": "Game_PlayMusic(targetNode, string)",
+   "vtable": "0x73b934",
+   "factory": "0x466bf0"
+  },
+  "Game_PlaySound": {
+   "class": "NOD_Game_PlaySound",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_PlaySound(string)",
+   "lua_call": "Game_PlaySound(targetNode, string)",
+   "vtable": "0x73b6b4",
+   "factory": "0x469a60"
+  },
+  "Game_PrimaryObjectiveFailed": {
+   "class": "NOD_Game_PrimaryObjectiveFailed",
+   "argc": 3,
+   "params": [
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "signature": "Game_PrimaryObjectiveFailed(int32, int32, int32)",
+   "lua_call": "Game_PrimaryObjectiveFailed(targetNode, int32, int32, int32)",
+   "vtable": "0x73b9d4",
+   "factory": "0x4690c0"
+  },
+  "Game_PrimaryObjectiveReached": {
+   "class": "NOD_Game_PrimaryObjectiveReached",
+   "argc": 3,
+   "params": [
+    "int32",
+    "int32",
+    "int32"
+   ],
+   "signature": "Game_PrimaryObjectiveReached(int32, int32, int32)",
+   "lua_call": "Game_PrimaryObjectiveReached(targetNode, int32, int32, int32)",
+   "vtable": "0x73b6d4",
+   "factory": "0x468f50"
+  },
+  "Game_ResetEnemyMatrix": {
+   "class": "NOD_Game_ResetEnemyMatrix",
+   "argc": 0,
+   "params": [],
+   "signature": "Game_ResetEnemyMatrix()",
+   "lua_call": "Game_ResetEnemyMatrix(targetNode)",
+   "vtable": "0x73ba74",
+   "factory": "0x4678b0"
+  },
+  "Game_SendRadioMessageTake": {
+   "class": "NOD_Game_SendRadioMessageTake",
+   "argc": 3,
+   "params": [
+    "node",
+    "node",
+    "int32"
+   ],
+   "signature": "Game_SendRadioMessageTake(node, node, int32)",
+   "lua_call": "Game_SendRadioMessageTake(targetNode, node, node, int32)",
+   "vtable": "0x73b974",
+   "factory": "0x467960"
+  },
+  "Game_SetAmbientLight": {
+   "class": "NOD_Game_SetAmbientLight",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetAmbientLight(float, float, float)",
+   "lua_call": "Game_SetAmbientLight(targetNode, float, float, float)",
+   "vtable": "0x73b774",
+   "factory": "0x467f40"
+  },
+  "Game_SetCameraValues": {
+   "class": "NOD_Game_SetCameraValues",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetCameraValues(float, float)",
+   "lua_call": "Game_SetCameraValues(targetNode, float, float)",
+   "vtable": "0x73b7f4",
+   "factory": "0x468690"
+  },
+  "Game_SetCausticBuildingMicro": {
+   "class": "NOD_Game_SetCausticBuildingMicro",
+   "argc": 5,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetCausticBuildingMicro(float, float, float, float, float)",
+   "lua_call": "Game_SetCausticBuildingMicro(targetNode, float, float, float, float, float)",
+   "vtable": "0x73b4f4",
+   "factory": "0x469520"
+  },
+  "Game_SetCausticBuildingNormal": {
+   "class": "NOD_Game_SetCausticBuildingNormal",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetCausticBuildingNormal(float, float, float, float)",
+   "lua_call": "Game_SetCausticBuildingNormal(targetNode, float, float, float, float)",
+   "vtable": "0x73b654",
+   "factory": "0x4670a0"
+  },
+  "Game_SetCausticObjectNormal": {
+   "class": "NOD_Game_SetCausticObjectNormal",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetCausticObjectNormal(float, float, float, float)",
+   "lua_call": "Game_SetCausticObjectNormal(targetNode, float, float, float, float)",
+   "vtable": "0x73b714",
+   "factory": "0x466ed0"
+  },
+  "Game_SetCausticTerrainMicro": {
+   "class": "NOD_Game_SetCausticTerrainMicro",
+   "argc": 5,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetCausticTerrainMicro(float, float, float, float, float)",
+   "lua_call": "Game_SetCausticTerrainMicro(targetNode, float, float, float, float, float)",
+   "vtable": "0x73b594",
+   "factory": "0x4692d0"
+  },
+  "Game_SetCausticTerrainNormal": {
+   "class": "NOD_Game_SetCausticTerrainNormal",
+   "argc": 4,
+   "params": [
+    "float",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetCausticTerrainNormal(float, float, float, float)",
+   "lua_call": "Game_SetCausticTerrainNormal(targetNode, float, float, float, float)",
+   "vtable": "0x73b814",
+   "factory": "0x466cc0"
+  },
+  "Game_SetDecompressionHeight": {
+   "class": "NOD_Game_SetDecompressionHeight",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Game_SetDecompressionHeight(float)",
+   "lua_call": "Game_SetDecompressionHeight(targetNode, float)",
+   "vtable": "0x73b854",
+   "factory": "0x467a40"
+  },
+  "Game_SetDecompressionRange": {
+   "class": "NOD_Game_SetDecompressionRange",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetDecompressionRange(float, float, float)",
+   "lua_call": "Game_SetDecompressionRange(targetNode, float, float, float)",
+   "vtable": "0x73b794",
+   "factory": "0x4699b0"
+  },
+  "Game_SetEnemyMatrixElement": {
+   "class": "NOD_Game_SetEnemyMatrixElement",
+   "argc": 3,
+   "params": [
+    "int8",
+    "int8",
+    "int16"
+   ],
+   "signature": "Game_SetEnemyMatrixElement(int8, int8, int16)",
+   "lua_call": "Game_SetEnemyMatrixElement(targetNode, int8, int8, int16)",
+   "vtable": "0x73b8f4",
+   "factory": "0x4675f0"
+  },
+  "Game_SetEnvironmentCubeMap": {
+   "class": "NOD_Game_SetEnvironmentCubeMap",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_SetEnvironmentCubeMap(string)",
+   "lua_call": "Game_SetEnvironmentCubeMap(targetNode, string)",
+   "vtable": "0x73b894",
+   "factory": "0x469900"
+  },
+  "Game_SetFog": {
+   "class": "NOD_Game_SetFog",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetFog(float, float)",
+   "lua_call": "Game_SetFog(targetNode, float, float)",
+   "vtable": "0x73b5d4",
+   "factory": "0x467270"
+  },
+  "Game_SetLightCache": {
+   "class": "NOD_Game_SetLightCache",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "Game_SetLightCache(string, string)",
+   "lua_call": "Game_SetLightCache(targetNode, string, string)",
+   "vtable": "0x73b9f4",
+   "factory": "0x467490"
+  },
+  "Game_SetNPCHitFactor": {
+   "class": "NOD_Game_SetNPCHitFactor",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Game_SetNPCHitFactor(float)",
+   "lua_call": "Game_SetNPCHitFactor(targetNode, float)",
+   "vtable": "0x73b994",
+   "factory": "0x469830"
+  },
+  "Game_SetParallelLightB": {
+   "class": "NOD_Game_SetParallelLightB",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetParallelLightB(float, float, float)",
+   "lua_call": "Game_SetParallelLightB(targetNode, float, float, float)",
+   "vtable": "0x73b954",
+   "factory": "0x4680c0"
+  },
+  "Game_SetParallelLightT": {
+   "class": "NOD_Game_SetParallelLightT",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetParallelLightT(float, float, float)",
+   "lua_call": "Game_SetParallelLightT(targetNode, float, float, float)",
+   "vtable": "0x73ba54",
+   "factory": "0x468010"
+  },
+  "Game_SetPlayBackFile": {
+   "class": "NOD_Game_SetPlayBackFile",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Game_SetPlayBackFile(string)",
+   "lua_call": "Game_SetPlayBackFile(targetNode, string)",
+   "vtable": "0x73b634",
+   "factory": "0x468950"
+  },
+  "Game_SetTaskTextKey": {
+   "class": "NOD_Game_SetTaskTextKey",
+   "argc": 3,
+   "params": [
+    "int32",
+    "float",
+    "float"
+   ],
+   "signature": "Game_SetTaskTextKey(int32, float, float)",
+   "lua_call": "Game_SetTaskTextKey(targetNode, int32, float, float)",
+   "vtable": "0x73b8b4",
+   "factory": "0x468c30"
+  },
+  "Game_SetTerrainDepth": {
+   "class": "NOD_Game_SetTerrainDepth",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Game_SetTerrainDepth(float)",
+   "lua_call": "Game_SetTerrainDepth(targetNode, float)",
+   "vtable": "0x73b754",
+   "factory": "0x467b70"
+  },
+  "Game_SetWayPoint": {
+   "class": "NOD_Game_SetWayPoint",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Game_SetWayPoint(node)",
+   "lua_call": "Game_SetWayPoint(targetNode, node)",
+   "vtable": "0x73b694",
+   "factory": "0x467ca0"
+  },
+  "Game_TextMessage": {
+   "class": "NOD_Game_TextMessage",
+   "argc": 2,
+   "params": [
+    "int8",
+    "string"
+   ],
+   "signature": "Game_TextMessage(int8, string)",
+   "lua_call": "Game_TextMessage(targetNode, int8, string)",
+   "vtable": "0x73b914",
+   "factory": "0x4684c0"
+  },
+  "Game_VocalMessage": {
+   "class": "NOD_Game_VocalMessage",
+   "argc": 3,
+   "params": [
+    "int8",
+    "int8",
+    "int8"
+   ],
+   "signature": "Game_VocalMessage(int8, int8, int8)",
+   "lua_call": "Game_VocalMessage(targetNode, int8, int8, int8)",
+   "vtable": "0x73b7b4",
+   "factory": "0x468d10"
+  },
+  "Generic_DipolIn": {
+   "class": "NOD_Generic_DipolIn",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Generic_DipolIn(float)",
+   "lua_call": "Generic_DipolIn(targetNode, float)",
+   "vtable": "0x72df8c",
+   "factory": "0x4dd6c0"
+  },
+  "Generic_DipolInFinished": {
+   "class": "NOD_Generic_DipolInFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Generic_DipolInFinished()",
+   "lua_call": "Generic_DipolInFinished(targetNode)",
+   "vtable": "0x72df4c",
+   "factory": "0x4dd820"
+  },
+  "Generic_DipolOut": {
+   "class": "NOD_Generic_DipolOut",
+   "argc": 0,
+   "params": [],
+   "signature": "Generic_DipolOut()",
+   "lua_call": "Generic_DipolOut(targetNode)",
+   "vtable": "0x72dfcc",
+   "factory": "0x4dd610"
+  },
+  "Generic_DipolOutFinished": {
+   "class": "NOD_Generic_DipolOutFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Generic_DipolOutFinished()",
+   "lua_call": "Generic_DipolOutFinished(targetNode)",
+   "vtable": "0x72df6c",
+   "factory": "0x4dd770"
+  },
+  "Generic_Taunt_Activate": {
+   "class": "NOD_Generic_Taunt_Activate",
+   "argc": 0,
+   "params": [],
+   "signature": "Generic_Taunt_Activate()",
+   "lua_call": "Generic_Taunt_Activate(targetNode)",
+   "vtable": "0x72df2c",
+   "factory": "0x4dd8d0"
+  },
+  "Generic_Taunt_Deactivate": {
+   "class": "NOD_Generic_Taunt_Deactivate",
+   "argc": 0,
+   "params": [],
+   "signature": "Generic_Taunt_Deactivate()",
+   "lua_call": "Generic_Taunt_Deactivate(targetNode)",
+   "vtable": "0x72dfac",
+   "factory": "0x4dd980"
+  },
+  "Gun_AddPhase": {
+   "class": "NOD_NPC_Gun_AddPhase",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "float"
+   ],
+   "signature": "Gun_AddPhase(uint32, float)",
+   "lua_call": "Gun_AddPhase(targetNode, uint32, float)",
+   "vtable": "0x72d6ec",
+   "factory": "0x4e3740"
+  },
+  "Gun_FlushPhases": {
+   "class": "NOD_NPC_Gun_FlushPhases",
+   "argc": 0,
+   "params": [],
+   "signature": "Gun_FlushPhases()",
+   "lua_call": "Gun_FlushPhases(targetNode)",
+   "vtable": "0x72d70c",
+   "factory": "0x4e3690"
+  },
+  "Gun_SetBullet": {
+   "class": "NOD_NPC_Gun_SetBullet",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "signature": "Gun_SetBullet(string, float)",
+   "lua_call": "Gun_SetBullet(targetNode, string, float)",
+   "vtable": "0x72d72c",
+   "factory": "0x4e35e0"
+  },
+  "Gun_SetDogBullet": {
+   "class": "NOD_NPC_Gun_SetDogBullet",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "signature": "Gun_SetDogBullet(string, float)",
+   "lua_call": "Gun_SetDogBullet(targetNode, string, float)",
+   "vtable": "0x72d6ac",
+   "factory": "0x4e38d0"
+  },
+  "Gun_SetSniperBullet": {
+   "class": "NOD_NPC_Gun_SetSniperBullet",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "signature": "Gun_SetSniperBullet(string, float)",
+   "lua_call": "Gun_SetSniperBullet(targetNode, string, float)",
+   "vtable": "0x72d6cc",
+   "factory": "0x4e3820"
+  },
+  "ItemBox_PlayRespawnSound": {
+   "class": "NOD_ItemBox_PlayRespawnSound",
+   "argc": 0,
+   "params": [],
+   "signature": "ItemBox_PlayRespawnSound()",
+   "lua_call": "ItemBox_PlayRespawnSound(targetNode)",
+   "vtable": "0x730030",
+   "factory": "0x4d7bb0"
+  },
+  "ItemBox_SetItemCount": {
+   "class": "NOD_ItemBox_SetItemCount",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "ItemBox_SetItemCount(uint32)",
+   "lua_call": "ItemBox_SetItemCount(targetNode, uint32)",
+   "vtable": "0x730010",
+   "factory": "0x4d7ca0"
+  },
+  "ItemBox_SetRespawnCount": {
+   "class": "NOD_ItemBox_SetRespawnCount",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "ItemBox_SetRespawnCount(uint32)",
+   "lua_call": "ItemBox_SetRespawnCount(targetNode, uint32)",
+   "vtable": "0x730050",
+   "factory": "0x4d7b00"
+  },
+  "ItemBox_SetRespawnDelay": {
+   "class": "NOD_ItemBox_SetRespawnDelay",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "ItemBox_SetRespawnDelay(float)",
+   "lua_call": "ItemBox_SetRespawnDelay(targetNode, float)",
+   "vtable": "0x730070",
+   "factory": "0x4d7a50"
+  },
+  "LaserWall_SetWallExtensionX": {
+   "class": "NOD_LaserWall_SetWallExtensionX",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "LaserWall_SetWallExtensionX(float)",
+   "lua_call": "LaserWall_SetWallExtensionX(targetNode, float)",
+   "vtable": "0x72c238",
+   "factory": "0x4fa500"
+  },
+  "LaserWall_SetWallExtensionZ": {
+   "class": "NOD_LaserWall_SetWallExtensionZ",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "LaserWall_SetWallExtensionZ(float)",
+   "lua_call": "LaserWall_SetWallExtensionZ(targetNode, float)",
+   "vtable": "0x72c218",
+   "factory": "0x4fa630"
+  },
+  "Light_SetColor": {
+   "class": "NOD_FX_Light_SetColor",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "signature": "Light_SetColor(MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Light_SetColor(targetNode, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x7385a0",
+   "factory": "0x4a0da0"
+  },
+  "Light_SetCone": {
+   "class": "NOD_FX_Light_SetCone",
+   "argc": 4,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "float"
+   ],
+   "signature": "Light_SetCone(MAT_Vector3, MAT_Vector3, float, float)",
+   "lua_call": "Light_SetCone(targetNode, MAT_Vector3, MAT_Vector3, float, float)",
+   "vtable": "0x738540",
+   "factory": "0x4a0900"
+  },
+  "Light_SetMode": {
+   "class": "NOD_FX_Light_SetMode",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Light_SetMode(string)",
+   "lua_call": "Light_SetMode(targetNode, string)",
+   "vtable": "0x738580",
+   "factory": "0x4a0cf0"
+  },
+  "Light_SetR1": {
+   "class": "NOD_FX_Light_SetR1",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Light_SetR1(float)",
+   "lua_call": "Light_SetR1(targetNode, float)",
+   "vtable": "0x7385e0",
+   "factory": "0x4a0b90"
+  },
+  "Light_SetR2": {
+   "class": "NOD_FX_Light_SetR2",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Light_SetR2(float)",
+   "lua_call": "Light_SetR2(targetNode, float)",
+   "vtable": "0x7385c0",
+   "factory": "0x4a0c40"
+  },
+  "Light_Switch": {
+   "class": "NOD_FX_Light_Switch",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Light_Switch(int8)",
+   "lua_call": "Light_Switch(targetNode, int8)",
+   "vtable": "0x738560",
+   "factory": "0x4a0850"
+  },
+  "Mine_Activate": {
+   "class": "NOD_Mine_Activate",
+   "argc": 0,
+   "params": [],
+   "signature": "Mine_Activate()",
+   "lua_call": "Mine_Activate(targetNode)",
+   "vtable": "0x72cfb8",
+   "factory": "0x4e58e0"
+  },
+  "Mine_Deactivate": {
+   "class": "NOD_Mine_Deactivate",
+   "argc": 0,
+   "params": [],
+   "signature": "Mine_Deactivate()",
+   "lua_call": "Mine_Deactivate(targetNode)",
+   "vtable": "0x72cf98",
+   "factory": "0x4e5990"
+  },
+  "Mine_IsActive": {
+   "class": "NOD_Mine_IsActive",
+   "argc": 0,
+   "params": [],
+   "signature": "Mine_IsActive()",
+   "lua_call": "Mine_IsActive(targetNode)",
+   "vtable": "0x72cf78",
+   "factory": "0x4e5a40"
+  },
+  "Mine_SetOnOffDuration": {
+   "class": "NOD_Mine_SetOnOffDuration",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Mine_SetOnOffDuration(float, float)",
+   "lua_call": "Mine_SetOnOffDuration(targetNode, float, float)",
+   "vtable": "0x72cfd8",
+   "factory": "0x4e5b80"
+  },
+  "Node_AddSon": {
+   "class": "NOD_Node_AddSon",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Node_AddSon(node)",
+   "lua_call": "Node_AddSon(targetNode, node)",
+   "vtable": "0x7382d8",
+   "factory": "0x4a1170"
+  },
+  "Node_CreateNode": {
+   "class": "NOD_Node_CreateNode",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "Node_CreateNode(string, string)",
+   "lua_call": "Node_CreateNode(targetNode, string, string)",
+   "vtable": "0x738298",
+   "factory": "0x4a1240"
+  },
+  "Node_EnterSimulation": {
+   "class": "NOD_Node_EnterSimulation",
+   "argc": 0,
+   "params": [],
+   "signature": "Node_EnterSimulation()",
+   "lua_call": "Node_EnterSimulation(targetNode)",
+   "vtable": "0x738218",
+   "factory": "0x4a0fd0"
+  },
+  "Node_Find": {
+   "class": "NOD_Node_Find",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Node_Find(string)",
+   "lua_call": "Node_Find(targetNode, string)",
+   "vtable": "0x7381f8",
+   "factory": "0x4a14d0"
+  },
+  "Node_GetName": {
+   "class": "NOD_Node_GetName",
+   "argc": 0,
+   "params": [],
+   "signature": "Node_GetName()",
+   "lua_call": "Node_GetName(targetNode)",
+   "vtable": "0x738258",
+   "factory": "0x4a13a0"
+  },
+  "Node_GetNumOfSons": {
+   "class": "NOD_Node_GetNumOfSons",
+   "argc": 0,
+   "params": [],
+   "signature": "Node_GetNumOfSons()",
+   "lua_call": "Node_GetNumOfSons(targetNode)",
+   "vtable": "0x738178",
+   "factory": "0x4a1750"
+  },
+  "Node_GetPath": {
+   "class": "NOD_Node_GetPath",
+   "argc": 0,
+   "params": [],
+   "signature": "Node_GetPath()",
+   "lua_call": "Node_GetPath(targetNode)",
+   "vtable": "0x7381b8",
+   "factory": "0x4a1620"
+  },
+  "Node_GetSon": {
+   "class": "NOD_Node_GetSon",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "Node_GetSon(uint32)",
+   "lua_call": "Node_GetSon(targetNode, uint32)",
+   "vtable": "0x738238",
+   "factory": "0x4a19e0"
+  },
+  "Node_GetSonName": {
+   "class": "NOD_Node_GetSonName",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "Node_GetSonName(uint32)",
+   "lua_call": "Node_GetSonName(targetNode, uint32)",
+   "vtable": "0x7381d8",
+   "factory": "0x4a1b10"
+  },
+  "Node_GetTime": {
+   "class": "NOD_Node_GetTime",
+   "argc": 0,
+   "params": [],
+   "signature": "Node_GetTime()",
+   "lua_call": "Node_GetTime(targetNode)",
+   "vtable": "0x738198",
+   "factory": "0x4a1c40"
+  },
+  "Node_LeaveSimulation": {
+   "class": "NOD_Node_LeaveSimulation",
+   "argc": 0,
+   "params": [],
+   "signature": "Node_LeaveSimulation()",
+   "lua_call": "Node_LeaveSimulation(targetNode)",
+   "vtable": "0x738318",
+   "factory": "0x4a1080"
+  },
+  "Node_ParseIniFile": {
+   "class": "NOD_Node_ParseIniFile",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Node_ParseIniFile(string)",
+   "lua_call": "Node_ParseIniFile(targetNode, string)",
+   "vtable": "0x738278",
+   "factory": "0x4a0f20"
+  },
+  "Node_SetName": {
+   "class": "NOD_Node_SetName",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Node_SetName(string)",
+   "lua_call": "Node_SetName(targetNode, string)",
+   "vtable": "0x7382b8",
+   "factory": "0x4a0e70"
+  },
+  "Node_SubSon": {
+   "class": "NOD_Node_SubSon",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Node_SubSon(node)",
+   "lua_call": "Node_SubSon(targetNode, node)",
+   "vtable": "0x7382f8",
+   "factory": "0x4a18b0"
+  },
+  "ParticleEmitter_SetAccelerationOffset": {
+   "class": "NOD_FX_ParticleEmitter_SetAccelerationOffset",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "ParticleEmitter_SetAccelerationOffset(MAT_Vector3)",
+   "lua_call": "ParticleEmitter_SetAccelerationOffset(targetNode, MAT_Vector3)",
+   "vtable": "0x733e7c",
+   "factory": "0x4ba9a0"
+  },
+  "ParticleEmitter_SetCone": {
+   "class": "NOD_FX_ParticleEmitter_SetCone",
+   "argc": 4,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3",
+    "float",
+    "float"
+   ],
+   "signature": "ParticleEmitter_SetCone(MAT_Vector3, MAT_Vector3, float, float)",
+   "lua_call": "ParticleEmitter_SetCone(targetNode, MAT_Vector3, MAT_Vector3, float, float)",
+   "vtable": "0x733edc",
+   "factory": "0x4bad10"
+  },
+  "ParticleEmitter_SetConeAngle": {
+   "class": "NOD_FX_ParticleEmitter_SetConeAngle",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "ParticleEmitter_SetConeAngle(float)",
+   "lua_call": "ParticleEmitter_SetConeAngle(targetNode, float)",
+   "vtable": "0x733e9c",
+   "factory": "0x4babb0"
+  },
+  "ParticleEmitter_SetFriction": {
+   "class": "NOD_FX_ParticleEmitter_SetFriction",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "ParticleEmitter_SetFriction(MAT_Vector3)",
+   "lua_call": "ParticleEmitter_SetFriction(targetNode, MAT_Vector3)",
+   "vtable": "0x733f3c",
+   "factory": "0x4baa50"
+  },
+  "ParticleEmitter_SetLifeTime": {
+   "class": "NOD_FX_ParticleEmitter_SetLifeTime",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "ParticleEmitter_SetLifeTime(float)",
+   "lua_call": "ParticleEmitter_SetLifeTime(targetNode, float)",
+   "vtable": "0x733ebc",
+   "factory": "0x4ba8f0"
+  },
+  "ParticleEmitter_SetPPS": {
+   "class": "NOD_FX_ParticleEmitter_SetPPS",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "ParticleEmitter_SetPPS(float)",
+   "lua_call": "ParticleEmitter_SetPPS(targetNode, float)",
+   "vtable": "0x733f1c",
+   "factory": "0x4bab00"
+  },
+  "ParticleEmitter_SetVelocity": {
+   "class": "NOD_FX_ParticleEmitter_SetVelocity",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "ParticleEmitter_SetVelocity(float, float)",
+   "lua_call": "ParticleEmitter_SetVelocity(targetNode, float, float)",
+   "vtable": "0x733efc",
+   "factory": "0x4bac60"
+  },
+  "Path_GetPositionOrientation": {
+   "class": "NOD_Path_GetPositionOrientation",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "Path_GetPositionOrientation(MAT_Vector3)",
+   "lua_call": "Path_GetPositionOrientation(targetNode, MAT_Vector3)",
+   "vtable": "0x7351a8",
+   "factory": "0x4af520"
+  },
+  "PatrolArea_BindNode": {
+   "class": "NOD_PatrolArea_BindNode",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "PatrolArea_BindNode(node)",
+   "lua_call": "PatrolArea_BindNode(targetNode, node)",
+   "vtable": "0x7311b8",
+   "factory": "0x4cf330"
+  },
+  "PatrolArea_GetDiameter": {
+   "class": "NOD_PatrolArea_GetDiameter",
+   "argc": 0,
+   "params": [],
+   "signature": "PatrolArea_GetDiameter()",
+   "lua_call": "PatrolArea_GetDiameter(targetNode)",
+   "vtable": "0x731198",
+   "factory": "0x4cf1f0"
+  },
+  "PatrolArea_SetMaxZ": {
+   "class": "NOD_PatrolArea_SetMaxZ",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "PatrolArea_SetMaxZ(float)",
+   "lua_call": "PatrolArea_SetMaxZ(targetNode, float)",
+   "vtable": "0x7311d8",
+   "factory": "0x4cf140"
+  },
+  "PatrolArea_SetMinZ": {
+   "class": "NOD_PatrolArea_SetMinZ",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "PatrolArea_SetMinZ(float)",
+   "lua_call": "PatrolArea_SetMinZ(targetNode, float)",
+   "vtable": "0x7311f8",
+   "factory": "0x4cf090"
+  },
+  "PatrolArea_SetPosition": {
+   "class": "NOD_PatrolArea_SetPosition",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "PatrolArea_SetPosition(MAT_Vector3)",
+   "lua_call": "PatrolArea_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x731178",
+   "factory": "0x4cef30"
+  },
+  "PatrolArea_SetRadius": {
+   "class": "NOD_PatrolArea_SetRadius",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "PatrolArea_SetRadius(float)",
+   "lua_call": "PatrolArea_SetRadius(targetNode, float)",
+   "vtable": "0x731158",
+   "factory": "0x4cefe0"
+  },
+  "PhysicalCharacter_Attack": {
+   "class": "NOD_PhysicalCharacter_Attack",
+   "argc": 2,
+   "params": [
+    "node",
+    "string"
+   ],
+   "signature": "PhysicalCharacter_Attack(node, string)",
+   "lua_call": "PhysicalCharacter_Attack(targetNode, node, string)",
+   "vtable": "0x730760",
+   "factory": "0x4d58c0"
+  },
+  "PhysicalCharacter_AttackCompleted": {
+   "class": "NOD_PhysicalCharacter_AttackCompleted",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_AttackCompleted()",
+   "lua_call": "PhysicalCharacter_AttackCompleted(targetNode)",
+   "vtable": "0x730620",
+   "factory": "0x4d59a0"
+  },
+  "PhysicalCharacter_AttackTurrets": {
+   "class": "NOD_PhysicalCharacter_AttackTurrets",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "PhysicalCharacter_AttackTurrets(string, string, string, string, string)",
+   "lua_call": "PhysicalCharacter_AttackTurrets(targetNode, string, string, string, string, string)",
+   "vtable": "0x7306a0",
+   "factory": "0x4d53c0"
+  },
+  "PhysicalCharacter_AttackTurretsStop": {
+   "class": "NOD_PhysicalCharacter_AttackTurretsStop",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "PhysicalCharacter_AttackTurretsStop(string)",
+   "lua_call": "PhysicalCharacter_AttackTurretsStop(targetNode, string)",
+   "vtable": "0x730640",
+   "factory": "0x4d5470"
+  },
+  "PhysicalCharacter_GotoArrived": {
+   "class": "NOD_PhysicalCharacter_GotoArrived",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "PhysicalCharacter_GotoArrived(string)",
+   "lua_call": "PhysicalCharacter_GotoArrived(targetNode, string)",
+   "vtable": "0x730560",
+   "factory": "0x4d4a20"
+  },
+  "PhysicalCharacter_GotoOverride": {
+   "class": "NOD_PhysicalCharacter_GotoOverride",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "PhysicalCharacter_GotoOverride(string, string, string)",
+   "lua_call": "PhysicalCharacter_GotoOverride(targetNode, string, string, string)",
+   "vtable": "0x730680",
+   "factory": "0x4d4c80"
+  },
+  "PhysicalCharacter_GotoPosReached": {
+   "class": "NOD_PhysicalCharacter_GotoPosReached",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "PhysicalCharacter_GotoPosReached(string, string)",
+   "lua_call": "PhysicalCharacter_GotoPosReached(targetNode, string, string)",
+   "vtable": "0x7306e0",
+   "factory": "0x4d4b40"
+  },
+  "PhysicalCharacter_GotoStart": {
+   "class": "NOD_PhysicalCharacter_GotoStart",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "signature": "PhysicalCharacter_GotoStart(string, float)",
+   "lua_call": "PhysicalCharacter_GotoStart(targetNode, string, float)",
+   "vtable": "0x730740",
+   "factory": "0x4d48c0"
+  },
+  "PhysicalCharacter_GotoStartFromPosition": {
+   "class": "NOD_PhysicalCharacter_GotoStartFromPosition",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "float"
+   ],
+   "signature": "PhysicalCharacter_GotoStartFromPosition(string, string, float)",
+   "lua_call": "PhysicalCharacter_GotoStartFromPosition(targetNode, string, string, float)",
+   "vtable": "0x730600",
+   "factory": "0x4d4de0"
+  },
+  "PhysicalCharacter_GotoStartFromTo": {
+   "class": "NOD_PhysicalCharacter_GotoStartFromTo",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "float"
+   ],
+   "signature": "PhysicalCharacter_GotoStartFromTo(string, string, string, float)",
+   "lua_call": "PhysicalCharacter_GotoStartFromTo(targetNode, string, string, string, float)",
+   "vtable": "0x7305a0",
+   "factory": "0x4d4f30"
+  },
+  "PhysicalCharacter_GotoStop": {
+   "class": "NOD_PhysicalCharacter_GotoStop",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_GotoStop()",
+   "lua_call": "PhysicalCharacter_GotoStop(targetNode)",
+   "vtable": "0x730700",
+   "factory": "0x4d4970"
+  },
+  "PhysicalCharacter_LookTo": {
+   "class": "NOD_PhysicalCharacter_LookTo",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "int8"
+   ],
+   "signature": "PhysicalCharacter_LookTo(MAT_Vector3, int8)",
+   "lua_call": "PhysicalCharacter_LookTo(targetNode, MAT_Vector3, int8)",
+   "vtable": "0x730500",
+   "factory": "0x4d50b0"
+  },
+  "PhysicalCharacter_LookToObject": {
+   "class": "NOD_PhysicalCharacter_LookToObject",
+   "argc": 2,
+   "params": [
+    "node",
+    "int8"
+   ],
+   "signature": "PhysicalCharacter_LookToObject(node, int8)",
+   "lua_call": "PhysicalCharacter_LookToObject(targetNode, node, int8)",
+   "vtable": "0x7306c0",
+   "factory": "0x4d5680"
+  },
+  "PhysicalCharacter_LookToOverride": {
+   "class": "NOD_PhysicalCharacter_LookToOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_LookToOverride()",
+   "lua_call": "PhysicalCharacter_LookToOverride(targetNode)",
+   "vtable": "0x730780",
+   "factory": "0x4d5260"
+  },
+  "PhysicalCharacter_SensorActivated": {
+   "class": "NOD_PhysicalCharacter_SensorActivated",
+   "argc": 1,
+   "params": [
+    "uint32"
+   ],
+   "signature": "PhysicalCharacter_SensorActivated(uint32)",
+   "lua_call": "PhysicalCharacter_SensorActivated(targetNode, uint32)",
+   "vtable": "0x730720",
+   "factory": "0x4d5310"
+  },
+  "PhysicalCharacter_SetHitPropability": {
+   "class": "NOD_PhysicalCharacter_SetHitPropability",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "PhysicalCharacter_SetHitPropability(float)",
+   "lua_call": "PhysicalCharacter_SetHitPropability(targetNode, float)",
+   "vtable": "0x730520",
+   "factory": "0x4d5b40"
+  },
+  "PhysicalCharacter_SetSpecialCollisionPartner": {
+   "class": "NOD_PhysicalCharacter_SetSpecialCollisionPartner",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "PhysicalCharacter_SetSpecialCollisionPartner(node)",
+   "lua_call": "PhysicalCharacter_SetSpecialCollisionPartner(targetNode, node)",
+   "vtable": "0x7307a0",
+   "factory": "0x4d5bf0"
+  },
+  "PhysicalCharacter_SonarDestroyed": {
+   "class": "NOD_PhysicalCharacter_SonarDestroyed",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_SonarDestroyed()",
+   "lua_call": "PhysicalCharacter_SonarDestroyed(targetNode)",
+   "vtable": "0x730660",
+   "factory": "0x4d57d0"
+  },
+  "PhysicalCharacter_StartAnimation": {
+   "class": "NOD_PhysicalCharacter_StartAnimation",
+   "argc": 2,
+   "params": [
+    "int32",
+    "float"
+   ],
+   "signature": "PhysicalCharacter_StartAnimation(int32, float)",
+   "lua_call": "PhysicalCharacter_StartAnimation(targetNode, int32, float)",
+   "vtable": "0x730580",
+   "factory": "0x4d46c0"
+  },
+  "PhysicalCharacter_StopAnimation": {
+   "class": "NOD_PhysicalCharacter_StopAnimation",
+   "argc": 2,
+   "params": [
+    "int32",
+    "float"
+   ],
+   "signature": "PhysicalCharacter_StopAnimation(int32, float)",
+   "lua_call": "PhysicalCharacter_StopAnimation(targetNode, int32, float)",
+   "vtable": "0x7304e0",
+   "factory": "0x4d47a0"
+  },
+  "PhysicalCharacter_Stripped": {
+   "class": "NOD_PhysicalCharacter_Stripped",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_Stripped()",
+   "lua_call": "PhysicalCharacter_Stripped(targetNode)",
+   "vtable": "0x7305c0",
+   "factory": "0x4d5a50"
+  },
+  "PhysicalCharacter_SwitchToGoing": {
+   "class": "NOD_PhysicalCharacter_SwitchToGoing",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_SwitchToGoing()",
+   "lua_call": "PhysicalCharacter_SwitchToGoing(targetNode)",
+   "vtable": "0x730540",
+   "factory": "0x4d55d0"
+  },
+  "PhysicalCharacter_SwitchToStanding": {
+   "class": "NOD_PhysicalCharacter_SwitchToStanding",
+   "argc": 0,
+   "params": [],
+   "signature": "PhysicalCharacter_SwitchToStanding()",
+   "lua_call": "PhysicalCharacter_SwitchToStanding(targetNode)",
+   "vtable": "0x7305e0",
+   "factory": "0x4d5520"
+  },
+  "Player_ActivateFF": {
+   "class": "NOD_Player_ActivateFF",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_ActivateFF()",
+   "lua_call": "Player_ActivateFF(targetNode)",
+   "vtable": "0x72fb6c",
+   "factory": "0x4d85b0"
+  },
+  "Player_DefineKeyLocation": {
+   "class": "NOD_Player_DefineKeyLocation",
+   "argc": 2,
+   "params": [
+    "string",
+    "int32"
+   ],
+   "signature": "Player_DefineKeyLocation(string, int32)",
+   "lua_call": "Player_DefineKeyLocation(targetNode, string, int32)",
+   "vtable": "0x72fbac",
+   "factory": "0x4d89c0"
+  },
+  "Player_FirstWarning": {
+   "class": "NOD_Player_FirstWarning",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_FirstWarning()",
+   "lua_call": "Player_FirstWarning(targetNode)",
+   "vtable": "0x72fd0c",
+   "factory": "0x4d7d50"
+  },
+  "Player_ImportInventoryInteger": {
+   "class": "NOD_Player_ImportInventoryInteger",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_ImportInventoryInteger()",
+   "lua_call": "Player_ImportInventoryInteger(targetNode)",
+   "vtable": "0x72fc2c",
+   "factory": "0x4d8410"
+  },
+  "Player_InformKeyUsed": {
+   "class": "NOD_Player_InformKeyUsed",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_InformKeyUsed()",
+   "lua_call": "Player_InformKeyUsed(targetNode)",
+   "vtable": "0x72fb4c",
+   "factory": "0x4d8aa0"
+  },
+  "Player_InformShipID": {
+   "class": "NOD_Player_InformShipID",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "Player_InformShipID(int32)",
+   "lua_call": "Player_InformShipID(targetNode, int32)",
+   "vtable": "0x72fc6c",
+   "factory": "0x4d8780"
+  },
+  "Player_KinShieldBelow": {
+   "class": "NOD_Player_KinShieldBelow",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "Player_KinShieldBelow(int32)",
+   "lua_call": "Player_KinShieldBelow(targetNode, int32)",
+   "vtable": "0x72fc0c",
+   "factory": "0x4d88a0"
+  },
+  "Player_LeftAttack": {
+   "class": "NOD_Player_LeftAttack",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_LeftAttack()",
+   "lua_call": "Player_LeftAttack(targetNode)",
+   "vtable": "0x72fb8c",
+   "factory": "0x4d8110"
+  },
+  "Player_PlunderItems": {
+   "class": "NOD_Player_PlunderItems",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_PlunderItems()",
+   "lua_call": "Player_PlunderItems(targetNode)",
+   "vtable": "0x72fcec",
+   "factory": "0x4d8200"
+  },
+  "Player_RefreshPickupState": {
+   "class": "NOD_Player_RefreshPickupState",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Player_RefreshPickupState(int8)",
+   "lua_call": "Player_RefreshPickupState(targetNode, int8)",
+   "vtable": "0x72fccc",
+   "factory": "0x4d8660"
+  },
+  "Player_SecondWarning": {
+   "class": "NOD_Player_SecondWarning",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_SecondWarning()",
+   "lua_call": "Player_SecondWarning(targetNode)",
+   "vtable": "0x72fcac",
+   "factory": "0x4d7e40"
+  },
+  "Player_SuppressFF": {
+   "class": "NOD_Player_SuppressFF",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_SuppressFF()",
+   "lua_call": "Player_SuppressFF(targetNode)",
+   "vtable": "0x72fbcc",
+   "factory": "0x4d8500"
+  },
+  "Player_ThirdWarning": {
+   "class": "NOD_Player_ThirdWarning",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_ThirdWarning()",
+   "lua_call": "Player_ThirdWarning(targetNode)",
+   "vtable": "0x72fc4c",
+   "factory": "0x4d7f30"
+  },
+  "Player_TorpedoAlarm": {
+   "class": "NOD_Player_TorpedoAlarm",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Player_TorpedoAlarm(int8)",
+   "lua_call": "Player_TorpedoAlarm(targetNode, int8)",
+   "vtable": "0x72fc8c",
+   "factory": "0x4d82f0"
+  },
+  "Player_UnderAttack": {
+   "class": "NOD_Player_UnderAttack",
+   "argc": 0,
+   "params": [],
+   "signature": "Player_UnderAttack()",
+   "lua_call": "Player_UnderAttack(targetNode)",
+   "vtable": "0x72fbec",
+   "factory": "0x4d8020"
+  },
+  "Position_GetPosition": {
+   "class": "NOD_Position_GetPosition",
+   "argc": 0,
+   "params": [],
+   "signature": "Position_GetPosition()",
+   "lua_call": "Position_GetPosition(targetNode)",
+   "vtable": "0x73380c",
+   "factory": "0x4bdf60"
+  },
+  "Position_SetCS": {
+   "class": "NOD_Position_SetCS",
+   "argc": 2,
+   "params": [
+    "MAT_Vector3",
+    "MAT_Vector3"
+   ],
+   "signature": "Position_SetCS(MAT_Vector3, MAT_Vector3)",
+   "lua_call": "Position_SetCS(targetNode, MAT_Vector3, MAT_Vector3)",
+   "vtable": "0x7337ec",
+   "factory": "0x4be100"
+  },
+  "Position_SetPosition": {
+   "class": "NOD_Position_SetPosition",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "Position_SetPosition(MAT_Vector3)",
+   "lua_call": "Position_SetPosition(targetNode, MAT_Vector3)",
+   "vtable": "0x7337cc",
+   "factory": "0x4bde00"
+  },
+  "Position_SetRadius": {
+   "class": "NOD_Position_SetRadius",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Position_SetRadius(float)",
+   "lua_call": "Position_SetRadius(targetNode, float)",
+   "vtable": "0x7337ac",
+   "factory": "0x4bdeb0"
+  },
+  "Script_BindThread": {
+   "class": "NOD_Script_BindThread",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Script_BindThread(node)",
+   "lua_call": "Script_BindThread(targetNode, node)",
+   "vtable": "0x72de18",
+   "factory": "0x4ddb50"
+  },
+  "Script_SetScript": {
+   "class": "NOD_Script_SetScript",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Script_SetScript(string)",
+   "lua_call": "Script_SetScript(targetNode, string)",
+   "vtable": "0x72de38",
+   "factory": "0x4dda30"
+  },
+  "Script_SetTimer": {
+   "class": "NOD_Script_SetTimer",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "float"
+   ],
+   "signature": "Script_SetTimer(uint32, float)",
+   "lua_call": "Script_SetTimer(targetNode, uint32, float)",
+   "vtable": "0x72ddf8",
+   "factory": "0x4ddc80"
+  },
+  "Script_StopTimer": {
+   "class": "NOD_Script_StopTimer",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "uint32"
+   ],
+   "signature": "Script_StopTimer(uint32, uint32)",
+   "lua_call": "Script_StopTimer(targetNode, uint32, uint32)",
+   "vtable": "0x72ddb8",
+   "factory": "0x4ddde0"
+  },
+  "Script_UnBindThread": {
+   "class": "NOD_Script_UnBindThread",
+   "argc": 2,
+   "params": [
+    "uint32",
+    "node"
+   ],
+   "signature": "Script_UnBindThread(uint32, node)",
+   "lua_call": "Script_UnBindThread(targetNode, uint32, node)",
+   "vtable": "0x72ddd8",
+   "factory": "0x4ddd30"
+  },
+  "ShieldedBody_CoupleFather": {
+   "class": "NOD_ShieldedBody_CoupleFather",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_CoupleFather()",
+   "lua_call": "ShieldedBody_CoupleFather(targetNode)",
+   "vtable": "0x734d38",
+   "factory": "0x4afc60"
+  },
+  "ShieldedBody_DeactivateSelectiveVulnerability": {
+   "class": "NOD_ShieldedBody_DeactivateSelectiveVulnerability",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_DeactivateSelectiveVulnerability()",
+   "lua_call": "ShieldedBody_DeactivateSelectiveVulnerability(targetNode)",
+   "vtable": "0x734db8",
+   "factory": "0x4af9a0"
+  },
+  "ShieldedBody_DeepDestruct": {
+   "class": "NOD_ShieldedBody_DeepDestruct",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_DeepDestruct()",
+   "lua_call": "ShieldedBody_DeepDestruct(targetNode)",
+   "vtable": "0x734d98",
+   "factory": "0x4afbb0"
+  },
+  "ShieldedBody_InformEmpShieldBelow": {
+   "class": "NOD_ShieldedBody_InformEmpShieldBelow",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ShieldedBody_InformEmpShieldBelow(int32)",
+   "lua_call": "ShieldedBody_InformEmpShieldBelow(targetNode, int32)",
+   "vtable": "0x734d18",
+   "factory": "0x4afd10"
+  },
+  "ShieldedBody_InformKinShieldBelow": {
+   "class": "NOD_ShieldedBody_InformKinShieldBelow",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ShieldedBody_InformKinShieldBelow(int32)",
+   "lua_call": "ShieldedBody_InformKinShieldBelow(targetNode, int32)",
+   "vtable": "0x734df8",
+   "factory": "0x4afe30"
+  },
+  "ShieldedBody_MakeInvulnerable": {
+   "class": "NOD_ShieldedBody_MakeInvulnerable",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_MakeInvulnerable()",
+   "lua_call": "ShieldedBody_MakeInvulnerable(targetNode)",
+   "vtable": "0x734cf8",
+   "factory": "0x4af760"
+  },
+  "ShieldedBody_MakeSelectiveVulnerableAgainst": {
+   "class": "NOD_ShieldedBody_MakeSelectiveVulnerableAgainst",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "signature": "ShieldedBody_MakeSelectiveVulnerableAgainst(node, uint32)",
+   "lua_call": "ShieldedBody_MakeSelectiveVulnerableAgainst(targetNode, node, uint32)",
+   "vtable": "0x734e18",
+   "factory": "0x4af8c0"
+  },
+  "ShieldedBody_MakeVulnerable": {
+   "class": "NOD_ShieldedBody_MakeVulnerable",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_MakeVulnerable()",
+   "lua_call": "ShieldedBody_MakeVulnerable(targetNode)",
+   "vtable": "0x734cb8",
+   "factory": "0x4af810"
+  },
+  "ShieldedBody_SetFriendlyFireMode": {
+   "class": "NOD_ShieldedBody_SetFriendlyFireMode",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "ShieldedBody_SetFriendlyFireMode(int32)",
+   "lua_call": "ShieldedBody_SetFriendlyFireMode(targetNode, int32)",
+   "vtable": "0x734dd8",
+   "factory": "0x4afee0"
+  },
+  "ShieldedBody_SetLogarithmicMode": {
+   "class": "NOD_ShieldedBody_SetLogarithmicMode",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_SetLogarithmicMode()",
+   "lua_call": "ShieldedBody_SetLogarithmicMode(targetNode)",
+   "vtable": "0x734d58",
+   "factory": "0x4afa50"
+  },
+  "ShieldedBody_SetLogarithmicModeStop": {
+   "class": "NOD_ShieldedBody_SetLogarithmicModeStop",
+   "argc": 0,
+   "params": [],
+   "signature": "ShieldedBody_SetLogarithmicModeStop()",
+   "lua_call": "ShieldedBody_SetLogarithmicModeStop(targetNode)",
+   "vtable": "0x734cd8",
+   "factory": "0x4afb00"
+  },
+  "ShieldedBody_SetShieldBarrier": {
+   "class": "NOD_ShieldedBody_SetShieldBarrier",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "ShieldedBody_SetShieldBarrier(float, float)",
+   "lua_call": "ShieldedBody_SetShieldBarrier(targetNode, float, float)",
+   "vtable": "0x734d78",
+   "factory": "0x4aff90"
+  },
+  "Stream_SetBoxExtension": {
+   "class": "NOD_FX_Stream_SetBoxExtension",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Stream_SetBoxExtension(float, float, float)",
+   "lua_call": "Stream_SetBoxExtension(targetNode, float, float, float)",
+   "vtable": "0x72c3a0",
+   "factory": "0x4f9c90"
+  },
+  "Stream_SetCurrentDirection": {
+   "class": "NOD_FX_Stream_SetCurrentDirection",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "Stream_SetCurrentDirection(MAT_Vector3)",
+   "lua_call": "Stream_SetCurrentDirection(targetNode, MAT_Vector3)",
+   "vtable": "0x72c380",
+   "factory": "0x4f9e20"
+  },
+  "Stream_SetCurrentDirectionNetwork": {
+   "class": "NOD_FX_Stream_SetCurrentDirectionNetwork",
+   "argc": 1,
+   "params": [
+    "MAT_Vector3"
+   ],
+   "signature": "Stream_SetCurrentDirectionNetwork(MAT_Vector3)",
+   "lua_call": "Stream_SetCurrentDirectionNetwork(targetNode, MAT_Vector3)",
+   "vtable": "0x72c3c0",
+   "factory": "0x4fa160"
+  },
+  "Stream_SetCurrentSpeed": {
+   "class": "NOD_FX_Stream_SetCurrentSpeed",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Stream_SetCurrentSpeed(float, float)",
+   "lua_call": "Stream_SetCurrentSpeed(targetNode, float, float)",
+   "vtable": "0x72c400",
+   "factory": "0x4fa000"
+  },
+  "Stream_SetDamageParameters": {
+   "class": "NOD_FX_Stream_SetDamageParameters",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Stream_SetDamageParameters(float, float)",
+   "lua_call": "Stream_SetDamageParameters(targetNode, float, float)",
+   "vtable": "0x72c3e0",
+   "factory": "0x4fa2f0"
+  },
+  "Stream_SetTurbulenceFrequency": {
+   "class": "NOD_FX_Stream_SetTurbulenceFrequency",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Stream_SetTurbulenceFrequency(float)",
+   "lua_call": "Stream_SetTurbulenceFrequency(targetNode, float)",
+   "vtable": "0x72c420",
+   "factory": "0x4f9ed0"
+  },
+  "Terrain_LoadTerrain": {
+   "class": "NOD_Terrain_LoadTerrain",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Terrain_LoadTerrain(string)",
+   "lua_call": "Terrain_LoadTerrain(targetNode, string)",
+   "vtable": "0x73371c",
+   "factory": "0x4be260"
+  },
+  "Terrain_SetPoly": {
+   "class": "NOD_Terrain_SetPoly",
+   "argc": 1,
+   "params": [
+    "int32"
+   ],
+   "signature": "Terrain_SetPoly(int32)",
+   "lua_call": "Terrain_SetPoly(targetNode, int32)",
+   "vtable": "0x73373c",
+   "factory": "0x4be1b0"
+  },
+  "Trash_SetOnOffDuration": {
+   "class": "NOD_Trash_SetOnOffDuration",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Trash_SetOnOffDuration(float, float)",
+   "lua_call": "Trash_SetOnOffDuration(targetNode, float, float)",
+   "vtable": "0x72c5c8",
+   "factory": "0x4f9be0"
+  },
+  "Trigger_ActivateSensor": {
+   "class": "NOD_Trigger_ActivateSensor",
+   "argc": 3,
+   "params": [
+    "int8",
+    "int8",
+    "int8"
+   ],
+   "signature": "Trigger_ActivateSensor(int8, int8, int8)",
+   "lua_call": "Trigger_ActivateSensor(targetNode, int8, int8, int8)",
+   "vtable": "0x735898",
+   "factory": "0x4ab360"
+  },
+  "Trigger_EnterAcoustic": {
+   "class": "NOD_Trigger_EnterAcoustic",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Trigger_EnterAcoustic(node)",
+   "lua_call": "Trigger_EnterAcoustic(targetNode, node)",
+   "vtable": "0x735878",
+   "factory": "0x4ab890"
+  },
+  "Trigger_EnterPresence": {
+   "class": "NOD_Trigger_EnterPresence",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Trigger_EnterPresence(node)",
+   "lua_call": "Trigger_EnterPresence(targetNode, node)",
+   "vtable": "0x735778",
+   "factory": "0x4ab650"
+  },
+  "Trigger_EnterVisible": {
+   "class": "NOD_Trigger_EnterVisible",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Trigger_EnterVisible(node)",
+   "lua_call": "Trigger_EnterVisible(targetNode, node)",
+   "vtable": "0x7357b8",
+   "factory": "0x4abad0"
+  },
+  "Trigger_LeaveAcoustic": {
+   "class": "NOD_Trigger_LeaveAcoustic",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Trigger_LeaveAcoustic(node)",
+   "lua_call": "Trigger_LeaveAcoustic(targetNode, node)",
+   "vtable": "0x735818",
+   "factory": "0x4ab9b0"
+  },
+  "Trigger_LeavePresence": {
+   "class": "NOD_Trigger_LeavePresence",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Trigger_LeavePresence(node)",
+   "lua_call": "Trigger_LeavePresence(targetNode, node)",
+   "vtable": "0x7358d8",
+   "factory": "0x4ab770"
+  },
+  "Trigger_LeaveVisible": {
+   "class": "NOD_Trigger_LeaveVisible",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Trigger_LeaveVisible(node)",
+   "lua_call": "Trigger_LeaveVisible(targetNode, node)",
+   "vtable": "0x735758",
+   "factory": "0x4abbf0"
+  },
+  "Trigger_SetAcousticSensibility": {
+   "class": "NOD_Trigger_SetAcousticSensibility",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Trigger_SetAcousticSensibility(string)",
+   "lua_call": "Trigger_SetAcousticSensibility(targetNode, string)",
+   "vtable": "0x7358b8",
+   "factory": "0x4aaec0"
+  },
+  "Trigger_SetAcousticSphere": {
+   "class": "NOD_Trigger_SetAcousticSphere",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Trigger_SetAcousticSphere(float)",
+   "lua_call": "Trigger_SetAcousticSphere(targetNode, float)",
+   "vtable": "0x735918",
+   "factory": "0x4aae10"
+  },
+  "Trigger_SetBoxMode": {
+   "class": "NOD_Trigger_SetBoxMode",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Trigger_SetBoxMode(float, float, float)",
+   "lua_call": "Trigger_SetBoxMode(targetNode, float, float, float)",
+   "vtable": "0x735738",
+   "factory": "0x4abd10"
+  },
+  "Trigger_SetInterestList": {
+   "class": "NOD_Trigger_SetInterestList",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Trigger_SetInterestList(string, string, string, string)",
+   "lua_call": "Trigger_SetInterestList(targetNode, string, string, string, string)",
+   "vtable": "0x7357d8",
+   "factory": "0x4ab4c0"
+  },
+  "Trigger_SetPresenceSphere": {
+   "class": "NOD_Trigger_SetPresenceSphere",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Trigger_SetPresenceSphere(float)",
+   "lua_call": "Trigger_SetPresenceSphere(targetNode, float)",
+   "vtable": "0x735858",
+   "factory": "0x4aaf70"
+  },
+  "Trigger_SetVisibilityBlockingStatus": {
+   "class": "NOD_Trigger_SetVisibilityBlockingStatus",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Trigger_SetVisibilityBlockingStatus(int8)",
+   "lua_call": "Trigger_SetVisibilityBlockingStatus(targetNode, int8)",
+   "vtable": "0x7358f8",
+   "factory": "0x4ab2b0"
+  },
+  "Trigger_SetVisibilityCone": {
+   "class": "NOD_Trigger_SetVisibilityCone",
+   "argc": 3,
+   "params": [
+    "MAT_Vector3",
+    "float",
+    "float"
+   ],
+   "signature": "Trigger_SetVisibilityCone(MAT_Vector3, float, float)",
+   "lua_call": "Trigger_SetVisibilityCone(targetNode, MAT_Vector3, float, float)",
+   "vtable": "0x7357f8",
+   "factory": "0x4ab020"
+  },
+  "Trigger_SetVisibilityConeRelative": {
+   "class": "NOD_Trigger_SetVisibilityConeRelative",
+   "argc": 2,
+   "params": [
+    "float",
+    "float"
+   ],
+   "signature": "Trigger_SetVisibilityConeRelative(float, float)",
+   "lua_call": "Trigger_SetVisibilityConeRelative(targetNode, float, float)",
+   "vtable": "0x735798",
+   "factory": "0x4ab200"
+  },
+  "Trigger_StopSensor": {
+   "class": "NOD_Trigger_StopSensor",
+   "argc": 0,
+   "params": [],
+   "signature": "Trigger_StopSensor()",
+   "lua_call": "Trigger_StopSensor(targetNode)",
+   "vtable": "0x735838",
+   "factory": "0x4ab410"
+  },
+  "Turret_ComplexAttack": {
+   "class": "NOD_Turret_Base_ComplexAttack",
+   "argc": 5,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Turret_ComplexAttack(float, string, string, string, string)",
+   "lua_call": "Turret_ComplexAttack(targetNode, float, string, string, string, string)",
+   "vtable": "0x72f648",
+   "factory": "0x4d9150"
+  },
+  "Turret_ComplexAttackOver": {
+   "class": "NOD_Turret_Base_ComplexAttackOver",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_ComplexAttackOver()",
+   "lua_call": "Turret_ComplexAttackOver(targetNode)",
+   "vtable": "0x72f5e8",
+   "factory": "0x4d9240"
+  },
+  "Turret_ComplexAttackOverride": {
+   "class": "NOD_Turret_Base_ComplexAttackOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_ComplexAttackOverride()",
+   "lua_call": "Turret_ComplexAttackOverride(targetNode)",
+   "vtable": "0x72f728",
+   "factory": "0x4d9330"
+  },
+  "Turret_DipolIn": {
+   "class": "NOD_Turret_DipolIn",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Turret_DipolIn(float)",
+   "lua_call": "Turret_DipolIn(targetNode, float)",
+   "vtable": "0x733d48",
+   "factory": "0x4bae70"
+  },
+  "Turret_DipolInFinished": {
+   "class": "NOD_Turret_DipolInFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_DipolInFinished()",
+   "lua_call": "Turret_DipolInFinished(targetNode)",
+   "vtable": "0x733d08",
+   "factory": "0x4bafd0"
+  },
+  "Turret_DipolInLeaveSimulation": {
+   "class": "NOD_Turret_DipolInLeaveSimulation",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_DipolInLeaveSimulation()",
+   "lua_call": "Turret_DipolInLeaveSimulation(targetNode)",
+   "vtable": "0x733ce8",
+   "factory": "0x4bb080"
+  },
+  "Turret_DipolOut": {
+   "class": "NOD_Turret_DipolOut",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_DipolOut()",
+   "lua_call": "Turret_DipolOut(targetNode)",
+   "vtable": "0x733d68",
+   "factory": "0x4badc0"
+  },
+  "Turret_DipolOutFinished": {
+   "class": "NOD_Turret_DipolOutFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_DipolOutFinished()",
+   "lua_call": "Turret_DipolOutFinished(targetNode)",
+   "vtable": "0x733d28",
+   "factory": "0x4baf20"
+  },
+  "Turret_DirectAttack": {
+   "class": "NOD_Turret_Base_DirectAttack",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Turret_DirectAttack(string, string, string, string)",
+   "lua_call": "Turret_DirectAttack(targetNode, string, string, string, string)",
+   "vtable": "0x72f588",
+   "factory": "0x4d9720"
+  },
+  "Turret_DirectAttackStop": {
+   "class": "NOD_Turret_Base_DirectAttackStop",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_DirectAttackStop()",
+   "lua_call": "Turret_DirectAttackStop(targetNode)",
+   "vtable": "0x72f768",
+   "factory": "0x4d98a0"
+  },
+  "Turret_EnteringCastratedMode": {
+   "class": "NOD_Turret_Base_EnteringCastratedMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_EnteringCastratedMode()",
+   "lua_call": "Turret_EnteringCastratedMode(targetNode)",
+   "vtable": "0x72f668",
+   "factory": "0x4d9490"
+  },
+  "Turret_Follow": {
+   "class": "NOD_Turret_Base_Follow",
+   "argc": 2,
+   "params": [
+    "node",
+    "float"
+   ],
+   "signature": "Turret_Follow(node, float)",
+   "lua_call": "Turret_Follow(targetNode, node, float)",
+   "vtable": "0x72f5a8",
+   "factory": "0x4d8b90"
+  },
+  "Turret_FollowFinished": {
+   "class": "NOD_Turret_Base_FollowFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_FollowFinished()",
+   "lua_call": "Turret_FollowFinished(targetNode)",
+   "vtable": "0x72f748",
+   "factory": "0x4d8d20"
+  },
+  "Turret_FollowOverride": {
+   "class": "NOD_Turret_Base_FollowOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_FollowOverride()",
+   "lua_call": "Turret_FollowOverride(targetNode)",
+   "vtable": "0x72f568",
+   "factory": "0x4d8c70"
+  },
+  "Turret_LeavingCastratedMode": {
+   "class": "NOD_Turret_Base_LeavingCastratedMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_LeavingCastratedMode()",
+   "lua_call": "Turret_LeavingCastratedMode(targetNode)",
+   "vtable": "0x72f628",
+   "factory": "0x4d9580"
+  },
+  "Turret_Patrol": {
+   "class": "NOD_Turret_Base_Patrol",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Turret_Patrol(float)",
+   "lua_call": "Turret_Patrol(targetNode, float)",
+   "vtable": "0x72f688",
+   "factory": "0x4d8f00"
+  },
+  "Turret_PatrolFinished": {
+   "class": "NOD_Turret_Base_PatrolFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_PatrolFinished()",
+   "lua_call": "Turret_PatrolFinished(targetNode)",
+   "vtable": "0x72f708",
+   "factory": "0x4d8fb0"
+  },
+  "Turret_PatrolOverride": {
+   "class": "NOD_Turret_Base_PatrolOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_PatrolOverride()",
+   "lua_call": "Turret_PatrolOverride(targetNode)",
+   "vtable": "0x72f6a8",
+   "factory": "0x4d90a0"
+  },
+  "Turret_SetAcousticMode": {
+   "class": "NOD_Turret_Base_SetAcousticMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_SetAcousticMode()",
+   "lua_call": "Turret_SetAcousticMode(targetNode)",
+   "vtable": "0x72f608",
+   "factory": "0x4d9950"
+  },
+  "Turret_SetAngleArea": {
+   "class": "NOD_Turret_Base_SetAngleArea",
+   "argc": 3,
+   "params": [
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Turret_SetAngleArea(float, float, float)",
+   "lua_call": "Turret_SetAngleArea(targetNode, float, float, float)",
+   "vtable": "0x72f6c8",
+   "factory": "0x4d93e0"
+  },
+  "Turret_SetPrimaryTarget": {
+   "class": "NOD_Turret_Base_SetPrimaryTarget",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Turret_SetPrimaryTarget(node)",
+   "lua_call": "Turret_SetPrimaryTarget(targetNode, node)",
+   "vtable": "0x72f5c8",
+   "factory": "0x4d9670"
+  },
+  "Turret_TargetLost": {
+   "class": "NOD_Turret_Base_TargetLost",
+   "argc": 0,
+   "params": [],
+   "signature": "Turret_TargetLost()",
+   "lua_call": "Turret_TargetLost(targetNode)",
+   "vtable": "0x72f6e8",
+   "factory": "0x4d8e10"
+  },
+  "Vehicle_AttackOver": {
+   "class": "NOD_Vehicle_AttackOver",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_AttackOver()",
+   "lua_call": "Vehicle_AttackOver(targetNode)",
+   "vtable": "0x73724c",
+   "factory": "0x4a4d30"
+  },
+  "Vehicle_AttackOverride": {
+   "class": "NOD_Vehicle_AttackOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_AttackOverride()",
+   "lua_call": "Vehicle_AttackOverride(targetNode)",
+   "vtable": "0x73718c",
+   "factory": "0x4a4e20"
+  },
+  "Vehicle_AttackPatrol": {
+   "class": "NOD_Vehicle_AttackPatrol",
+   "argc": 6,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vehicle_AttackPatrol(float, string, string, string, string, string)",
+   "lua_call": "Vehicle_AttackPatrol(targetNode, float, string, string, string, string, string)",
+   "vtable": "0x7374ac",
+   "factory": "0x4a4b50"
+  },
+  "Vehicle_AttackTurrets": {
+   "class": "NOD_Vehicle_AttackTurrets",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vehicle_AttackTurrets(string, string, string, string, string)",
+   "lua_call": "Vehicle_AttackTurrets(targetNode, string, string, string, string, string)",
+   "vtable": "0x73738c",
+   "factory": "0x4a5570"
+  },
+  "Vehicle_AttackTurretsStop": {
+   "class": "NOD_Vehicle_AttackTurretsStop",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Vehicle_AttackTurretsStop(string)",
+   "lua_call": "Vehicle_AttackTurretsStop(targetNode, string)",
+   "vtable": "0x7372cc",
+   "factory": "0x4a56f0"
+  },
+  "Vehicle_AvoidanceObjects": {
+   "class": "NOD_Vehicle_AvoidanceObjects",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vehicle_AvoidanceObjects(int8)",
+   "lua_call": "Vehicle_AvoidanceObjects(targetNode, int8)",
+   "vtable": "0x73734c",
+   "factory": "0x4a3d30"
+  },
+  "Vehicle_AvoidanceTerrain": {
+   "class": "NOD_Vehicle_AvoidanceTerrain",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vehicle_AvoidanceTerrain(int8)",
+   "lua_call": "Vehicle_AvoidanceTerrain(targetNode, int8)",
+   "vtable": "0x7372ac",
+   "factory": "0x4a3de0"
+  },
+  "Vehicle_CollisionObjects": {
+   "class": "NOD_Vehicle_CollisionObjects",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vehicle_CollisionObjects(int8)",
+   "lua_call": "Vehicle_CollisionObjects(targetNode, int8)",
+   "vtable": "0x73748c",
+   "factory": "0x4a3bd0"
+  },
+  "Vehicle_CollisionTerrain": {
+   "class": "NOD_Vehicle_CollisionTerrain",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vehicle_CollisionTerrain(int8)",
+   "lua_call": "Vehicle_CollisionTerrain(targetNode, int8)",
+   "vtable": "0x73740c",
+   "factory": "0x4a3c80"
+  },
+  "Vehicle_DipolIn": {
+   "class": "NOD_Vehicle_DipolIn",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_DipolIn()",
+   "lua_call": "Vehicle_DipolIn(targetNode)",
+   "vtable": "0x73726c",
+   "factory": "0x4a5330"
+  },
+  "Vehicle_DipolInFinished": {
+   "class": "NOD_Vehicle_DipolInFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_DipolInFinished()",
+   "lua_call": "Vehicle_DipolInFinished(targetNode)",
+   "vtable": "0x7371ac",
+   "factory": "0x4a53e0"
+  },
+  "Vehicle_EnteringCastratedMode": {
+   "class": "NOD_Vehicle_EnteringCastratedMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_EnteringCastratedMode()",
+   "lua_call": "Vehicle_EnteringCastratedMode(targetNode)",
+   "vtable": "0x73736c",
+   "factory": "0x4a4ed0"
+  },
+  "Vehicle_Goto": {
+   "class": "NOD_Vehicle_Goto",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vehicle_Goto(string, float, float)",
+   "lua_call": "Vehicle_Goto(targetNode, string, float, float)",
+   "vtable": "0x73746c",
+   "factory": "0x4a3f60"
+  },
+  "Vehicle_GotoArrived": {
+   "class": "NOD_Vehicle_GotoArrived",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Vehicle_GotoArrived(string)",
+   "lua_call": "Vehicle_GotoArrived(targetNode, string)",
+   "vtable": "0x73732c",
+   "factory": "0x4a40f0"
+  },
+  "Vehicle_GotoFromPosition": {
+   "class": "NOD_Vehicle_GotoFromPosition",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vehicle_GotoFromPosition(string, string, float, float)",
+   "lua_call": "Vehicle_GotoFromPosition(targetNode, string, string, float, float)",
+   "vtable": "0x73742c",
+   "factory": "0x4a44f0"
+  },
+  "Vehicle_GotoFromTo": {
+   "class": "NOD_Vehicle_GotoFromTo",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vehicle_GotoFromTo(string, string, string, float, float)",
+   "lua_call": "Vehicle_GotoFromTo(targetNode, string, string, string, float, float)",
+   "vtable": "0x7373ac",
+   "factory": "0x4a4650"
+  },
+  "Vehicle_GotoOverride": {
+   "class": "NOD_Vehicle_GotoOverride",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vehicle_GotoOverride(string, string, string)",
+   "lua_call": "Vehicle_GotoOverride(targetNode, string, string, string)",
+   "vtable": "0x7371cc",
+   "factory": "0x4a4370"
+  },
+  "Vehicle_GotoPosReached": {
+   "class": "NOD_Vehicle_GotoPosReached",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "Vehicle_GotoPosReached(string, string)",
+   "lua_call": "Vehicle_GotoPosReached(targetNode, string, string)",
+   "vtable": "0x73728c",
+   "factory": "0x4a4210"
+  },
+  "Vehicle_GotoStop": {
+   "class": "NOD_Vehicle_GotoStop",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_GotoStop()",
+   "lua_call": "Vehicle_GotoStop(targetNode)",
+   "vtable": "0x7373ec",
+   "factory": "0x4a4040"
+  },
+  "Vehicle_LeavingCastratedMode": {
+   "class": "NOD_Vehicle_LeavingCastratedMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_LeavingCastratedMode()",
+   "lua_call": "Vehicle_LeavingCastratedMode(targetNode)",
+   "vtable": "0x73712c",
+   "factory": "0x4a4f80"
+  },
+  "Vehicle_NonCollideAvoid": {
+   "class": "NOD_Vehicle_NonCollideAvoid",
+   "argc": 2,
+   "params": [
+    "node",
+    "node"
+   ],
+   "signature": "Vehicle_NonCollideAvoid(node, node)",
+   "lua_call": "Vehicle_NonCollideAvoid(targetNode, node, node)",
+   "vtable": "0x7371ec",
+   "factory": "0x4a3e90"
+  },
+  "Vehicle_ParkPatrol": {
+   "class": "NOD_Vehicle_ParkPatrol",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Vehicle_ParkPatrol(string)",
+   "lua_call": "Vehicle_ParkPatrol(targetNode, string)",
+   "vtable": "0x73744c",
+   "factory": "0x4a50e0"
+  },
+  "Vehicle_ParkPatrolFinished": {
+   "class": "NOD_Vehicle_ParkPatrolFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_ParkPatrolFinished()",
+   "lua_call": "Vehicle_ParkPatrolFinished(targetNode)",
+   "vtable": "0x7373cc",
+   "factory": "0x4a5190"
+  },
+  "Vehicle_ParkPatrolOverride": {
+   "class": "NOD_Vehicle_ParkPatrolOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_ParkPatrolOverride()",
+   "lua_call": "Vehicle_ParkPatrolOverride(targetNode)",
+   "vtable": "0x73730c",
+   "factory": "0x4a5280"
+  },
+  "Vehicle_Patrol": {
+   "class": "NOD_Vehicle_Patrol",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "signature": "Vehicle_Patrol(string, float)",
+   "lua_call": "Vehicle_Patrol(targetNode, string, float)",
+   "vtable": "0x73722c",
+   "factory": "0x4a48d0"
+  },
+  "Vehicle_PatrolFinished": {
+   "class": "NOD_Vehicle_PatrolFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_PatrolFinished()",
+   "lua_call": "Vehicle_PatrolFinished(targetNode)",
+   "vtable": "0x7370ec",
+   "factory": "0x4a4a60"
+  },
+  "Vehicle_PatrolOverride": {
+   "class": "NOD_Vehicle_PatrolOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_PatrolOverride()",
+   "lua_call": "Vehicle_PatrolOverride(targetNode)",
+   "vtable": "0x73716c",
+   "factory": "0x4a49b0"
+  },
+  "Vehicle_SetPrimaryTarget": {
+   "class": "NOD_Vehicle_SetPrimaryTarget",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Vehicle_SetPrimaryTarget(node)",
+   "lua_call": "Vehicle_SetPrimaryTarget(targetNode, node)",
+   "vtable": "0x7370cc",
+   "factory": "0x4a5030"
+  },
+  "Vehicle_Stop": {
+   "class": "NOD_Vehicle_Stop",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_Stop()",
+   "lua_call": "Vehicle_Stop(targetNode)",
+   "vtable": "0x7372ec",
+   "factory": "0x4a4820"
+  },
+  "Vehicle_StopWithHeading": {
+   "class": "NOD_Vehicle_StopWithHeading",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "Vehicle_StopWithHeading(string, string)",
+   "lua_call": "Vehicle_StopWithHeading(targetNode, string, string)",
+   "vtable": "0x73710c",
+   "factory": "0x4a5490"
+  },
+  "Vehicle_Taunt_Activate": {
+   "class": "NOD_Vehicle_Taunt_Activate",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_Taunt_Activate()",
+   "lua_call": "Vehicle_Taunt_Activate(targetNode)",
+   "vtable": "0x73720c",
+   "factory": "0x4a57a0"
+  },
+  "Vehicle_Taunt_Deactivate": {
+   "class": "NOD_Vehicle_Taunt_Deactivate",
+   "argc": 0,
+   "params": [],
+   "signature": "Vehicle_Taunt_Deactivate()",
+   "lua_call": "Vehicle_Taunt_Deactivate(targetNode)",
+   "vtable": "0x73714c",
+   "factory": "0x4a5850"
+  },
+  "Vessel_AttackOver": {
+   "class": "NOD_Vessel_AttackOver",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_AttackOver()",
+   "lua_call": "Vessel_AttackOver(targetNode)",
+   "vtable": "0x72e3ec",
+   "factory": "0x4db940"
+  },
+  "Vessel_AttackOverride": {
+   "class": "NOD_Vessel_AttackOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_AttackOverride()",
+   "lua_call": "Vessel_AttackOverride(targetNode)",
+   "vtable": "0x72e2ec",
+   "factory": "0x4dba30"
+  },
+  "Vessel_AttackPatrol": {
+   "class": "NOD_Vessel_AttackPatrol",
+   "argc": 6,
+   "params": [
+    "float",
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vessel_AttackPatrol(float, string, string, string, string, string)",
+   "lua_call": "Vessel_AttackPatrol(targetNode, float, string, string, string, string, string)",
+   "vtable": "0x72e54c",
+   "factory": "0x4db890"
+  },
+  "Vessel_AttackTurrets": {
+   "class": "NOD_Vessel_AttackTurrets",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vessel_AttackTurrets(string, string, string, string, string)",
+   "lua_call": "Vessel_AttackTurrets(targetNode, string, string, string, string, string)",
+   "vtable": "0x72e3cc",
+   "factory": "0x4dbcf0"
+  },
+  "Vessel_AttackTurretsStop": {
+   "class": "NOD_Vessel_AttackTurretsStop",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Vessel_AttackTurretsStop(string)",
+   "lua_call": "Vessel_AttackTurretsStop(targetNode, string)",
+   "vtable": "0x72e74c",
+   "factory": "0x4dbde0"
+  },
+  "Vessel_AvoidanceObjects": {
+   "class": "NOD_Vessel_AvoidanceObjects",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_AvoidanceObjects(int8)",
+   "lua_call": "Vessel_AvoidanceObjects(targetNode, int8)",
+   "vtable": "0x72e72c",
+   "factory": "0x4d9b60"
+  },
+  "Vessel_AvoidanceTerrain": {
+   "class": "NOD_Vessel_AvoidanceTerrain",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_AvoidanceTerrain(int8)",
+   "lua_call": "Vessel_AvoidanceTerrain(targetNode, int8)",
+   "vtable": "0x72e62c",
+   "factory": "0x4d9c10"
+  },
+  "Vessel_CollisionGenerics": {
+   "class": "NOD_Vessel_CollisionGenerics",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_CollisionGenerics(int8)",
+   "lua_call": "Vessel_CollisionGenerics(targetNode, int8)",
+   "vtable": "0x72e52c",
+   "factory": "0x4dcc10"
+  },
+  "Vessel_CollisionObjects": {
+   "class": "NOD_Vessel_CollisionObjects",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_CollisionObjects(int8)",
+   "lua_call": "Vessel_CollisionObjects(targetNode, int8)",
+   "vtable": "0x72e94c",
+   "factory": "0x4d9a00"
+  },
+  "Vessel_CollisionTerrain": {
+   "class": "NOD_Vessel_CollisionTerrain",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_CollisionTerrain(int8)",
+   "lua_call": "Vessel_CollisionTerrain(targetNode, int8)",
+   "vtable": "0x72e82c",
+   "factory": "0x4d9ab0"
+  },
+  "Vessel_DeactivateTurningInEmp": {
+   "class": "NOD_Vessel_DeactivateTurningInEmp",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_DeactivateTurningInEmp()",
+   "lua_call": "Vessel_DeactivateTurningInEmp(targetNode)",
+   "vtable": "0x72e32c",
+   "factory": "0x4dc8a0"
+  },
+  "Vessel_DipolIn": {
+   "class": "NOD_Vessel_DipolIn",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Vessel_DipolIn(float)",
+   "lua_call": "Vessel_DipolIn(targetNode, float)",
+   "vtable": "0x72e4ec",
+   "factory": "0x4dbf40"
+  },
+  "Vessel_DipolInFinished": {
+   "class": "NOD_Vessel_DipolInFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_DipolInFinished()",
+   "lua_call": "Vessel_DipolInFinished(targetNode)",
+   "vtable": "0x72e2cc",
+   "factory": "0x4dc0a0"
+  },
+  "Vessel_DipolOut": {
+   "class": "NOD_Vessel_DipolOut",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_DipolOut()",
+   "lua_call": "Vessel_DipolOut(targetNode)",
+   "vtable": "0x72e64c",
+   "factory": "0x4dbe90"
+  },
+  "Vessel_DipolOutFinished": {
+   "class": "NOD_Vessel_DipolOutFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_DipolOutFinished()",
+   "lua_call": "Vessel_DipolOutFinished(targetNode)",
+   "vtable": "0x72e3ac",
+   "factory": "0x4dbff0"
+  },
+  "Vessel_Dock": {
+   "class": "NOD_Vessel_Dock",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "node"
+   ],
+   "signature": "Vessel_Dock(string, string, string, node)",
+   "lua_call": "Vessel_Dock(targetNode, string, string, string, node)",
+   "vtable": "0x72e5ec",
+   "factory": "0x4db490"
+  },
+  "Vessel_DockAndLeave": {
+   "class": "NOD_Vessel_DockAndLeave",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "node",
+    "float"
+   ],
+   "signature": "Vessel_DockAndLeave(string, string, string, node, float)",
+   "lua_call": "Vessel_DockAndLeave(targetNode, string, string, string, node, float)",
+   "vtable": "0x72e38c",
+   "factory": "0x4db630"
+  },
+  "Vessel_DockingFinished": {
+   "class": "NOD_Vessel_DockingFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_DockingFinished()",
+   "lua_call": "Vessel_DockingFinished(targetNode)",
+   "vtable": "0x72e2ac",
+   "factory": "0x4db730"
+  },
+  "Vessel_EnteringCastratedMode": {
+   "class": "NOD_Vessel_EnteringCastratedMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_EnteringCastratedMode()",
+   "lua_call": "Vessel_EnteringCastratedMode(targetNode)",
+   "vtable": "0x72e96c",
+   "factory": "0x4dbae0"
+  },
+  "Vessel_EscapeToPosSim": {
+   "class": "NOD_Vessel_EscapeToPosSim",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vessel_EscapeToPosSim(string, string, string, string)",
+   "lua_call": "Vessel_EscapeToPosSim(targetNode, string, string, string, string)",
+   "vtable": "0x72e70c",
+   "factory": "0x4db3b0"
+  },
+  "Vessel_EscapeToPosition": {
+   "class": "NOD_Vessel_EscapeToPosition",
+   "argc": 11,
+   "params": [
+    "string",
+    "float",
+    "float",
+    "float",
+    "float",
+    "string",
+    "string",
+    "string",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Vessel_EscapeToPosition(string, float, float, float, float, string, string, string, float, float, float)",
+   "lua_call": "Vessel_EscapeToPosition(targetNode, string, float, float, float, float, string, string, string, float, float, float)",
+   "vtable": "0x72e6ac",
+   "factory": "0x4daf40"
+  },
+  "Vessel_EscapeToPositionFinished": {
+   "class": "NOD_Vessel_EscapeToPositionFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_EscapeToPositionFinished()",
+   "lua_call": "Vessel_EscapeToPositionFinished(targetNode)",
+   "vtable": "0x72e56c",
+   "factory": "0x4db210"
+  },
+  "Vessel_EscapeToPositionOverride": {
+   "class": "NOD_Vessel_EscapeToPositionOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_EscapeToPositionOverride()",
+   "lua_call": "Vessel_EscapeToPositionOverride(targetNode)",
+   "vtable": "0x72e40c",
+   "factory": "0x4db300"
+  },
+  "Vessel_Escort": {
+   "class": "NOD_Vessel_Escort",
+   "argc": 3,
+   "params": [
+    "node",
+    "MAT_Vector3",
+    "float"
+   ],
+   "signature": "Vessel_Escort(node, MAT_Vector3, float)",
+   "lua_call": "Vessel_Escort(targetNode, node, MAT_Vector3, float)",
+   "vtable": "0x72e7cc",
+   "factory": "0x4daa60"
+  },
+  "Vessel_EscortObjectLost": {
+   "class": "NOD_Vessel_EscortObjectLost",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_EscortObjectLost()",
+   "lua_call": "Vessel_EscortObjectLost(targetNode)",
+   "vtable": "0x72e34c",
+   "factory": "0x4dac40"
+  },
+  "Vessel_EscortOverride": {
+   "class": "NOD_Vessel_EscortOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_EscortOverride()",
+   "lua_call": "Vessel_EscortOverride(targetNode)",
+   "vtable": "0x72e26c",
+   "factory": "0x4dacf0"
+  },
+  "Vessel_EscortPosReached": {
+   "class": "NOD_Vessel_EscortPosReached",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_EscortPosReached()",
+   "lua_call": "Vessel_EscortPosReached(targetNode)",
+   "vtable": "0x72e8ac",
+   "factory": "0x4dada0"
+  },
+  "Vessel_FinalizeInfiltrate": {
+   "class": "NOD_Vessel_FinalizeInfiltrate",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_FinalizeInfiltrate()",
+   "lua_call": "Vessel_FinalizeInfiltrate(targetNode)",
+   "vtable": "0x72e7ec",
+   "factory": "0x4dc700"
+  },
+  "Vessel_Goto": {
+   "class": "NOD_Vessel_Goto",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vessel_Goto(string, float, float)",
+   "lua_call": "Vessel_Goto(targetNode, string, float, float)",
+   "vtable": "0x72e92c",
+   "factory": "0x4d9d70"
+  },
+  "Vessel_GotoArrived": {
+   "class": "NOD_Vessel_GotoArrived",
+   "argc": 1,
+   "params": [
+    "string"
+   ],
+   "signature": "Vessel_GotoArrived(string)",
+   "lua_call": "Vessel_GotoArrived(targetNode, string)",
+   "vtable": "0x72e6ec",
+   "factory": "0x4d9ed0"
+  },
+  "Vessel_GotoFromPosition": {
+   "class": "NOD_Vessel_GotoFromPosition",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vessel_GotoFromPosition(string, string, float, float)",
+   "lua_call": "Vessel_GotoFromPosition(targetNode, string, string, float, float)",
+   "vtable": "0x72e88c",
+   "factory": "0x4da290"
+  },
+  "Vessel_GotoFromTo": {
+   "class": "NOD_Vessel_GotoFromTo",
+   "argc": 5,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vessel_GotoFromTo(string, string, string, float, float)",
+   "lua_call": "Vessel_GotoFromTo(targetNode, string, string, string, float, float)",
+   "vtable": "0x72e78c",
+   "factory": "0x4da380"
+  },
+  "Vessel_GotoOverride": {
+   "class": "NOD_Vessel_GotoOverride",
+   "argc": 3,
+   "params": [
+    "string",
+    "string",
+    "string"
+   ],
+   "signature": "Vessel_GotoOverride(string, string, string)",
+   "lua_call": "Vessel_GotoOverride(targetNode, string, string, string)",
+   "vtable": "0x72e44c",
+   "factory": "0x4da130"
+  },
+  "Vessel_GotoPosReached": {
+   "class": "NOD_Vessel_GotoPosReached",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "Vessel_GotoPosReached(string, string)",
+   "lua_call": "Vessel_GotoPosReached(targetNode, string, string)",
+   "vtable": "0x72e5ac",
+   "factory": "0x4d9ff0"
+  },
+  "Vessel_GotoStop": {
+   "class": "NOD_Vessel_GotoStop",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_GotoStop()",
+   "lua_call": "Vessel_GotoStop(targetNode)",
+   "vtable": "0x72e80c",
+   "factory": "0x4d9e20"
+  },
+  "Vessel_Infiltrate": {
+   "class": "NOD_Vessel_Infiltrate",
+   "argc": 6,
+   "params": [
+    "node",
+    "string",
+    "string",
+    "float",
+    "float",
+    "float"
+   ],
+   "signature": "Vessel_Infiltrate(node, string, string, float, float, float)",
+   "lua_call": "Vessel_Infiltrate(targetNode, node, string, string, float, float, float)",
+   "vtable": "0x72e60c",
+   "factory": "0x4dc150"
+  },
+  "Vessel_InfiltrateAborted": {
+   "class": "NOD_Vessel_InfiltrateAborted",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_InfiltrateAborted()",
+   "lua_call": "Vessel_InfiltrateAborted(targetNode)",
+   "vtable": "0x72e36c",
+   "factory": "0x4dc470"
+  },
+  "Vessel_InfiltrateBegin": {
+   "class": "NOD_Vessel_InfiltrateBegin",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_InfiltrateBegin()",
+   "lua_call": "Vessel_InfiltrateBegin(targetNode)",
+   "vtable": "0x72e6cc",
+   "factory": "0x4dc7b0"
+  },
+  "Vessel_InfiltrateFinished": {
+   "class": "NOD_Vessel_InfiltrateFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_InfiltrateFinished()",
+   "lua_call": "Vessel_InfiltrateFinished(targetNode)",
+   "vtable": "0x72e48c",
+   "factory": "0x4dc370"
+  },
+  "Vessel_InfiltrateSuccess": {
+   "class": "NOD_Vessel_InfiltrateSuccess",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_InfiltrateSuccess()",
+   "lua_call": "Vessel_InfiltrateSuccess(targetNode)",
+   "vtable": "0x72e8ec",
+   "factory": "0x4dc610"
+  },
+  "Vessel_LeavingCastratedMode": {
+   "class": "NOD_Vessel_LeavingCastratedMode",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_LeavingCastratedMode()",
+   "lua_call": "Vessel_LeavingCastratedMode(targetNode)",
+   "vtable": "0x72e84c",
+   "factory": "0x4dbb90"
+  },
+  "Vessel_NonCollideAvoid": {
+   "class": "NOD_Vessel_NonCollideAvoid",
+   "argc": 2,
+   "params": [
+    "node",
+    "node"
+   ],
+   "signature": "Vessel_NonCollideAvoid(node, node)",
+   "lua_call": "Vessel_NonCollideAvoid(targetNode, node, node)",
+   "vtable": "0x72e4cc",
+   "factory": "0x4d9cc0"
+  },
+  "Vessel_Patrol": {
+   "class": "NOD_Vessel_Patrol",
+   "argc": 3,
+   "params": [
+    "string",
+    "float",
+    "float"
+   ],
+   "signature": "Vessel_Patrol(string, float, float)",
+   "lua_call": "Vessel_Patrol(targetNode, string, float, float)",
+   "vtable": "0x72e42c",
+   "factory": "0x4da590"
+  },
+  "Vessel_PatrolFinished": {
+   "class": "NOD_Vessel_PatrolFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_PatrolFinished()",
+   "lua_call": "Vessel_PatrolFinished(targetNode)",
+   "vtable": "0x72e98c",
+   "factory": "0x4da6f0"
+  },
+  "Vessel_PatrolOverride": {
+   "class": "NOD_Vessel_PatrolOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_PatrolOverride()",
+   "lua_call": "Vessel_PatrolOverride(targetNode)",
+   "vtable": "0x72e30c",
+   "factory": "0x4da640"
+  },
+  "Vessel_PseudoExplode": {
+   "class": "NOD_Vessel_PseudoExplode",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_PseudoExplode()",
+   "lua_call": "Vessel_PseudoExplode(targetNode)",
+   "vtable": "0x72e28c",
+   "factory": "0x4dc560"
+  },
+  "Vessel_ReactivateCollisionReaction": {
+   "class": "NOD_Vessel_ReactivateCollisionReaction",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_ReactivateCollisionReaction()",
+   "lua_call": "Vessel_ReactivateCollisionReaction(targetNode)",
+   "vtable": "0x72e86c",
+   "factory": "0x4dca00"
+  },
+  "Vessel_SetPrimaryTarget": {
+   "class": "NOD_Vessel_SetPrimaryTarget",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "Vessel_SetPrimaryTarget(node)",
+   "lua_call": "Vessel_SetPrimaryTarget(targetNode, node)",
+   "vtable": "0x72e50c",
+   "factory": "0x4dbc40"
+  },
+  "Vessel_Sink": {
+   "class": "NOD_Vessel_Sink",
+   "argc": 2,
+   "params": [
+    "string",
+    "float"
+   ],
+   "signature": "Vessel_Sink(string, float)",
+   "lua_call": "Vessel_Sink(targetNode, string, float)",
+   "vtable": "0x72e5cc",
+   "factory": "0x4da7e0"
+  },
+  "Vessel_SinkFinished": {
+   "class": "NOD_Vessel_SinkFinished",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_SinkFinished(int8)",
+   "lua_call": "Vessel_SinkFinished(targetNode, int8)",
+   "vtable": "0x72e46c",
+   "factory": "0x4da890"
+  },
+  "Vessel_SinkOverride": {
+   "class": "NOD_Vessel_SinkOverride",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_SinkOverride()",
+   "lua_call": "Vessel_SinkOverride(targetNode)",
+   "vtable": "0x72e8cc",
+   "factory": "0x4da9b0"
+  },
+  "Vessel_Stop": {
+   "class": "NOD_Vessel_Stop",
+   "argc": 1,
+   "params": [
+    "int8"
+   ],
+   "signature": "Vessel_Stop(int8)",
+   "lua_call": "Vessel_Stop(targetNode, int8)",
+   "vtable": "0x72e68c",
+   "factory": "0x4da430"
+  },
+  "Vessel_StopWithHeading": {
+   "class": "NOD_Vessel_StopWithHeading",
+   "argc": 2,
+   "params": [
+    "string",
+    "string"
+   ],
+   "signature": "Vessel_StopWithHeading(string, string)",
+   "lua_call": "Vessel_StopWithHeading(targetNode, string, string)",
+   "vtable": "0x72e58c",
+   "factory": "0x4da4e0"
+  },
+  "Vessel_StopWithSinking": {
+   "class": "NOD_Vessel_StopWithSinking",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "Vessel_StopWithSinking(float)",
+   "lua_call": "Vessel_StopWithSinking(targetNode, float)",
+   "vtable": "0x72e7ac",
+   "factory": "0x4dae90"
+  },
+  "Vessel_SuspendCollisionReaction": {
+   "class": "NOD_Vessel_SuspendCollisionReaction",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_SuspendCollisionReaction()",
+   "lua_call": "Vessel_SuspendCollisionReaction(targetNode)",
+   "vtable": "0x72e9ac",
+   "factory": "0x4dc950"
+  },
+  "Vessel_Taunt_Activate": {
+   "class": "NOD_Vessel_Taunt_Activate",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_Taunt_Activate()",
+   "lua_call": "Vessel_Taunt_Activate(targetNode)",
+   "vtable": "0x72e76c",
+   "factory": "0x4dcab0"
+  },
+  "Vessel_Taunt_Deactivate": {
+   "class": "NOD_Vessel_Taunt_Deactivate",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_Taunt_Deactivate()",
+   "lua_call": "Vessel_Taunt_Deactivate(targetNode)",
+   "vtable": "0x72e66c",
+   "factory": "0x4dcb60"
+  },
+  "Vessel_Undock": {
+   "class": "NOD_Vessel_Undock",
+   "argc": 4,
+   "params": [
+    "string",
+    "string",
+    "string",
+    "node"
+   ],
+   "signature": "Vessel_Undock(string, string, string, node)",
+   "lua_call": "Vessel_Undock(targetNode, string, string, string, node)",
+   "vtable": "0x72e4ac",
+   "factory": "0x4db580"
+  },
+  "Vessel_UndockingFinished": {
+   "class": "NOD_Vessel_UndockingFinished",
+   "argc": 0,
+   "params": [],
+   "signature": "Vessel_UndockingFinished()",
+   "lua_call": "Vessel_UndockingFinished(targetNode)",
+   "vtable": "0x72e90c",
+   "factory": "0x4db7e0"
+  },
+  "WayPoint_Attach": {
+   "class": "NOD_WayPoint_Attach",
+   "argc": 1,
+   "params": [
+    "node"
+   ],
+   "signature": "WayPoint_Attach(node)",
+   "lua_call": "WayPoint_Attach(targetNode, node)",
+   "vtable": "0x733440",
+   "factory": "0x4bebe0"
+  },
+  "WayPoint_InformActivated": {
+   "class": "NOD_WayPoint_InformActivated",
+   "argc": 0,
+   "params": [],
+   "signature": "WayPoint_InformActivated()",
+   "lua_call": "WayPoint_InformActivated(targetNode)",
+   "vtable": "0x7333e0",
+   "factory": "0x4bec90"
+  },
+  "WayPoint_InformDeactivated": {
+   "class": "NOD_WayPoint_InformDeactivated",
+   "argc": 0,
+   "params": [],
+   "signature": "WayPoint_InformDeactivated()",
+   "lua_call": "WayPoint_InformDeactivated(targetNode)",
+   "vtable": "0x7333a0",
+   "factory": "0x4bed40"
+  },
+  "WayPoint_InformEntered": {
+   "class": "NOD_WayPoint_InformEntered",
+   "argc": 0,
+   "params": [],
+   "signature": "WayPoint_InformEntered()",
+   "lua_call": "WayPoint_InformEntered(targetNode)",
+   "vtable": "0x733460",
+   "factory": "0x4bedf0"
+  },
+  "WayPoint_InformLeft": {
+   "class": "NOD_WayPoint_InformLeft",
+   "argc": 0,
+   "params": [],
+   "signature": "WayPoint_InformLeft()",
+   "lua_call": "WayPoint_InformLeft(targetNode)",
+   "vtable": "0x733420",
+   "factory": "0x4beee0"
+  },
+  "WayPoint_SetRadius": {
+   "class": "NOD_WayPoint_SetRadius",
+   "argc": 1,
+   "params": [
+    "float"
+   ],
+   "signature": "WayPoint_SetRadius(float)",
+   "lua_call": "WayPoint_SetRadius(targetNode, float)",
+   "vtable": "0x733380",
+   "factory": "0x4be380"
+  },
+  "WayPoint_SetTakeKey_Activate": {
+   "class": "NOD_WayPoint_SetTakeKey_Activate",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "signature": "WayPoint_SetTakeKey_Activate(node, uint32)",
+   "lua_call": "WayPoint_SetTakeKey_Activate(targetNode, node, uint32)",
+   "vtable": "0x733360",
+   "factory": "0x4be430"
+  },
+  "WayPoint_SetTakeKey_Enter": {
+   "class": "NOD_WayPoint_SetTakeKey_Enter",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "signature": "WayPoint_SetTakeKey_Enter(node, uint32)",
+   "lua_call": "WayPoint_SetTakeKey_Enter(targetNode, node, uint32)",
+   "vtable": "0x7333c0",
+   "factory": "0x4bea80"
+  },
+  "WayPoint_SetTakeKey_Inside": {
+   "class": "NOD_WayPoint_SetTakeKey_Inside",
+   "argc": 18,
+   "params": [
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "int32",
+    "float"
+   ],
+   "signature": "WayPoint_SetTakeKey_Inside(node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, int32, float)",
+   "lua_call": "WayPoint_SetTakeKey_Inside(targetNode, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, int32, float)",
+   "vtable": "0x7334a0",
+   "factory": "0x4be4e0"
+  },
+  "WayPoint_SetTakeKey_Leave": {
+   "class": "NOD_WayPoint_SetTakeKey_Leave",
+   "argc": 2,
+   "params": [
+    "node",
+    "uint32"
+   ],
+   "signature": "WayPoint_SetTakeKey_Leave(node, uint32)",
+   "lua_call": "WayPoint_SetTakeKey_Leave(targetNode, node, uint32)",
+   "vtable": "0x733480",
+   "factory": "0x4beb30"
+  },
+  "WayPoint_SetTakeKey_Outside": {
+   "class": "NOD_WayPoint_SetTakeKey_Outside",
+   "argc": 18,
+   "params": [
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "node",
+    "uint32",
+    "int32",
+    "float"
+   ],
+   "signature": "WayPoint_SetTakeKey_Outside(node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, int32, float)",
+   "lua_call": "WayPoint_SetTakeKey_Outside(targetNode, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, node, uint32, int32, float)",
+   "vtable": "0x733400",
+   "factory": "0x4be620"
+  }
+ }
+}

@@ -1,0 +1,93 @@
+-- dekompiliert aus dat\script\lib\vehicleattack.sco
+-- Quelle laut Bytecode: =(none)
+-- lua4dec.py, 2026-07-28
+
+LibSync = LoadLib("Synchronization")
+LCA_ClearArea = { [nil] = {}, LCA_Activate = function(L0)
+  Vehicle_Patrol(L0.Node, GetInnerValue(L0, "LCA_Area"), GetInnerValue(L0, "LCA_WaitingTime"))
+  StartEnemyPatrol(L0, 0, GetInnerValue(L0, "LCA_DefaultRad"), GetInnerValue(L0, "LCA_FirstPriority"), GetInnerValue(L0, "LCA_SecondPriority"), GetInnerValue(L0, "LCA_ThirdPriority"), GetInnerValue(L0, "LCA_FourthPriority"), GetInnerValue(L0, "LCA_Area"))
+end, Vehicle_AttackOver = function(L0)
+  Vehicle_Patrol(L0.Node, GetInnerValue(L0, "LCA_Area"), GetInnerValue(L0, "LCA_WaitingTime"))
+  StartEnemyPatrol(L0, 0, GetInnerValue(L0, "LCA_DefaultRad"), GetInnerValue(L0, "LCA_FirstPriority"), GetInnerValue(L0, "LCA_SecondPriority"), GetInnerValue(L0, "LCA_ThirdPriority"), GetInnerValue(L0, "LCA_FourthPriority"), GetInnerValue(L0, "LCA_Area"))
+end, Body_EnemyArrivalPatrol = function(L0)
+  Vehicle_AttackPatrol(L0.Node, GetInnerValue(L0, "LCA_DefaultRad"), GetInnerValue(L0, "LCA_FirstPriority"), GetInnerValue(L0, "LCA_SecondPriority"), GetInnerValue(L0, "LCA_ThirdPriority"), GetInnerValue(L0, "LCA_FourthPriority"), GetInnerValue(L0, "LCA_Area"))
+end, Vehicle_PatrolFinished = function(L0)
+  L1 = GetInnerValue(L0, "LCA_Callback")
+  L2 = GetInnerValue(L0, "LCA_Param")
+  StopEnemyPatrol(L0)
+  RestoreModification(L0, "LCA_ClearArea")
+  CallFunction(L0.Thread, L1, L2)
+end, StopBehavior = function(L0)
+  LibList.VehicleAttack_Basis.ClearAreaStop(L0)
+end }
+LCA_GuardArea = { [nil] = {}, LCA_Activate = function(L0)
+  Vehicle_Patrol(L0.Node, GetInnerValue(L0, "LGA_PatrolArea"), -1)
+  StartEnemyPatrol(L0, 0, GetInnerValue(L0, "LGA_DefaultRad"), GetInnerValue(L0, "LGA_FirstPriority"), GetInnerValue(L0, "LGA_SecondPriority"), GetInnerValue(L0, "LGA_ThirdPriority"), GetInnerValue(L0, "LGA_FourthPriority"), GetInnerValue(L0, "LGA_TriggerArea"))
+end, Vehicle_AttackOver = function(L0)
+  Vehicle_Patrol(L0.Node, GetInnerValue(L0, "LGA_PatrolArea"), -1)
+  StartEnemyPatrol(L0, 0, GetInnerValue(L0, "LGA_DefaultRad"), GetInnerValue(L0, "LGA_FirstPriority"), GetInnerValue(L0, "LGA_SecondPriority"), GetInnerValue(L0, "LGA_ThirdPriority"), GetInnerValue(L0, "LGA_FourthPriority"), GetInnerValue(L0, "LGA_TriggerArea"))
+end, Body_EnemyArrivalPatrol = function(L0)
+  Vehicle_AttackPatrol(L0.Node, GetInnerValue(L0, "LGA_DefaultRad"), GetInnerValue(L0, "LGA_FirstPriority"), GetInnerValue(L0, "LGA_SecondPriority"), GetInnerValue(L0, "LGA_ThirdPriority"), GetInnerValue(L0, "LGA_FourthPriority"), GetInnerValue(L0, "LGA_FollowArea"))
+end, StopBehavior = function(L0)
+  LibList.VehicleAttack_Basis.GuardAreaStop(L0)
+end }
+nil[nil] = { VehicleAttack_Basis = {}, ClearAreaFrom = function(L0, L1, L2, L3, L4, L5)
+  if not (Script_IsNodeRefValid(L2)) then
+    CallFunction(L0.Thread, L4, L5)
+    return
+  end
+  ApplyModification(L0, LCA_ClearArea, "LCA_ClearArea")
+  StoreInnerValue(L0, "LCA_DefaultRad", PatrolArea_GetDiameter(Node_Find(L0.Node, L1)))
+  StoreInnerValue(L0, "LCA_Area", L1)
+  StoreInnerValue(L0, "LCA_FirstPriority", Node_GetName(L2))
+  StoreInnerValue(L0, "LCA_SecondPriority", "")
+  StoreInnerValue(L0, "LCA_ThirdPriority", "")
+  StoreInnerValue(L0, "LCA_FourthPriority", "")
+  StoreInnerValue(L0, "LCA_WaitingTime", L3)
+  StoreInnerValue(L0, "LCA_Callback", L4)
+  StoreInnerValue(L0, "LCA_Param", L5)
+  CallFunction(L0.Thread, "LCA_Activate", nil)
+end, ClearAreaFromStop = function(L0)
+  if IsNotLastModification(L0, "LCA_ClearArea") then
+    return
+  end
+  StopEnemyPatrol(L0)
+  RestoreModification(L0, "LCA_ClearArea")
+end, ClearArea = function(L0, L1, L2, L3, L4, L5, L6, L7, L8)
+  ApplyModification(L0, LCA_ClearArea, "LCA_ClearArea")
+  StoreInnerValue(L0, "LCA_DefaultRad", PatrolArea_GetDiameter(Node_Find(L0.Node, L1)))
+  StoreInnerValue(L0, "LCA_Area", L1)
+  StoreInnerValue(L0, "LCA_FirstPriority", L2)
+  StoreInnerValue(L0, "LCA_SecondPriority", L3)
+  StoreInnerValue(L0, "LCA_ThirdPriority", L4)
+  StoreInnerValue(L0, "LCA_FourthPriority", L5)
+  StoreInnerValue(L0, "LCA_MeanTravelDistance", MeanTravelDistance)
+  StoreInnerValue(L0, "LCA_Callback", L7)
+  StoreInnerValue(L0, "LCA_Param", L8)
+  CallFunction(L0.Thread, "LCA_Activate", nil)
+end, ClearAreaStop = function(L0)
+  if IsNotLastModification(L0, "LCA_ClearArea") then
+    return
+  end
+  StopEnemyPatrol(L0)
+  RestoreModification(L0, "LCA_ClearArea")
+end, GuardArea = function(L0, L1, L2, L3, L4, L5, L6, L7)
+  ApplyModification(L0, LCA_GuardArea, "LCA_GuardArea")
+  StoreInnerValue(L0, "LGA_DefaultRad", PatrolArea_GetDiameter(Node_Find(L0.Node, L2)))
+  StoreInnerValue(L0, "LGA_PatrolArea", L1)
+  StoreInnerValue(L0, "LGA_TriggerArea", L2)
+  StoreInnerValue(L0, "LGA_FollowArea", L3)
+  StoreInnerValue(L0, "LGA_FirstPriority", L4)
+  StoreInnerValue(L0, "LGA_SecondPriority", L5)
+  StoreInnerValue(L0, "LGA_ThirdPriority", L6)
+  StoreInnerValue(L0, "LGA_FourthPriority", L7)
+  StoreInnerValue(L0, "LGA_Callback", Callback)
+  StoreInnerValue(L0, "LGA_Param", Param)
+  CallFunction(L0.Thread, "LCA_Activate", nil)
+end, GuardAreaStop = function(L0)
+  if IsNotLastModification(L0, "LCA_GuardArea") then
+    return
+  end
+  StopEnemyPatrol(L0)
+  RestoreModification(L0, "LCA_GuardArea")
+end }

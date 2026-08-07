@@ -1,0 +1,210 @@
+================================================================================
+ZWANZIG WEITERE AUFGABEN (C1 bis C20)
+================================================================================
+Stand: 2026-07-28, nach A1-A10 und B1-B10
+
+Alle ohne Spieldurchlauf und ohne Entscheidung von dir zu erledigen.
+Gruppiert nach Thema, innerhalb der Gruppen nach Nutzen sortiert.
+
+WO WIR STEHEN
+    Lesbar und schreibbar sind inzwischen: PAK, MSB, MSH, Terrain,
+    Nebel, Radar, Lightmap, Lua-Bytecode (lesen), alle Textdatenbanken.
+    DIE GROSSE VERBLEIBENDE LUECKE IST DAS OSD-FORMAT -- 1.262 binaere
+    Dateien, aus denen wir nur die Feldnamen herausbekommen. Ohne sie
+    kann man kein eigenes Objekt vollstaendig definieren.
+    Die Gruppe A ist deshalb die wichtigste.
+
+================================================================================
+GRUPPE A -- DAS OSD-FORMAT (die letzte grosse Luecke)
+================================================================================
+
+ C1  DAS OSD-BINAERFORMAT ENTSCHLUESSELN
+     1.262 Dateien, das Herz jeder Objektdefinition. Bisher lesen wir
+     nur die Feldnamen; die Werte sind Rohbytes, und mein naiver
+     Parser paart Namen mit Namen statt mit Werten.
+     ZU TUN: die Blockstruktur bestimmen (es gibt erkennbar
+     Abschnitte wie [visual], [collision], [control], [emitter],
+     Kindknoten ueber "child0".."child7"), den Typ jedes Feldes
+     ableiten (float, int, string, Vektor) und einen Leser bauen.
+     ANSATZPUNKT: pla_phobocaster~.osd ist gut dokumentiert -- wir
+     kennen aus Abschnitt 139e schon die Lichtfelder und aus der
+     Beleuchtungsanalyse die Materialslots.
+     ERTRAG: die Voraussetzung fuer C2 bis C4. Ohne OSD kein eigenes
+     Schiff, kein eigenes Gebaeude mit Kollision, kein eigenes Licht.
+
+ C2  EINEN OSD-SCHREIBER BAUEN
+     Aufbauend auf C1. Dann liesse sich ein Objekt vollstaendig
+     definieren: Mesh, Kollision, Textur, Verhalten, Kindknoten.
+     ERTRAG: schliesst die Kette Blender -> .msb -> .osd -> Spiel.
+     Bisher muessen wir fremde OSDs kopieren und Namen patchen.
+
+ C3  DIE SCHIFFSWERTE ALLER OSDs TABELLIEREN
+     Sobald C1 steht: alle 1.262 OSDs auswerten und eine Tabelle
+     bauen -- Masse, Geschwindigkeit, Wendigkeit, Schilde,
+     Bewaffnung, Kollisionswerte.
+     ERTRAG: Missionsbalance. Und die Frage, welches Schiff sich als
+     Vorbild fuer ein eigenes eignet.
+
+ C4  DIE WAFFENWERTE VOLLSTAENDIG (B6 zu Ende bringen)
+     B6 lieferte die Feldnamen der 60 Waffen-OSDs, aber nicht die
+     Zahlen. Mit C1 waeren sie lesbar: Schaden kinetisch und EMP,
+     Reichweite, Nachladezeit, Munitionsverbrauch, Zielsuche.
+     ERTRAG: ergaenzt item_d.des, das nur den Anzeigetext hat.
+
+================================================================================
+GRUPPE B -- WAS AUS DEM DEKOMPILAT NOCH ZU HOLEN IST
+================================================================================
+
+ C5  ALLE 74 MISSIONEN INHALTLICH ZUSAMMENFASSEN
+     Aus dem Dekompilat laesst sich jetzt je Mission ablesen, WAS
+     tatsaechlich passiert: welche Objekte, welche Gegner, welche
+     Ausloeser, welche Funksprueche in welcher Reihenfolge, wie die
+     Mission endet.
+     ZU TUN: einen Auswerter bauen, der je Mission einen Ablaufplan
+     erzeugt, und ihn in aquanox1_missions.json nachtragen.
+     ERTRAG: die Missionsdatei enthaelt bisher Briefingziele und
+     Zaehlungen. Danach enthaelt sie den tatsaechlichen ABLAUF.
+
+ C6  EIN MISSIONSVALIDATOR
+     Ein Werkzeug, das ein eigenes Lua-Skript gegen die Registry und
+     die Klassenhierarchie prueft: Gibt es das Kommando? Passt es zur
+     Knotenklasse? Stimmt die Argumentzahl? Existiert das OSD?
+     Ist der Textschluessel belegt?
+     ERTRAG: findet Fehler VOR dem Spielstart. Bei 398 Kommandos mit
+     bis zu 18 Argumenten ist das kein Luxus.
+
+ C7  DIE 24 VERBLIEBENEN DEKOMPILER-STELLEN
+     0,01 % sind wenig, aber sie sitzen vermutlich an interessanten
+     Konstruktionen (Schleifen, verschachtelte Bedingungen).
+     ZU TUN: die 24 Stellen einzeln ansehen und den Dekompiler
+     nachziehen -- vor allem while-Schleifen sauber strukturieren.
+
+ C8  DIE ZUSTANDSMUSTER KATALOGISIEREN
+     Aus 346.125 Zeilen laesst sich ableiten, welche Zustandsmuster
+     immer wiederkehren: Wache, Eskorte, Angriffswelle, Zeitlimit,
+     Zerstoerungsziel, Rueckzug.
+     ZU TUN: die Muster herausarbeiten und als Bausteine in die
+     Levelvorlage uebernehmen -- nicht als SED-Nachbau, sondern
+     lesbar von Hand geschrieben.
+     ERTRAG: die Vorlage waechst von "so koennte es gehen" zu einer
+     Sammlung erprobter Bausteine.
+
+ C9  WIE ENDET EINE MISSION?
+     Game_MissionEnd steht 77x in den Missionen. Aus dem Dekompilat
+     laesst sich jetzt lesen, unter welchen Bedingungen -- und wie
+     Erfolg und Scheitern auseinandergehalten werden.
+     ERTRAG: ohne sauberes Missionsende ist keine Mission spielbar.
+
+C10  DIE KAMPAGNENLOGIK: WIE HAENGEN MISSIONEN ZUSAMMEN?
+     mission_d.des nennt 30 Missionen in fester Reihenfolge. Aber wie
+     kommt der Spieler von einer zur naechsten? Wo wird der
+     Fortschritt gespeichert? Gibt es Verzweigungen?
+     ZU TUN: die Speicherstaende, das Menuesystem (MAI_-Klassen) und
+     die Uebergaenge im Dekompilat untersuchen.
+     ERTRAG: die Voraussetzung fuer eine mehrteilige Kampagne statt
+     einzelner Missionen.
+
+================================================================================
+GRUPPE C -- FORMATE, DIE NOCH FEHLEN
+================================================================================
+
+C11  DEN .col-BAUM FERTIG ENTSCHLUESSELN
+     A3 kam bis zur Permutationsliste. Der Baum danach hat variable
+     Knoten; die Vektoren darin haben Laenge 1.0 (Normalen),
+     0xFFFFFFFF sind Terminatoren.
+     ZU TUN: Dateien mit 2, 3 und 4 Dreiecken vergleichen und sehen,
+     wie der Baum waechst. Solche gibt es (gen_extra_werbung20.col).
+     ALTERNATIVE, die vorher zu pruefen waere: kommt die Engine mit
+     einem LEEREN Baum aus? Das waere billiger und wuerde die ganze
+     Arbeit ersparen.
+
+C12  DEN SED-PARSER VERLUSTFREI MACHEN
+     A4 scheiterte an den u32-Feldern zwischen den Zeichenketten.
+     ZU TUN: sie systematisch deuten -- vermutlich Zahl der Kinder,
+     Typkennung oder Laenge. Mit 5,56 MB Material sollte das
+     entscheidbar sein.
+     ERTRAG: die vollstaendige Vorlagenbibliothek und moeglicherweise
+     doch die platzierte Mission.
+
+C13  DIE PARTIKELEFFEKTE KATALOGISIEREN
+     Die fx_*-OSDs und die .tse-Sequenzen steuern Explosionen,
+     Funken, Blasen, Rauch. Ein Katalog waere fuer Nachtschicht
+     unmittelbar nuetzlich -- welcher Effekt sieht wie aus, wie ruft
+     man ihn.
+     ZU TUN: alle fx_-Definitionen auswerten, nach Art gruppieren,
+     die Aufrufe im Dekompilat gegenpruefen.
+
+C14  DIE KLANGDATENBANK
+     .sam-Deskriptoren, .wav und .mp3. Welche Klaenge gibt es, wie
+     werden sie ausgeloest, welche sind ungenutzt?
+     ERTRAG: Atmosphaere. Und die Frage, ob man eigene Klaenge
+     genauso einbinden kann wie die Musik (Abschnitt 118).
+
+C15  DIE HUD- UND MENUEDATEIEN
+     41 .msh im Klartext, dazu hud.des und menu.des. Was laesst sich
+     am HUD aendern? Koennte man eine eigene Anzeige einbauen -- etwa
+     einen Laermpegel fuer die Schleichfahrt?
+     ERTRAG: fuer eine Schleichkampagne waere eine Sichtbarkeits-
+     anzeige der halbe Spielmechanismus.
+
+================================================================================
+GRUPPE D -- PRUEFEN UND AUFRAEUMEN
+================================================================================
+
+C16  ALLE DATEIREFERENZEN PRUEFEN
+     Jede Mission nennt OSDs, jede OSD nennt Meshes und Texturen,
+     jede .sam nennt eine Wav. Ein Werkzeug, das die ganze Kette
+     prueft, findet fehlende Dateien -- und zeigt, welche Assets
+     WIRKLICH gebraucht werden.
+     ERTRAG: praezisiert aquanox1_unused_assets.json und findet
+     Fehler in eigenen Ergaenzungen sofort.
+
+C17  DIE KONSOLE UND IHRE BEFEHLE
+     NOD_Console (1.280 B) und die drei Console_-Kommandos. Welche
+     Befehle nimmt die Konsole entgegen? Die Renderschalter
+     (ren_*, dsp_*) sind bekannt, aber wie setzt man sie?
+     ERTRAG: zur Laufzeit Dinge umschalten, ohne die DLL zu bemuehen.
+     Fuer T6 (dynamisches Licht) und die Beleuchtungsversuche
+     unmittelbar nuetzlich.
+
+C18  EIN DIFF-WERKZEUG FUER AN1 GEGEN AN2
+     Wir haben beide Spiele entpackt und beide Registries. Ein
+     Werkzeug, das eine beliebige Datei oder Struktur zwischen beiden
+     vergleicht, wuerde kuenftige Fragen in Minuten beantworten
+     statt in Stunden.
+     ERTRAG: methodisch. Mehrere Korrekturen der letzten Tage waeren
+     damit sofort aufgefallen.
+
+C19  DIE SPEICHERSTAENDE
+     Wie speichert AquaNox 1 den Fortschritt? Welches Format, welche
+     Felder? Laesst sich ein Spielstand erzeugen, der direkt in eine
+     eigene Mission springt?
+     ERTRAG: Testen ohne die ganze Kampagne durchzuspielen. Fuer die
+     Erprobung von Nachtschicht eine erhebliche Erleichterung.
+
+C20  EINE GESAMTPRUEFUNG ALLER BISHERIGEN AUSSAGEN
+     Zwanzig Aufgaben, neun Korrekturen, drei davon derselbe
+     Denkfehler. Eine systematische Gegenprobe waere angebracht:
+     jede quantitative Aussage in den Handoffs gegen die Daten
+     pruefen und die Abweichungen auflisten.
+     ZU TUN: die Zahlen aus den Abschnitten 121 bis 141 einsammeln
+     und automatisiert nachmessen.
+     ERTRAG: Vertrauen in die eigene Dokumentation. Bei 710 KB ist
+     das keine Kleinigkeit.
+
+================================================================================
+MEINE EMPFEHLUNG
+================================================================================
+    C1 ZUERST, und mit Abstand. Das OSD-Format ist die letzte grosse
+    binaere Luecke; C2, C3, C4 und Teile von C13 haengen daran.
+    Danach C6 (Validator) und C8 (Zustandsmuster) -- beide machen aus
+    vorhandenem Wissen ein Werkzeug.
+    C11 vorher mit der billigen Frage angehen: leerer Baum, geht das?
+    C20 zum Schluss, wenn wieder genug Neues dazugekommen ist.
+
+    NICHT AUF DER LISTE, weil es einen Spieldurchlauf braucht:
+    die sieben Tests in OFFENE_TESTS.txt.
+
+================================================================================
+ENDE
+================================================================================

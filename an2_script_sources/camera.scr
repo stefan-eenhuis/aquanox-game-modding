@@ -1,0 +1,136 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the camera
+--------------------------------------------------------------------
+
+
+
+LC_Move =
+{
+	Camera_MovePosReached = function(State, PathName, SubPosName)
+		local callback
+		callback = GetInnerValue(State, "LC_CallBack")
+		-- If SubPosname is empty, we havereached the end of our path.
+		if (SubPosName == "") then
+			RestoreModification(State, "LC_Move")
+			CallFunction(State.Thread, callback)
+		end
+	end,
+
+	
+	StopBehavior = function(State)
+		LibList.Camera_Basis.CameraMoveStop(State)
+	end,	
+}
+
+
+LC_General =
+{
+	
+	Timer = function(State)
+		local callback
+		
+		callback = GetInnerValue(State, "LC_CallBack")
+		RestoreModification(State, "LC_General")
+		CallFunction(State.Thread, callback)
+	end,
+	
+	
+	StopBehavior = function(State)
+		LibList.Camera_Basis.WaitStop(State)
+	end,
+	
+}
+
+
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the camera stuff
+LibList.Camera_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the commands for the camera move
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This command performs a move command for the camera.
+	----------------------------------------------
+	-- Info
+	-- Camera_MovePosReached is blocked
+	---------------------------------------------
+	CameraMove = function
+	(
+	State,
+	Path,			-- The moving path of the camera.
+	Velocity,		-- The moving velocity of the camera.
+	AttractionAB,		-- Attraction for Alpha Beta angle	[0..100]
+	AttractionC,		-- Attraction for Gamma angle [0..100]
+	RollingFactor,		-- Agressivity
+	CallBack		-- The callback to be called if finsihed.			
+	)
+	
+		ApplyModification(State, LC_Move, "LC_Move")
+		Camera_Move(State.Node, Node_Find(Path), Velocity, AttractionAB, AttractionC, RollingFactor, 0)
+		StoreInnerValue(State, "LC_CallBack", CallBack)
+	end,
+	
+	-- PURPOSE
+	-- This command does a camera move and looks at a certain position
+	CamereMoveWithLook = function
+	(
+	State,
+	Target,			-- Target to look at.
+	Path,			-- The moving path of the camera.
+	Velocity,		-- The moving velocity of the camera.
+	AttractionAB,		-- Attraction for Alpha Beta angle	[0..100]
+	AttractionC,		-- Attraction for Gamma angle [0..100]
+	RollingFactor,		-- Agressivity
+	CallBack		-- The callback to be called if finsihed.			
+	)
+		ApplyModification(State, LC_Move, "LC_Move")
+		Camera_Move(State.Node, Node_Find(Path), Velocity, AttractionAB, AttractionC, RollingFactor, 0)
+		Camera_MoveLookAt(State.Node, Node_Find(Target))
+		StoreInnerValue(State, "LC_CallBack", CallBack)
+	end,
+	
+	CameraMoveStop = function(State)
+		if IsNotLastModification(State, "LC_Move") then
+			return
+		end
+		RestoreModification(State, "LC_Move")
+	end,
+	
+	---------------------------------------------------------------
+	-- This is the waiting function for the camera.
+	----------------------------------------------------------------
+	
+	Wait = function
+	(
+	State,
+	TimeOut,	-- The time we want to wait.
+	CallBack	-- The callback we want to call.
+	)
+	
+		ApplyModification(State, LC_General, "LC_General")
+		StoreInnerValue(State, "LC_CallBack", CallBack)
+		SetTimer(State.Thread, TimeOut)
+	end,
+	
+	WaitStop = function(State)
+		if IsNotLastModification(State, "LC_General") then
+			return
+		end
+		RestoreModification(State, "LC_General")
+	end,
+		
+	
+	
+	
+	
+}
+		 	 

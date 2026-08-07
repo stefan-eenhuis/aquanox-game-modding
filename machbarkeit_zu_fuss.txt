@@ -1,0 +1,211 @@
+================================================================================
+KOENNTE MAN MIT DER PROXY-DLL AUSSTEIGEN UND ZU FUSS LAUFEN?
+================================================================================
+Stand: 2026-07-27
+Frage: laesst sich mit AquaLive (mod_docu\hook\aqualive.cpp) das erreichen,
+was die Engine von sich aus nicht kann -- den Spieler aus dem Boot holen?
+
+KURZANTWORT
+    Ein FREIER KAMERAFLUG ist machbar und waere ueberschaubar Arbeit.
+    EIN SPIELBARER FUSSGAENGER ist es nicht -- nicht wegen der DLL, sondern
+    weil drei Dinge fehlen, die keine DLL herbeizaubern kann: begehbare
+    Innenraeume, humanoide Modelle und Laufanimationen.
+    Dazwischen liegt ein Mittelweg, der tatsaechlich ginge (Abschnitt 6).
+
+--------------------------------------------------------------------------------
+1. WAS SCHON GEHT -- ohne jeden Eingriff
+--------------------------------------------------------------------------------
+DER CHARAKTER IST PER SKRIPT ERZEUGBAR.
+Das war die erste Ueberraschung: nod_physicalcharacter steht in derselben
+Liste wie nod_vessel und wird von Originalskripten mit Node_CreateNode
+erzeugt. Die zwanzig Klassennamen, die AN1s Missionen benutzen:
+    NOD_Camera, NOD_Director, NOD_Directory, NOD_Path, NOD_PatrolArea,
+    NOD_Position, NOD_Scenario, NOD_Trigger, nod_fungus, nod_generic,
+    nod_itembox, nod_laserwall, nod_particleemitter,
+    NOD_PHYSICALCHARACTER, nod_player, nod_terrain, nod_trash,
+    nod_vehicle, nod_vessel, nod_waypoint
+
+Ein Charakter laesst sich also genauso anlegen wie unsere Renngegner:
+    local c = Node_CreateNode("nod_physicalcharacter", "wanderer")
+    Node_AddSon(Node_Find("/Scenario_Dynamic/Object"), c)
+    Body_SetCS(c, MAT_Vector3(x,y,z), MAT_Vector3(0,0,0))
+    Node_ParseIniFile(c, "osd/old/old_marax.osd")
+    Node_EnterSimulation(c)
+Und bewegen ueber
+    PhysicalCharacter_GotoStart(c, pfad, tempo)
+    PhysicalCharacter_SwitchToGoing(c) / _SwitchToStanding(c)
+    PhysicalCharacter_LookToObject(c, ziel, modus)
+    Character_StartAnimation(c, name)
+
+DIE KAMERA IST FREI RICHTBAR.
+Es gibt den Knoten /camera, und alle 21 Camera_-Kommandos nehmen
+Knotenpfade als Zeichenkette:
+    Camera_MoveTo(kamera, "pfad/zum/ziel", zeit, "pfad2", zeit2)
+    Camera_LookAt(kamera, "pfad", zeit, "pfad2", zeit2)
+    Camera_MoveInto(kamera, "pfad")
+    Camera_MoveToAnglesAbs(kamera, "pfad", a, b, c, d, e)
+Dazu Director_BeginCutscene / _EndCutscene, mit denen 31 der 74
+Originalmissionen bereits arbeiten.
+=> Die Kamera an einen beliebigen Knoten zu haengen ist vorgesehenes
+   Verhalten, kein Trick.
+
+--------------------------------------------------------------------------------
+2. DIE HARTE GRENZE -- die Engine prueft die KLASSE, nicht den Pfad
+--------------------------------------------------------------------------------
+Der Spieler ist der Knoten /Scenario_Dynamic/Object/player1. Dieser Pfad
+steht genau einmal in Aqua.exe (0x0060f958, eine Referenz @0x00458211).
+
+Man koennte also versucht sein, dort einfach einen anderen Knoten
+einzuhaengen. Das scheitert: an mindestens drei Stellen prueft die Engine
+mit einer Typabfrage nach, ob das Objekt wirklich ein NOD_Player IST:
+
+    push 0x667f28        ; das RTI-Objekt von NOD_Player
+    mov  ecx, esi        ; der zu pruefende Knoten
+    call 0x43e5b0        ; IsA(NOD_Player)?
+    test eax, eax
+    je   <ueberspringen>
+
+    Fundstellen: 0x0046388b, 0x004649a5, 0x00466b07
+
+NOD_PhysicalCharacter (2.932 B) leitet zwar wie NOD_Player (6.008 B) von
+NOD_ShieldedBody ab, ist aber eine SCHWESTERKLASSE -- die Abfrage schlaegt
+fehl. Alles, was hinter diesen drei Stellen haengt (mit hoher
+Wahrscheinlichkeit Eingabe, HUD und Kameraankopplung), wuerde einen
+Fussgaenger schlicht uebergehen.
+
+WAS MAN DAGEGEN TUN KOENNTE
+    (a) Die drei Abfragen im Speicher patchen. Das ginge mit der DLL --
+        sie darf .text beschreiben, das tut sie fuer die Vtable-Haken
+        ohnehin schon. Aber: man wuesste nicht, was danach passiert.
+        Der Code hinter den Abfragen greift auf NOD_Player-Felder zu, die
+        es bei NOD_PhysicalCharacter nicht gibt (6.008 gegen 2.932 Byte).
+        Das endet mit hoher Wahrscheinlichkeit im Absturz.
+    (b) Umgekehrt vorgehen: den Spieler Spieler sein lassen und nur die
+        DARSTELLUNG aendern. Siehe Abschnitt 6.
+
+--------------------------------------------------------------------------------
+3. WAS SCHLICHT FEHLT -- und von keiner DLL erzeugt werden kann
+--------------------------------------------------------------------------------
+KEINE INNENRAEUME.
+Die Stationsraeume aus dem Menue (dat\sty\room_d.des, 91 Stueck: Dock,
+Haendler, Waffenlager ...) sind Standbilder mit Klangkulisse --
+"Image = vfx\menu\picture\menu_talk_room01.tga". Es gibt dazu keine
+Levelgeometrie, keine Kollisionsnetze, keinen Nebel, keine Beleuchtung.
+Ein begehbarer Innenraum muesste als vollstaendiges Level neu gebaut
+werden (Terrain, lmsh, ltex, fog -- siehe Handoff v2 Abschnitt 6).
+
+KEINE MENSCHLICHEN MODELLE.
+Skelettdaten gibt es in AquaNox 1 fuer genau vier Wesen:
+    belial, crocell, forneus, marax
+Das sind die Bionten-Bosse -- Kreaturen, keine Menschen. Eine Suche nach
+human, diver, taucher, person, crew oder pilot in vfx\msh findet nichts.
+
+KEINE LAUFANIMATION.
+Die vorhandenen .boa-Dateien gehoeren zu diesen vier Wesen
+(old_crocell_mouth.boa, old_forneus_head02.boa, old_marax_mouth.boa ...) --
+es sind Maul-, Kopf- und Tentakelbewegungen, keine Schritte.
+Ein Fussgaenger braeuchte ein neues Skelett und neue Bewegungsdaten. Das
+Format ist zwar verstanden und im Klartext (Handoff v7), aber es zu
+erzeugen ist Modellierarbeit, nicht Programmierarbeit.
+
+--------------------------------------------------------------------------------
+4. WAS DIE DLL KANN UND WAS NICHT
+--------------------------------------------------------------------------------
+AquaLive kann heute schon:
+    * pro Bild eigenen C++-Code ausfuehren (Haken in NOD_Script::HeartBeat,
+      Vtable 0x005f6218, Slot +0x20)
+    * beliebigen Lua-Code einspeisen (lua_dobuffer @0x005d5790 mit dem
+      Lua-State aus 0x00668a40)
+    * Speicher lesen und schreiben, auch in .text
+    * Tastatur abfragen (sie haengt ohnehin an dinput8)
+
+Das reicht fuer:
+    * einen eigenen Steuerungstakt, der Position und Blickrichtung eines
+      beliebigen Knotens setzt
+    * Kamerafuehrung
+    * Sichtbarkeit umschalten
+    * Zustandsautomaten (Gehen, Stehen, Umsehen)
+
+Das reicht NICHT fuer:
+    * die Engine dazu zu bringen, ein fremdes Objekt als Spieler zu
+      behandeln (Abschnitt 2)
+    * fehlende Geometrie, Modelle oder Animationen zu ersetzen
+
+--------------------------------------------------------------------------------
+5. DAS EIGENTLICHE HINDERNIS IST NICHT DIE TECHNIK
+--------------------------------------------------------------------------------
+Auffaellig: von den vier Huerden sind zwei bereits genommen (Objekt
+erzeugen, Kamera fuehren), eine waere mit Aufwand und Absturzrisiko
+angreifbar (Typabfragen), und die vierte ist gar keine Programmierfrage --
+es fehlen schlicht die Inhalte.
+
+Selbst wenn man alle drei technischen Huerden naehme, saehe man einen
+Bionten-Boss ohne Laufanimation in einem Raum, den es nicht gibt.
+
+--------------------------------------------------------------------------------
+6. WAS STATTDESSEN GINGE -- und zwar gut
+--------------------------------------------------------------------------------
+(A) FREIER KAMERAFLUG ("Spectator")
+    Aufwand: gering, Risiko: gering.
+    Das Boot bleibt der Spieler und wird stillgelegt (Body_Freeze, das
+    haben wir im Polizeischiff-Test schon benutzt). Die DLL liest die
+    Tastatur und setzt in ihrem Takt die Kamera per Camera_MoveToAnglesAbs
+    bzw. ueber einen eigenen NOD_Position-Knoten, an den die Kamera
+    gehaengt wird. Damit kann man frei durch jedes Level fliegen und es
+    von innen ansehen -- fuer Levelbau und Missionsdesign nuetzlich.
+    Fuer Nachtschicht waere das ein echtes Werkzeug.
+
+(B) EINE BEGEHBARE SZENE ALS EIGENES LEVEL
+    Aufwand: hoch, aber ohne Engine-Eingriff.
+    Man baut einen Innenraum als gewoehnliches Level (Geometrie in lmsh,
+    eigene terrain.des, fog). Der Spieler faehrt weiterhin sein Boot,
+    aber sehr langsam und dicht ueber dem Boden -- ein Boot mit
+    MovePV 5, hoher MoveFriction und enger Kamera fuehlt sich an wie
+    Gehen. Das umgeht alle drei technischen Huerden, weil man nichts
+    umbaut, sondern nur anders parametriert.
+    Sichtbar bliebe das Boot; man koennte ein sehr kleines, unauffaelliges
+    Modell nehmen.
+
+(C) EINE INSZENIERTE SZENE OHNE SPIELERKONTROLLE
+    Aufwand: mittel, Risiko: keins.
+    Director_BeginCutscene, die Kamera per Camera_MoveTo an Knotenpfaden
+    entlangfuehren, dabei einen PhysicalCharacter mit
+    PhysicalCharacter_GotoStart laufen lassen. Das ist genau das, wofuer
+    die Engine gebaut ist, und 31 Originalmissionen machen es bereits.
+    Fuer eine Noir-Kampagne mit Zwischenszenen waere das der naheliegende
+    Weg -- man sieht eine Figur sich bewegen, steuert sie aber nicht.
+
+--------------------------------------------------------------------------------
+7. EMPFEHLUNG
+--------------------------------------------------------------------------------
+(A) bauen, wenn ein Werkzeug zum Levelanschauen gewuenscht ist -- das ist
+    ueberschaubar und hilft beim Missionsbau unmittelbar.
+(C) nutzen, wenn in Nachtschicht eine Figur vorkommen soll.
+(B) nur, wenn eine begehbare Szene wirklich zum Kern der Kampagne gehoert.
+
+Den Fussgaenger-Spieler wuerde ich nicht verfolgen. Nicht weil die DLL zu
+schwach waere, sondern weil am Ende Modelle, Animationen und Innenraeume
+fehlen -- und die entstehen nicht durch Reverse Engineering.
+
+--------------------------------------------------------------------------------
+8. BELEGE
+--------------------------------------------------------------------------------
+    Spielerpfad          "/Scenario_Dynamic/Object/player1" @0x0060f958,
+                         eine Referenz @0x00458211
+    Typabfragen          push 0x667f28 ; call 0x43e5b0
+                         @0x0046388b, 0x004649a5, 0x00466b07
+    Klassengroessen      NOD_Player 6.008 B, NOD_PhysicalCharacter 2.932 B,
+                         beide Basis NOD_ShieldedBody
+    Skriptklassen        20 Namen bei Node_CreateNode in den Originalen,
+                         darunter nod_physicalcharacter
+    Charakter-OSDs       old_belial~, old_crocell~, old_forneus~,
+                         old_marax~, old_marax_6h2~, old_marax_movie~
+                         mit den Abschnitten [animation] und
+                         [physicalanimation]
+    Stationsraeume       dat\sty\room_d.des, NumOfRoom = 91, mit Image
+    DLL-Anker            NOD_Script-Vtable 0x005f6218, HeartBeat +0x20,
+                         Lua-State 0x00668a40, lua_dobuffer 0x005d5790
+
+================================================================================
+ENDE
+================================================================================

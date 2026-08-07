@@ -1,0 +1,248 @@
+================================================================================
+EIGENE 3D-MODELLE NACH AQUANOX 1 BRINGEN
+================================================================================
+Stand: 2026-07-27
+Frage: kann man Innenraeume in Blender bauen und importieren? Und welche
+Grenzen setzt die Engine?
+
+KURZANTWORT
+    Ja. Das Meshformat ist vollstaendig verstanden und laesst sich
+    schreiben -- ein Werkzeug dafuer liegt jetzt bei
+    (mod_docu\tools\msb_write.py). Polygongrenzen sind kein Problem:
+    die Engine kann rechnerisch 65.536 Vertices je Block, die
+    Originalmodelle nutzen im Schnitt 274.
+    Was fehlt, ist nicht die Geometrie, sondern das Drumherum --
+    Kollision, Beleuchtung und die Einbindung ins Level (Abschnitt 5).
+
+--------------------------------------------------------------------------------
+1. DIE GRENZEN
+--------------------------------------------------------------------------------
+AUS DEM FORMAT (harte Grenzen):
+    Vertices je Block      65.536      die Dreiecksindizes sind uint16
+    Bloecke je Datei       65.535      nBlocks ist uint16
+    Dreiecke je Block      durch die Indexbreite begrenzt
+    Materialien je Block   genau 2     feste Struktur, 80 B je Slot
+    Texturname             61 Zeichen  + Nullterminator
+
+AUS DEM PROGRAMM: In Aqua.exe steht KEINE einzige Fehlermeldung, die eine
+Polygon-, Vertex- oder Meshgrenze nennt. Die vorhandenen Grenzmeldungen
+betreffen anderes:
+    "Too many behaviours registered."
+    "Too many children for the seeding mechanism"
+    "[SCRIPTERROR] Maximum number of timers reached"
+    "Maximum number of 32 type allowed in current release"
+Eine Polygonobergrenze gibt es also nicht -- nur die Indexbreite.
+
+WAS DIE ORIGINALE TATSAECHLICH NUTZEN (649 Objektmeshes vermessen):
+    Mittelwert                 274 Vertices,   218 Dreiecke
+    groesstes Objekt         3.269 Vertices, 2.539 Dreiecke (23 Bloecke)
+    groesster einzelner Block  807 Vertices, 1.296 Dreiecke
+    meiste Bloecke              29
+
+    Levelgeometrie (2.616 Meshes):
+    groesstes Bauteil        3.749 Vertices (map\1n2\lmsh\spstern_1.msb)
+    ein GANZES Level         8.000 bis 29.000 Dreiecke
+        2h1  28.966    4h1  28.947    1h3  18.104    1h1  16.168
+        1h2  13.510    2h3  12.235    3h3  11.705    mp_06_dm 8.368
+
+=> Ein heutiges Einzelmodell aus Blender hat oft mehr Dreiecke als ein
+   ganzes AquaNox-Level. Die Grenze ist nicht das Format, sondern das
+   Aussehen: ein 50.000-Dreieck-Raum neben 200-Dreieck-Schiffen wirkt
+   falsch, und die Engine von 2001 ist auf solche Lasten nicht
+   ausgelegt (kein Occlusion Culling -- das kam erst mit AquaNox 2).
+
+   Als Richtwert: ein Innenraum in der Groessenordnung 2.000 bis 5.000
+   Dreiecke passt zum Rest des Spiels und bleibt weit unter jeder Grenze.
+
+--------------------------------------------------------------------------------
+1b. NACHTRAG: ES GIBT EIN ZWEITES MESHFORMAT -- .msh IM KLARTEXT
+--------------------------------------------------------------------------------
+Beim Rekonstruieren von Massives Editor SED (aquanox_sed_editor.txt)
+kam heraus: neben dem binaeren .msb gibt es .msh, und das ist LESBARER
+TEXT -- der 3ds-Max-Export, den SED eingelesen hat.
+
+    [Vertex]   { NumOfV = 32   V0 = 0.021673, -0.115506, 0.188795 ... }
+    [Material] { NumOfM = 8    [SortOrder] { M0 = 0 ... }
+                 [M0] { Name = "..."   Diffuse = 1,1,1
+                        Specular = 1,1,1   Shine = 0   Opacity = 0.99
+                        ShadingType = "Blinn"
+                        TrancparencyType = "Additive"
+                        SelfIllumination = 1.0  OneSided = 1
+                        [Map_Diffuse] { Bitmap = "hud_ship_repair"
+                                        MappingType = "Explicit"
+                                        TilingU = 1.0  TilingV = 1.0
+                                        Filter = "Pyramidal" } } }
+    [Polygon]  { NumOfP = 80
+                 [P0] { G = 0  M = 0  V0 = 10  V1 = 1  V2 = 20
+                        P0 = 0.538594, 0.135688
+                        P1 = 0.573502, 0.213931
+                        P2 = 0.538594, 0.213931 } }
+
+DIE ENGINE LIEST DAS DIREKT, ohne Kompilierung: Aqua.exe fuehrt ".msh"
+und konkrete Dateinamen, referenziert aus vfx\menu\menu.des (31
+Verweise) und vfx\hud\hud.des (7). Keine der 41 vorhandenen .msh hat
+eine gleichnamige .msb.
+
+ZWEI VORTEILE GEGENUEBER .msb
+    (a) Es ist Text. Man kann es mit einem Editor schreiben und lesen,
+        ohne Werkzeug.
+    (b) Es traegt MEHR Materialdaten: Specular, Shine, Opacity,
+        Transparenzart, Schattierungsmodell, Kachelung und Filter.
+        Beim Kompilieren nach .msb geht das verloren -- dort bleiben
+        nur zwei Texturslots je Block.
+    (c) Die UV-Koordinaten stehen JE ECKE im Polygon, nicht am Vertex.
+        Das Format kann UV-Naehte also ohne Vertexverdopplung
+        darstellen; im .msb braucht dieselbe Naht zwei Vertices
+        (bei atl_pscout 716 Vertices fuer nur 304 Positionen).
+
+DIE EINSCHRAENKUNG, die alles entscheidet
+    Alle 41 vorhandenen .msh sind HUD- oder Menueelemente. KEINE
+    einzige ist ein Levelobjekt oder ein Schiff. Ob die Engine .msh
+    auch aus einem OSD heraus laedt (namemesh = ...msh), ist
+    UNGEPRUEFT.
+    Das ist Test T7 in OFFENE_TESTS.txt. Faellt er positiv aus, ist
+    .msh der bequemere Weg fuer eigene Modelle und Abschnitt 2 und 3
+    dieses Dokuments werden zur zweiten Wahl.
+
+--------------------------------------------------------------------------------
+2. DAS WERKZEUG
+--------------------------------------------------------------------------------
+mod_docu\tools\msb_write.py
+
+    msb_write.py cube <ziel.msb> [kantenlaenge] [textur]
+    msb_write.py obj  <quelle.obj> <ziel.msb> [textur]
+
+Als Programmbibliothek:
+    import msb_write as W
+    d = W.build([{ "verts": [(px,py,pz, nx,ny,nz, u,v), ...],
+                   "tris":  [(i0,i1,i2, glaettungsgruppe), ...],
+                   "tex":   "meine_textur" }])
+    open("ziel.msb","wb").write(d)
+
+Das Werkzeug prueft beim Schreiben:
+    * mehr als 65.536 Vertices je Block  -> Fehler mit Klartextmeldung
+    * Dreiecksindex ausserhalb der Vertexliste -> Fehler
+    * mehr als 65.535 Bloecke -> Fehler
+
+GEGENPROBE, die schon gelaufen ist:
+    Ein Wuerfel (24 Vertices, 12 Dreiecke, 1.302 B) wurde geschrieben und
+    mit unserem Leser zurueckgelesen. Verglichen mit einem echten
+    Einblock-Mesh (atl_ghost_turret.msb):
+        Dateikopf            gleich aufgebaut
+        Materialbereich      230 B  =  230 B      (letzter Block)
+        Slot-1-Kopf          BYTE-IDENTISCH
+        Achtfeld             BYTE-IDENTISCH (double 1.0)
+    Ebenso eine Kugel mit 2.500 Vertices und 4.802 Dreiecken (138 KB).
+
+    NICHT GEPRUEFT: ob das Spiel diese Dateien auch anzeigt. Das steht
+    aus und ist der naechste sinnvolle Schritt.
+
+--------------------------------------------------------------------------------
+3. DER WEG AUS BLENDER
+--------------------------------------------------------------------------------
+    1. In Blender modellieren.
+       ACHSEN: AquaNox benutzt Z nach oben (wie Blender). Die
+       Positionswerte der Originale liegen bei Schiffen im Bereich
+       -3 .. +4, bei Levelbauteilen deutlich groesser. Eine Einheit
+       entspricht ungefaehr einem Meter -- der Spielerrumpf ist rund
+       5 Einheiten lang, die Weltkarte 8.192 Einheiten breit.
+    2. UV-Koordinaten vergeben. Ohne UV bleibt das Modell untexturiert.
+    3. Normalen setzen (harte Kanten = eigene Vertices je Flaeche, wie
+       beim Wuerfelbeispiel).
+    4. Als Wavefront-OBJ exportieren (Blender: Datei -> Exportieren ->
+       Wavefront), mit Normalen und UVs.
+    5. msb_write.py obj modell.obj vfx\msh\mein_raum.msb meine_textur
+    6. Textur als .dds daneben legen: vfx\tex\meine_textur.dds
+       Format wie die Originale: DXT1 oder DXT3, Zweierpotenz-Kantenlaenge,
+       mit Mipmaps (siehe aquanox_binaerformate.txt).
+    7. Ein OSD anlegen, das auf das Mesh zeigt (Vorlage: irgendein
+       gen_*-Objekt), und beides in aquanox6.pak packen.
+    8. Im Missionsskript platzieren:
+           NS_Prop(parent, "mein_raum_1", "osd/gen/mein_raum.osd",
+                   x, y, z, 0, 0, 0)
+       (siehe nachtschicht_level_vorlage.lua)
+
+DIE GLAETTUNGSGRUPPE im Dreiecksflag (hi-Byte) steuert, ob Kanten weich
+oder hart wirken. Der Wuerfel bekommt je Seite eine eigene Gruppe, damit
+die Kanten scharf bleiben. Fuer runde Flaechen dieselbe Gruppe verwenden.
+ACHTUNG: was dieses Byte in der Engine genau bewirkt, ist nicht bewiesen
+-- es ist die plausibelste Deutung, mehr nicht (siehe Handoff v2
+Abschnitt 3b).
+
+--------------------------------------------------------------------------------
+4. WAS MIT KI-GENERIERTEN MODELLEN (TripoAI u.ae.) ZU BEACHTEN IST
+--------------------------------------------------------------------------------
+Solche Werkzeuge liefern typisch 20.000 bis 200.000 Dreiecke und
+PBR-Texturen. Beides passt nicht unmittelbar:
+
+    * DREIECKSZAHL: erst in Blender dezimieren (Modifier "Decimate") auf
+      wenige tausend. Sonst passt das Modell weder zum Stil noch zur
+      Leistungsfaehigkeit der Engine.
+    * TEXTUREN: AquaNox kennt nur eine Diffustextur je Materialslot,
+      zwei Slots je Block. Kein Normal-, Rauheits- oder Metallic-Kanal.
+      Die PBR-Kanaele muessen in eine einzige Farbkarte gebacken werden.
+    * UV: muss vorhanden und in 0..1 liegen.
+    * Kein Skelett: animierte Modelle gehen nur ueber das .bor/.boa-
+      System (Handoff v7), und das ist erheblich mehr Arbeit.
+
+--------------------------------------------------------------------------------
+5. WAS AUSSER DEM MESH NOCH FEHLT
+--------------------------------------------------------------------------------
+Das Mesh allein ergibt ein sichtbares, aber durchlaessiges Objekt.
+
+    KOLLISION (.col)
+        Format ist entschluesselt (aquanox_binaerformate.txt Abschnitt 2):
+            uint32 nTri | Tri[nTri] je 8 B | uint32 nVert |
+            Vertex[nVert] je 12 B | Beschleunigungsstruktur
+        Die ersten drei Teile koennten wir schreiben -- der Schlussteil
+        (vermutlich ein Raumbaum) ist NICHT verstanden.
+        BEHELF: eine vorhandene .col eines aehnlich grossen Objekts
+        weiterverwenden. Genau so haben wir es beim Polizeischiff
+        gemacht. Fuer einen Raum ist das allerdings unbefriedigend, weil
+        die Kollisionsform dann nicht zur Geometrie passt.
+        Ohne .col faehrt man durch die Waende.
+
+    BELEUCHTUNG -- inzwischen geklaert, siehe aquanox_beleuchtung.txt
+        ENTWARNUNG: ein eigenes Objekt braucht KEINE Lightmap.
+        AquaNox 1 hat zwei Renderpfade. Alles unter vfx\msh\, das per
+        Node_CreateNode mit einem OSD platziert wird, laeuft ueber
+        REP_Object_VS und wird DYNAMISCH beleuchtet -- vom Umgebungslicht,
+        den beiden Parallellichtern und bis zu vier NOD_Light-Quellen.
+        Nur Levelgeometrie unter map\<level>\lmsh\ nutzt vorberechnete
+        Lightmaps (ltex\lightmap0..N.dds, 256x256 DXT3).
+        WORAUF ES ANKOMMT: korrekte Normalen -- sie sind das einzige,
+        was der dynamischen Beleuchtung die Flaechenlage mitteilt.
+        In Blender also Normalen richtig setzen und beim OBJ-Export
+        mitschreiben lassen.
+        Der Preis: ein Raum aus vfx\msh-Teilen wirkt flacher und
+        gleichmaessiger ausgeleuchtet als gebaute Levelgeometrie, weil
+        ihm die weichen vorberechneten Schatten fehlen. Wie man eigene
+        Lightmaps erzeugt, ist nicht bekannt.
+
+    LEVELEINBINDUNG
+        Ein ganz eigenes Level braucht ausserdem Terrain (hmap.tga
+        1025x1025), fog.fog, radar_color.dds und lightmap.dds --
+        siehe aquanox_binaerformate.txt Abschnitt 10.
+        EINFACHER: die eigenen Objekte in ein bestehendes Level setzen.
+
+--------------------------------------------------------------------------------
+6. EMPFEHLUNG
+--------------------------------------------------------------------------------
+Der naechste Schritt ist klein und klaert alles Weitere: den fertigen
+Testwuerfel ins Spiel bringen und nachsehen, ob er erscheint.
+
+    python mod_docu\tools\msb_write.py cube testcube.msb 5 gen_metal1_0
+    -> als vfx\msh\testcube.msb in aquanox6.pak,
+       ein OSD daneben, das darauf zeigt,
+       im dostring-Testlevel per Node_CreateNode platzieren
+
+Faellt das positiv aus, ist der ganze Weg von Blender nach AquaNox offen
+und es geht nur noch um Kollision und Aussehen. Faellt es negativ aus,
+haben wir mit dem Wuerfel den denkbar einfachsten Testfall, um
+herauszufinden warum -- und beantworten damit womoeglich auch die seit
+Tagen offene Frage, warum das portierte AN2-Schiff falsch dargestellt
+wird.
+
+================================================================================
+ENDE
+================================================================================

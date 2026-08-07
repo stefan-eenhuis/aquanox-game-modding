@@ -1,0 +1,229 @@
+================================================================================
+DIE MISSIONEN VON AQUANOX 1 -- INHALT UND BAUWEISE
+================================================================================
+Stand: 2026-07-27
+Lesefassung zu mod_docu\aquanox1_missions.json (254 KB).
+
+WAS DRINSTEHT
+    30 Kampagnenmissionen, je mit deutschem Namen, Briefingzielen,
+    ENGLISCHER ZUSAMMENFASSUNG (summary_en), allen Funkspruechen im
+    Klartext und einer technischen Auswertung des Missionsskripts.
+    Dazu 13 weitere Level (Instant Action, Mehrspieler) und
+    NEUN GESCHNITTENE MISSIONEN.
+
+    NACHTRAG 2026-07-27: die Zusammenfassungen sind aus den
+    BRIEFINGZIELEN UND FUNKSPRUECHEN des Spiels geschrieben, nicht aus
+    den Komplettloesungen. Ein frueheres deutsches Feld 'inhalt', das
+    allein aus Walkthroughs abgeleitet war, ist entfernt worden -- es
+    war an mehreren Stellen falsch:
+        5H4 "SOOL"  ist nach Commodore Sool benannt, einer PERSON, und
+                    nicht nach einer Anlage. Das Ziel ist, die
+                    Verteidigung um BRAINFIRE auszuduennen.
+        4N2         verlangt, Vastian Griegh zu BESCHUETZEN, nicht ihn
+                    abzufangen.
+        5N2         ist keine "Fahrt mit Zwischenfaellen", sondern hat
+                    das schlichte Ziel "Scavenger erreichen".
+        3H2         ist eine Suchmission ("Crawler finden"), der
+                    Hinterhalt ist die Folge, nicht das Ziel.
+    Bei Widerspruch zwischen Spieldatei und Komplettloesung gilt die
+    SPIELDATEI -- das hat sich hier vierfach bestaetigt.
+
+WOHER DIE ANGABEN STAMMEN
+    dat\sty\mission_d.des      NumOfMission = 30, Key und Skriptpfad
+    dat\sty\briefing_d.des     die Briefingtexte MIT //mission:-Kommentar,
+                               der jeden Text seiner Mission zuordnet --
+                               massgeblich fuer Namen und Ziele
+    dat\sty\mtake_<id>_d.des   die Funksprueche, im Klartext, mit
+                               Sprecher, Wav-Pfad und Stimmung
+    dat\sty\person_d.des       85 Personen, loest die Sprecher-IDs auf
+    der Lua-Bytecode der 30 Missionsskripte
+    kultloesungen.de und the-spoiler.com fuer die inhaltlichen
+                               Zusammenfassungen
+    Bei Widerspruch gilt die SPIELDATEI, nicht die Komplettloesung.
+
+--------------------------------------------------------------------------------
+DIE KAMPAGNE
+--------------------------------------------------------------------------------
+KAP 1 -- TORNADOZONE / TOPOS ASYLUM
+    1H1  ASYLUM               Schrott raeumen, dann Frachter schuetzen.
+                              Steuerungs- und Radartutorial.
+    1N1  TERROR               Duell gegen Randis Albion im besseren Boot.
+    1H2  BIONTENSCHROTT       Crawler gegen vier Bionten schuetzen.
+    1H3  ELF-TERROR           Anlage UND Frachter gleichzeitig halten.
+    1N2  SPRUNGSCHIFFUNFALL   Abgestuerztes Sprungschiff verteidigen.
+    1H4  MAGMA                Bionten verfolgen, darunter ein Bomber.
+
+KAP 2 -- ENTROX-KONZERN
+    2N1  SABOTAGE             Transport durch Turbinenfelder angreifen.
+    2N2  INSPEKTIONSTOUR      Transport gegen Abfangjaeger eskortieren.
+    2H1  CODEBUECHER          ELF-Kommunikation ausschalten, Codebuecher
+                              unter Beschuss bergen.
+    2N3  KRUEGERS FRACHTER    Frachter und Crawler gegen Wellen halten.
+    2H2  METHANHYDRAT         Executor-Bomber stoppen, Lloyds Transport.
+    2H3  GOLFSTROM            Drei Bomber vor Lloyds Gegenangriff.
+
+KAP 3 -- TORNADOZONE
+    3N1  SEISMOBOMBE          Seismische Ladung bergen.
+    3H1  SANTIAGO             Relaisstationen zerstoeren.
+    3H2  CRAWLER              Durch einen Hinterhalt; Rueckzug ist Ziel.
+    3H3  BRAINFIRE            Station gegen Bomber und Creole halten.
+    3H4  DIE BOJE             Bojenausbringung schuetzen.
+
+KAP 4 -- ATLANTISCHE FOEDERATION
+    4N1  KURIER               Deepdraft vor Piraten schuetzen -- der
+                              Angriff gilt in Wahrheit den
+                              Helinox-Containern. Eine Falle.
+    4H1  DER PUTSCH BEGINNT   Sender halten, Antennen zerstoeren,
+                              Truppentransporter schuetzen. VIER Ziele,
+                              die zielreichste Mission. Blutbad
+                              unerwuenscht -- EMP-Waffen.
+    4N2  VASTIAN GRIEGH       Griegh BESCHUETZEN (nicht abfangen): ein
+                              unbekannter Scout verfolgt ihn.
+    4H2  SCHLEICHFAHRT        Cox' Aufmarschgebiet finden, alle Systeme
+                              gedrosselt. Cox' Einheiten sind ELF-stumm.
+    4H3  NIEDERLAGE           Geschuetze ums Parlament ausschalten, dann
+                              das Parlament halten, als sie wieder
+                              anspringen. 34 Funksprueche.
+
+KAP 5 -- TORNADOZONE
+    5N2  SPRITZTOUR           Ziel: Scavenger erreichen. Klingt einfach,
+                              ist es nicht -- Technomonster unterwegs,
+                              Atahualpa Jones am Ende.
+    5H1  ATACAMA BRENNT       Grossangriff der Crawler auf Atacama City;
+                              zuerst die angeschlagenen Crawler.
+    5H2  DER GROSSE KNALL     Crawlerflotte vor Lima I; Scouts zuerst,
+                              dann die Abbauraupen. Methanhydrat.
+    5H4  SOOL                 Verteidigung um BRAINFIRE ausduennen, damit
+                              ein Techbomber andocken kann. Benannt nach
+                              Commodore Sool, der hier GEGNER ist.
+
+KAP 6 -- ATLANTISCHE FOEDERATION (FINALE)
+    6H1  MAGMAFRESSER         Auf Stroemung an Deepdraft anschleichen --
+                              bis der Schatten einen verraet. Deepdraft
+                              halten, Crawler zurueckschlagen.
+    6H2  KRIEG IN NEOPOLIS    Drei Kampfzentren zugleich, Navy-HQ halten.
+                              GROESSTE Mission: 775 KB, 41 Funksprueche,
+                              101 OSD-Referenzen.
+    6H3  CROCELL              Kraftwerk verteidigen: Mad Sam hat die
+                              Gravitationskontrollen manipuliert, zwei
+                              von vier sind schon zerstoert.
+    6H4  FORNEUS              Finale: Evakuierung der Habitate schuetzen
+                              gegen das letzte Aufgebot. 48 Funksprueche
+                              -- die meisten im Spiel.
+
+--------------------------------------------------------------------------------
+WIE EINE MISSION GEBAUT IST -- die sieben Befunde
+--------------------------------------------------------------------------------
+
+1. DAS GERUEST IST IMMER DASSELBE
+   Acht Kommandos stehen in ALLEN 30 Missionen, je genau einmal:
+       Terrain_LoadTerrain    Game_SetLightCache    Game_LoadTextTable
+       Game_LoadMTake         Node_CreateNode       Node_ParseIniFile
+       Body_SetCS
+   dazu immer dieselben Knotenklassen: nod_player, nod_vessel,
+   nod_generic, NOD_Path, NOD_PatrolArea, NOD_Position, NOD_Camera,
+   NOD_Director, NOD_Scenario.
+   => Genau das bildet nachtschicht_level_vorlage.lua nach.
+
+2. ZWEI VERHALTEN TRAGEN DAS GANZE SPIEL
+       GuardArea      900 Vorkommen, in 29 von 30 Missionen
+       ComplexGoto    735 Vorkommen, in 28 von 30
+   Alles Stationaere und Bewachende ist GuardArea, alles was einen Weg
+   abfaehrt ist ComplexGoto. Der Rest ist Beiwerk: MultiPatrol (13
+   Missionen), GuardAreaRespawn (9), ClearArea (5), MilkRunGoto (5),
+   GotoAttack (1).
+
+3. KEINE MISSION OHNE INSZENIERUNG
+   Director_BeginCutscene, Camera_MoveTo und Camera_LookAt kommen in
+   ALLEN 30 vor, Game_PlayMusic ebenfalls. Eine AquaNox-Mission ohne
+   Zwischenszene gibt es nicht.
+
+4. *** DIE ERZAEHLUNG HAENGT AN DER GEOGRAFIE, NICHT AM SKRIPT ***
+   SendRadioMessageTake steht in allen 30 Missionen (299 Vorkommen),
+   und WayPoint_SetTakeKey_Inside in 26 von 30 (100 Vorkommen).
+   Das heisst: Funksprueche haengen an WEGPUNKTEN und loesen aus, wenn
+   der Spieler hindurchfliegt. Nicht Zustandslogik treibt die
+   Erzaehlung, sondern die Strecke.
+   Fuer Nachtschicht ist das die wichtigste Einsicht dieser Auswertung:
+   man baut die Geschichte in den RAUM, nicht in den Code.
+
+5. FORMATIONEN SIND DER NORMALFALL
+   CreateFormation in 29 von 30 Missionen, VesselGotoInFormationFromTo
+   in 28. (Das korrigiert eine fruehere Fehlannahme, die Formationen
+   seien ungenutzt -- siehe Handoff v91 Abschnitt 138 Punkt 7.)
+
+6. DAS WAHRNEHMUNGSSYSTEM LIEGT BRACH
+   Trigger_SetPresenceSphere 14x, Trigger_SetVisibilityCone genau
+   EINMAL, Trigger_SetAcousticSphere NIE.
+   => Schleichen ist technisch da und praktisch unbenutzt.
+
+7. DER UMFANG WAECHST ERST GANZ AM ENDE
+       Kap 1   6 Missionen   239 KB   14,0 Funksprueche   42 OSDs
+       Kap 2   6             198      13,3               39
+       Kap 3   5             228      17,8               39
+       Kap 4   5             241      18,2               64
+       Kap 5   4             287      21,5               41
+       Kap 6   4             587      36,5               70
+   Die Kapitel 1 bis 5 bleiben bemerkenswert konstant. Erst Kapitel 6
+   verdoppelt alles. Die groesste Mission (6H2, 775 KB) ist mehr als das
+   Zwoelffache der kleinsten (1N1, 61 KB).
+
+ZAHLEN ZUM UMFANG
+    Skript       Mittel 282 KB, Median 257, von 61 bis 775
+    Funksprueche Mittel 19,2, Median 18, von 4 bis 48; 576 insgesamt
+    OSDs         Mittel 48, Median 41, von 26 bis 101
+
+DIE STIMMEN
+    Sally                      171 Funksprueche  (fast ein Drittel)
+    Commander Farelli           39
+    Lt.(JG) Lisa Bonham         33
+    Cpt. Eliza deGrange         32
+    Iwan King                   32
+    Commodore Sool              27
+    Lt. Boston Harper           26
+    Lt.(JG) Flavio Picollini    21
+    Sally ist die Bordstimme und begleitet den Spieler durch die ganze
+    Kampagne. Fuer eine eigene Kampagne heisst das: EINE durchgehende
+    Stimme traegt die Erzaehlung, die uebrigen treten auf und ab.
+
+--------------------------------------------------------------------------------
+*** NEUN GESCHNITTENE MISSIONEN ***
+--------------------------------------------------------------------------------
+Es gibt Funkspruchdateien fuer Missionen, zu denen es KEIN Level, KEIN
+Skript und keinen Eintrag in mission_d.des gibt. Die Texte sind fertig
+geschrieben und die Wav-Pfade zeigen auf vertonte Aufnahmen:
+
+    1N3    13 Funksprueche   3.991 B   Flavio Picollini, Sally
+    3N2     2                  753 B   Charlotte Gillmore,
+                                       Homo Aquaticus R3G5
+    3N3    17                6.346 B   Atahualpa Jones, Commodore Sool,
+                                       Iwan King, Sally
+    4N3     4                1.691 B   Sally
+    5H3     3                1.152 B   Sally, Sobinoso Chaka
+    5N1    11                3.400 B   Charlotte Gillmore, Sally
+    5N3     9                3.643 B   Sally
+    5N4     9                2.386 B   Sally
+    6N1     0                   38 B   (leer)
+                            --------
+                        68 Funksprueche
+
+Bemerkenswert: 3N2 laesst "Homo Aquaticus R3G5" sprechen -- eine Figur,
+die in der fertigen Kampagne nicht vorkommt. Und die Nummerierung zeigt,
+wo die Luecken sind: Kapitel 5 sollte 5H3 haben (zwischen 5H2 und 5H4)
+und vier Nebenmissionen statt einer.
+
+Die vollstaendigen Texte stehen in aquanox1_missions.json unter
+cut_content. Ob die Wav-Dateien noch im Spiel liegen, ist NICHT geprueft
+-- das waere gegen aquanox1_unused_assets.json abzugleichen.
+
+--------------------------------------------------------------------------------
+ZUR ZAEHLWEISE
+--------------------------------------------------------------------------------
+Die Zahlen unter technik.* sind Vorkommen im Lua-Konstantenpool, also
+"in N Funktionen referenziert", nicht "N Aufrufe". Lua 4.0 legt
+Zeichenketten je Funktionsprototyp ab. Als RELATIVES Mass fuer das
+Gewicht eines Mechanismus taugen sie, als absolute Aufrufzahl nicht.
+
+================================================================================
+ENDE
+================================================================================

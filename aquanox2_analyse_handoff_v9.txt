@@ -1,0 +1,224 @@
+================================================================================
+AQUANOX 2 -- OBERFLAECHE, SZENENGRAPH UND GESAMTBESTAND
+Handoff-Datei, Version 9
+================================================================================
+Erstellt: 2026-07-27
+Thema: die beiden letzten unbekannten AN2-Formate entschluesselt (.usi.bin
+       und .ssc) sowie ein vollstaendiger Assetkatalog
+Vorgaenger: v8 (Engine-Registry), v7 (Skelettanimation), v6 (Skript-API),
+            v5 (AN2.dat), v4 (Missionsaufbau), v3 (Lua-Quelltexte),
+            v2 (Levelportierung), v1 (Bestand)
+
+VERSIONSREGEL: bei jeder Ueberarbeitung eine NEUE Datei anlegen.
+
+--------------------------------------------------------------------------------
+0. ERGEBNIS
+--------------------------------------------------------------------------------
+Beide Formate, die nach v8 noch offen waren, sind gelesen -- und sie benutzen
+denselben simplen Kunstgriff: laengenpraefixierte Zeichenketten.
+
+    .usi.bin   Oberflaeche, 131 Dateien   -> UTF-16 mit uint32-Laenge
+    .ssc       Szenengraph, 1 Datei       -> ASCII  mit uint32-Laenge
+
+Beide haben jetzt ein Werkzeug. Dazu kommt ein Assetkatalog fuer AN2 im
+selben Format wie der fuer AN1.
+
+NEU ANGELEGT
+    mod_docu\tools\usi_tool.py             liest .usi.bin
+    mod_docu\tools\ssc_tool.py             liest .ssc
+    mod_docu\aquanox2_assets.json          16.942 Dateien katalogisiert
+
+--------------------------------------------------------------------------------
+1. *** .usi.bin -- DIE OBERFLAECHE VON AQUANOX 2 ***
+--------------------------------------------------------------------------------
+131 Dateien, 2,2 MB. Kompilierte Fassungen der .usi-Quelltexte; AN2 erzeugt
+sie mit dem Startschalter -compileusi (v5 Abschnitt 8).
+
+FORMAT
+    +0   uint32  Version, in allen 131 Dateien 5
+    dann Knoten in Vorordnung; jeder Textwert als
+        uint32 laenge_in_zeichen | UTF-16-LE
+    wobei die Laenge das abschliessende 0x0000 MITZAEHLT:
+        "Switch"          -> 7
+        "Choices"         -> 8
+        "AUI_ComplexText" -> 16
+    Dazwischen Zahlenfelder, typisch acht Floats 1.0 hintereinander
+    (Farbe und Skalierung).
+
+    Weil die Strings UTF-16 sind, findet eine gewoehnliche ASCII-Suche in
+    diesen Dateien NICHTS -- das war der Grund, warum sie so lange
+    unverstanden blieben.
+
+DIE KNOTENTYPEN entsprechen exakt den USI_Node_*-Klassen aus AN2.dat
+(aquanox2_engine_classes.json, 22 Stueck):
+
+    USI_Node (92 B)
+      USI_Node_Group (108)
+        USI_Node_Action, USI_Node_Animation, USI_Node_ListBox,
+        USI_Node_Reference, USI_Node_Sound, USI_Node_Switch,
+        USI_Node_Window
+        USI_Node_Control (196)
+          USI_Node_Button (220)
+            USI_Node_Choice, USI_Node_ListBoxItem,
+            USI_Node_ShowHideButton, USI_Node_Slider
+      USI_Node_Primitive (96)
+        USI_Node_Anchor3D, USI_Node_Bitmap, USI_Node_Movie,
+        USI_Node_Text, USI_Node_Video
+    USI_Property (24)
+
+HAEUFIGKEIT ueber alle 131 Dateien:
+    Bitmap 1617, Animation 1260, Text 893, Group 714, Reference 703,
+    AUI_ComplexText 566, Window 526, Activate 419, ShowHideButton 399
+
+DAS VORLAGENSYSTEM: 63 verschiedene .usi-Dateien werden von anderen
+referenziert, z.B.
+    129x  gui/gui_station_ref/templates/window_pointerbutton_140_left.usi
+     67x  gui/gui_station_ref/templates/window_closebuttonanim.usi
+     54x  gui/setup/templates/line_highlight.usi
+AN2 baut seine Oberflaeche also aus wiederverwendeten Bausteinen.
+
+DIE AUI_-BEZEICHNER (AUI_ComplexText, AUI_InputMapperButton) binden einen
+Knoten an eine Behandlungsroutine im Programm -- die Bruecke zwischen
+Oberflaechenbeschreibung und Code.
+
+WERKZEUG mod_docu\tools\usi_tool.py
+    list | strings <pfad> | refs | types
+
+--------------------------------------------------------------------------------
+2. *** .ssc -- DER EDITOR VON MASSIVE ***
+--------------------------------------------------------------------------------
+map\5h1\script\neopolis_neu.ssc, 5,56 MB, die einzige Datei ihrer Art im
+ganzen Spiel. Sie ist die Projektdatei des hauseigenen Editors, aus der
+neopolis_neu.scr (8.504 Zeilen Lua, siehe v4) erzeugt wurde.
+
+FORMAT -- durchgehend laengenpraefixierte, nullterminierte ASCII-Strings:
+    "BINARY\0"                       Kennung, 7 Byte
+    uint32 laenge | bytes            Name, laenge EINSCHLIESSLICH der 0
+    ...
+Der Anfang liest sich unmittelbar:
+    SED_NodeRoot
+      NotSortChildren = 1
+      Visible         = 1
+      Name            = Root
+    Game / NOD_Game
+    SED_SetState / TMP_SetState
+      Help       = "Set a Bool-Value"
+      PrintColor = "0,0,255"
+
+Die Datei enthaelt also nicht nur die Mission, sondern die BESCHREIBUNG DES
+EDITORS SELBST -- Hilfetexte, Anzeigefarben und Bearbeitungsrechte
+(Editable, CanDelete, CanChangeName, PathReferenceObject).
+
+DIE 60 KNOTENTYPEN, nach Aufgabe geordnet:
+    Datentypen    SED_NodeFloat (381), SED_NodeInteger (354),
+                  SED_NodeText (227), SED_NodeBool (202), SED_NodeAngle,
+                  SED_NodeColor, SED_NodeList, SED_NodeTable
+    Geometrie     SED_NodeCoordinateOSD (100), SED_NodeSphere,
+                  SED_NodePosition, SED_NodeBox, SED_NodeCone,
+                  SED_NodeCylinder, SED_NodePath, SED_NodeFace,
+                  SED_NodeLandscape
+    Licht         SED_NodeAmbientLight, SED_NodeDirectedLight,
+                  SED_NodeSphereLight
+    Objekte       SED_NodeCreateObject (35), SED_NodeCreateObjectByOSD,
+                  SED_NodeObject, SED_NodeObjectOSD, SED_NodeOSDInfo
+    ABLAUFLOGIK   SED_ScriptOrder (194), SED_ScriptBlock (29),
+                  SED_ScriptSimpleOrder, SED_ScriptState, SED_ScriptIf,
+                  SED_ScriptCall, SED_SimpleScriptCall,
+                  SED_ScriptTableInit, SED_ScriptUserState
+    Verweise      SED_NodeReference, SED_UserNodeReference,
+                  SED_NodeReferenceAutomatic, SED_ConnectedState,
+                  SED_StateReferenceCompare
+    Vorlagen      SED_NodeTemplate (197)
+
+DIE TMP_-BAUSTEINE zeigen, dass darauf ein VISUELLES SKRIPTSYSTEM lag:
+    10.067x  TMP_Value_Invisible_True
+    10.058x  TMP_MessageHandler1
+    10.037x  TMP_BoolOperation
+     6.089x  TMP_EngineState
+     1.444x  TMP_Condition1 .. TMP_Condition4  (je 1.444x)
+       722x  TMP_Condition5 .. TMP_Condition8
+Dazu Pfadverweise wie "Root/Game/True" (8.570x) und "Root/Game/False".
+
+=> Missionen wurden bei Massive nicht getippt, sondern in einem Baum aus
+   Bedingungen, Bool-Operationen und Nachrichtenempfaengern zusammengesetzt
+   und danach als Lua exportiert. Das erklaert die 357 gleichfoermigen
+   Zustandstabellen S_o30, S_o76, S_o122 ... aus v4 Abschnitt 7
+   vollstaendig -- eine je Editorobjekt, jeweils mit Start und Code0..Code4.
+
+WERKZEUG mod_docu\tools\ssc_tool.py
+    strings [n] | counts | nodes | templates
+
+WAS DAS FUER UNS BEDEUTET: nichts Unmittelbares. Der Editor selbst liegt
+nicht bei, und eine einzelne Projektdatei nuetzt ohne ihn wenig. Aber es
+beantwortet endgueltig die Frage, wie AquaNox-Missionen entstanden sind --
+und bestaetigt, dass unser dostring-Weg (Lua direkt schreiben) genau die
+Ebene ist, auf der auch der Editor gearbeitet hat, nur ohne Umweg.
+
+--------------------------------------------------------------------------------
+3. DER AN2-ASSETKATALOG
+--------------------------------------------------------------------------------
+mod_docu\aquanox2_assets.json -- 16.942 Dateien, 2,1 MB, gleiches Format wie
+aquanox1_assets.json (Pfad, Kategorie, Groesse, Ursprungsarchiv).
+
+    mesh          4.757     62,5 MB      texture       2.980   726,1 MB
+    vertexcolor   4.233     26,2 MB      audio         2.652   184,4 MB
+    objectdef     1.049      3,8 MB      collision       362     4,5 MB
+    text            232      1,0 MB      data            225     0,8 MB
+    gui             131      2,2 MB      font             87     0,7 MB
+    sounddesc        76                  script           64    10,6 MB
+    video            32    406,5 MB      fog              32    32,0 MB
+    scriptsource     15      0,5 MB      scene             1     5,3 MB
+
+Die Archive sind gleichmaessig gefuellt (je rund 300 MB), data0.pak enthaelt
+mit nur 34 Dateien fast ausschliesslich Video.
+
+Groesste Verzeichnisse: sfx/speech 2.435, map/5h1 1.128, vfx/tex 1.097,
+vfx/osd 1.049, map/instant7 592.
+
+SCHIFFE: 108 nod_vessel-Definitionen, 107 davon mit vorhandenem Mesh.
+Die groessten: cra_lacewing_narrow (101 KB Mesh), gen_mightymaggie (88 KB),
+gen_freighter (82 KB), tz_cingan (80 KB), gen_transporter (80 KB),
+wng_bomber (77 KB), ent_bomber (76 KB), atl_frigate (74 KB).
+
+--------------------------------------------------------------------------------
+4. STAND: WAS VON AQUANOX 2 IST JETZT VERSTANDEN
+--------------------------------------------------------------------------------
+VOLLSTAENDIG
+    .pak (Lesen und Schreiben)      .sco (Lua-Bytecode)
+    .osd / .des (Klartext)          .scr (Lua-Quelltext)
+    .msb (Mesh)                     .col (bis auf den Raumbaum)
+    .fog                            .sam
+    .vc                             .loc
+    .usi.bin  NEU                   .ssc  NEU
+    Engine-Registry: 536 Klassen, 439 Kommandos mit Signaturen
+    Skript-API: 71 Lua-Standard + 16 Engine-Globals + 439 Kommandos
+
+OFFEN
+    .fnt   Schriften (Magic "FN"), nicht dringend
+    .vid / .bik   Video
+    lightmap.dds
+    der Schlussteil der .col
+    AN2s Lua-State-Adresse und pushcclosure (fuer eine AN2-Proxy-DLL)
+
+--------------------------------------------------------------------------------
+5. EMPFEHLUNG
+--------------------------------------------------------------------------------
+Aus meiner Sicht ist AquaNox 2 damit ausanalysiert, soweit es fuer AquaNox-1-
+Modding von Belang ist. Was jetzt noch offen ist (.fnt, Video, lightmap),
+betrifft entweder Formate ohne Nutzen fuer uns oder Dinge, die man erst
+braucht, wenn AN2 selbst das Ziel wird.
+
+Es liegen weiterhin VIER fertige Sachen im Spiel bereit, die je einen
+Durchlauf brauchen:
+    "AN2 REPARIERT"        Mesh mit gesetzter Glaettungsgruppe
+    Renn-KI                mit AN2-Rennprofil (MoveFriction 10, Ratio 0)
+    Levelvorlage           mod_docu\nachtschicht_level_vorlage.lua
+    Levelportierung        level_an1_to_an2.py build mp_13 <ziel.pak>
+
+Und fuer Nachtschicht ist die Wissenslage vollstaendig: Funkdialoge (v5),
+Zonensystem mit Sicht und Akustik (v4), Cutscenes (v3), Wachverhalten mit
+gestaffelten Zonen (v4). Was fehlt, ist gebaute Mission.
+
+================================================================================
+ENDE -- Version 9
+================================================================================

@@ -1,0 +1,228 @@
+{
+ "title": "Entwicklerspuren in AquaNox 1 und 2",
+ "description": "Was von der Entwicklung im fertigen Spiel liegen geblieben ist: Arbeitspfade, Platzhalter, Testdateien, versehentlich mitgelieferte Quelltexte, geschnittene Inhalte und ein Scherz. Ergaenzt aquanox1_unused_assets.json (ungenutzte DATEIEN) und aquanox1_unused_mechanics.json (ungenutzte FAEHIGKEITEN) um das, was keine der beiden Kategorien trifft.",
+ "_note": "Mehrere dieser Funde waren fuer die Modding-Arbeit entscheidend: ohne die versehentlich mitgelieferten .scr-Quelltexte und die SED-Projektdatei gaebe es keine Dokumentation der Skriptschnittstelle, und ohne den Build-Pfad in AN2.dat waere der gemeinsame Quellbaum beider Spiele nicht belegt.",
+ "counts_by_category": {
+  "scherz": 1,
+  "arbeitspfad": 5,
+  "unfertig": 6,
+  "mitgeliefert": 3,
+  "geschnitten": 2,
+  "unbenutzt": 6,
+  "veraltet": 2,
+  "zeitkolorit": 5
+ },
+ "total": 30,
+ "findings": [
+  {
+   "kategorie": "scherz",
+   "fund": "UND TSCHÜSS!!",
+   "fundort": "neopolis_neu.ssc, Vorlage zu Body_SetKineticShield (AN2)",
+   "bemerkung": "Steht im Hilfetext-Feld, wo sonst Erklaerungen wie 'Setzt den kinetischen Schild auf [0 .. 1]' stehen. Vermutlich die Vorlage, die den Schild auf 0 setzt. Ein Entwicklerscherz, der in die Verkaufsfassung gelangt ist.",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "arbeitspfad",
+   "fund": "Y:\\AquaNox\\dat\\script\\lib\\*.scr",
+   "fundort": "in den kompilierten Bibliotheken misc.sco (48x), formation.sco (38x), vesselattack.sco (30x), sensor.sco (29x), oldone.sco (14x), dipol.sco (13x)",
+   "bemerkung": "*** WICHTIG: das beweist, dass auch AquaNox 1 Lua-QUELLTEXTE hatte. *** Der Compiler hat den Quellpfad in den Bytecode geschrieben. Ausgeliefert wurden sie nie -- wir mussten sie aus AquaNox 2 rekonstruieren (Abschnitt 122). Y: war offenbar ein Netzlaufwerk mit dem Projektverzeichnis.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "arbeitspfad",
+   "fund": "T:\\decker\\old_belial_bones_test4.boa",
+   "fundort": "dat\\animation\\belial_test4_n.boa und drei weitere",
+   "bemerkung": "Ein zweites Netzlaufwerk. 'decker' duerfte ein Mitarbeiter- oder Rechnername sein. Die Dateinamen tragen noch 'test' im Namen -- es sind Testfassungen, die im fertigen Spiel geblieben sind.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "arbeitspfad",
+   "fund": "C:\\massive\\aquanox\\dat\\animation\\...",
+   "fundort": "13 Dateien unter dat\\animation\\ (old_crocell, old_forneus, old_marax und Varianten)",
+   "bemerkung": "Die lokale Arbeitskopie auf dem Rechner eines Entwicklers. 'massive' ist der Firmenname (Massive Development).",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "arbeitspfad",
+   "fund": "C:\\WINDOWS\\TEMP",
+   "fundort": "vfx\\msh\\gun_doommortar_body.msb (4x)",
+   "bemerkung": "Ein Mesh, das aus dem Windows-Temporaerverzeichnis exportiert und so ins Spiel uebernommen wurde.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "arbeitspfad",
+   "fund": "c:\\massive\\develop\\intern\\main\\aqua\\src\\aqua_main\\Release MaxOptimization\\aquaRELOPT.pdb",
+   "fundort": "AN2.dat (das Hauptbinary von AquaNox 2)",
+   "bemerkung": "Der Pfad zur Debug-Datenbank des Compilers. *** Er beweist, dass AquaNox 2 DERSELBE QUELLBAUM ist wie AquaNox 1 -- das Projekt hiess intern schlicht 'aqua'. *** Grundlage fuer die gesamte AN2-Auswertung (Abschnitt 121).",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "Zieltext \"NOT AVAILABLE\"",
+   "fundort": "dat/sty/en/mission.loc, Mission 6H3 'The Angel's Tears' (AN2)",
+   "bemerkung": "Die LETZTE Mission des Spiels hat als Zieltext den Platzhalter stehen. Der Kommentar am Kopf derselben Datei erklaert ihn: 'Wenn noch nicht verfügbar folgender Text: NICHT VERFÜGBAR'. Eine unfertige Lokalisierungszeichenkette, die es in den Handel geschafft hat.",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "mitgeliefert",
+   "fund": "neopolis_neu.ssc (5,56 MB)",
+   "fundort": "Aquanox2Relevation, map\\5h1\\script\\",
+   "bemerkung": "Die PROJEKTDATEI des Editors SED -- Mission 5H1 in der Fassung, in der der Editor sie gespeichert hat. Sie gehoert nicht ins fertige Spiel und ist die einzige ihrer Art. Aus ihr stammen die Editor-Rekonstruktion (139g) und Massives eigene Kommandodokumentation mit 190 Hilfetexten.",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "mitgeliefert",
+   "fund": "15 Lua-Quelltexte (.scr, zusammen 512 KB)",
+   "fundort": "Aquanox2Relevation, dat\\script\\lib\\ und map\\5h1\\script\\",
+   "bemerkung": "Die KOMMENTIERTEN Originalquelltexte der Skriptbibliotheken, neben den kompilierten .sco. Sieben davon sind in AquaNox 1 byte-identisch kompiliert -- ohne diesen Versehen haetten wir keine Dokumentation der Skriptschnittstelle (Abschnitt 122).",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "mitgeliefert",
+   "fund": "neopolis_neu.scr (292 KB, 8.504 Zeilen)",
+   "fundort": "Aquanox2Relevation, map\\5h1\\script\\",
+   "bemerkung": "Eine KOMPLETTE Mission im kommentierten Klartext. Die einzige, die wir haben -- Grundlage der Missionsaufbau-Analyse (Abschnitt 125).",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "geschnitten",
+   "fund": "Neun Missionen mit fertigen Funkspruechen",
+   "fundort": "dat\\sty\\mtake_1n3_d.des, _3n2, _3n3, _4n3, _5h3, _5n1, _5n3, _5n4, _6n1",
+   "bemerkung": "68 fertig geschriebene und vertonte Funksprueche fuer Missionen, zu denen es KEIN Level, KEIN Skript und keinen Eintrag in mission_d.des gibt. Die Luecken in der Nummerierung zeigen, wo geschnitten wurde: Kapitel 5 sollte ein 5H3 zwischen 5H2 und 5H4 haben und vier Nebenmissionen statt einer. Volltexte in aquanox1_missions.json unter cut_content.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "geschnitten",
+   "fund": "Homo Aquaticus R3G5",
+   "fundort": "dat\\sty\\mtake_3n2_d.des",
+   "bemerkung": "Eine Figur, die in der fertigen Kampagne nicht vorkommt -- sie spricht nur in den Funkspruechen einer geschnittenen Mission.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unbenutzt",
+   "fund": "2d_pla_engine_unused_01..05.wav",
+   "fundort": "Aquanox2Relevation, sfx\\sample\\",
+   "bemerkung": "5 Motorengeraeusche, die die Entwickler selbst als 'unused' benannt haben -- sie sind im Spiel geblieben, werden aber nicht abgespielt.",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "unbenutzt",
+   "fund": "3d_gen_engine_unused.wav",
+   "fundort": "Aquanox2Relevation, sfx\\sample\\",
+   "bemerkung": "1 Motorengeraeusch, die die Entwickler selbst als 'unused' benannt haben -- sie sind im Spiel geblieben, werden aber nicht abgespielt.",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "unbenutzt",
+   "fund": "ff_dummy.mp3, elf_dummy.mp3, elf_dummy_3s/_7s.mp3",
+   "fundort": "Aquanox2Relevation, sfx\\sample\\ und sfx\\speech\\",
+   "bemerkung": "Platzhalter-Tondateien. ff_dummy ist praktisch nutzbar: traegt ein Funkspruch diesen Wav-Namen, laeuft er OHNE eigene Tonaufnahme (Abschnitt 140).",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "unbenutzt",
+   "fund": "fx_sky_test.osd, gen_torp_test.osd, trail_dummy.osd, pointer_dummy_0.dds",
+   "fundort": "vfx\\osd\\ und vfx\\tex\\",
+   "bemerkung": "Testobjekte, die im fertigen Spiel geblieben sind.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unbenutzt",
+   "fund": "belial_test4_n.boa, belial_test5_n.boa, old_belial_bones_test2_new.bor",
+   "fundort": "dat\\animation\\",
+   "bemerkung": "Testfassungen der Bionten-Animationen, mit Arbeitspfad T:\\decker\\ im Kopf. Die endgueltigen Fassungen liegen daneben.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "veraltet",
+   "fund": "\"Legacy class use NOD_FX_Light instead\"",
+   "fundort": "Aqua.exe",
+   "bemerkung": "Die Engine warnt selbst davor, NOD_Light zu benutzen -- die Klasse ist die veraltete Fassung von NOD_FX_Light. Beide sind im Spiel aktiv: NOD_Light steckt als Scheinwerfer in 11 Spielerbooten, NOD_FX_Light in 27 Explosionen (139e).",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "veraltet",
+   "fund": "nod_waypoint_v3",
+   "fundort": "neopolis_neu.ssc (AN2)",
+   "bemerkung": "Der Editor bot einen Wegpunkt-Knoten mit Versionsnummer 3 an. Es gab also mindestens zwei aeltere Fassungen.",
+   "spiel": "AquaNox 2"
+  },
+  {
+   "kategorie": "zeitkolorit",
+   "fund": "Version compatible with: GeForce1, GeForce2, GeForce3, KyroII, Radeon, Radeon7500, Raden8500, Voodoo5500",
+   "fundort": "Aqua.exe",
+   "bemerkung": "Die Grafikkartenliste von 2001, mit Tippfehler ('Raden8500'). Sie steht zweimal in der EXE, einmal mit und einmal ohne 'or better'.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "zeitkolorit",
+   "fund": "\"Kein FSAA vorhanden!!!\" / \"No FSAA available!!!\" / \"Pas de FSAA!!!\"",
+   "fundort": "Aqua.exe",
+   "bemerkung": "Dieselbe Meldung in drei Sprachen, jeweils mit drei Ausrufezeichen.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "zeitkolorit",
+   "fund": "QA-Zeitstempel vom 25./26. September 2001",
+   "fundort": "Script_Log in den Missionsskripten von AquaNox 1",
+   "bemerkung": "Elf Abnahmemarken der Qualitaetssicherung in der Form RC1OK_MMTTJJ_HHMM (RC1 = Release Candidate 1). Sie laufen vom 25.09.2001 12:16 Uhr durchgehend bis zum 26.09.2001 01:12 Uhr nachts: dreizehn Stunden am Stueck hat jemand Mission fuer Mission durchgespielt und abgehakt, kurz vor dem Goldstatus. Die Marken sind im ausgelieferten Spiel geblieben. Belege: 1RC1 2509 2328, RC1 2509 1326, RC1 2509 1356, RC1 2509 1452, RC1 2509 1600, RC1 2509 2128, RC1 2509 2316, RC1 2609 0002, RC1 2609 0009, RC1 2609 2242, RC1OK_092501_1216, RC1OK_092501_1219, RC1OK_092501_1220, RC1OK_092501_1227, RC1OK_092501_1513, RC1OK_092501_1543, RC1OK_092501_1818, RC1OK_092501_1935, RC1OK_092501_2019, RC1OK_092501_2142, RC1OK_0925_1507, RC1OK_092601_0112",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "ProcesseStateChange -- ein e zuviel, 2.072 mal",
+   "fundort": "jede Triggerknoten-Tabelle jeder Mission",
+   "bemerkung": "Die Methode heisst durchgaengig ProcesseStateChange statt ProcessStateChange. Der Tippfehler sass im SED-Uebersetzer und ist dadurch in jede einzelne Mission des fertigen Spiels gewandert -- 2.072 Vorkommen. Niemandem ist er aufgefallen, weil der Name nur intern verwendet wird.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "zeitkolorit",
+   "fund": "Werkstattnotizen der Missionsbauer (87 Stueck)",
+   "fundort": "Script_Log in den Missionsskripten",
+   "bemerkung": "Klartextnotizen, mit denen die Entwickler ihre Trigger im Blick behielten, samt zweier Tippfehler: 'ALL CRAWLER BOMBER JOB FNISHED' und 'Caoe not destroyed in 50 Seconds = True'. Dazu 24 durchnummerierte Todesfaelle (Death A1 bis Death H3) und Niederlagengruende im Klartext, etwa 'MissionLost: Forneus reached FusionPowerPlant to early' oder 'MissionLost: CreoleGirl down'. Wer wissen will, wie eine Originalmission gedacht war, liest diese Zeilen.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unbenutzt",
+   "fund": "Ein vollstaendiger Mehrspielermodus, der nie beworben wurde",
+   "fundort": "Aqua.exe (49 NOD_ANT_*-Klassen) und dat\\menu\\",
+   "bemerkung": "AquaNox 1 traegt ein komplettes Netzwerksystem: DirectPlay8, Authentifizierung, Team-Deathmatch, Capture the Flag (NOD_ANT_Rules_EventCTF), Sprachuebertragung (NOD_ANT_Message_SendVoice), Serververwaltung und eine Fernkonsole (NOD_ANT_Server_RemoteConsole). Die Menues liegen fertig gesetzt im ausgelieferten Spiel: multiplayer.des, network.des, serverlist.des, playerlist.des, startserver.des, password.des, teammessages.des, taunts.des, instantfight.des -- dazu eine EIGENE Tastenbelegung control_mp~.des und eine Kartenliste maplist~.des mit dem Eintrag 'multiplayermaps'. Nichts davon ist Fragment. Ob der Modus im Verkaufsstand erreichbar ist und ob DirectPlay8 heute noch anspringt, ist nicht geprueft (Test T16).",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "ProcesseStateChange ueberlebt auch AquaNox 2",
+   "fundort": "die 64 dekompilierten AN2-Missionen",
+   "bemerkung": "Der Tippfehler aus dem SED-Uebersetzer (ein e zuviel) steht in AquaNox 2 immer noch 2.146 mal in den Missionsskripten. Zwei Jahre und eine ueberarbeitete Engine spaeter hat ihn immer noch niemand bemerkt. In AquaNox 1 sind es 2.072 Vorkommen.",
+   "spiel": "AquaNox 1 und 2"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "cft_vulcano.sco -- vertauschte Buchstaben, Datei blieb liegen",
+   "fundort": "map\\mp_07_ctf\\script\\",
+   "bemerkung": "Im Ordner liegen ctf_vulcano.sco (132.423 B) UND cft_vulcano.sco (46.306 B) -- die zweite mit vertauschten Buchstaben im Namen und deutlich kleiner, also eine aeltere Fassung. Ausgeliefert wurden beide. Im selben Verzeichnisbaum liegt ausserdem mp_05_ctf_test.sco, eine liegengebliebene Testfassung.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "Charlotte Gillmore ist als 'male' eingetragen",
+   "fundort": "dat\\sty\\person_d.des, [Person1]",
+   "bemerkung": "Die Figurentabelle fuehrt 85 Personen mit Name, Kurzname, vier Portraits und Sex. Charlotte Gillmore traegt bei einem weiblichen Vornamen den Eintrag Sex = \"male\" -- mit hoher Wahrscheinlichkeit ein uebersehener Kopierfehler aus dem Eintrag darueber (Emerald Flint).",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "zeitkolorit",
+   "fund": "Die Schwierigkeitsgrade heissen wie Seemannsraenge",
+   "fundort": "dat\\sty\\difficulty_d.des",
+   "bemerkung": "Fuenf Grade, jeder mit einem Spruch: LEICHT 'Fuer Landratten', NORMAL 'Fuer erfahrene Skipper', SCHWER 'Captain's Business', SEHR SCHWER 'Admiralsklasse', INFERNO 'Dead-Eye Flint's Job'. Der hoechste Grad ist nach dem Spitznamen des Spielercharakters benannt.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "Tippfehler in der Item-Tabelle: 'lasergalting'",
+   "fundort": "dat\\sty\\station_d.des, Inventarbloecke",
+   "bemerkung": "Die Entwickler haben jeden Item-Key im Haendlerbestand kommentiert -- dadurch liegt die ganze Nummerntabelle offen. Key 7 heisst dort 'lasergalting' statt 'lasergatling'; Key 10 'doommortar', waehrend die Dateien gun_doomortar heissen. Die Kommentare sind trotzdem die beste Quelle fuer die Zuordnung Nummer zu Waffe.",
+   "spiel": "AquaNox 1"
+  }
+ ]
+}

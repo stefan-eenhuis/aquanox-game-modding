@@ -1,0 +1,110 @@
+--------------------------------------------------------------------
+-- This file implements diverse helper functions for the turret
+--------------------------------------------------------------------
+
+
+
+-- The statee for the attack.
+LT_Attack = 
+{
+	
+	LT_Activate = function(State)
+		Turret_Patrol(State.Node, -1)
+		State.Thread.T_EnemyActive = 1
+		StartEnemy(State,
+			GetInnerValue(State, "T_StartRange"), GetInnerValue(State, "T_First"),
+			GetInnerValue(State, "T_Second"), GetInnerValue(State, "T_Third"), GetInnerValue(State, "T_Fourth"))
+	end,
+	
+	Body_EnemyArrival = function(State)
+		if (State.Thread.T_EnemyActive == 1) then
+			State.Thread.T_EnemyActive = 0
+			Turret_ComplexAttack(State.Node,  GetInnerValue(State, "T_StopRange"), GetInnerValue(State, "T_First"),
+				GetInnerValue(State, "T_Second"), GetInnerValue(State, "T_Third"), GetInnerValue(State, "T_Fourth"))
+		end
+		
+	end,
+	
+	Turret_ComplexAttackOver = function(State)
+		Turret_Patrol(State.Node, -1)
+		State.Thread.T_EnemyActive = 1
+		StartEnemy(State,
+			GetInnerValue(State, "T_StartRange"), GetInnerValue(State, "T_First"),
+			GetInnerValue(State, "T_Second"), GetInnerValue(State, "T_Third"), GetInnerValue(State, "T_Fourth"))
+	end,
+	
+	StopBehavior = function(State)
+		LibList.Turret_Basis.AttackStop(State)
+	end,
+		
+			 
+
+}
+
+--------------------------------------------------------------------
+-- Here comes the library
+--------------------------------------------------------------------
+
+	
+
+-- This library defines the functionality of the turret stzuff.
+LibList.Turret_Basis =
+{
+	
+	--------------------------------------------------------------------
+	-- Here come the commands for the turret attack
+	--------------------------------------------------------------------
+	
+	-- PURPOSE
+	-- This method activates the behaviour for the turret as a combination 
+	-- for attack and patrol.
+	--------------------------------
+	-- Info TurretAttack:
+	-- Sensor: Body_InformEnemies,
+	-- Body_EnemyArrival,  ist blocked.
+	--------------------------------
+	Attack = function
+	(
+	State, 
+	StartFiring,	-- The range, where we should start the fire.
+	StopFiring,	-- The range, where we should stop the fire.
+	FirstPri,	-- The first priority we should fight.
+	SecondPri,	-- The second priority, we should fight.
+	ThirdPri,	-- The third priority, we should fight.
+	FourthPri	-- The fourth priority, we should fight.
+	)
+			
+		State.Thread.T_EnemyActive = 0
+		ApplyModification(State, LT_Attack, "LT_Attack")
+		
+		
+		-- We set the necessary semaphore 
+		StoreInnerValue(State, "T_StartRange", StartFiring)
+		StoreInnerValue(State, "T_StopRange", StopFiring)
+		StoreInnerValue(State, "T_First", FirstPri)
+		StoreInnerValue(State, "T_Second", SecondPri)
+		StoreInnerValue(State, "T_Third", ThirdPri)
+		StoreInnerValue(State, "T_Fourth", FourthPri)
+		CallFunction(State.Thread, "LT_Activate", nil)
+	end, 
+	
+	
+	
+	-- PURPOSE
+	-- This method stops the Attack of the turret.
+	AttackStop = function(State)
+		-- First we check, if we have to deregister
+		if IsNotLastModification(State, "LT_Attack") then
+			return
+		end
+		-- We restore the old command table.
+		RestoreModification(State, "LT_Attack")
+		-- We deactivate the sensor.
+		if (State.Thread.T_EnemyActive == 1) then
+			State.Thread.T_EnemyActive = 0
+			StopEnemy(State)
+		end
+	end,
+	
+}
+		 	 

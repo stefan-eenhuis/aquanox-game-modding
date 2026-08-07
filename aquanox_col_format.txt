@@ -1,0 +1,107 @@
+================================================================================
+DAS .col-FORMAT (KOLLISIONSNETZE)
+================================================================================
+Stand: 2026-07-27, Aufgabe A3
+ERGEBNIS: der vordere Teil ist vollstaendig, der Baum am Ende zu etwa
+zwei Dritteln. Fuer einen SCHREIBER reicht es noch nicht.
+
+--------------------------------------------------------------------------------
+1. DER AUFBAU
+--------------------------------------------------------------------------------
+    uint32  nTri
+    Tri[nTri]      je 8 B   -- LAYOUT WIE IM .msb:
+                               3x uint16 Vertexindex + uint16 Flagwort
+    uint32  nVert
+    Vertex[nVert]  je 12 B  -- 3x float32, KEINE Normale, KEIN UV
+    ----- ab hier der frueher unbekannte Teil -----
+    uint32  n      == nTri
+    uint32  index[n]        *** EINE VOLLSTAENDIGE PERMUTATION
+                                der Dreiecksindizes 0..nTri-1 ***
+    <Baum>                  variabel
+
+BELEGT an atl_pscout.col (413 Dreiecke), gen_boje.col (92) und
+hi_scout2.col (2044): das erste uint32 nach den Vertices ist jedes Mal
+exakt nTri, und die folgenden nTri Werte sind jedes Mal eine
+vollstaendige Permutation ohne Luecken und ohne Doppelte.
+=> Es ist die SORTIERREIHENFOLGE der Dreiecke fuer den Baum. Die
+   Blattknoten verweisen vermutlich auf zusammenhaengende Abschnitte
+   dieser Liste, statt Dreiecksindizes einzeln zu speichern.
+
+--------------------------------------------------------------------------------
+2. DER BAUM -- an der kleinsten Datei des Spiels
+--------------------------------------------------------------------------------
+cra_turret_gun.col ist 168 Byte gross und enthaelt EIN Dreieck. Damit
+laesst sich der Baum vollstaendig ansehen:
+
+    +0    u32 = 4                 Art oder Zahl der folgenden Eintraege
+    +4    u32 = 1                 = nTri
+    +8    3x f32  0.2796 -0.0526  1.0067
+    +20   3x f32  0.4449  0.2159  0.1777
+    +32   u32 = 0
+    +36   3x f32 -0.0526  1.0067  0.4449   <- versetzte Wiederholung
+    +48   3x f32 -0.4598 -0.5588  0.6901   Laenge exakt 1.0
+    +60   3x f32  0.8880 -0.2894  0.3574   Laenge exakt 1.0
+    +72   3x f32  0.0000  0.7771  0.6293   Laenge exakt 1.0
+    +84   u32 = 1
+    +88   u32 = 0
+    +92   u32 = 0
+    +96   u32 = 2
+    +100  0xFFFFFFFF
+    +104  0xFFFFFFFF
+
+WAS DAVON GESICHERT IST
+    * Die drei Vektoren bei +48, +60 und +72 haben EXAKT Laenge 1.0.
+      Das sind Normalen -- bei einem einzelnen Dreieck naheliegend die
+      drei KANTENNORMALEN, die man fuer die Kollisionspruefung
+      braucht (Punkt-in-Dreieck-Test).
+    * 0xFFFFFFFF am Ende sind Terminatoren, das uebliche "kein Kind"
+      in Baumstrukturen.
+    * Die Werte bei +8 und +20 sind nicht normalisiert und liegen im
+      Koordinatenbereich des Objekts -- vermutlich Stuetzpunkt und
+      Ausdehnung.
+
+WAS OFFEN IST
+    * Die Knotengroesse ist NICHT konstant. 12.068 Byte Baum bei 413
+      Dreiecken teilen sich weder durch 16, 20, 24, 28, 32, 40 noch 48
+      glatt. Es ist also ein Baum mit variablen Knoten, nicht ein Feld.
+    * Die Bedeutung der u32 bei +0, +4, +84, +88, +92, +96 ist
+      unklar -- Kandidaten sind Achse, Tiefe, Kindzeiger und
+      Blattlaenge.
+    * Wie die Blaetter auf die Permutationsliste zeigen.
+
+--------------------------------------------------------------------------------
+3. GROESSENVERHAELTNISSE (397 Dateien vermessen)
+--------------------------------------------------------------------------------
+    Rest/nTri    Median 32,1   Mittel 72,5   von 5,8 bis 978
+    Rest/nVert   Median 22,1   Mittel 57,4   von 4,9 bis 1168
+    Die grosse Streuung passt zu einem Baum, dessen Tiefe von der
+    Geometrie abhaengt -- nicht zu einer festen Tabelle.
+    Auffaellig: hi_phobocaster.col hat bei 4.032 Dreiecken 500.336 B
+    Baum (124 B je Dreieck), hi_tiburon.col bei 4.354 Dreiecken nur
+    138.600 B (31,8). Der Unterschied duerfte an der Verteilung der
+    Geometrie im Raum liegen.
+
+--------------------------------------------------------------------------------
+4. WAS DAS PRAKTISCH HEISST
+--------------------------------------------------------------------------------
+    EINE .col ZU SCHREIBEN ist damit noch nicht moeglich -- der Baum
+    fehlt.
+    DREI WEGE STEHEN OFFEN:
+    (a) Weiter am Baum arbeiten. Der Ansatz ist klar: Dateien mit 2, 3
+        und 4 Dreiecken vergleichen und sehen, wie der Baum waechst.
+        Solche Dateien gibt es (gen_extra_werbung20.col hat 2).
+    (b) PRUEFEN, OB DIE ENGINE OHNE BAUM AUSKOMMT. Wenn der Baum nur
+        eine Beschleunigung ist und die Engine bei fehlendem oder
+        trivialem Baum auf lineare Suche zurueckfaellt, koennte eine
+        .col mit leerem Baum genuegen. Das waere mit einem Testwuerfel
+        in Minuten geklaert -- und wuerde die ganze Arbeit an (a)
+        ersparen.
+    (c) Der bisherige Behelf: eine vorhandene .col aehnlicher Groesse
+        weiterverwenden. Taugt fuer ein Wrack, nicht fuer einen Raum.
+
+    EMPFEHLUNG: (b) zuerst. Es ist die billigste Frage mit dem
+    groessten Hebel.
+
+================================================================================
+ENDE
+================================================================================

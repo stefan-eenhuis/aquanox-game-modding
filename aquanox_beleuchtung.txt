@@ -1,0 +1,194 @@
+================================================================================
+DIE BELEUCHTUNG VON AQUANOX 1
+================================================================================
+Stand: 2026-07-27
+Anlass: die Aussage "die Beleuchtung ist vorberechnet" aus
+mod_docu\eigene_3d_modelle.txt Abschnitt 5 belegen und praezisieren.
+
+DAS ERGEBNIS VORWEG
+    Die Aussage war richtig, aber ungenau. Es gibt ZWEI Renderpfade:
+    Levelgeometrie wird vorberechnet beleuchtet (Lightmaps), bewegliche
+    Objekte und Schiffe dynamisch. Fuer eigene Modelle ist das die gute
+    Nachricht -- ein Objekt, das wie ein Schiff platziert wird, braucht
+    GAR KEINE Lightmap.
+
+--------------------------------------------------------------------------------
+1. ZWEI RENDERPFADE
+--------------------------------------------------------------------------------
+In Aqua.exe stehen sieben Renderpfade:
+
+    REP_Object_VS::RenderStatic_CM          bewegliche Objekte,
+    REP_Object_VS::RenderStatic_CMDM        dynamisch beleuchtet
+    REP_Object_VS::RenderStatic_CMDMFM
+    REP_ObjectPrelit_VS::RenderStatic_LMCS  Levelgeometrie,
+    REP_ObjectPrelit_VS::RenderStatic_LMCSA vorberechnet beleuchtet
+    REP_TerrainPrelit::CreateAndUploadSelectors()
+    REP_Hud_VS::RenderStatic_EOA
+
+    CM  = ColorMap (die Diffustextur)
+    DM  = DetailMap
+    FM  = FogMap
+    LM  = LightMap
+    CS  = CoordinateSet
+    BM  = BumpMap
+    EM  = EnvironmentMap
+
+=> Was unter vfx\msh\ liegt (Schiffe, Geschuetze, Objekte) laeuft ueber
+   REP_Object_VS und wird zur Laufzeit beleuchtet.
+   Was unter map\<level>\lmsh\ liegt, laeuft ueber REP_ObjectPrelit_VS
+   und benutzt eine Lightmap.
+
+--------------------------------------------------------------------------------
+2. *** AQUANOX 1 HAT 84 EINGEBETTETE SHADER ***
+--------------------------------------------------------------------------------
+Das ist eine KORREKTUR zu aquanox_engine_vergleich.txt Abschnitt 1a.
+Dort stand, AN1 habe "keine Shader-Profilnamen" -- das stimmt, ist aber
+missverstaendlich. AN1 hat sehr wohl Shader, nur VORKOMPILIERT und im
+Programm eingebettet (keine .vsa-Datei liegt im Spielbestand):
+
+    object         20   cm0..cm4, cmdm0..cmdm4, cmdmfm0..cmdmfm4,
+                        dmbm, eoapfm, fm, lmdm, silhouette
+    objectprelit   15   dm, dmbm, eoapfm, fm, fmem,
+                        lmcs0..lmcs4, lmcsa0..lmcsa4
+    terrainprelit  14   vs: copy, dmfm, fmfm, ldcs, ldlmcs, lm, lmcs,
+                            mmsm, mmsmdmfm, mmsmmmsm
+                        ps: ldlmcs, lm, mmsmdmfm, mmsmmmsm
+    standard        9   eoap, eoapsd1..4, eoapss1..4
+    radar           6   anchor, clear, eoa, fin, msh, msho
+    clear           6   cmfm, fm, smfm, wm, wmcm, wmlm
+    hu2             5   eoa, eoam, eoamenu, eoar, rm
+    plant           3   vs eoafm, vs eoafmlm, ps eoafmlm
+    halo, trail, sprite, movie, overlay, billboar2   je 1
+
+DIE ZAHLEN 0 BIS 4 sind Varianten desselben Shaders -- mit hoher
+Wahrscheinlichkeit fuer die Anzahl gleichzeitiger dynamischer Lichtquellen.
+AquaNox 1 kann also bis zu vier dynamische Lichter je Objekt.
+
+UND ES GIBT PIXELSHADER: terrainprelit_ps_* und plant_ps_eoafmlm.
+Der Schalter dsp_pixelshader steuert sie.
+
+Der Unterschied zu AquaNox 2 bleibt bestehen, ist aber ein anderer als
+gedacht: AN2 uebersetzt Shader zur LAUFZEIT (deshalb stehen dort die
+Profilnamen vs_1_1 bis ps_2_0 im Programm), AN1 liefert sie fertig
+uebersetzt mit. AN1 ist damit auf das festgelegt, was 2001 eincompiliert
+wurde; AN2 kann sich an die Grafikkarte anpassen.
+
+--------------------------------------------------------------------------------
+3. DIE LIGHTMAPS
+--------------------------------------------------------------------------------
+ZWEI SORTEN, beide DXT3-komprimiert:
+
+    TERRAIN     map\<level>\terrain\lightmap.dds
+                2048 x 2048, 12 Mipmapstufen, 5,59 MB
+                eine einzige Karte fuer das ganze Gelaende
+
+    GEOMETRIE   map\<level>\ltex\lightmap0.dds .. lightmapN.dds
+                256 x 256, 9 Mipmapstufen, je 87.536 B
+                Atlanten -- mehrere Bauteile teilen sich eine Kachel
+                mp_06_dm  9 Stueck     1h1  7      2h1  7      3h3  5
+
+GELADEN WERDEN SIE PAARWEISE:
+    Game_SetLightCache(node, "map/Mp_06_dm/Lmsh/", "map/Mp_06_dm/Ltex/")
+Ein Aufruf, zwei Verzeichnisse -- Geometrie und ihre Beleuchtung.
+Alle 74 Originalmissionen rufen das auf.
+
+--------------------------------------------------------------------------------
+4. WO STEHEN DIE LIGHTMAP-KOORDINATEN? NICHT IM MESH.
+--------------------------------------------------------------------------------
+Das Vertexformat hat nur EINEN UV-Satz (Offset +28). Fuer eine Lightmap
+braeuchte man ueblicherweise einen zweiten. Den gibt es nicht.
+
+Die Loesung steckt im Namen der Shader: LMCS = LightMap Coordinate Set.
+Die Lightmap-Koordinaten werden im VERTEXSHADER berechnet, nicht
+gespeichert. Dazu passt
+    REP_TerrainPrelit::CreateAndUploadSelectors()
+    "At least material 0 has to be defined in selectormap."
+-- Selektoren, die zur Laufzeit bestimmen, welche Kachel des Atlas ein
+Bauteil benutzt.
+
+GEPRUEFT UND VERWORFEN: der zweite Materialslot ist NICHT die Lightmap.
+Bei Objektmeshes traegt er eine zweite Diffustextur (z.B. Slot1
+'atl_digmod_1', Slot2 'atl_geb_detail01' -- eine Detailtextur). Bei
+Levelmeshes ist er in 1.508 von 1.511 Faellen leer, und keiner der drei
+Ausnahmen zeigt auf eine ltex-Datei.
+
+EBENFALLS GEPRUEFT: die Vertexfarbe (+24) traegt keine Beleuchtung.
+Ueber alle Levelmeshes von mp_06_dm: 11.923 Vertices mit 0xffffffff,
+eine Handvoll Ausreisser. Es gibt also keine vorberechnete
+Vertexbeleuchtung -- anders als in AquaNox 2, das dafuer eigene
+.vc-Dateien mitbringt.
+
+--------------------------------------------------------------------------------
+5. DIE DYNAMISCHE BELEUCHTUNG
+--------------------------------------------------------------------------------
+GLOBAL, je Level einmal im __InitLayout gesetzt:
+    Game_SetAmbientLight(node, r, g, b)      Grundhelligkeit
+    Game_SetParallelLightT(node, r, g, b)    Parallellicht von oben
+    Game_SetParallelLightB(node, r, g, b)    Parallellicht von unten
+    Game_SetCausticTerrain / -Object / -Building (node, a, b)
+                                             Lichtbrechung des Wassers
+Beispielwerte aus einem Level (dunkel, kalter Blaustich):
+    Ambient  0.094, 0.106, 0.129
+    LightT   0.184, 0.216, 0.259
+    LightB   0.094, 0.106, 0.129
+
+EINZELNE LICHTQUELLEN ueber die Klasse NOD_Light (860 B, Basis NOD_Body):
+    Light_SetColor(node, MAT_Vector3, MAT_Vector3)
+    Light_SetCone(node, MAT_Vector3, MAT_Vector3, float, float)
+    Light_SetMode(node, string)
+    Light_SetR1(node, float)     innerer Radius
+    Light_SetR2(node, float)     aeusserer Radius
+    Light_Switch(node, int8)     ein und aus
+Damit sind bewegliche, schaltbare, farbige Lichter mit Kegel und
+Reichweite skriptbar -- fuer Nachtschicht durchaus interessant.
+
+RENDERSCHALTER
+    ren_object_dlight          dynamische Objektbeleuchtung
+    ren_objectprelit_bumpmap   Bumpmapping auf vorbeleuchteter Geometrie
+    ren_terrain_dlight         dynamisches Licht auf dem Gelaende
+    ren_terrain_dshadow        Geländeschatten
+    ren_terrain_bumpmap
+    ren_terrain_singlepass
+    ren_rays_enable            Lichtstrahlen
+
+--------------------------------------------------------------------------------
+6. WAS DAS FUER EIGENE MODELLE HEISST
+--------------------------------------------------------------------------------
+DIE GUTE NACHRICHT: Ein eigenes Objekt, das wie ein Schiff oder ein
+Ausstattungsstueck behandelt wird -- also unter vfx\msh\ liegt und per
+Node_CreateNode mit einem OSD platziert wird -- laeuft ueber
+REP_Object_VS und wird DYNAMISCH beleuchtet. Es braucht keine Lightmap,
+keine zweiten UVs, keinen Eintrag in ltex\.
+
+Das gilt fuer alles, was wir vorhaben: Requisiten, Wracks, Tore,
+Innenraum-Bauteile. Sie werden vom Umgebungslicht, den beiden
+Parallellichtern und bis zu vier dynamischen Lichtquellen beleuchtet.
+
+WORAUF ES DANN ANKOMMT: korrekte Normalen. Sie sind das einzige, was der
+dynamischen Beleuchtung sagt, wie eine Flaeche steht. In allen geprueften
+Originalmeshes haben die Normalen exakt Laenge 1.0 -- msb_write.py
+uebernimmt sie unveraendert aus dem OBJ, man muss sie also in Blender
+richtig setzen (und beim Export mitschreiben lassen).
+
+DIE EINSCHRAENKUNG: Ein solches Objekt wird nie so aussehen wie die
+umgebende Levelgeometrie, weil dieser die vorberechneten Lightmaps ihre
+weichen Schatten geben. Ein eigener Raum aus vfx\msh-Objekten wirkt
+flacher und gleichmaessiger ausgeleuchtet als ein gebautes Level.
+Wie man eigene Lightmaps erzeugt, ist NICHT untersucht -- dazu muesste
+man wissen, wie die Selektoren und die Atlaszuordnung entstehen, und das
+steht nirgends in den Daten.
+
+--------------------------------------------------------------------------------
+7. OFFEN
+--------------------------------------------------------------------------------
+    * Wie die Lightmap-Atlanten und ihre Selektoren erzeugt werden.
+      Vermutlich ein Werkzeug aus Massives Editor (SED, siehe
+      aquanox2_analyse_handoff_v9.txt).
+    * Ob ein lmsh-Bauteil ohne Lightmap-Zuordnung ueberhaupt gerendert
+      wird oder schwarz bleibt.
+    * Die genaue Bedeutung der Shadervarianten 0..4 (Lichtanzahl ist
+      die plausibelste, aber unbewiesene Deutung).
+
+================================================================================
+ENDE
+================================================================================

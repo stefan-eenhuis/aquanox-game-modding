@@ -1,0 +1,252 @@
+================================================================================
+NACHTSCHICHT -- PLANUNG v3, TECHNISCHER TEIL
+================================================================================
+Stand: 2026-07-27, nach den Analyseaufgaben A1 bis A10
+
+ZWECK
+    Ersetzt Abschnitt 13 ("Technische Systeme nach Missionsart") der
+    Datei aquanox_nachtschicht_zusatzkampagne_planung_v2.txt. Jene
+    stammt aus Iteration 27 und verweist auf Handoff v4 -- wir sind
+    bei v91.
+    DER ERZAEHLERISCHE TEIL VON v2 BLEIBT UNANGETASTET. Hier steht nur,
+    was technisch belegt ist.
+
+--------------------------------------------------------------------------------
+ZWEI FEHLER IN v2, die man kennen muss
+--------------------------------------------------------------------------------
+    "Waypoint_Attach"   heisst richtig WayPoint_Attach (grosses P)
+    "DirectPatrol"      GIBT ES NICHT -- weder als Kommando noch als
+                        Bibliotheksfunktion. Gemeint war vermutlich
+                        MultiPatrol (156x in 19 Missionen) oder
+                        VesselAttackLib.GuardArea (960x in 29).
+
+--------------------------------------------------------------------------------
+1. SALVAGE / BERGUNG
+--------------------------------------------------------------------------------
+    Body_AddItem                39x benutzt
+    Body_SetCargoKey            76x
+    Body_ActivateEscapePod      94x   "Activates the automatic escape
+                                       pod ejection"
+    ItemBox_SetRespawnDelay     23x   -1 = Einmal-Pickup
+    Trigger_SetPresenceSphere   20 Missionen
+    WayPoint_Attach             (Schreibweise beachten)
+    Game_SetTaskTextKey         74x
+    NEU BELEGT: 33 Gegenstaende in dat\sty\item_d.des, mit Klasse,
+    Name, Schadenswerten und PREIS -- siehe Abschnitt 6 unten.
+
+--------------------------------------------------------------------------------
+2. ESCORT / KONVOI
+--------------------------------------------------------------------------------
+    MiscLib.ProtectedGoto         5x
+    MiscLib.FollowProtect        16x
+    FormationLib.CreateFormation 40 von 74 Missionen
+    VesselGotoInFormationFromTo  83x
+    Body_ObjectDestroyed          Callback fuer das Scheitern
+    Die neun Formationen: Triangle 32x, Line 9x, Row 8x,
+    InverseTriangle 7x, XForm 4x, Claw 4x, Cross 1x.
+    Ungenutzt: TriangleUpper, Tunnel.
+    KORREKTUR zu v2: der Einstieg heisst CreateFormation, NICHT
+    DeclareAsLeader (das kommt in keiner Mission vor).
+
+--------------------------------------------------------------------------------
+3. CITY / VERKEHR
+--------------------------------------------------------------------------------
+    VesselGotoLib.ComplexGoto   735 Vorkommen in 28 von 30 Missionen
+    VesselGotoLib.MultiPatrol   156x in 19
+    Vessel_CollisionTerrain     287x
+    Vessel_AvoidanceTerrain / -Objects
+    Body_SetFriendOrFoeID       0 = neutral
+    Vessel_Patrol nur 2x -- die Originale nehmen MultiPatrol.
+
+--------------------------------------------------------------------------------
+4. *** SCHLEICHEN / WAHRNEHMUNG / ALARM ***
+--------------------------------------------------------------------------------
+Der wichtigste Abschnitt, und der, in dem v2 am weitesten daneben lag.
+
+    SensorLib.ActivateAvpSensorComplex   111x in 31 von 74 Missionen
+        AVP = Acoustic / Visual / Presence
+        (State, AudioSensitivity, FirstInterest, SecondInterest,
+         ThirdInterest, FourthInterest, Hearing, Seeing, Feeling)
+        AudioSensitivity: "silent" | "medium" | "loud"
+        *Interest: Objektname ODER Praefix ("pla" = alle Spielerboote)
+        Die drei Flags schalten die Sinne einzeln.
+    Intern ruft die Bibliothek Trigger_ActivateSensor,
+    Trigger_SetInterestList und Trigger_SetAcousticSensibility.
+
+    DER LAERMPEGEL DES SPIELERS -- Emitter_SetSoundEmissionLevel:
+        "none"  1181x in den OSDs    unbewegte Kulisse
+        "silent" 285x                z.B. atl_pscout
+        "medium" 103x
+        "loud"    95x                z.B. atl_bomber
+        Ein falscher Wert meldet "Unknown sound emission type".
+        Emitter_GetSoundEmissionLevel liest ihn zurueck.
+        ACHTUNG: in KEINEM Missionsskript gesetzt -- der Pegel steht
+        im OSD. Ob er sich zur Laufzeit aendern laesst, ist UNGEPRUEFT.
+
+    DIE ZONEN-OBJEKTE (wenn ein ORT reagieren soll):
+        Trigger_SetPresenceSphere  20 Missionen
+        Trigger_SetBoxMode         15
+        Trigger_SetVisibilityCone   2
+        Trigger_SetAcousticSphere   0
+    UNGENUTZT und damit frei: die sechs Deactivate*-Funktionen,
+    ActivateEnemyGuard, ActivateShieldGuard, ActivateShotHitSensor,
+    ActivateThreatening.
+
+    => FUER NACHTSCHICHT: das System ist ERPROBT, nicht Neuland. Eine
+       Wache mit Sicht- und Hoersinn ist ein Dreizeiler. Was NIEMAND
+       gemacht hat, ist die Kombination aus leisem Fahren und
+       hoerenden Wachen -- genau dort liegt der Spielraum.
+
+--------------------------------------------------------------------------------
+5. VERTEIDIGUNG / GENERATOR / BOSS
+--------------------------------------------------------------------------------
+    TurretLib.Attack                     316x
+    ShieldedBody_MakeInvulnerable        137x  "Macht das Objekt
+                                                unverwundbar"
+    ShieldedBody_MakeVulnerable           79x
+    ShieldedBody_MakeSelectiveVulnerable        "nur von Schuessen
+                                                eines bestimmten Typs"
+    ShieldedBody_DeepDestruct                   "Zerstoert den Vater
+                                                des Knotens"
+    ShieldedBody_CoupleFather                   "Der Vater wird
+                                                zerstoert, wenn der
+                                                Knoten zerstoert ist"
+    Body_SetKineticShield / Body_SetEmpShield   "[0 .. 1]"
+    Body_ObjectDestroyed                 Callback
+    NEU: CoupleFather und DeepDestruct sind fuer MEHRTEILIGE Objekte --
+    ein Turm, der mit seinem Gebaeude faellt. Das war in v2 nicht
+    bekannt.
+
+--------------------------------------------------------------------------------
+6. AUSRUESTUNG UND BELOHNUNG (neu in v3)
+--------------------------------------------------------------------------------
+dat\sty\item_d.des, 33 Gegenstaende, je mit Key, Class, Name, Image,
+Info (Schadenswerte im Klartext) und PRICE:
+
+    Kanonen (Class "gun")     Vendetta 1/2, VendettaGatling,
+                              PlasmaGun 1/2, PlasmaGatling,
+                              LaserGatling, Hitman, EMPactor,
+                              DoomMortar, Sizzler, SkalarHaubitze,
+                              Stanley
+    Torpedos                  ThresherShark, BullShark, TigerShark,
+                              ManEater, HammerheadShark, FlashShark,
+                              BigBang 1/2, Leech, Buzzer
+    Rumpf / Ausbau            Small/Medium/Big/Fusion Block,
+                              Patch Kit, Robot Repair Kit,
+                              Nano Repair Kit 1/2, Silator, Booster
+    Beispiel: "Vendetta 1", Preis 2200, Info "Schaden KIN: 140 MJ~
+    Schaden EMP: 0 MJ~Nachladezeit: 0,40 s"
+
+    => Damit ist eine BELOHNUNG fuer Missionsziele konkret planbar.
+       AquaNox 2 vergibt Gegenstaende ueber RewardInventory; in
+       AquaNox 1 muesste man es ueber das Inventar selbst tun.
+       Der Silator (Key 32) ist der Schleichumbau -- fuer eine
+       Nachtschicht-Kampagne der naheliegende erste Lohn.
+
+--------------------------------------------------------------------------------
+7. DIALOG / FUNK / STORY -- DREI Kanaele, nicht einer
+--------------------------------------------------------------------------------
+    stake_d.des      1.269 Zeilen in 211 Dialogen ueber 6 Kapitel
+                     Die Handlung ZWISCHEN den Missionen. Vertont,
+                     mit Sprecher und Stimmung (21 Werte).
+                     Flint selbst hat 535 der 1.269 Zeilen.
+                     Wav-Muster: d\stake\c<Kap>\k<Kap>d<Dialog>t<Take>
+    mtake_<id>_d.des 738 Funksprueche in 44 Dateien -- WAEHREND der
+                     Mission. Wav = "ff_dummy" laeuft OHNE eigene
+                     Tonaufnahme.
+    briefing_d.des   40 Eintraege -- der Auftragstext im Menue, mit
+                     //mission:-Kommentaren, die jeden Text seiner
+                     Mission zuordnen.
+
+    DIE TECHNIK DER ERZAEHLUNG:
+        SendRadioMessageTake        in allen 30 Missionen, 299 Vork.
+        WayPoint_SetTakeKey_Inside  in 26 von 30, 109 Vorkommen
+        acht (node, uint32)-Paare je Wegpunkt plus Anzahl und
+        Verzoegerung -- ACHT Funksprueche an einem Tor.
+    => Die Geschichte haengt an der STRECKE, nicht an Zustandslogik.
+       Das ist der wichtigste Einzelbefund fuer den Missionsbau.
+
+--------------------------------------------------------------------------------
+8. ZWISCHENSZENEN
+--------------------------------------------------------------------------------
+    Director_BeginCutscene / _EndCutscene   in ALLEN 30 Missionen
+    Camera_MoveTo        237x   "Moves (relative) to the specified
+                                 object"
+    Camera_LookAt        213x   "Looks to position (relative) to the
+                                 specified object"
+    Camera_MoveInto             "Moves into the specified object"
+    Camera_ShakeHit        9x   "Shakes to a imaginairy hit"
+    Camera_Cut                  "Performs a cut of given time in movie"
+    Camera_ZoomAt / _ZoomTo / _RollTo / _LookAhead / _LookFrom
+    Alle 21 Kamerakommandos sind inzwischen mit Massives eigenem
+    Hilfetext dokumentiert (aquanox_sed_vorlagen.json).
+    CameraLib.CameraMove -- eine fertige Kamerafahrt auf Schienen --
+    wird in KEINER Mission benutzt. Freier Vorrat.
+
+--------------------------------------------------------------------------------
+9. ZIELSYSTEM (neu in v3)
+--------------------------------------------------------------------------------
+    AquaNox 1 hat KEINE Zielkommandos. AquaNox 2 hat vier:
+        Game_PrimaryObjectiveReached / -Failed
+        Game_BonusObjectiveReached / -Failed
+    je mit GameNode, ObjectiveID, TakeKeyBrief (2000/2001/2002/2003)
+    und TakeKeyDetail (2100).
+    SEDs Vorlagen zeigen VIER Zielarten: Win, Lose, Bonus und User.
+    NACHBAUBAR in Lua ohne Engineeingriff -- die Levelvorlage
+    (nachtschicht_level_vorlage.lua, Abschnitt 5c) enthaelt bereits
+    NS_Ziel / NS_ZielErreicht / NS_ZielGescheitert.
+
+--------------------------------------------------------------------------------
+10. EIGENE INHALTE -- was jetzt geht
+--------------------------------------------------------------------------------
+    3D-MODELLE      msb_write.py (binaer) und msh_write.py (Klartext).
+                    Keine Polygongrenze; ein ganzes AN1-Level hat
+                    8.000 bis 29.000 Dreiecke. Ob die Engine eigene
+                    Meshes annimmt: Test T3/T7.
+    TERRAIN         terrain_write.py erzeugt hmap.tga, material_s.tga,
+                    material.des und terrain.des BYTE-FORMATGLEICH mit
+                    den Originalen. Zu kopieren bleiben die Texturen
+                    und die Lightmap -- wie SED sie berechnet, ist
+                    unbekannt.
+    KOLLISION       .col ist zu zwei Dritteln entschluesselt; der
+                    Baum am Ende fehlt. Behelf: vorhandene .col
+                    weiterverwenden.
+    LICHT           laeuft ueber OSD-Eintraege (nod_fx_light).
+                    Vier Lichter je Objekt, eincompilierte Grenze.
+                    Skriptsteuerung ungeprueft: Test T6.
+    MUSIK           erprobt und dokumentiert (Handoff Abschnitt 118).
+
+--------------------------------------------------------------------------------
+11. DIE KLASSENHIERARCHIE -- welches Kommando auf welchen Knoten?
+--------------------------------------------------------------------------------
+    NOD_Node (88 B)
+      +- NOD_Body (800 B)         Body_*  46 Kommandos
+      |    +- NOD_ShieldedBody    ShieldedBody_*  8
+      |    |    +- NOD_Vessel     Vessel_*  56
+      |    |    +- NOD_Vehicle    Vehicle_*  28
+      |    |    +- NOD_Player     Player_*  11
+      |    |    +- NOD_Generic, NOD_Trash, NOD_Mine, NOD_Torpedo,
+      |    |       NOD_PhysicalCharacter (23), NOD_Turret_* (17),
+      |    |       NOD_Laserwall, NOD_Bullet, NOD_Buzzer,
+      |    |       NOD_Attachment, NOD_Wheel, NOD_SplashDamage
+      |    +- NOD_Camera (21), NOD_Trigger (16), NOD_WayPoint (11),
+      |       NOD_Light (6), NOD_ParticleEmitter (7), NOD_Gun (5),
+      |       NOD_Terrain, NOD_Fungus, NOD_Halo, NOD_Flare,
+      |       NOD_FX_* (Light, Rays, Plant, Plankton, Spawn, Seeder,
+      |       Shockwave, Dipol), NOD_Cone, NOD_EscapePod,
+      |       NOD_Trail, NOD_NPC_Gun, NOD_Gun_Part,
+      |       NOD_TorpedoLauncher, NOD_BuzzerLauncher
+      +- NOD_Directory, NOD_Path, NOD_Position, NOD_PatrolArea,
+         NOD_Scenario, NOD_Director, NOD_Group
+      +- NOD_Game (35), NOD_Script (5), NOD_Hud, NOD_Cockpit,
+         NOD_Console (3), NOD_FX_Sky, NOD_FX_Sound, NOD_FX_Stream,
+         NOD_FX_Infiltrate
+
+    REGEL: Ein Kommando mit Praefix X gilt fuer NOD_X UND ALLE ERBEN.
+    Body_SetCS wirkt also auf jedes Schiff, jedes Gebaeude, jede Mine.
+    Vessel_Patrol dagegen nur auf NOD_Vessel.
+    Das verhindert die haeufigste Fehlerklasse beim Missionsbau.
+
+================================================================================
+ENDE -- der erzaehlerische Teil steht weiterhin in Planung v2
+================================================================================

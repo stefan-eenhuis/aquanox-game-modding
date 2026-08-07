@@ -1,0 +1,84 @@
+================================================================================
+SCHLUESSELRAEUME -- was belegt ist und wo Nachtschicht anfangen darf
+================================================================================
+Stand: 2026-07-28, Aufgabe B4
+Datei: mod_docu\aquanox1_schluesselraeume.json
+
+WARUM DAS ZAEHLT
+    Jede eigene Textdatei -- Funksprueche, Dialoge, Gegenstaende,
+    Personen -- braucht Schluessel. Kollidiert einer mit dem Bestand,
+    zeigt das Spiel an irgendeiner Stelle den falschen Text, und der
+    Fehler ist schwer zu finden.
+
+--------------------------------------------------------------------------------
+1. DIE GLOBALEN TABELLEN
+--------------------------------------------------------------------------------
+    Datei                Art              Anzahl    von     bis   frei ab
+    stake_d.des          Story-Dialoge      1269      1    1269    1270
+    person_d.des         Personen             85      1      92      93
+    item_d.des           Ausruestung          33      1      33      34
+    cargo_d.des          Frachtgut           104   1001    1179    1180
+                         (und 1..1000 ist komplett FREI)
+    pilot_d.des          Schiffsnamen        161      1     340     341
+                         (Luecken: 19..99 und 102..199)
+    room_d.des           Stationsraeume       91      1     130     131
+    station_d.des        Stationen            25      1      45      46
+    briefing_d.des       Briefings            40      1      40      41
+    mission_d.des        Missionen            30      1      30      31
+    acknowledge_d.des    Bestaetigungen       64      1      64      65
+
+--------------------------------------------------------------------------------
+2. *** DIE FUNKSPRUCH-SCHLUESSEL SIND FAST GLOBAL EINDEUTIG ***
+--------------------------------------------------------------------------------
+44 mtake-Dateien, 738 Schluessel -- und nur EINE Ueberschneidung im
+ganzen Bestand. Sie waren also global geplant, nicht je Datei.
+Die Bereiche sind klar getrennt:
+
+    1 .. 1367      die 30 Kampagnenmissionen, aufsteigend in
+                   Spielreihenfolge (1h1 faengt bei 1 an, 6h4 endet
+                   bei 1347)
+    703 .. 1265    mtake_gen_d.des -- die 80 allgemeinen Sprueche,
+                   die in JEDER Mission gelten. Sie liegen MITTEN im
+                   Kampagnenbereich, ueberschneiden sich aber nicht.
+    5001 .. 5006   Mehrspieler
+    9000 .. 9002   dogfight
+    9100           asylum
+    9201 .. 9204   sp_narrow
+    (5n4 reicht mit einem Ausreisser bis 9201 -- die einzige
+    Ueberschneidung des ganzen Bestands.)
+
+    => FREI UND UNGEFAEHRLICH: 1400 bis 4999 und 6000 bis 8999.
+
+--------------------------------------------------------------------------------
+3. EMPFEHLUNG FUER NACHTSCHICHT
+--------------------------------------------------------------------------------
+    mtake_nachtschicht_d.des    ab 6000
+        6000..6099   Mission 1
+        6100..6199   Mission 2
+        ...          hundert Schluessel je Mission reichen reichlich --
+                     die groesste Originalmission (6h4) hat 48.
+    stake_nachtschicht_d.des    ab 2000
+        wenn eigene Story-Dialoge dazukommen sollen
+    person_d.des                ab 100 fuer eigene Figuren
+        (93..99 ist zwar frei, aber zu knapp am Bestand)
+    item_d.des                  ab 100 fuer eigene Ausruestung
+    pilot_d.des                 ab 400 fuer eigene Schiffsnamen
+        (die Luecken 19..99 und 102..199 lieber meiden -- sie koennten
+         absichtlich freigehalten sein)
+
+    EINE WARNUNG: mtake_gen_d.des liegt mit 703..1265 mitten im
+    Kampagnenbereich. Wer dort etwas ergaenzt, muss gegen ALLE 44
+    Dateien pruefen, nicht nur gegen die eigene.
+
+--------------------------------------------------------------------------------
+4. WAS NICHT GEPRUEFT WURDE
+--------------------------------------------------------------------------------
+    Die Textschluessel, die Body_SetNameKey und Body_SetCargoKey im
+    Skript setzen, verweisen auf pilot_d.des und cargo_d.des. Welche
+    davon tatsaechlich benutzt werden, liesse sich jetzt aus dem
+    Dekompilat auszaehlen (Aufgabe B1) -- hier ging es nur um die
+    Belegung der Tabellen selbst.
+
+================================================================================
+ENDE
+================================================================================

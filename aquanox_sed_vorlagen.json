@@ -1,0 +1,4243 @@
+{
+ "title": "SED-Vorlagenbibliothek -- Massives eigene Kommandodokumentation",
+ "description": "Aus der einzigen erhaltenen SED-Projektdatei gehoben (Aquanox2Relevation, map/5h1/script/neopolis_neu.ssc, 5,56 MB). Jede Vorlage des Editors nennt das Engine-Kommando, das sie aufruft, und traegt einen HILFETEXT, den die Entwickler selbst geschrieben haben -- teils deutsch, teils englisch. Das ist die einzige bekannte Erklaerung, was die Kommandos TUN; die Registry kennt nur Namen und Signaturen.",
+ "_source_note": "Die Vorlagen stammen aus AquaNox 2. Das Feld in_aquanox1 sagt, ob das Kommando auch in AquaNox 1s Registry steht -- dann gilt die Erklaerung dort ebenso, denn die Kommandonamen sind zwischen beiden Spielen unveraendert (Handoff v91 Abschnitt 133).",
+ "_method": "Sequenzielles Lesen der laengenpraefigierten Zeichenketten, Schnitt an SED_-Knotengrenzen, Zuordnung der Key/Value-Paare. 792 Vorlagen erkannt.",
+ "counts": {
+  "templates_total": 338,
+  "with_help_text": 190,
+  "with_command": 312,
+  "valid_in_aquanox1": 185,
+  "aquanox2_only": 32,
+  "library_calls": 72
+ },
+ "templates": [
+  {
+   "template": "TMP_AS",
+   "node_type": "SED_NodeSphere",
+   "command": "Trigger_SetAcousticSphere",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "0"
+  },
+  {
+   "template": "TMP_Activate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_EnterSimulation",
+   "library": null,
+   "help": "Schaltet den Strom ein.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_ActivateFF",
+   "node_type": "SED_ScriptOrder",
+   "command": "Player_ActivateFF",
+   "library": null,
+   "help": "Activates Friendly fire",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_ActivateLogarithmicMode",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_SetLogarithmicMode",
+   "library": null,
+   "help": "Schaltet den logarithmischen Schildmodus ein.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_AddPhase",
+   "node_type": "SED_ScriptOrder",
+   "command": "Gun_AddPhase",
+   "library": null,
+   "help": "Setzt eine neue Feuerphase.",
+   "parameters": [
+    "NumOfShots"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Agressive",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Ambient",
+   "node_type": "SED_NodeColor",
+   "command": "Game_SetAmbientLight",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Atmo",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Blocking",
+   "node_type": "SED_NodeInteger1",
+   "command": "Trigger_SetVisibilityBlockingStatus",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "1"
+  },
+  {
+   "template": "TMP_Blocking",
+   "node_type": "SED_NodeInteger1",
+   "command": "Trigger_SetVisibilityBlockingStatus",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "1"
+  },
+  {
+   "template": "TMP_Body_AddItem",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_AddItem",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Count"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_BonusObjectiveFailed",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_BonusObjectiveFailed",
+   "library": null,
+   "help": "Signalisiert scheitern an Bonusziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_BonusObjectiveFailedSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_BonusObjectiveFailed",
+   "library": null,
+   "help": "Signalisiert scheitern an Bonusziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_BonusObjectiveReached",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_BonusObjectiveReached",
+   "library": null,
+   "help": "Signalisiert erfolgreiches Bonusziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_BonusObjectiveReachedSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_BonusObjectiveReached",
+   "library": null,
+   "help": "Signalisiert erfolgreiches Bonusziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_Box",
+   "node_type": "SED_NodeBox",
+   "command": "FX_SoundBox_SetBox",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Building_Taunt_Activate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Generic_Taunt_Activate",
+   "library": null,
+   "help": "Activates sending of taunt messages.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Building_Taunt_Deactivate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Generic_Taunt_Deactivate",
+   "library": null,
+   "help": "Deactivates sending of taunt messages.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CameraWait",
+   "node_type": "SED_ScriptOrder",
+   "command": "CameraLib.Wait",
+   "library": "CameraLib",
+   "help": "Wartet eine vorgegebene Zahl an Sekunden ab, bis der nächste Befehl ausgeführt wird.",
+   "parameters": [
+    "WaitingTime"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Cargo0",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo0",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo0",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo1",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo1",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo1",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo2",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo2",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_Cargo2",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetCargoKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_CharacterAnimate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Character_StartAnimation",
+   "library": null,
+   "help": "Startet die angegebene Animation des Charakters",
+   "parameters": [
+    "AnimationName"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterAnimateStop",
+   "node_type": "SED_ScriptOrder",
+   "command": "Character_StopAnimation",
+   "library": null,
+   "help": "Stoppt die aktuelle Animation des Charakters.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterAttack",
+   "node_type": "SED_ScriptOrder",
+   "command": "OldOneLib.Attack",
+   "library": "OldOneLib",
+   "help": "Führt einen Angriff gegen das angegebene Objekt aus.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterGoto",
+   "node_type": "SED_ScriptOrder",
+   "command": "OldOneLib.Goto",
+   "library": "OldOneLib",
+   "help": "Führt ein Goto mit dem Older one aus",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterGotoFromTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "OldOneLib.GotoFromTo",
+   "library": "OldOneLib",
+   "help": "Führt ein Goto mit festen Positionen aus.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterLookTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_LookToObject",
+   "library": null,
+   "help": "Richtet den Character auf ein gegebenes Objekt ausMode 0:Genau ausrihten, 1: Horrizontal ausrichten, 2: Drauffahren, 3: Abstoppen",
+   "parameters": [
+    "Mode"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterPhysicaStopTurrets",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_AttackTurretsStop",
+   "library": null,
+   "help": "Deaktiviert die Türme, die dem Turmprefix entsprechen.",
+   "parameters": [
+    "TurretPrefix"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterPhysicalActivateTurrets",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_AttackTurrets",
+   "library": null,
+   "help": "Aktiviert die Türme, die dem Turmprefix entsprechen auf  die vier Gegnerprefixe, die angegeben sind.",
+   "parameters": [
+    "TurretPrefix"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterPhysicalAnimateStart",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_StartAnimation",
+   "library": null,
+   "help": "Startet die physikalische Animation des Charakters für den angegebenen Index",
+   "parameters": [
+    "SegmentIndex"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterPhysicalAnimateStop",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_StopAnimation",
+   "library": null,
+   "help": "Stopt die physikalische Animation des Charakters für den angegebenen Index",
+   "parameters": [
+    "SegmentIndex"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterPhysicalSetHOtPropability",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_SetHitPropability",
+   "library": null,
+   "help": "Setzt die Trefferwahrscheinlichkeit der Geschuetztuerme des Characters.",
+   "parameters": [
+    "HitPropability"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_CharacterSink",
+   "node_type": "SED_ScriptOrder",
+   "command": "OldOneLib.Sink",
+   "library": "OldOneLib",
+   "help": "Führt ein SInk mit dem Older one aus",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Color",
+   "node_type": "SED_NodeColor",
+   "command": "Light_SetColor",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Red"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Cone",
+   "node_type": "SED_NodeCone",
+   "command": "Trigger_SetVisibilityCone",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Alpha"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Cone",
+   "node_type": "SED_NodeCone",
+   "command": "Trigger_SetVisibilityCone",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Alpha"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Cone",
+   "node_type": "SED_NodeCone",
+   "command": "Trigger_SetVisibilityCone",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Alpha"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Cone",
+   "node_type": "SED_NodeCone",
+   "command": "Trigger_SetVisibilityCone",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Alpha"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Cone",
+   "node_type": "SED_NodeCone",
+   "command": "Stream_SetCurrentDirection",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Alpha"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_CoupleFather",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_CoupleFather",
+   "library": null,
+   "help": "Der Vater wird zersört, wenn der Knoten zertört ist.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Deactivate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": "Schaltet den Strom ab.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_DeactivateLogarithmicMode",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_SetLogarithmicModeStop",
+   "library": null,
+   "help": "Schaltet den logarithmischen Modus ab.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_DeactivateUnvulnerable",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_DeactivateSelectiveVulnerability",
+   "library": null,
+   "help": "Schaltet das Schiff wieder in Normalmodus zurück",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Deepdestruct",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_DeepDestruct",
+   "library": null,
+   "help": "Zerstört den Vater des Knotens.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_DipolCommands",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen die Befehle für den Dipol-Sprung",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_DirectorGotoInFormationFromTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "FormationLib.VesselGotoInFormationFromTo",
+   "library": "FormationLib",
+   "help": "Laesst das Fahrzeug in Formation den Strackenabschnitt fahren",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_DirectorOrderBlockList",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Dieses Verzeichnis enthält alle Director bezogenen Befehle.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_DirectorPlaceFormationPath",
+   "node_type": "SED_ScriptOrder",
+   "command": "FormationLib.PlaceFormationPath",
+   "library": "FormationLib",
+   "help": "Baut eine Forrmation so auf, dass Sie auf der ersten Position des Pfade sitzt und auf die zweite Position sieht.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Director_BeginCutscene",
+   "node_type": "SED_ScriptOrder",
+   "command": "Director_BeginCutscene",
+   "library": null,
+   "help": "",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Director_EndCutscene",
+   "node_type": "SED_ScriptOrder",
+   "command": "Director_EndCutscene",
+   "library": null,
+   "help": "",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_EndGame",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_EndGame",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "printcolor": "255,0,0"
+  },
+  {
+   "template": "TMP_EnemyMatrixLocal",
+   "node_type": "SED_ScriptOrder",
+   "command": "SetEnemyMatrixElement",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_EnemyMatrixLocalSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "SetEnemyMatrixElement",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_FlushPhases",
+   "node_type": "SED_ScriptOrder",
+   "command": "Gun_FlushPhases",
+   "library": null,
+   "help": "Entfernt die bishergesetzten Verzögerungszeiten.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_FriendlyFireOff",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_SetFriendlyFireMode",
+   "library": null,
+   "help": "Deactivate friendly fire",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_FriendlyFireOn",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_FriendlyFireMode",
+   "library": null,
+   "help": "Activate friendly fire",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_DipolInFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_DipolIn",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_DipolInFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_DipolInRelative",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [
+    "RelativeXPos"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_DipolInFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_DipolIn",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_DipolInFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_VehicleDipolIn",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_DipolInFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_TurretDipolIn",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "Turret_DipolInLeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_NormalFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_Normal",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_PlaceInDock",
+   "node_type": "SED_ScriptOrder",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_PlaceInDock",
+   "node_type": "SED_ScriptOrder",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_UndockFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_Undock",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [
+    "TMP_VesselInUtero_Undock"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_UndockFinnish",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.InUtero_Undock",
+   "library": "DipolLib",
+   "help": null,
+   "parameters": [
+    "TMP_StringState"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_InUtero_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplex",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplex",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplexLeave",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplexLeave",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplex",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplex",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplexLeave",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplexLeave",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplex",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplexLeave",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplex",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Init",
+   "node_type": "SED_ScriptOrder",
+   "command": "SensorLib.ActivateAvpSensorComplexLeave",
+   "library": "SensorLib",
+   "help": null,
+   "parameters": [
+    "InterestPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_LeaveSimulation",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": "Schiebt ein Objekt aus der Simulation.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,128,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_LeaveSimulation",
+   "node_type": "SED_ScriptOrder",
+   "command": "Node_LeaveSimulation",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_LeaveSimulationA",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.LeaveSimulation",
+   "library": "DipolLib",
+   "help": "Schiebt ein Objekt aus der Simulation.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,128,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_LightCache",
+   "node_type": "SED_Node",
+   "command": "Game_SetLightCache",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_MTakeName",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMTake",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_MakeInvulnerable",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_MakeInvulnerable",
+   "library": null,
+   "help": "Macht das Objekt unverwundbar.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_MakeSelectiveVulnerable",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_MakeSelectiveVulnerableAgainst",
+   "library": null,
+   "help": "Sorgt dafür, dass das Objekt nur von Schüssen eines bestimmten Objektes beschädigt wird.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_MakeVulnerable",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_MakeVulnerable",
+   "library": null,
+   "help": "Hebt die Unverwundbarkeit wieder auf.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_MissionEnd",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_MissionEnd",
+   "library": null,
+   "help": "Signals mission end 0=failure 1=success",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "printcolor": "255,0,0"
+  },
+  {
+   "template": "TMP_ModifyEnemyMatrix",
+   "node_type": "SED_ScriptOrder",
+   "command": "SetEnemyMatrixElement",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NameKey",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetNameKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_NameKey",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetNameKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_NameKey",
+   "node_type": "SED_NodeInteger",
+   "command": "Body_SetNameKey",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_NewCamera_Cut",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_Cut",
+   "library": null,
+   "help": "Performs a cut of given time in movie. During the cut the screen will be black for the given time.",
+   "parameters": [
+    "BlackScreenTime"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_LookAhead",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_LookAhead",
+   "library": null,
+   "help": "Looks ahead relative to current position path",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_LookAt",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_LookAt",
+   "library": null,
+   "help": "Looks to position (relative) to the specified object",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_LookAt2",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_LookAt",
+   "library": null,
+   "help": "Looks to position (relative) to the specified object",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_LookFrom",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_LookFrom",
+   "library": null,
+   "help": "Looks from the specified object",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_MoveInto",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_MoveInto",
+   "library": null,
+   "help": "Moves into the specified object",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_MoveTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_MoveTo",
+   "library": null,
+   "help": "Moves (relative) to the specified object",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_MoveTo2",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_MoveTo",
+   "library": null,
+   "help": "Moves (relative) to the specified object",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_MoveToAnglesAbs",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_MoveToAnglesAbs",
+   "library": null,
+   "help": "Moves (absolute) to the specified object with specified angles",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_MoveToAnglesRel",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_MoveToAnglesRel",
+   "library": null,
+   "help": "Moves (relative) to the specified object with specified angles",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_RollAhead",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_RollAhead",
+   "library": null,
+   "help": "Rolls ahead relative to current position path",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_RollFrom",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_RollFrom",
+   "library": null,
+   "help": "Rolls to gamma of given object",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_RollTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_RollTo",
+   "library": null,
+   "help": "Rolls gamma of camera to the given angle",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_ShakeHit",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_ShakeHit",
+   "library": null,
+   "help": "Shakes to a imaginairy hit",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_ShakeTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_ShakeTo",
+   "library": null,
+   "help": "Shakes to a given amplitude value",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_ZoomAt",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_ZoomAt",
+   "library": null,
+   "help": "Zooms given object",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_NewCamera_ZoomTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "Camera_ZoomTo",
+   "library": null,
+   "help": "Zooms to given values in horizontal and vertical direction",
+   "parameters": [
+    "Duration"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_OlderAnimateCommands",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier sind alle Befehle enthalten, die etwas mit der Animation des Characters zu tun haben.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_OlderAttackCommands",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Enthält die Angriffsbefehle für den OlderOne.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_OlderGotoCommands",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier sind alle Befehle zusammengefasst, die mit Fahrbewegungen des Schiffes zusammenhängen.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_OlderSetSpecialCollision",
+   "node_type": "SED_ScriptOrder",
+   "command": "PhysicalCharacter_SetSpecialCollisionPartner",
+   "library": null,
+   "help": "Sets the vessel we want to do a special collision with,",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeSphere",
+   "command": "Trigger_SetPresenceSphere",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "0"
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeSphere",
+   "command": "Trigger_SetPresenceSphere",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeBox",
+   "command": "Trigger_SetBoxMode",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeSphere",
+   "command": "Trigger_SetPresenceSphere",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeBox",
+   "command": "Trigger_SetBoxMode",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeSphere",
+   "command": "Trigger_SetAcousticSphere",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeBox",
+   "command": "Trigger_SetBoxMode",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeSphere",
+   "command": "Trigger_SetAcousticSphere",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeBox",
+   "command": "Trigger_SetBoxMode",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PS",
+   "node_type": "SED_NodeBox",
+   "command": "Stream_SetBoxExtension",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_ParallelBottom",
+   "node_type": "SED_NodeColor",
+   "command": "Game_SetParallelLightB",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_ParallelTop",
+   "node_type": "SED_NodeColor",
+   "command": "Game_SetParallelLightT",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PlayMusic",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_PlayMusic",
+   "library": null,
+   "help": "Plays a previously loaded music track",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_PlaySound",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_PlaySound",
+   "library": null,
+   "help": "Plays a previously loaded music track as a sound",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_PlayerDefineKeyLocation",
+   "node_type": "SED_ScriptOrder",
+   "command": "Player_DefineKeyLocation",
+   "library": null,
+   "help": "Defines location and related information for a lock location",
+   "parameters": [
+    "TakeKey"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Player_AddWeapon",
+   "node_type": "SED_ScriptOrder",
+   "command": "Player_AddWeapon",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "WeaponName"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodeCoordinate",
+   "command": "Body_SetCS",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodeCoordinate",
+   "command": "Body_SetCS",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodeCoordinate",
+   "command": "Body_SetCS",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodeCoordinate",
+   "command": "Body_SetCS",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodePosition",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodeCoordinate",
+   "command": "Body_SetCS",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Position",
+   "node_type": "SED_NodeSphere",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_PositionCode",
+   "node_type": "SED_NodeText",
+   "command": null,
+   "library": null,
+   "help": "PositionCode (X/Y/Z/R)",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_PositionCode",
+   "node_type": "SED_NodeText",
+   "command": null,
+   "library": null,
+   "help": "PositionCode (X/Y/Z/R)",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_PositionCode",
+   "node_type": "SED_NodeText",
+   "command": null,
+   "library": null,
+   "help": "PositionCode (X/Y/Z/R)",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_PrimaryObjectiveFailed",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_PrimaryObjectiveFailed",
+   "library": null,
+   "help": "Signalisiert scheitern an Primärziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_PrimaryObjectiveFailedSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_PrimaryObjectiveFailed",
+   "library": null,
+   "help": "Signalisiert scheitern an Primärziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_PrimaryObjectiveReached",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_PrimaryObjectiveReached",
+   "library": null,
+   "help": "Signalisiert erfolgreiches Primärziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_PrimaryObjectiveReachedSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_PrimaryObjectiveReached",
+   "library": null,
+   "help": "Signalisiert erfolgreiches Primärziel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_ProtectedGoto",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.ProtectedGoto",
+   "library": "MiscLib",
+   "help": "Fährt eine komplexere Strecke ab, und kann unter Formattionsschutz gestellt werden.",
+   "parameters": [
+    "Cycle"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_ProtectedMultiPatrol",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.ProtectedMultiPatrol",
+   "library": "MiscLib",
+   "help": "Fährt einen MultiPatrol mit der Möglicheit beschützt zu werden.",
+   "parameters": [
+    "TimeOutForPatrol"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Range1",
+   "node_type": "SED_NodeSphere",
+   "command": "Light_SetR1",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Range2",
+   "node_type": "SED_NodeSphere",
+   "command": "Light_SetR2",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_RespawnCount",
+   "node_type": "SED_NodeInteger",
+   "command": "ItemBox_SetRespawnCount",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_RespawnDelay",
+   "node_type": "SED_NodeFloat",
+   "command": "ItemBox_SetRespawnDelay",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1.0"
+  },
+  {
+   "template": "TMP_ScriptCall",
+   "node_type": "SED_ScriptCall",
+   "command": null,
+   "library": null,
+   "help": "Aufruf eines anderen Befehles",
+   "parameters": [
+    "Destination"
+   ],
+   "in_aquanox1": null,
+   "in_aquanox2": null,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_ScriptCallSubScript",
+   "node_type": "SED_ScriptCall",
+   "command": null,
+   "library": null,
+   "help": "Aufruf eines anderen Befehles",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_ScriptIf",
+   "node_type": "SED_ScriptIf",
+   "command": null,
+   "library": null,
+   "help": "Bedingter Funktionsaufruf",
+   "parameters": [
+    "Condition"
+   ],
+   "in_aquanox1": null,
+   "in_aquanox2": null,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_ScriptLog",
+   "node_type": "SED_ScriptOrder",
+   "command": "Script_Log",
+   "library": null,
+   "help": "Gibt Kommentar mit Objektnamen aus",
+   "parameters": [
+    "Text"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "debugcommand": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_ScriptOrderNothing",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": "Befehl der nichts macht",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SelfDestruct",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetKineticShield",
+   "library": null,
+   "help": "UND TSCHÜSS!!",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "0",
+   "nocallback": "1",
+   "printcolor": "0,128,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SendRadioMessageTake",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "SendRadioMessageTake",
+   "library": null,
+   "help": "Sendet einen Radio Message Take von Sender an Receiver",
+   "parameters": [
+    "TakeKey"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SendRadioMessageTakeOrder",
+   "node_type": "SED_ScriptOrder",
+   "command": "SendRadioMessageTake",
+   "library": null,
+   "help": "Sendet einen Radio Message Take von Sender an Receiver",
+   "parameters": [
+    "TakeKey"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetBackPlane",
+   "node_type": "SED_NodeFloat",
+   "command": "Camera_SetBackPlane",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "1024.0"
+  },
+  {
+   "template": "TMP_SetBackPlane",
+   "node_type": "SED_NodeFloat",
+   "command": "Camera_SetBackPlane",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "1024.0"
+  },
+  {
+   "template": "TMP_SetBulletType",
+   "node_type": "SED_ScriptOrder",
+   "command": "Gun_SetBullet",
+   "library": null,
+   "help": "Setzt einen neuen Schußtyp für Waffen mit Verzögerungszeit.",
+   "parameters": [
+    "DelayTime"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetCS",
+   "node_type": "SED_NodeCone",
+   "command": "ParticleEmitter_SetCone",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_SetCS",
+   "node_type": "SED_NodeFace",
+   "command": "Body_SetCS",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "X"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_SetDamageParameters",
+   "node_type": "SED_ScriptOrder",
+   "command": "Stream_SetDamageParameters",
+   "library": null,
+   "help": "Setzt die Parameter für Strömungen, die kinetischen Schaden erzeugen.",
+   "parameters": [
+    "DamageStrength"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetDecompressionHeight",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_SetDecompressionHeight",
+   "library": null,
+   "help": "Sets decompression height to new value",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "GetGameNode()",
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetDecompressionHeightSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_SetDecompressionHeight",
+   "library": null,
+   "help": "Sets decompression height to new value",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "GetGameNode()",
+   "nocallback": "1",
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SetDecompressionRange",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_SetDecompressionRange",
+   "library": null,
+   "help": "Sets decompression range in x and y direction (1.0 = default)",
+   "parameters": [
+    "1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetDecompressionRangeSimple",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_SetDecompressionRange",
+   "library": null,
+   "help": "Sets decompression ranges to new value",
+   "parameters": [
+    "1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SetDogFight",
+   "node_type": "SED_ScriptOrder",
+   "command": "Gun_SetDogBullet",
+   "library": null,
+   "help": "Setzt einen neuen Schußtyp für Waffen im Dog Mode mit Verzögerungszeit.",
+   "parameters": [
+    "BulletName"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetEmpShield",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetEmpShield",
+   "library": null,
+   "help": "Setzt den EMP Schild auf [0 .. 1]",
+   "parameters": [
+    "ShieldValue"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetEnvironmentCubeMap",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_SetEnvironmentCubeMap",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_SetFrequency",
+   "node_type": "SED_ScriptOrder",
+   "command": "Stream_SetTurbulenceFrequency",
+   "library": null,
+   "help": "Setzt die Frequenz der Turbulenzen.",
+   "parameters": [
+    "TurbulenceFrequency"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetGroupID",
+   "node_type": "SED_NodeIntegerTableSelect",
+   "command": "Body_SetFriendOrFoeID",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_SetItemCount",
+   "node_type": "SED_NodeInteger",
+   "command": "ItemBox_SetItemCount",
+   "library": null,
+   "help": "use default if set to -1",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-1"
+  },
+  {
+   "template": "TMP_SetMap",
+   "node_type": "SED_NodeFileSelect",
+   "command": "FX_Plant_SetMap",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "TMP_EnterSimulation"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_SetMaxZ",
+   "node_type": "SED_NodeFloat",
+   "command": "PatrolArea_SetMaxZ",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "+20"
+  },
+  {
+   "template": "TMP_SetMinZ",
+   "node_type": "SED_NodeFloat",
+   "command": "PatrolArea_SetMinZ",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "-20"
+  },
+  {
+   "template": "TMP_SetMode",
+   "node_type": "SED_NodeText",
+   "command": "Light_SetMode",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "normal"
+  },
+  {
+   "template": "TMP_SetNPCHitFactor",
+   "node_type": "SED_NodeFloat",
+   "command": "Game_SetNPCHitFactor",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "default": "1.0"
+  },
+  {
+   "template": "TMP_SetObservedDestroyer",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetObservedDestroyer",
+   "library": null,
+   "help": "Set destroyer by index (is checked to be the destoyer if destruction occurs).",
+   "parameters": [
+    "DestroyerIndex"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetRadius",
+   "node_type": "SED_NodeFloat",
+   "command": "Position_SetRadius",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "5"
+  },
+  {
+   "template": "TMP_SetRadius",
+   "node_type": "SED_NodeFloat",
+   "command": "Position_SetRadius",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "5"
+  },
+  {
+   "template": "TMP_SetRadius",
+   "node_type": "SED_NodeFloat",
+   "command": "PatrolArea_SetRadius",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "50"
+  },
+  {
+   "template": "TMP_SetRadius",
+   "node_type": "SED_NodeFloat",
+   "command": "WayPoint_SetRadius",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "5"
+  },
+  {
+   "template": "TMP_SetShield",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetKineticShield",
+   "library": null,
+   "help": "Setzt den kinetischen Schild auf [0 .. 1]",
+   "parameters": [
+    "ShieldValue"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetShieldBarrier",
+   "node_type": "SED_ScriptOrder",
+   "command": "ShieldedBody_SetShieldBarrier",
+   "library": null,
+   "help": "Sets a minimum shield value for kinetic and emp shield (0.0 disables barrier).",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetSniper",
+   "node_type": "SED_ScriptOrder",
+   "command": "Gun_SetSniperBullet",
+   "library": null,
+   "help": "Setzt einen neuen Schußtyp für Waffen im Sniper Mode mit Verzögerungszeit.",
+   "parameters": [
+    "BulletName"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetState",
+   "node_type": "SED_SetState",
+   "command": null,
+   "library": null,
+   "help": "Set a Bool-Value",
+   "parameters": [
+    "Reference"
+   ],
+   "in_aquanox1": null,
+   "in_aquanox2": null,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SetTakeKey_Activate",
+   "node_type": "SED_ScriptOrder",
+   "command": "WayPoint_SetTakeKey_Activate",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetTakeKey_Attach",
+   "node_type": "SED_ScriptOrder",
+   "command": "WayPoint_Attach",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetTakeKey_Enter",
+   "node_type": "SED_ScriptOrder",
+   "command": "WayPoint_SetTakeKey_Enter",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetTakeKey_Inside",
+   "node_type": "SED_ScriptOrder",
+   "command": "WayPoint_SetTakeKey_Inside",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Count"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetTakeKey_Leave",
+   "node_type": "SED_ScriptOrder",
+   "command": "WayPoint_SetTakeKey_Leave",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetTakeKey_Outside",
+   "node_type": "SED_ScriptOrder",
+   "command": "WayPoint_SetTakeKey_Outside",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Count"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetToPathPosition",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": "Plaziert das Schiff an die Stelle eines anderen Objektes.",
+   "parameters": [
+    "1"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetToPosition",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetPosition",
+   "library": null,
+   "help": "Plaziert das Schiff an die Stelle eines anderen Objektes.",
+   "parameters": [
+    "1"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetVelocity",
+   "node_type": "SED_ScriptOrder",
+   "command": "Stream_SetCurrentSpeed",
+   "library": null,
+   "help": "Setzt die Geschwindigkeit des Laminaren und des Turbulenten Stromes.",
+   "parameters": [
+    "LaminarVelocity"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SetWayPoint",
+   "node_type": "SED_ScriptOrder",
+   "command": "Game_SetWayPoint",
+   "library": null,
+   "help": "Setzt den Wegpunkt innerhalb des Spieles",
+   "parameters": [
+    "TMP_ReferenceToNodeNotNeed"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_ShieldBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "These commands modify shield related values.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_SimpleNothing",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SimplePlayMusic",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_PlayMusic",
+   "library": null,
+   "help": "Plays a previously loaded music track",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SimplePlaySound",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_PlaySound",
+   "library": null,
+   "help": "Plays a previously loaded music track as a sound",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SimpleScriptCallSubScript",
+   "node_type": "SED_SimpleScriptCall",
+   "command": null,
+   "library": null,
+   "help": "Aufruf eines anderen Befehles",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SimpleScriptLog",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Script_Log",
+   "library": null,
+   "help": "Gibt Kommentar mit Objektnamen aus",
+   "parameters": [
+    "Text"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SimpleSetWayPoint",
+   "node_type": "SED_ScriptSimpleOrder",
+   "command": "Game_SetWayPoint",
+   "library": null,
+   "help": "Setzt den Wegpunkt innerhalb des Spieles",
+   "parameters": [
+    "TMP_ReferenceToNodeNotNeed"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "printcolor": "0,0,255"
+  },
+  {
+   "template": "TMP_SizeX",
+   "node_type": "SED_NodeFloat",
+   "command": "LaserWall_SetWallExtensionX",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "50.0"
+  },
+  {
+   "template": "TMP_SizeZ",
+   "node_type": "SED_NodeFloat",
+   "command": "LaserWall_SetWallExtensionZ",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "TMP_EnterSimulation"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "50.0"
+  },
+  {
+   "template": "TMP_StopBehaviours",
+   "node_type": "SED_ScriptOrder",
+   "command": "StopAllActiveBehaviours",
+   "library": null,
+   "help": "Stoppt die Verhalten, ist bei einem Sektionswechsel zu benutzen.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "255,128,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_SuppressFF",
+   "node_type": "SED_ScriptOrder",
+   "command": "Player_SuppressFF",
+   "library": null,
+   "help": "Supresses Friendly fire",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_TableText",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadTextTable",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track10",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track11",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track12",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track13",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track14",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track15",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track16",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track3",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track4",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track5",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track6",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track7",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track8",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_Track9",
+   "node_type": "SED_NodeFileSelect",
+   "command": "Game_LoadMusic",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_TurretAngleArea",
+   "node_type": "SED_ScriptOrder",
+   "command": "Turret_SetAngleArea",
+   "library": null,
+   "help": "Stellt die Winkelbereiche für den Turm ein.",
+   "parameters": [
+    "AlphaRange"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_TurretAttack",
+   "node_type": "SED_ScriptOrder",
+   "command": "TurretLib.Attack",
+   "library": "TurretLib",
+   "help": "Schaltet den Turret auf Angriff.  Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend",
+   "parameters": [
+    "NearRange"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_TurretJumpOut",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.Turret_DipolJumpOut",
+   "library": "DipolLib",
+   "help": "Performs a jump out for the turret",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,128,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_TurretSetAcousticMode",
+   "node_type": "SED_ScriptOrder",
+   "command": "Turret_SetAcousticMode",
+   "library": null,
+   "help": "Setzt den Turm auf Akustikmodus.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VC",
+   "node_type": "SED_NodeCone",
+   "command": "Trigger_SetVisibilityCone",
+   "library": null,
+   "help": null,
+   "parameters": [
+    "Alpha"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_VehicleActivateTurrets",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_AttackTurrets",
+   "library": null,
+   "help": "Schaltet die Türme eines Vehicles auf Angriff, muß wieder abgeschaltet werden. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend",
+   "parameters": [
+    "TurretGroup"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleAttackBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Dieser Abschnitt enthält alle Angriffsbefehle",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VehicleAvoidBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Dieser Abschnitt enthalet alle Befehle, die etwas mit Kollision- und Ausweichverhalten machen.",
+   "parameters": [
+    "\u0018"
+   ],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VehicleClearArea",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleAttackLib.ClearArea",
+   "library": "VehicleAttackLib",
+   "help": "Bereinigt ein Gebiet von mehreren Gegnern. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend",
+   "parameters": [
+    "AttackPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleClearAreaFrom",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleAttackLib.ClearAreaFrom",
+   "library": "VehicleAttackLib",
+   "help": "Bereinigt ein Gebiet von einem bestimmten Gegner.",
+   "parameters": [
+    "WaitingTime"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleCollideBlock",
+   "node_type": "SED_NodeList",
+   "command": "VehicleGotoLib.ComplexGoto",
+   "library": "VehicleGotoLib",
+   "help": "Schaltet das Ausweichverhalten des Vehicles ein.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "default": "{{\"ActivateAvoidance\"",
+   "nocallback": "0",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleCollideObjects",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_CollisionObjects",
+   "library": null,
+   "help": "Schaltet die Kollision mit den Objekten ein",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleDeactivateAvoidance",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.ComplexGoto",
+   "library": "VehicleGotoLib",
+   "help": "Schaltet das Ausweichverhalten des Vehicles aus.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "default": "{{\"DeactivateAvoidance\"",
+   "nocallback": "0",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleDeactivateTurrets",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_AttackTurretsStop",
+   "library": null,
+   "help": "Schaltet die Türme eines Vehicles aus dem Angriffsmodus heraus.",
+   "parameters": [
+    "TurretGroup"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleDock",
+   "node_type": "SED_ScriptOrder",
+   "command": "DockLib.DockVehicle",
+   "library": "DockLib",
+   "help": "Läßt dasFahrzeug im angegenen Dock andocken.",
+   "parameters": [
+    "TimeToUndock"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleGooseMarchPat",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.GooseMarchPat",
+   "library": "VehicleGotoLib",
+   "help": "Läßt das Vehicle einen Gänsemarsch aus dem Patrol heraus fahren.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleGooseMarchStat",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.GooseMarchStat",
+   "library": "VehicleGotoLib",
+   "help": "Läßt das Vehicle einen Gänsemarsch aus dem Stand machen.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleGoto",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.ComplexGoto",
+   "library": "VehicleGotoLib",
+   "help": "Läßt das Vehicle eine bestimmten Pfad entlang fahren.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleGotoBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Dieser Abschnitt enthält Befehle für einfache Goto Aktivitäten",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VehicleGotoFromTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.ComplexGoto",
+   "library": "VehicleGotoLib",
+   "help": "Läßt das Vehicle vom Start- bis zum Endpunkt fahren.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleGuardArea",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleAttackLib.GuardArea",
+   "library": "VehicleAttackLib",
+   "help": "Bewacht ein Gebiet. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend",
+   "parameters": [
+    "AttackPrefix1"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleMultiPatrol",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.MultiPatrol",
+   "library": "VehicleGotoLib",
+   "help": "Läßt das Vehicle einen Patrol in mehreren Areas machen (mind. 2)",
+   "parameters": [
+    "AreaTimeOut"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleNonCollideObjects",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_CollisionObjects",
+   "library": null,
+   "help": "Schaltet die Kollision mit den Objekten ab.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleParkPatrol",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_ParkPatrol",
+   "library": null,
+   "help": "Parkt das Fahrzeug in der angegebenen Patrol Area",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleUnDock",
+   "node_type": "SED_ScriptOrder",
+   "command": "DockLib.UndockOwn",
+   "library": "DockLib",
+   "help": "Hier sind alle Befehle zusammengefasst, die etwas mit dem Dock zu tun haben",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VehicleWait",
+   "node_type": "SED_ScriptOrder",
+   "command": "VehicleGotoLib.ComplexGoto",
+   "library": "VehicleGotoLib",
+   "help": "Läßt das Vehicle eine bestimmte Zeit warten.",
+   "parameters": [
+    "WaitingTime"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Vehicle_Taunt_Activate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_Taunt_Activate",
+   "library": null,
+   "help": "Activates sending of taunt messages.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Vehicle_Taunt_Deactivate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vehicle_Taunt_Deactivate",
+   "library": null,
+   "help": "Deactivates sending of taunt messages.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselActivateAvoidance",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Schlatet das Ausweichverhalten des Schiffes ein.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "default": "{{\"ActivateAvoidance\"",
+   "nocallback": "0",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselActivateEscapePod",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_ActivateEscapePod",
+   "library": null,
+   "help": "Activates the automatic escape pod ejection.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselActivateTurrets",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_AttackTurrets",
+   "library": null,
+   "help": "Schaltet die Türme eines Schiffes auf Angriff, muß wieder abgeschaltet werden. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend",
+   "parameters": [
+    "TurretGroup"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselAttackBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier sind alle Angriffsbefehle zusammengefasst.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselAvoidBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen alle Befehle, die etwas mit Avoidance machen.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselClearArea",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselAttackLib.ClearArea",
+   "library": "VesselAttackLib",
+   "help": "Bereinigt ein Gebiet von mehreren Feinden. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend, SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselClearAreaFrom",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselAttackLib.ClearAreaFrom",
+   "library": "VesselAttackLib",
+   "help": "Bereinigt ein Gebiet von einem speziellen Objekt, SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselCollideBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen alle Befehle, die etwas mit Kollision machen.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselCollideGenerics",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_CollisionGenerics",
+   "library": null,
+   "help": "Schaltet die Kollision des Schiffes mit Generics ein.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselCollideObjects",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_CollisionObjects",
+   "library": null,
+   "help": "Schaltet die Kollision des Schiffes mit Objekten ein.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselCollideTerrain",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_CollisionTerrain",
+   "library": null,
+   "help": "Schaltet die Kollision des Schiffes mit dem Terrain ein (Standard = aus).",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselComplexGotoAttack",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.ComplexGotoAttack",
+   "library": "MiscLib",
+   "help": "Fährt eine komplexere Strecke ab und bekämpft eventuelle Gegner. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend, SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselDeactivateAvoidance",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Schlatet das Ausweichverhalten des Schiffes ab.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "default": "{{\"DeactivateAvoidance\"",
+   "nocallback": "0",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselDeactivateEscapePod",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_DeactivateEscapePod",
+   "library": null,
+   "help": "Deactivates the automatic escape pod ejection.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselDeactivateTurrets",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_AttackTurretsStop",
+   "library": null,
+   "help": "Schaltet die Türme eines Schiffes aus dem Angriffsmodus heraus.",
+   "parameters": [
+    "TurretGroup"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselDock",
+   "node_type": "SED_ScriptOrder",
+   "command": "DockLib.Dock",
+   "library": "DockLib",
+   "help": "Läßt das Schiff im angegenen Dock andocken.",
+   "parameters": [
+    "TimeToUndock"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselEscapePod",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen alle Befehle, die etwas mit Kollision machen.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselFollowInFormation",
+   "node_type": "SED_ScriptOrder",
+   "command": "FormationLib.FollowInFormation",
+   "library": "FormationLib",
+   "help": "Läßt ein Objekt einer Formation folgen, die vom Spieler angeführt wird.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselFollowProtect",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.FollowProtect",
+   "library": "MiscLib",
+   "help": "Beschützt ein SChiff, was sich im ProtedtedGoto oder im ProtectedPatrol befindet. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend, SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselForceEscapePod",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_ForceEjection",
+   "library": null,
+   "help": "Forces the escape pod to eject immediately.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselFormationBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen alle Befehle, die sich auf Formationen beziehen.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselGooseMarchPat",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.GooseMarchPat",
+   "library": "VesselGotoLib",
+   "help": "Läßt das SChiff einen Gänsemarsch aus dem Patrol fahren.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselGooseMarchStat",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.GooseMarchStat",
+   "library": "VesselGotoLib",
+   "help": "Lasset das Schiff einen Gänsemarsch aus dem Stand fahren.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselGoto",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Läßt das Schiff einen festen Pfad entlang fahren",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselGotoAttack",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselAttackLib.GotoAttack",
+   "library": "VesselAttackLib",
+   "help": "Fährt einen Pfad entlang und reagiert auf Feindkontakt. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend, SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselGotoBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier sind alle Befehle zusammengefasst, die etwas mit Schiffsbewegungen machen.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselGotoFromTo",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Läßt das Schiff einen Pfad von der angegebenen Start- bis zur Zielposition fahren.",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselGuardArea",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselAttackLib.GuardArea",
+   "library": "VesselAttackLib",
+   "help": "Bewacht ein Gebiet. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend. SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselGuardAreaRespawn",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselAttackLib.GuardAreaRespawn",
+   "library": "VesselAttackLib",
+   "help": "Bewacht ein Gebiet, Schiffe werden immer wiedergeboren. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend. SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselInfiltrate",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.Infiltrate",
+   "library": "MiscLib",
+   "help": "Infiltriert ein Objekt. Die relative Anfahrposition muß angegeben werden. Bei einer Infiltrationszeit von 0 wird dies nie abgebrochen.",
+   "parameters": [
+    "CounterDock"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselJumpOut",
+   "node_type": "SED_ScriptOrder",
+   "command": "DipolLib.DipolJumpOut",
+   "library": "DipolLib",
+   "help": "Performs a jump out for the vessel",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,128,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselMilkRunGoto",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.MilkRunGoto",
+   "library": "MiscLib",
+   "help": "Fährt eine komplexere Strecke inf Formation ab und bekämpft eventuelle Gegner. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend, SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselMilkRunPatrol",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.MilkRunPatrol",
+   "library": "MiscLib",
+   "help": "Patrol in mehreren Areas (mind. 2) mit gleichzeitiger Angriffsfunktion. Zusatzkürzel für Prefixe: E: Enemy, U:Unknown, N :Neutral, F:Friend,  SensorMode 0:Standard, 1:AvpSensor, 2:AvpSensor mit Verdeckung",
+   "parameters": [
+    "SensorMode"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselMultiPatrol",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.MultiPatrol",
+   "library": "VesselGotoLib",
+   "help": "Führt ein Patrol in mehreren Areas abwechselnd aus (mindestens 2 angeben)",
+   "parameters": [
+    "AreaTimeOut"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselNonCollideGenerics",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_CollisionGenerics",
+   "library": null,
+   "help": "Schaltet die Kollision des Schiffes mit Generics aus.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselNonCollideObjects",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_CollisionObjects",
+   "library": null,
+   "help": "Schaltet die Kollision des Schiffes mit Objekten aus.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselNonCollideTerrain",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_CollisionTerrain",
+   "library": null,
+   "help": "Schaltet die Kollision des Schiffes mit dem Terrain aus.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselPlaceFormation",
+   "node_type": "SED_ScriptOrder",
+   "command": "FormationLib.PlaceFormation",
+   "library": "FormationLib",
+   "help": "Baut eine Formation an einer bestimmten Position auf",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselPlaceFormationPath",
+   "node_type": "SED_ScriptOrder",
+   "command": "FormationLib.PlaceFormationPath",
+   "library": "FormationLib",
+   "help": "Baut eine Forrmation so auf, dass Sie auf der ersten Position des Pfade sitzt und auf die zweite Position sieht.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselProtectionBlock",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen alle Befehle, die für die Zusammenstellung eines Geleitschutzes notwendig sind.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_VesselReactivateCollisionReaction",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_ReactivateCollisionReaction",
+   "library": null,
+   "help": "Hebt den Befehl suspend collision reation wieder auf.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselSetEscapeBarrier",
+   "node_type": "SED_ScriptOrder",
+   "command": "Body_SetKinEscapeBarrier",
+   "library": null,
+   "help": "Sets the kinetic barrier for the escape pod when to eject (0..1).",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselSetSound",
+   "node_type": "SED_ScriptOrder",
+   "command": "Emitter_SetSoundEmissionLevel",
+   "library": null,
+   "help": "Stellt den Sound - Emissionswert für das Schiff ein (0-3).",
+   "parameters": [
+    "SoundValue"
+   ],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselSink",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Läßt das Schiff bis zur angegebenen Position absinken/auftauchen",
+   "parameters": [
+    "Velocity"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselStopTuringInEmp",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_DeactivateTurningInEmp",
+   "library": null,
+   "help": "Verhindert das Drehen im Emp-Zustand.",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselSuspendCollisionReaction",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_SuspendCollisionReaction",
+   "library": null,
+   "help": "Bewirkt das ein grosses Schiff keine Kollisionreaktion mehr berechnet (nur bei großen Schiffen und sehr sparsam einsetzen).",
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselUnDock",
+   "node_type": "SED_ScriptOrder",
+   "command": "DockLib.UndockOwn",
+   "library": "DockLib",
+   "help": "Läßt das Schiff vom angegebenen Dock abdocken.",
+   "parameters": [
+    "TMP_VesselUnDock"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselUnInfiltrate",
+   "node_type": "SED_ScriptOrder",
+   "command": "MiscLib.UnInfiltrate",
+   "library": "MiscLib",
+   "help": "Bricht denh aktuellen Infiltrationsprozeß eines Objektes ab.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselWait",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Läßt das Schiff abstoppen.",
+   "parameters": [
+    "WaitingTime"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselWaitWithHeading",
+   "node_type": "SED_ScriptOrder",
+   "command": "VesselGotoLib.ComplexGoto",
+   "library": "VesselGotoLib",
+   "help": "Läßt das abstoppen und zur angegebenen Position hin ausrichten.",
+   "parameters": [
+    "Time"
+   ],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "printcolor": "0,0,128",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_VesselWeaponCommands",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen die diversen Befehle, die sich auf das Schußßverhalten auswirken.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_Vessel_Taunt_Activate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_Taunt_Activate",
+   "library": null,
+   "help": "Activates sending of taunt messages.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Vessel_Taunt_Deactivate",
+   "node_type": "SED_ScriptOrder",
+   "command": "Vessel_Taunt_Deactivate",
+   "library": null,
+   "help": "Deactivates sending of taunt messages.",
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true,
+   "nocallback": "1",
+   "printcolor": "0,0,255",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_Wait",
+   "node_type": "SED_ScriptOrderNothing",
+   "command": "__DoNothing",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": false,
+   "notclearbehaviour": "1",
+   "defaultasbasename": "1"
+  },
+  {
+   "template": "TMP_WeaponCommands",
+   "node_type": "SED_NodeList",
+   "command": null,
+   "library": null,
+   "help": "Hier stehen die diversen Befehle, die sich auf das Schußßverhalten auswirken.",
+   "parameters": [],
+   "in_aquanox1": null,
+   "in_aquanox2": null
+  },
+  {
+   "template": "TMP_setDecompressionHeight",
+   "node_type": "SED_NodeFloat",
+   "command": "Game_SetDecompressionHeight",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "512.0"
+  },
+  {
+   "template": "TMP_setDecompressionRange",
+   "node_type": "SED_NodeFloat",
+   "command": "Game_SetDecompressionRange",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": false,
+   "in_aquanox2": true
+  },
+  {
+   "template": "TMP_setTerrainDepth",
+   "node_type": "SED_NodeFloat",
+   "command": "Game_SetTerrainDepth",
+   "library": null,
+   "help": null,
+   "parameters": [],
+   "in_aquanox1": true,
+   "in_aquanox2": true,
+   "default": "1024.0"
+  }
+ ]
+}

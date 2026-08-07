@@ -1,0 +1,25 @@
+[19:47:34] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[19:47:34]   ok  NOD_Script::HeartBeat  0x0048D750
+[19:47:34]   ok  lua_dobuffer           0x005D5790
+[19:47:34] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730710E0
+[19:47:34] --- Stufe 3: Menuegrenze (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUPATCH gefunden) ---
+[19:47:34]   ok  GUI MENU_Open          0x0058D520
+[19:47:34]   ok  GUI MENU_Close         0x0058D760
+[19:47:34] MENUE: Arm angelegt bei 0x009B0000 (pop edi/esi/ebx; ret 8)
+[19:47:34] MENUE: Grenze 0x24 -> 0x25  (Open 25, Close 25)
+[19:47:34] MENUE: Tabelleneintrag [37]  Open 0x009B0000, Close 0x009B0000
+[19:47:34] MENUE: *** PATCH SITZT ***
+[19:47:34] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[19:47:34]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[19:47:34] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x73071DD0 (gerettet: 53 8B 5C 24 0C)
+[19:47:34] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[19:47:59] MENU_Open  #1: Index 5, this=0x0577D6D4
+[19:47:59] MENUE-ARRAY bei [this+0x3A4], this=0x0577D6D4:
+[19:47:59]    [00..07] 03C6FD2C 03C6D92C 03C6D8AC 03C6DBAC 03C6DD2C 03C6DC2C 03C6DDAC 03C6DE2C 
+[19:47:59]    [08..15] 03C6DFAC 03C6E4AC 03C6E7AC 03C6E8AC 03C6E9AC 03C6E92C 03C6EAAC 03C6EB2C 
+[19:47:59]    [16..23] 03C6EC2C 03C6ED2C 03C6ECAC 03C6EFAC 03C6F62C 03C6D82C 03C6D72C 03C6F0AC 
+[19:47:59]    [24..31] 03C6F12C 03C6F1AC 03C6F22C 03C6F2AC 03C6F42C 03C6F4AC 03C6F52C 03C6F72C 
+[19:47:59]    [32..39] 03C6F82C 03C6F7AC 03C6F8AC 03C6F92C 03C6FBAC 00000000 03359A6C 00000004 
+[19:47:59]    [40..47] 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+[19:47:59] MENUE-ARRAY: letzter plausible Zeiger bei Index 38 (erwartet 36, wenn das Array 37 Eintraege hat)
+[19:47:59] MENUE-ARRAY: Zugriffsfehler beim Lesen -- uebersprungen.

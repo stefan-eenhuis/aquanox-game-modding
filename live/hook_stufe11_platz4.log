@@ -1,0 +1,73 @@
+[23:26:30] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[23:26:30]   ok  NOD_Script::HeartBeat  0x0048D750
+[23:26:30]   ok  lua_dobuffer           0x005D5790
+[23:26:30] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5217F0
+[23:26:30] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[23:26:30] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[23:26:30] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[23:26:30] --- Stufe 11: Menuepunkt 4 startet Mission "map\1n1\script\sp_1n1" ---
+[23:26:30] STUFE 11: Missionszweig bei 0x010D0000 (32 Byte)
+[23:26:30] STUFE 11: Tabelle[4]  0x00574E07 -> 0x010D0000
+[23:26:30] STUFE 11: *** Hauptmenuepunkt 4 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[23:26:30] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[23:26:30] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[23:26:30] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[23:26:30] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[23:26:30]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[23:26:30] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5234A0 (gerettet: 53 8B 5C 24 0C)
+[23:26:30] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[23:26:46] STUFE 11: Missionsstart #1  "map\1n1\script\sp_1n1"  ->  Zustand 0x03D6262C
+[23:26:48] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[23:26:55] STUFE 11: Missionsstart #2  "map\1n1\script\sp_1n1"  ->  Zustand 0x03D57D2C
+[23:27:06] MENU_Open  #1: Index 18, this=0x0574610C
+[23:27:06] MENUE-ARRAY bei [this+0x3A4], this=0x0574610C:
+[23:27:06]    [00..07] 03D69EAC 03D69F2C 03D69FAC 03D5B12C 03D5AEAC 03D6212C 03D619AC 03D61BAC 
+[23:27:06]    [08..15] 03D61A2C 03D620AC 03D622AC 03D623AC 03D63CAC 03D63C2C 03D63B2C 03D63A2C 
+[23:27:06]    [16..23] 03D61FAC 03D6272C 03D625AC 03D624AC 03D629AC 03D62A2C 03D62B2C 03D62D2C 
+[23:27:06]    [24..31] 03D62CAC 03D62DAC 03D62EAC 03D62F2C 03D6362C 03D617AC 03D6182C 03D6172C 
+[23:27:06]    [32..39] 03D630AC 03D6312C 03D631AC 03D6322C 03D6332C 00000001 03439E4C 00000004 
+[23:27:06]    [40..47] 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+[23:27:06] MENUE-ARRAY: letzter plausible Zeiger bei Index 38 (erwartet 36, wenn das Array 37 Eintraege hat)
+[23:27:06] MENUE-ARRAY: Zugriffsfehler beim Lesen -- uebersprungen.
+[23:27:06] --- Stufe 5: die 37 Bildschirmobjekte (44 Heaps) ---
+[23:27:06]    [00] obj=0x03D69EAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [01] obj=0x03D69F2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [02] obj=0x03D69FAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [03] obj=0x03D5B12C vtbl=0x005FA83C groesse=?
+[23:27:06]    [04] obj=0x03D5AEAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [05] obj=0x03D6212C vtbl=0x005FA83C groesse=?
+[23:27:06]    [06] obj=0x03D619AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [07] obj=0x03D61BAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [08] obj=0x03D61A2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [09] obj=0x03D620AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [10] obj=0x03D622AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [11] obj=0x03D623AC vtbl=0x005FA818 groesse=?
+[23:27:06]    [12] obj=0x03D63CAC vtbl=0x005FA818 groesse=?
+[23:27:06]    [13] obj=0x03D63C2C vtbl=0x005FA818 groesse=?
+[23:27:06]    [14] obj=0x03D63B2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [15] obj=0x03D63A2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [16] obj=0x03D61FAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [17] obj=0x03D6272C vtbl=0x005FA83C groesse=?
+[23:27:06]    [18] obj=0x03D625AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [19] obj=0x03D624AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [20] obj=0x03D629AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [21] obj=0x03D62A2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [22] obj=0x03D62B2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [23] obj=0x03D62D2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [24] obj=0x03D62CAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [25] obj=0x03D62DAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [26] obj=0x03D62EAC vtbl=0x005FA83C groesse=?
+[23:27:06]    [27] obj=0x03D62F2C vtbl=0x005FA83C groesse=?
+[23:27:06]    [28] obj=0x03D6362C vtbl=0x005FA83C groesse=?
+[23:27:06]    [29] obj=0x03D617AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [30] obj=0x03D6182C vtbl=0x005FA83C groesse=?
+[23:27:06]    [31] obj=0x03D6172C vtbl=0x005FA83C groesse=?
+[23:27:06]    [32] obj=0x03D630AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [33] obj=0x03D6312C vtbl=0x005FA83C groesse=?
+[23:27:06]    [34] obj=0x03D631AC vtbl=0x005FA83C groesse=?
+[23:27:06]    [35] obj=0x03D6322C vtbl=0x005FA83C groesse=?
+[23:27:06]    [36] obj=0x03D6332C vtbl=0x005FA83C groesse=?
+[23:27:06] --- Vtables mit mehreren Instanzen (klonbar) ---
+[23:27:06]    vtbl 0x005FA83C: 34 Instanzen -> Index 0 1 2 3 4 5 6 7 8 9 10 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 
+[23:27:06]    vtbl 0x005FA818: 3 Instanzen -> Index 11 12 13 
+[23:27:08] STUFE 11: Missionsstart #3  "map\1n1\script\sp_1n1"  ->  Zustand 0x03D6222C

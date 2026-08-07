@@ -1,0 +1,38 @@
+SUBSYSTEME UND IHRE VERFLECHTUNG
+================================
+
+--- DES_Data ---
+   6 Funktionen, 1101 Byte
+   ruft:        TERMINATION, str_copy, str_len
+   gerufen von: (keine)
+
+--- GFX_Font ---
+   2 Funktionen, 899 Byte
+   ruft:        GFX_Bitmap__GFX_Bitmap, GFX_PictureTGA__ReadData_ARGB1555, GFX_PictureTGA__ReadData_ARGB1555_2, TERMINATION, operator_new, str_copy
+   gerufen von: GUI_Menu__Parse, MUI_Menu__Parse
+
+--- HUD_CockpitInterface ---
+   1 Funktionen, 2962 Byte
+   ruft:        MUI_Menu__Parse, TERMINATION
+   gerufen von: (keine)
+
+--- VEC_Material ---
+   2 Funktionen, 1844 Byte
+   ruft:        TERMINATION, __ftol, str_copy, str_len
+   gerufen von: (keine)
+
+--- VEC_Mesh ---
+   1 Funktionen, 2485 Byte
+   ruft:        TERMINATION, operator_delete, operator_new
+   gerufen von: (keine)
+
+--- NOD_Node ---
+   6 Funktionen, 1651 Byte
+   ruft:        NOD_Message__Allocate_25, NOD_Message__Allocate_94, TERMINATION
+   gerufen von: ANT_Client__CreateObject_3, ANT_Rules__HasFlag_3, Aqua_State_Menu_InGame__HeartBeat, Aqua_State_SinglePlayer__HeartBeat, NOD_Bullet__ParseIniFile, NOD_Debris__ParseIniFile, NOD_EscapePod__ParseIniFile, NOD_FX_Seeder__ParseIniFile_3, NOD_FX_Spawn__HeartBeat, NOD_FX_Spawn__ParseIniFile, NOD_Game__ANT_SetPlayer, NOD_Generic__ParseIniFile, NOD_Generic__ParseIniFile_2, NOD_Generic__ParseIniFile_3, ... (+21)
+
+--- REP_TerrainPrelit ---
+   1 Funktionen, 3602 Byte
+   ruft:        DSP_Display__Texture_Create, DSP_Display__Texture_Unlock, GFX_PictureTGA__ReadData_RGBA8888, TERMINATION, __ftol, operator_delete, operator_new
+   gerufen von: (keine)
+

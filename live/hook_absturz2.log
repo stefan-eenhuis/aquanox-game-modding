@@ -1,0 +1,71 @@
+﻿
+[20:12:46] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[20:12:46]   ok  NOD_Script::HeartBeat  0x0048D750
+[20:12:46]   ok  lua_dobuffer           0x005D5790
+[20:12:46] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730613B0
+[20:12:46] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[20:12:46] Stufe 6 (38. Bildschirm): ANGEFORDERT -- wird beim ersten Menuewechsel gebaut
+[20:12:46] Stufe 7 (F9 oeffnet Bildschirm 37): AN -- F9 halten und einen Menuepunkt waehlen
+[20:12:46] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[20:12:46]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[20:12:46] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x73062620 (gerettet: 53 8B 5C 24 0C)
+[20:12:46] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[20:12:54] STUFE 6: Klon von Index 31 (0x03DAFBAC) nach 0x0D220000, 128 Byte, vtbl 0x005FA83C
+[20:12:54]   ok  Arrayzugriff 1         0x0058D6AB
+[20:12:54] STUFE 6: 0x0058D6AB -> mov ecx,[ebx*4+0x7307FD70]
+[20:12:54]   ok  Arrayzugriff 2         0x0058D8F3
+[20:12:54] STUFE 6: 0x0058D8F3 -> mov ecx,[ebx*4+0x7307FD70]
+[20:12:54] STUFE 6: Grenze  Open 83 FB 25   Close 83 FB 25
+[20:12:54] STUFE 6: *** BEREIT -- Index 37 zeigt auf den Klon ***
+[20:12:54] MENU_Open  #1: Index 5, this=0x18E30054
+[20:12:54] MENUE-ARRAY bei [this+0x3A4], this=0x18E30054:
+[20:12:54]    [00..07] 03DB1CAC 03DB1C2C 03DB1BAC 03DB192C 03DB18AC 03DB182C 03DB172C 03DB16AC 
+[20:12:54]    [08..15] 03DB162C 03DB0FAC 03DB0D2C 03DB0C2C 03DB0BAC 03DB0B2C 03DB0AAC 03DB09AC 
+[20:12:54]    [16..23] 03DB08AC 03DB082C 03DB07AC 03DB072C 03DB052C 03DB042C 03DB032C 03DB01AC 
+[20:12:54]    [24..31] 03DB012C 03DB00AC 03DB002C 03DAFFAC 03DAFE2C 03DAFDAC 03DAFD2C 03DAFBAC 
+[20:12:54]    [32..39] 03DAFB2C 03DAFAAC 03DAFA2C 03DAF9AC 03DAF92C 00000000 03498ECC 00000004 
+[20:12:54]    [40..47] 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+[20:12:54] MENUE-ARRAY: letzter plausible Zeiger bei Index 38 (erwartet 36, wenn das Array 37 Eintraege hat)
+[20:12:54] MENUE-ARRAY: Zugriffsfehler beim Lesen -- uebersprungen.
+[20:12:54] --- Stufe 5: die 37 Bildschirmobjekte (44 Heaps) ---
+[20:12:54]    [00] obj=0x03DB1CAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [01] obj=0x03DB1C2C vtbl=0x005FA83C groesse=?
+[20:12:54]    [02] obj=0x03DB1BAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [03] obj=0x03DB192C vtbl=0x005FA83C groesse=?
+[20:12:54]    [04] obj=0x03DB18AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [05] obj=0x03DB182C vtbl=0x005FA83C groesse=?
+[20:12:54]    [06] obj=0x03DB172C vtbl=0x005FA83C groesse=?
+[20:12:54]    [07] obj=0x03DB16AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [08] obj=0x03DB162C vtbl=0x005FA83C groesse=?
+[20:12:54]    [09] obj=0x03DB0FAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [10] obj=0x03DB0D2C vtbl=0x005FA83C groesse=?
+[20:12:54]    [11] obj=0x03DB0C2C vtbl=0x005FA818 groesse=?
+[20:12:54]    [12] obj=0x03DB0BAC vtbl=0x005FA818 groesse=?
+[20:12:54]    [13] obj=0x03DB0B2C vtbl=0x005FA818 groesse=?
+[20:12:54]    [14] obj=0x03DB0AAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [15] obj=0x03DB09AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [16] obj=0x03DB08AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [17] obj=0x03DB082C vtbl=0x005FA83C groesse=?
+[20:12:54]    [18] obj=0x03DB07AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [19] obj=0x03DB072C vtbl=0x005FA83C groesse=?
+[20:12:54]    [20] obj=0x03DB052C vtbl=0x005FA83C groesse=?
+[20:12:54]    [21] obj=0x03DB042C vtbl=0x005FA83C groesse=?
+[20:12:54]    [22] obj=0x03DB032C vtbl=0x005FA83C groesse=?
+[20:12:54]    [23] obj=0x03DB01AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [24] obj=0x03DB012C vtbl=0x005FA83C groesse=?
+[20:12:54]    [25] obj=0x03DB00AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [26] obj=0x03DB002C vtbl=0x005FA83C groesse=?
+[20:12:54]    [27] obj=0x03DAFFAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [28] obj=0x03DAFE2C vtbl=0x005FA83C groesse=?
+[20:12:54]    [29] obj=0x03DAFDAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [30] obj=0x03DAFD2C vtbl=0x005FA83C groesse=?
+[20:12:54]    [31] obj=0x03DAFBAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [32] obj=0x03DAFB2C vtbl=0x005FA83C groesse=?
+[20:12:54]    [33] obj=0x03DAFAAC vtbl=0x005FA83C groesse=?
+[20:12:54]    [34] obj=0x03DAFA2C vtbl=0x005FA83C groesse=?
+[20:12:54]    [35] obj=0x03DAF9AC vtbl=0x005FA83C groesse=?
+[20:12:54]    [36] obj=0x03DAF92C vtbl=0x005FA83C groesse=?
+[20:12:54] --- Vtables mit mehreren Instanzen (klonbar) ---
+[20:12:54]    vtbl 0x005FA83C: 34 Instanzen -> Index 0 1 2 3 4 5 6 7 8 9 10 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 
+[20:12:54]    vtbl 0x005FA818: 3 Instanzen -> Index 11 12 13 
+[20:12:57] MENU_Open  #2: *** F9 -- Index 5 wird zu 37 (Austausch #1), this=0x18E30054 ***

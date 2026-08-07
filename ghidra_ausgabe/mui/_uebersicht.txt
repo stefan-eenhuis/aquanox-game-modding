@@ -1,0 +1,18 @@
+SUBSYSTEME UND IHRE VERFLECHTUNG
+================================
+
+--- MUI_Menu ---
+   2 Funktionen, 2225 Byte
+   ruft:        GFX_Bitmap__GFX_Bitmap, GFX_Font__Open, MUI_Item__Parse, TERMINATION, operator_delete, operator_new, str_copy, str_len
+   gerufen von: Aqua_Renderer__LoadTextures_2, HUD_CockpitInterface__Parse
+
+--- MUI_Item ---
+   10 Funktionen, 2704 Byte
+   ruft:        TERMINATION, __ftol, operator_delete, operator_new, str_copy, str_len
+   gerufen von: MUI_Menu__Parse
+
+--- GUI_Menu__Parse ---
+   2 Funktionen, 2850 Byte
+   ruft:        GFX_Font__Open, GUI_TextMenu__AddTextItem, TERMINATION, operator_new, str_copy
+   gerufen von: GUI_MenuInterface__Parse
+

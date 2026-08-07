@@ -1,0 +1,61 @@
+GEGENPROBE: Capstone-Befunde gegen Ghidra
+=========================================
+
+1. Der Irrtum 0x5747f0 vs 0x5749d0
+   0x005747f0 -> FUN_005747f0 ab 0x005747f0 (231 Byte)
+   0x005749d0 -> GUI_Menu_Main__HeartBeat ab 0x005749d0 (1150 Byte)
+
+2. Die Sprungtabelle 0x574e60 -- Verweise darauf
+   0x00574ccb(DATA)   in GUI_Menu_Main__HeartBeat
+
+3. Aufrufer von 0x4247e0 (Aqua_State_InstantFight)
+   0x00424c2a(UNCONDITIONAL_CALL)   in Aqua_State_SinglePlayer__HeartBeat
+   0x00426ec4(UNCONDITIONAL_CALL)   in FUN_00426820
+   0x00421012(UNCONDITIONAL_CALL)   in Aqua_State_Menu_InGame__HeartBeat
+   0x00424c9e(UNCONDITIONAL_CALL)   in Aqua_State_SinglePlayer__HeartBeat
+   0x00424f3c(UNCONDITIONAL_CALL)   in Aqua_State_SinglePlayer__HeartBeat
+   0x00575f03(UNCONDITIONAL_CALL)   in GUI_Menu_Singleplayer__HeartBeat
+
+4. Aufrufer von 0x58ac90 (MAI_Result::AddOrder)
+   0x0058a61e(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Dock
+   0x0058a650(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Dock
+   0x0058a682(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Dock
+   0x0058a6b3(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Dock
+   0x0058a8b9(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Dock
+   0x00426f4f(UNCONDITIONAL_CALL)   in FUN_00426820
+   0x00426f5a(UNCONDITIONAL_CALL)   in FUN_00426820
+   0x0058861c(UNCONDITIONAL_CALL)   in FUN_005884b0
+   0x00588a09(UNCONDITIONAL_CALL)   in MAI_Handler__Handle
+   0x005893b4(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Station
+   0x00589f52(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Options
+   0x0058a084(UNCONDITIONAL_CALL)   in MAI_Handler__Handle_Select_Dialog_3
+
+5. Verweise auf die Vtable-Adressen 0x5fa500..0x5fa720
+   0x5fa500  1 Verweise: 0x005737b9(READ)
+   0x5fa504  1 Verweise: 0x00574558(READ)
+   0x5fa508  1 Verweise: 0x0057454c(READ)
+   0x5fa50c  1 Verweise: 0x005744cb(READ)
+   0x5fa510  1 Verweise: 0x00574409(READ)
+   0x5fa518  1 Verweise: 0x005742e3(READ)
+   0x5fa520  7 Verweise: 0x005748f8(DATA), 0x00574946(DATA), 0x00574c7e(DATA), 0x0057520e(DATA), 0x00576230(DATA), 0x005845cd(DATA), 0x00580af9(DATA)
+   0x5fa538  12 Verweise: 0x0057b2f6(DATA), 0x00575387(DATA), 0x0057b3d5(DATA), 0x005748e6(DATA), 0x00574956(DATA), 0x00576bd7(DATA), 0x00576bf6(DATA), 0x00576d31(DATA), 0x00576d9f(DATA), 0x00576e0f(DATA), 0x00576f03(DATA), 0x00574f16(DATA)
+   0x5fa550  3 Verweise: 0x00574f06(DATA), 0x00574ca3(DATA), 0x005761ff(DATA)
+   0x5fa568  6 Verweise: 0x00574c3c(DATA), 0x00574d8a(DATA), 0x00580470(DATA), 0x005864df(DATA), 0x00576a44(DATA), 0x00580b58(DATA)
+   0x5fa580  5 Verweise: 0x00574c09(DATA), 0x00574d48(DATA), 0x0058616a(DATA), 0x00585b7e(DATA), 0x00583ea2(DATA)
+   0x5fa598  5 Verweise: 0x00574bcf(DATA), 0x00574d05(DATA), 0x00575eb6(DATA), 0x0058137d(DATA), 0x00575bc9(DATA)
+   0x5fa5b0  2 Verweise: 0x00575359(DATA), 0x005751db(DATA)
+   0x5fa5c8  1 Verweise: 0x005751a8(DATA)
+   0x5fa5e0  1 Verweise: 0x005750d7(DATA)
+   0x5fa5f8  1 Verweise: 0x005761c9(DATA)
+   0x5fa610  4 Verweise: 0x00581c0f(DATA), 0x005820af(DATA), 0x005761a4(DATA), 0x00581957(DATA)
+   0x5fa628  9 Verweise: 0x0057ab78(DATA), 0x0057d759(DATA), 0x0057a298(DATA), 0x00580fbf(DATA), 0x0057fbc5(DATA), 0x005787bf(DATA), 0x0057617f(DATA), 0x0057c6ec(DATA), 0x0057bea0(DATA)
+   0x5fa640  1 Verweise: 0x005769e5(DATA)
+   0x5fa658  2 Verweise: 0x00576b39(DATA), 0x00576995(DATA)
+   0x5fa670  2 Verweise: 0x00576dc9(DATA), 0x005768bc(DATA)
+   0x5fa688  2 Verweise: 0x00576d59(DATA), 0x0057683b(DATA)
+   0x5fa6a0  2 Verweise: 0x00576e39(DATA), 0x005767ba(DATA)
+   0x5fa6b8  1 Verweise: 0x00576688(DATA)
+   0x5fa6d0  2 Verweise: 0x00576c83(DATA), 0x00576ca9(DATA)
+   0x5fa6e8  2 Verweise: 0x0057b357(DATA), 0x0057b379(DATA)
+   0x5fa700  1 Verweise: 0x0057be3d(DATA)
+   0x5fa718  1 Verweise: 0x00580450(DATA)

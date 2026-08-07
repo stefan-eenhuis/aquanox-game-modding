@@ -1,0 +1,1405 @@
+================================================================================
+ENTWICKLERKOMMENTARE IN DEN SPIELDATEIEN VON AQUANOX 1
+================================================================================
+Erzeugt von mod_docu\tools\kommentare_sammeln.py
+Durchsucht: 220 Klartextdateien unter dat\pak\extracted
+Gefunden:   3202 Kommentare
+
+WARUM DIESE DATEI: Ein Decompiler zeigt, was das Spiel TUT.
+Diese Zeilen zeigen, was es tun SOLLTE -- und was die Entwickler
+selbst fuer erklaerungsbeduerftig hielten. Mehrere Kommentare
+beschreiben Wirkungen, die es nicht ins fertige Spiel geschafft
+haben.
+
+Ergaenzt aquanox_entwicklerspuren.json (Arbeitspfade, Scherze,
+liegengebliebene Dateien) -- dort stehen die SPUREN, hier die
+WORTE.
+
+Gekochte Dateien (mit Tilde im Namen) enthalten keine Kommentare;
+beim Kochen gehen sie verloren. Was hier fehlt, ist also nicht
+uebersehen, sondern nicht mehr vorhanden.
+
+   ABSICHTEN -- was noch kommen sollte: 25
+   OFFENE FRAGEN DER ENTWICKLER: 1
+   WARNUNGEN UND BEKANNTE MAENGEL: 0
+   ERKLAERUNGEN: 1164
+   NAMENSMARKEN (nur gezaehlt): 2012
+
+Die Namensmarken sind Kommentare, die nur aus einem Wort oder einer
+Kennung bestehen -- Take-Nummern wie '5H4-ELF281' in den mtake-Dateien
+und Gegenstandsnamen wie 'plasmagatling' in station_d.des. Sie sind
+Beschriftungen, keine Aussagen, und werden hier nur gezaehlt.
+
+
+================================================================================
+1. ABSICHTEN -- WAS NOCH KOMMEN SOLLTE
+================================================================================
+Formulierungen wie 'sollte' und 'evtl.' zeigen an, dass die
+Wirkung zum Zeitpunkt der Auslieferung nicht umgesetzt war.
+Ob sie heute fehlt, laesst sich im Spiel pruefen.
+
+--- vfx\hud\hud.des ---
+    (Z301, [Item11])
+        evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),
+    (Z318, [Item12])
+        evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),
+    (Z407, [Item17])
+        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
+    (Z408, [Item17])
+        evtl. weiß flashen lassen, wenn Gegner getroffen (emp Schaden)
+    (Z436, [Item18])
+        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
+    (Z437, [Item18])
+        evtl. weiß flashen lassen, wenn Gegner getroffen (kin Schaden)
+    (Z515, [Item22])
+        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
+    (Z518, [Item22])
+        evtl. blinken lassen (rot/weiß), wenn Gegner mich geortet hat
+    (Z533, [Item23])
+        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
+    (Z536, [Item23])
+        evtl. blinken lassen (rot/weiß), wenn Gegner mich geortet hat
+    (Z773, [Item35])
+        Farbe sollte sich ändern, wenn man rückwärts fährt. (gelb?)
+    (Z900, [Item42])
+        evtl. spezielle Diffuse Color bei Noiselevel 0? (gelb?)
+    (Z1023, [Item47])
+        evtl. andere Diffuse Color, wenn buzzer = 0 (rot?)
+    (Z1239, [Item56])
+        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
+    (Z1266, [Item57])
+        evtl. weiß flashen lassen, wenn getroffen (emp Schaden)
+    (Z1293, [Item58])
+        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
+    (Z1320, [Item59])
+        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
+    (Z1347, [Item60])
+        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
+    (Z1369, [Data])
+        Wenn Alarm: evtl. blinkend
+    (Z1385, [Item61])
+        Wenn Alarm: evtl. blinkend
+    (Z1401, [Item62])
+        Wenn Alarm: evtl. blinkend
+    (Z1417, [Item63])
+        Wenn Alarm: evtl. blinkend
+    (Z1439, [Item65])
+        evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),
+
+--- vfx\menu\menu.des ---
+    (Z96, [GEOMETRY])
+        Menu background (immer sichtbar, evtl. opacity change)
+    (Z662, [Item46])
+        (evtl. zeitverzögert?)
+
+
+================================================================================
+2. OFFENE FRAGEN DER ENTWICKLER
+================================================================================
+Kommentare mit einem Fragezeichen -- die Entwickler waren sich
+an dieser Stelle selbst nicht sicher.
+
+--- vfx\hud\hud.des ---
+    (Z829, [Item37])
+        Wenn Boost deaktiv, Opacity auf 0.0 (?)
+
+
+================================================================================
+3. WARNUNGEN UND BEKANNTE MAENGEL
+================================================================================
+Wer an diesen Stellen etwas aendert, sollte den Hinweis der
+Entwickler kennen.
+
+
+================================================================================
+4. ERKLAERUNGEN, NACH DATEI
+================================================================================
+Die uebrigen Kommentare. Sie erklaeren Felder, Werte und Aufbau --
+oft die einzige Beschreibung, die es zu einem Feld gibt.
+
+--- vfx\menu\menu.des  (432 Kommentare) ---
+    (Z5, [MENU]) Parameter fuer das Schwingen des MENU
+    (Z9, [MOTION]) Sensitivität fuer X Schwingung
+    (Z11, [MOTION]) Steifigkeit fuer X Schwingung
+    (Z13, [MOTION]) Vorzeichen fuer X Schwingung
+    (Z16, [MOTION]) Sensitivität fuer Y Schwingung
+    (Z18, [MOTION]) Steifigkeit fuer Y Schwingung
+    (Z20, [MOTION]) Vorzeichen fuer Y Schwingung
+    (Z23, [MOTION]) Sensitivität fuer Z Schwingung
+    (Z25, [MOTION]) Steifigkeit fuer Z Schwingung
+    (Z27, [MOTION]) Vorzeichen fuer Z Schwingung
+    (Z32, [MOTION]) Diese Fonts werden für Schriften usw. benötigt
+    (Z37, [FONT]) font, alpha = 0
+    (Z50, [COLOR]) Frame Color 1 (green)
+    (Z52, [COLOR]) Frame Color 2 (yellow)
+    (Z61, [COLOR]) Coordinatesystems for meshes
+    (Z71, [GEOMETRY]) + Rotation um eine Achse pro Sek.
+    (Z76, [GEOMETRY]) + Rotation um eine Achse pro Sek.
+    (Z81, [GEOMETRY]) + Rotation um eine Achse pro Sek.
+    (Z86, [GEOMETRY]) + Rotation um eine Achse pro Sek.
+    (Z91, [GEOMETRY]) + Rotation um eine Achse pro Sek.
+    (Z100, [GEOMETRY]) Main: Tinting background
+    (Z109, [Item0]) Caution: This material is MULTIPLICATIVE
+    (Z114, [Item0]) Main: Background circle 02
+    (Z118, [Item1]) New type: Mesh with translation and rotation (+ rot/sec)
+    (Z128, [Item1]) Main: Background (yellow)
+    (Z231, [Item11]) Main: Background (green)
+    (Z314, [Item19]) Main: Background (addon) (green)
+    (Z337, [Item21]) Main: Station name
+    (Z355, [Picture]) Main: Station logo background circle
+    (Z356, [Picture]) New type: Mesh with translation and rotation (+ rot/sec)
+    (Z369, [Item23]) Main: Station logo
+    (Z387, [Picture]) Main: Background circle 01
+    (Z388, [Picture]) New type: Mesh with translation and rotation (+ rot/sec)
+    (Z401, [Item25]) Sally Main/Option Menu Background
+    (Z440, [Item28]) Addon!
+    (Z444, [Item28]) Main: Button "Talk" unselected
+    (Z457, [Item29]) Main: Button "Talk" selected
+    (Z470, [Item30]) Main: Button "Shop" unselected
+    (Z493, [Item32]) Main: Button "Shop" selected
+    (Z516, [Item34]) Main: Button "Equip" unselected
+    (Z529, [Item35]) Main: Button "Equip" selected
+    (Z542, [Item36]) Main: Button "Ship" unselected
+    (Z555, [Item37]) Main: Button "Ship" selected
+    (Z568, [Item38]) Main: Button "Dock" unselected
+    (Z591, [Item40]) Main: Button "Dock" selected
+    (Z614, [Item42]) Main: Button "Options" unselected
+    (Z637, [Item44]) Main: Button "Options" selected
+    (Z661, [Item46]) Menu help text (sichtbar wenn spieler hilfe braucht)
+    (Z666, [Item46]) Main: Help text
+    (Z690, [Data]) Shop (sichtbar wenn im Shop-Modus)
+    (Z694, [Data]) Shop: Sally
+    (Z707, [Item48]) Shop: Background
+    (Z730, [Item50]) Shop: List Background
+    (Z753, [Item52]) Shop: Item Mesh
+    (Z771, [Picture]) Shop: List Navigation Up
+    (Z780, [Item54]) Wenn Ende der Liste: Opacity auf 0.5 oder weniger
+    (Z785, [Item54]) Shop: List Navigation Down
+    (Z794, [Item55]) Wenn Ende der Liste: Opacity auf 0.5 oder weniger
+    (Z799, [Item55]) Shop: Selector Navigation Left
+    (Z808, [Item56]) Wenn Navigation in die Richtung: Opacity kurz auf 0.99
+    (Z813, [Item56]) Shop: Selector Navigation Right
+    (Z822, [Item57]) Wenn Navigation in die Richtung: Opacity kurz auf 0.99
+    (Z827, [Item57]) Shop: Item Symbol (List entry No. 1)
+    (Z848, [Picture]) Shop: Item Symbol (List entry No. 2)
+    (Z869, [Picture]) Shop: Item Symbol (List entry No. 3)
+    (Z890, [Picture]) Shop: Item Symbol (List entry No. 4)
+    (Z911, [Picture]) Shop: Item Name
+    (Z934, [Data]) Shop: Item Text
+    (Z957, [Data]) Shop: List Headline
+    (Z1000, [Data]) Shop: List Item 01 (List Entry No. 1)
+    (Z1043, [Data]) Shop: List Item 02 (List Entry No. 2)
+    (Z1086, [Data]) Shop: List Item 03 (List Entry No. 3)
+    (Z1129, [Data]) Shop: List Item 04 (List Entry No. 4)
+    (Z1172, [Data]) Shop: Selector Head
+    (Z1195, [Data]) Shop: Selector Number
+    (Z1218, [Data]) Shop: Credits Number
+    (Z1241, [Data]) Shop: Credits Text
+    (Z1264, [Data]) Talk1 (sichtbar wenn im Talk-Modus)
+    (Z1265, [Data]) Menu, in dem man den Dialog auswählt
+    (Z1269, [Data]) Talk1: Background button 01 unselected
+    (Z1283, [Item78]) Talk1: Background button 02 unselected
+    (Z1297, [Item79]) Talk1: Background button 03 unselected
+    (Z1311, [Item80]) Talk1: Background button 04 unselected
+    (Z1325, [Item81]) Talk1: Background button 05 unselected
+    (Z1339, [Item82]) Talk1: Background button 06 unselected
+    (Z1353, [Item83]) Talk1: Background button 07 (exit) unselected
+    (Z1367, [Item84]) Talk1: Background button 01 selected
+    (Z1381, [Item85]) Talk1: Background button 02 selected
+    (Z1395, [Item86]) Talk1: Background button 03 selected
+    (Z1409, [Item87]) Talk1: Background button 04 selected
+    (Z1423, [Item88]) Talk1: Background button 05 selected
+    (Z1437, [Item89]) Talk1: Background button 06 selected
+    (Z1451, [Item90]) Talk1: Background button 07 (exit) selected
+    (Z1465, [Item91]) Talk1: Button 01 Head
+    (Z1483, [Picture]) Talk1: Button 02 Head
+    (Z1501, [Picture]) Talk1: Button 03 Head
+    (Z1519, [Picture]) Talk1: Button 04 Head
+    (Z1537, [Picture]) Talk1: Button 05 Head
+    (Z1555, [Picture]) Talk1: Button 06 Head
+    (Z1573, [Picture]) Talk1: Button 07 Exit
+    (Z1586, [Item98]) Talk1: Button 01 Name Dialog
+    (Z1609, [Data]) Talk1: Button 01 Room Dialog
+    (Z1632, [Data]) Talk1: Button 02 Name Dialog
+    (Z1655, [Data]) Talk1: Button 02 Room Dialog
+    (Z1678, [Data]) Talk1: Button 03 Name Dialog
+    (Z1701, [Data]) Talk1: Button 03 Room Dialog
+    (Z1724, [Data]) Talk1: Button 04 Name Dialog
+    (Z1747, [Data]) Talk1: Button 04 Room Dialog
+    (Z1770, [Data]) Talk1: Button 05 Name Dialog
+    (Z1793, [Data]) Talk1: Button 05 Room Dialog
+    (Z1816, [Data]) Talk1: Button 06 Name Dialog
+    (Z1839, [Data]) Talk1: Button 06 Room Dialog
+    (Z1862, [Data]) Talk1: Button 07 Name
+    (Z1885, [Data]) Talk1: Button 07 Addinfo
+    (Z1909, [Data]) Talk2 (sichtbar wenn im Talk-Modus)
+    (Z1910, [Data]) Menu, in dem ein Dialog stattfindet
+    (Z1914, [Data]) Talk2: Background 1
+    (Z1937, [Item114]) Talk2: Background 2
+    (Z1950, [Item115]) Talk2: Background 3
+    (Z1973, [Item117]) Talk2: Room Picture
+    (Z1991, [Picture]) Talk2: Room Name
+    (Z2014, [Data]) Talk2: Dialog Window
+    (Z2037, [Data]) Talk2: Dialog Partner 01 (Small Head)
+    (Z2046, [Item121]) wenn selected, opacity auf 0.99
+    (Z2047, [Item121]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2057, [Picture]) Talk2: Dialog Partner 02 (Small Head)
+    (Z2066, [Item122]) wenn selected, opacity auf 0.99
+    (Z2067, [Item122]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2077, [Picture]) Talk2: Dialog Partner 03 (Small Head)
+    (Z2086, [Item123]) wenn selected, opacity auf 0.99
+    (Z2087, [Item123]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2097, [Picture]) Talk2: Dialog Partner 04 (Small Head)
+    (Z2106, [Item124]) wenn selected, opacity auf 0.99
+    (Z2107, [Item124]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2117, [Picture]) Talk2: Dialog Partner 05 (Small Head)
+    (Z2126, [Item125]) wenn selected, opacity auf 0.99
+    (Z2127, [Item125]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2137, [Picture]) Talk2: Dialog Partner 06 (Small Head)
+    (Z2146, [Item126]) wenn selected, opacity auf 0.99
+    (Z2147, [Item126]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2157, [Picture]) Talk2: Dialog Partner 07 (Small Head)
+    (Z2166, [Item127]) wenn selected, opacity auf 0.99
+    (Z2167, [Item127]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2177, [Picture]) Talk2: Dialog Partner 08 (Small Head)
+    (Z2186, [Item128]) wenn selected, opacity auf 0.99
+    (Z2187, [Item128]) wenn dialogpartner nicht vorhanden, opacity auf 0.00
+    (Z2197, [Picture]) Talk2: Dialog Partner Main 0
+    (Z2215, [Picture]) Talk2: Dialog Partner Main 1
+    (Z2233, [Picture]) Talk2: Take Background
+    (Z2246, [Item131]) Ship (sichtbar wenn im Ship-Modus)
+    (Z2250, [Item131]) Ship: Background circle 04
+    (Z2254, [Item132]) New type: Mesh with translation and rotation (+ rot/sec)
+    (Z2264, [Item132]) Ship: Sally
+    (Z2277, [Item133]) Ship: Ship Mesh
+    (Z2289, [Data]) Folgende Koordinaten spannen einen Cubus auf,
+    (Z2290, [Data]) Positionen sind Eckpunkte
+    (Z2291, [Data]) Position1 links unten, vorne
+    (Z2292, [Data]) Position2 rechts oben, hinten
+    (Z2299, [Data]) Ship: Navigation left unselected
+    (Z2312, [Item135]) Ship: Navigation right unselected
+    (Z2325, [Item136]) Ship: Navigation left selected
+    (Z2338, [Item137]) Ship: Navigation right selected
+    (Z2351, [Item138]) Ship: Background
+    (Z2374, [Item140]) Ship: Background Credits
+    (Z2387, [Item141]) Ship: Ship Name
+    (Z2410, [Data]) Ship: Ship Short Description
+    (Z2433, [Data]) Ship: List 01 Name
+    (Z2456, [Data]) Ship: List 01 Value
+    (Z2479, [Data]) Ship: List 02 Name
+    (Z2502, [Data]) Ship: List 02 Value
+    (Z2525, [Data]) Ship: List 03 Name
+    (Z2548, [Data]) Ship: List 03 Value
+    (Z2571, [Data]) Ship: List 04 Name
+    (Z2594, [Data]) Ship: List 04 Value
+    (Z2617, [Data]) Ship: List 05 Name
+    (Z2640, [Data]) Ship: List 05 Value
+    (Z2663, [Data]) Ship: Long Description
+    (Z2687, [Data]) Ship: Resale Text
+    (Z2710, [Data]) Ship: Resale Number
+    (Z2733, [Data]) Ship: Resale Credits Text
+    (Z2756, [Data]) Ship: Money Text
+    (Z2779, [Data]) Ship: Money Number
+    (Z2802, [Data]) Ship: Money Credits Text
+    (Z2826, [Data]) Equip (sichtbar wenn im Equip-Modus)
+    (Z2830, [Data]) Equip: Background circle 05
+    (Z2834, [Item161]) New type: Mesh with translation and rotation (+ rot/sec)
+    (Z2844, [Item161]) Ship: Sally
+    (Z2857, [Item162]) Equip: Ship Mesh
+    (Z2869, [Data]) Folgende Koordinaten spannen einen Cubus auf,
+    (Z2870, [Data]) Positionen sind Eckpunkte
+    (Z2871, [Data]) Position1 links unten, vorne
+    (Z2872, [Data]) Position2 rechts oben, hinten
+    (Z2879, [Data]) Equip: Button 01 Background unselected
+    (Z2892, [Item164]) Equip: Button 02 Background unselected
+    (Z2905, [Item165]) Equip: Button 03 Background unselected
+    (Z2918, [Item166]) Equip: Button 04 Background unselected
+    (Z2931, [Item167]) Equip: Button 05 Background unselected
+    (Z2944, [Item168]) Equip: Button 06 Background unselected
+    (Z2957, [Item169]) Equip: Button 07 Background unselected
+    (Z2970, [Item170]) Equip: Button 01 Background selected
+    (Z2983, [Item171]) Equip: Button 02 Background selected
+    (Z2996, [Item172]) Equip: Button 03 Background selected
+    (Z3009, [Item173]) Equip: Button 04 Background selected
+    (Z3022, [Item174]) Equip: Button 05 Background selected
+    (Z3035, [Item175]) Equip: Button 06 Background selected
+    (Z3048, [Item176]) Equip: Button 07 Background selected
+    (Z3061, [Item177]) Equip: Button 01 Text
+    (Z3084, [Data]) Equip: Button 02 Text
+    (Z3107, [Data]) Equip: Button 03 Text
+    (Z3130, [Data]) Equip: Button 04 Text
+    (Z3153, [Data]) Equip: Button 05 Text
+    (Z3176, [Data]) Equip: Button 06 Text
+    (Z3199, [Data]) Equip: Button 07 Text
+    (Z3222, [Data]) Equip: Button 01 selected
+    (Z3235, [Item185]) Equip: Button 02 selected
+    (Z3248, [Item186]) Equip: Button 03 selected
+    (Z3261, [Item187]) Equip: Button 04 selected
+    (Z3274, [Item188]) Equip: Button 05 selected
+    (Z3287, [Item189]) Equip: Button 06 selected
+    (Z3300, [Item190]) Equip: Button 07 selected
+    (Z3314, [Item191]) Equip: "Shop" Background
+    (Z3337, [Item193]) Equip: "Shop" List Background
+    (Z3350, [Item194]) Equip: "Shop" Item Mesh
+    (Z3368, [Picture]) Equip: "Shop" List Navigation Up
+    (Z3377, [Item196]) Wenn Ende der Liste: Opacity auf 0.5 oder weniger
+    (Z3382, [Item196]) Equip: "Shop" List Navigation Down
+    (Z3391, [Item197]) Wenn Ende der Liste: Opacity auf 0.5 oder weniger
+    (Z3396, [Item197]) Equip: "Shop" Selector Navigation Left
+    (Z3405, [Item198]) Wenn Navigation in die Richtung: Opacity kurz auf 0.99
+    (Z3410, [Item198]) Equip: "Shop" Selector Navigation Right
+    (Z3419, [Item199]) Wenn Navigation in die Richtung: Opacity kurz auf 0.99
+    (Z3424, [Item199]) Equip: "Shop" Item Symbol (List entry No. 1)
+    (Z3445, [Picture]) Equip: "Shop" Item Symbol (List entry No. 2)
+    (Z3466, [Picture]) Equip: "Shop" Item Symbol (List entry No. 3)
+    (Z3487, [Picture]) Equip: "Shop" Item Symbol (List entry No. 4)
+    (Z3508, [Picture]) Equip: "Shop" Item Text
+    (Z3531, [Data]) Equip: "Shop" List Headline
+    (Z3554, [Data]) Equip: "Shop" List Item 01 (List Entry No. 1)
+    (Z3577, [Data]) Equip: "Shop" List Item 02 (List Entry No. 2)
+    (Z3600, [Data]) Equip: "Shop" List Item 03 (List Entry No. 3)
+    (Z3623, [Data]) Equip: "Shop" List Item 04 (List Entry No. 4)
+    (Z3647, [Data]) Equip: "Shop" Selector Head
+    (Z3670, [Data]) Equip: "Shop" Selector Number
+    (Z3695, [Data]) Movie (sichtbar wenn im Options-Movie-Modus)
+    (Z3696, [Data]) Menu, in dem man den Movie auswählt
+    (Z3700, [Data]) Movie: Background button 01 unselected
+    (Z3714, [Item212]) Movie: Background button 02 unselected
+    (Z3728, [Item213]) Movie: Background button 03 unselected
+    (Z3742, [Item214]) Movie: Background button 04 unselected
+    (Z3756, [Item215]) Movie: Background button 05 unselected
+    (Z3770, [Item216]) Movie: Background button 06 unselected
+    (Z3784, [Item217]) Movie: Background button 07 unselected
+    (Z3798, [Item218]) Movie: Background button 01 selected
+    (Z3812, [Item219]) Movie: Background button 02 selected
+    (Z3826, [Item220]) Movie: Background button 03 selected
+    (Z3840, [Item221]) Movie: Background button 04 selected
+    (Z3854, [Item222]) Movie: Background button 05 selected
+    (Z3868, [Item223]) Movie: Background button 06 selected
+    (Z3882, [Item224]) Movie: Background button 07 selected
+    (Z3896, [Item225]) Movie: Button 01 Head
+    (Z3914, [Picture]) Movie: Button 02 Head
+    (Z3932, [Picture]) Movie: Button 03 Head
+    (Z3950, [Picture]) Movie: Button 04 Head
+    (Z3968, [Picture]) Movie: Button 05 Head
+    (Z3986, [Picture]) Movie: Button 06 Head
+    (Z4004, [Picture]) Movie: Button 07 Head
+    (Z4022, [Picture]) Movie: Button 01 Name
+    (Z4045, [Data]) Movie: Button 02 Name
+    (Z4068, [Data]) Movie: Button 03 Name
+    (Z4091, [Data]) Movie: Button 04 Name
+    (Z4114, [Data]) Movie: Button 05 Name
+    (Z4137, [Data]) Movie: Button 06 Name
+    (Z4160, [Data]) Movie: Button 07 Name
+    (Z4183, [Data]) Movie: Button 08 Name
+    (Z4206, [Data]) Movie: Button 09 Name (exit)
+    (Z4229, [Data]) Movie: Background button 08 unselected
+    (Z4242, [Item242]) Movie: Background button 09 unselected
+    (Z4255, [Item243]) Movie: Background button 08 selected
+    (Z4268, [Item244]) Movie: Background button 09 selected
+    (Z4281, [Item245]) Movie: Button 08 Head
+    (Z4299, [Picture]) Movie: Button 09 Head (Exit)
+    (Z4313, [Item247]) Menu, in dem ein ok / cancel gewählt wird
+    (Z4317, [Item247]) acknowledge: Background 1
+    (Z4340, [Item249]) acknowledge: Background 2
+    (Z4353, [Item250]) acknowledge: Background 3
+    (Z4376, [Item252]) acknowledge: Room Picture
+    (Z4394, [Picture]) acknowledge: Room Name
+    (Z4417, [Data]) acknowledge: Dialog Window
+    (Z4440, [Data]) acknowledge: Dialog Window Background
+    (Z4453, [Item256]) acknowledge: Button 1 unselected
+    (Z4466, [Item257]) acknowledge: Button 2 unselected
+    (Z4479, [Item258]) acknowledge: Button 3 unselected
+    (Z4492, [Item259]) acknowledge: Button 1 selected
+    (Z4505, [Item260]) acknowledge: Button 2 selected
+    (Z4518, [Item261]) acknowledge: Button 3 selected
+    (Z4531, [Item262]) acknowledge: Button 1 Text
+    (Z4554, [Data]) acknowledge: Dialog Partner Main 0
+    (Z4567, [Item264]) acknowledge: Dialog Partner Main 1
+    (Z4580, [Item265]) acknowledge: Button 02 Text
+    (Z4603, [Data]) acknowledge: Button 03 Text
+    (Z4630, [Data]) Main: Button 1 unselected
+    (Z4653, [Item269]) Main: Button 1 selected
+    (Z4676, [Item271]) Main: Button 2 unselected
+    (Z4689, [Item272]) Main: Button 2 selected
+    (Z4702, [Item273]) Main: Button 3 unselected
+    (Z4715, [Item274]) Main: Button 3 selected
+    (Z4728, [Item275]) Main: Button 4 unselected
+    (Z4751, [Item277]) Main: Button 4 selected
+    (Z4774, [Item279]) Main: Button 5 unselected
+    (Z4797, [Item281]) Main: Button 5 selected
+    (Z4821, [Item283]) Menu, in dem ein ok / cancel gewählt wird
+    (Z4825, [Item283]) acknowledge: Background 1
+    (Z4848, [Item285]) acknowledge: Background 2
+    (Z4861, [Item286]) acknowledge: Background 3
+    (Z4884, [Item288]) acknowledge: Room Picture
+    (Z4902, [Picture]) acknowledge: Room Name
+    (Z4925, [Data]) acknowledge: Dialog Window
+    (Z4948, [Data]) acknowledge: Dialog Window Background
+    (Z4961, [Item292]) acknowledge: Button 1 unselected
+    (Z4974, [Item293]) acknowledge: Button 2 unselected
+    (Z4987, [Item294]) acknowledge: Button 3 unselected
+    (Z5000, [Item295]) acknowledge: Button 1 selected
+    (Z5013, [Item296]) acknowledge: Button 2 selected
+    (Z5026, [Item297]) acknowledge: Button 3 selected
+    (Z5039, [Item298]) acknowledge: Button 1 Text
+    (Z5062, [Data]) acknowledge: Dialog Partner Main 0
+    (Z5075, [Item300]) acknowledge: Dialog Partner Main 1
+    (Z5088, [Item301]) acknowledge: Button 02 Text
+    (Z5111, [Data]) acknowledge: Button 03 Text
+    (Z5134, [Data]) acknowledge: Map Picture
+    (Z5152, [Picture]) EQIp (sichtbar wenn im EQIp-Modus)
+    (Z5156, [Picture]) EQIp: Sally
+    (Z5169, [Item305]) EQIp: Background
+    (Z5192, [Item307]) EQIp: List Background
+    (Z5215, [Item309]) EQIp: Item Mesh
+    (Z5233, [Picture]) EQIp: List Navigation Up
+    (Z5242, [Item311]) Wenn Ende der Liste: Opacity auf 0.5 oder weniger
+    (Z5247, [Item311]) EQIp: List Navigation Down
+    (Z5256, [Item312]) Wenn Ende der Liste: Opacity auf 0.5 oder weniger
+    (Z5261, [Item312]) EQIp: Selector Navigation Left
+    (Z5270, [Item313]) Wenn Navigation in die Richtung: Opacity kurz auf 0.99
+    (Z5275, [Item313]) EQIp: Selector Navigation Right
+    (Z5284, [Item314]) Wenn Navigation in die Richtung: Opacity kurz auf 0.99
+    (Z5289, [Item314]) EQIp: Item Symbol (List entry No. 1)
+    (Z5310, [Picture]) EQIp: Item Symbol (List entry No. 2)
+    (Z5331, [Picture]) EQIp: Item Symbol (List entry No. 3)
+    (Z5352, [Picture]) EQIp: Item Symbol (List entry No. 4)
+    (Z5373, [Picture]) EQIp: Item Name
+    (Z5396, [Data]) EQIp: Item Text
+    (Z5419, [Data]) EQIp: List Headline
+    (Z5462, [Data]) EQIp: List Item 01 (List Entry No. 1)
+    (Z5505, [Data]) EQIp: List Item 02 (List Entry No. 2)
+    (Z5548, [Data]) EQIp: List Item 03 (List Entry No. 3)
+    (Z5591, [Data]) EQIp: List Item 04 (List Entry No. 4)
+    (Z5634, [Data]) EQIp: Selector Head
+    (Z5657, [Data]) EQIp: Selector Number
+    (Z5680, [Data]) EQIp: Credits Number
+    (Z5703, [Data]) EQIp: Credits Text
+    (Z5726, [Data]) LoadGame (sichtbar wenn im Talk-Modus)
+    (Z5727, [Data]) Menu, in dem man den Dialog auswählt
+    (Z5731, [Data]) LoadGame: Background button 01 unselected
+    (Z5745, [Item335]) LoadGame: Background button 02 unselected
+    (Z5759, [Item336]) LoadGame: Background button 03 unselected
+    (Z5773, [Item337]) LoadGame: Background button 04 unselected
+    (Z5787, [Item338]) LoadGame: Background button 05 unselected
+    (Z5801, [Item339]) LoadGame: Background button 06 unselected
+    (Z5815, [Item340]) LoadGame: Background button 07 (exit) unselected
+    (Z5829, [Item341]) LoadGame: Background button 01 selected
+    (Z5843, [Item342]) LoadGame: Background button 02 selected
+    (Z5857, [Item343]) LoadGame: Background button 03 selected
+    (Z5871, [Item344]) LoadGame: Background button 04 selected
+    (Z5885, [Item345]) LoadGame: Background button 05 selected
+    (Z5899, [Item346]) LoadGame: Background button 06 selected
+    (Z5913, [Item347]) LoadGame: Background button 07 (exit) selected
+    (Z5927, [Item348]) LoadGame: Button 01 Head
+    (Z5945, [Picture]) LoadGame: Button 02 Head
+    (Z5963, [Picture]) LoadGame: Button 03 Head
+    (Z5981, [Picture]) LoadGame: Button 04 Head
+    (Z5999, [Picture]) LoadGame: Button 05 Head
+    (Z6017, [Picture]) LoadGame: Button 06 Head
+    (Z6035, [Picture]) LoadGame: Button 07 Exit
+    (Z6048, [Item355]) LoadGame: Button 01 Name Dialog
+    (Z6071, [Data]) LoadGame: Button 01 Room Dialog
+    (Z6094, [Data]) LoadGame: Button 02 Name Dialog
+    (Z6117, [Data]) LoadGame: Button 02 Room Dialog
+    (Z6140, [Data]) LoadGame: Button 03 Name Dialog
+    (Z6163, [Data]) LoadGame: Button 03 Room Dialog
+    (Z6186, [Data]) LoadGame: Button 04 Name Dialog
+    (Z6209, [Data]) LoadGame: Button 04 Room Dialog
+    (Z6232, [Data]) LoadGame: Button 05 Name Dialog
+    (Z6255, [Data]) LoadGame: Button 05 Room Dialog
+    (Z6278, [Data]) LoadGame: Button 06 Name Dialog
+    (Z6301, [Data]) LoadGame: Button 06 Room Dialog
+    (Z6324, [Data]) LoadGame: Button 07 Name
+    (Z6347, [Data]) LoadGame: Button 07 Addinfo
+    (Z6370, [Data]) GameDifficulty (sichtbar wenn im Talk-Modus)
+    (Z6371, [Data]) Menu, in dem man den Dialog auswählt
+    (Z6375, [Data]) GameDifficulty: Background button 01 unselected
+    (Z6389, [Item370]) GameDifficulty: Background button 02 unselected
+    (Z6403, [Item371]) GameDifficulty: Background button 03 unselected
+    (Z6417, [Item372]) GameDifficulty: Background button 04 unselected
+    (Z6431, [Item373]) GameDifficulty: Background button 05 unselected
+    (Z6445, [Item374]) GameDifficulty: Background button 06 unselected
+    (Z6459, [Item375]) GameDifficulty: Background button 07 (exit) unselected
+    (Z6473, [Item376]) GameDifficulty: Background button 01 selected
+    (Z6487, [Item377]) GameDifficulty: Background button 02 selected
+    (Z6501, [Item378]) GameDifficulty: Background button 03 selected
+    (Z6515, [Item379]) GameDifficulty: Background button 04 selected
+    (Z6529, [Item380]) GameDifficulty: Background button 05 selected
+    (Z6543, [Item381]) GameDifficulty: Background button 06 selected
+    (Z6557, [Item382]) GameDifficulty: Background button 07 (exit) selected
+    (Z6571, [Item383]) GameDifficulty: Button 01 Head
+    (Z6589, [Picture]) GameDifficulty: Button 02 Head
+    (Z6607, [Picture]) GameDifficulty: Button 03 Head
+    (Z6625, [Picture]) GameDifficulty: Button 04 Head
+    (Z6643, [Picture]) GameDifficulty: Button 05 Head
+    (Z6661, [Picture]) GameDifficulty: Button 06 Head
+    (Z6679, [Picture]) GameDifficulty: Button 07 Exit
+    (Z6692, [Item390]) GameDifficulty: Button 01 Name Dialog
+    (Z6715, [Data]) GameDifficulty: Button 01 Room Dialog
+    (Z6738, [Data]) GameDifficulty: Button 02 Name Dialog
+    (Z6761, [Data]) GameDifficulty: Button 02 Room Dialog
+    (Z6784, [Data]) GameDifficulty: Button 03 Name Dialog
+    (Z6807, [Data]) GameDifficulty: Button 03 Room Dialog
+    (Z6830, [Data]) GameDifficulty: Button 04 Name Dialog
+    (Z6853, [Data]) GameDifficulty: Button 04 Room Dialog
+    (Z6876, [Data]) GameDifficulty: Button 05 Name Dialog
+    (Z6899, [Data]) GameDifficulty: Button 05 Room Dialog
+    (Z6922, [Data]) GameDifficulty: Button 06 Name Dialog
+    (Z6945, [Data]) GameDifficulty: Button 06 Room Dialog
+    (Z6968, [Data]) GameDifficulty: Button 07 Name
+    (Z6991, [Data]) GameDifficulty: Button 07 Addinfo
+
+--- vfx\hud\hud.des  (215 Kommentare) ---
+    (Z5, [HUD]) Parameter fuer das Schwingen des HUD
+    (Z9, [MOTION]) Sensitivität fuer X Schwingung
+    (Z11, [MOTION]) Steifigkeit fuer X Scwingung
+    (Z13, [MOTION]) Vorzeichen fuer X Schwingung
+    (Z16, [MOTION]) Sensitivität fuer Y Schwingung
+    (Z18, [MOTION]) Steifigkeit fuer Y Scwingung
+    (Z20, [MOTION]) Vorzeichen fuer Y Schwingung
+    (Z23, [MOTION]) Sensitivität fuer Z Schwingung
+    (Z25, [MOTION]) Steifigkeit fuer Z Scwingung
+    (Z27, [MOTION]) Vorzeichen fuer Z Schwingung
+    (Z32, [MOTION]) Diese Fonts werden für Schriften usw. benötigt
+    (Z37, [FONT]) font, alpha = 0
+    (Z39, [FONT]) font, alpha = grey
+    (Z65, [COLOR]) Coordinatesystems for meshes
+    (Z76, [GEOMETRY]) Radar_Scale	= 0.300000, 0.075000
+    (Z107, [GEOMETRY]) Compass: Compass marks
+    (Z120, [Item0]) Compass: Compass circle
+    (Z133, [Item1]) Compass: Compass mark north
+    (Z156, [Data]) Compass: Compass mark south
+    (Z179, [Data]) Compass: Compass mark east
+    (Z202, [Data]) Compass: Compass mark west
+    (Z251, [Item7]) Target Reticle: hud_reticle
+    (Z264, [Item8]) Target Reticle: hud_frame_reticle
+    (Z265, [Item8]) *** new ***
+    (Z291, [Item10]) Gegner-Info: hud_frame_knop1
+    (Z302, [Item11]) wenn man getroffen wurde
+    (Z308, [Item11]) Gegner-Info: hud_frame_knop2
+    (Z319, [Item12]) wenn man getroffen wurde
+    (Z325, [Item12]) Gegner-Info: hud_enemy_back
+    (Z338, [Item13]) Gegner-Info: hud_enemy_mid
+    (Z339, [Item13]) *** new ***
+    (Z352, [Item14]) Gegner-Info: hud_enemy_text1_back
+    (Z353, [Item14]) *** new ***
+    (Z366, [Item15]) Gegner-Info: hud_enemy_text1_name_digit
+    (Z377, [Item16]) Falls mehrere Namen eingeblendet werden müssen
+    (Z378, [Item16]) (z.B. Name Pilot, Schiffsklasse),
+    (Z379, [Item16]) Namen abwechselnd zeigen (langsames Blinken)
+    (Z383, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z385, [Data]) Fensterbreite in Pixel
+    (Z387, [Data]) Fensterhöhe in Pixel
+    (Z398, [Data]) Gegner-Info: hud_enemy_shield_emp
+    (Z416, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z418, [Data]) Fensterbreite in Pixel
+    (Z420, [Data]) Fensterhöhe in Pixel
+    (Z427, [Data]) Gegner-Info: hud_enemy_shield_kin
+    (Z445, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z447, [Data]) Fensterbreite in Pixel
+    (Z449, [Data]) Fensterhöhe in Pixel
+    (Z456, [Data]) Gegner-Info: hud_enemy_pic_back
+    (Z469, [Item19]) Gegner-Info: Picture of Ship-Type
+    (Z481, [Data]) Folgende Koordinaten spannen einen Cubus auf,
+    (Z482, [Data]) indem das Ship-Mesh angezeigt werden soll
+    (Z483, [Data]) Positionen sind Eckpunkte
+    (Z484, [Data]) Position1 links unten, vorne
+    (Z485, [Data]) Position2 rechts oben, hinten
+    (Z492, [Data]) Spielerschiff-Info: hud_enemy_sensor_back
+    (Z493, [Data]) *** new ***
+    (Z506, [Item21]) Gegner-Info: hud_enemy_sensor_optical
+    (Z516, [Item22]) Wenn Sensor deaktiv, entweder Diffuse = 0.0, 0.0, 0.0
+    (Z517, [Item22]) oder Opacity = 0.0, oder Mesh weglassen (s.o.)
+    (Z524, [Item22]) Gegner-Info: hud_enemy_sensor_sonar
+    (Z534, [Item23]) Wenn Sensor deaktiv, entweder Diffuse = 0.0, 0.0, 0.0
+    (Z535, [Item23]) oder Opacity = 0.0, oder Mesh weglassen (s.o.)
+    (Z542, [Item23]) Gegner-Info: hud_enemy_speed_digit
+    (Z556, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z558, [Data]) Fensterbreite in Pixel
+    (Z560, [Data]) Fensterhöhe in Pixel
+    (Z570, [Data]) Gegner-Info: hud_enemy_speed
+    (Z584, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z586, [Data]) Fensterbreite in Pixel
+    (Z588, [Data]) Fensterhöhe in Pixel
+    (Z597, [Data]) Gegner-Info: hud_enemy_distance_digit
+    (Z611, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z613, [Data]) Fensterbreite in Pixel
+    (Z615, [Data]) Fensterhöhe in Pixel
+    (Z625, [Data]) Gegner-Info: hud_enemy_distance
+    (Z639, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z641, [Data]) Fensterbreite in Pixel
+    (Z643, [Data]) Fensterhöhe in Pixel
+    (Z652, [Data]) Gegner-Info: hud_enemy_cargo_digit
+    (Z666, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z668, [Data]) Fensterbreite in Pixel
+    (Z670, [Data]) Fensterhöhe in Pixel
+    (Z680, [Data]) Gegner-Info: hud_enemy_cargo_back
+    (Z694, [Item29]) Gegner-Info: hud_enemy_cargo_headline
+    (Z695, [Item29]) *** new ***
+    (Z709, [Item30]) Spielerschiff-Info: hud_ship_back
+    (Z722, [Item31]) Spielerschiff-Info: hud_ship_mid
+    (Z723, [Item31]) *** new ***
+    (Z736, [Item32]) Spielerschiff-Info: hud_ship_text1_back
+    (Z737, [Item32]) *** new ***
+    (Z750, [Item33]) Spielerschiff-Info: hud_ship_speed_back
+    (Z751, [Item33]) *** new ***
+    (Z764, [Item34]) Spielerschiff-Info: hud_ship_speed_digit
+    (Z779, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z781, [Data]) Fensterbreite in Pixel
+    (Z783, [Data]) Fensterhöhe in Pixel
+    (Z793, [Data]) Spielerschiff-Info: hud_ship_speed
+    (Z807, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z809, [Data]) Fensterbreite in Pixel
+    (Z811, [Data]) Fensterhöhe in Pixel
+    (Z820, [Data]) Spielerschiff-Info: hud_ship_boost
+    (Z835, [Item37]) Spielerschiff-Info: hud_ship_turret_back
+    (Z836, [Item37]) *** new ***
+    (Z849, [Item38]) Spielerschiff-Info: hud_ship_turret1
+    (Z850, [Item38]) *** new ***
+    (Z863, [Item39]) Spielerschiff-Info: hud_ship_turret2
+    (Z864, [Item39]) *** new ***
+    (Z877, [Item40]) Spielerschiff-Info: noislevel
+    (Z878, [Item40]) *** new ***
+    (Z891, [Item41]) Spielerschiff-Info: hud_ship_noise_digit
+    (Z906, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z908, [Data]) Fensterbreite in Pixel
+    (Z910, [Data]) Fensterhöhe in Pixel
+    (Z921, [Data]) Spielerschiff-Info: hud_ship_weapon_digit
+    (Z934, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z936, [Data]) Fensterbreite in Pixel
+    (Z938, [Data]) Fensterhöhe in Pixel
+    (Z948, [Data]) Spielerschiff-Info: hud_ship_weapon_back
+    (Z961, [Item44]) Spielerschiff-Info: hud_ship_text1_depth_digit
+    (Z974, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z976, [Data]) Fensterbreite in Pixel
+    (Z978, [Data]) Fensterhöhe in Pixel
+    (Z988, [Data]) Spielerschiff-Info: hud_ship_text1_depth
+    (Z1001, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1003, [Data]) Fensterbreite in Pixel
+    (Z1005, [Data]) Fensterhöhe in Pixel
+    (Z1014, [Data]) Spielerschiff-Info: hud_ship_buzzer_digit
+    (Z1029, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1031, [Data]) Fensterbreite in Pixel
+    (Z1033, [Data]) Fensterhöhe in Pixel
+    (Z1044, [Data]) Spielerschiff-Info: hud_ship_buzzer_back
+    (Z1057, [Item48]) Spielerschiff-Info: ul_buzzer
+    (Z1058, [Item48]) *** new ***
+    (Z1071, [Item49]) Spielerschiff-Info: hud_ship_text1_sensor
+    (Z1080, [Item50]) Diffuse Color grün, wenn Status ok. Gelb, wenn angeschlagen.
+    (Z1081, [Item50]) Rot, wenn kurz vor kaputt gehen. Schwarz, wenn kaputt
+    (Z1087, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1089, [Data]) Fensterbreite in Pixel
+    (Z1091, [Data]) Fensterhöhe in Pixel
+    (Z1100, [Data]) Spielerschiff-Info: hud_ship_sensor_shield
+    (Z1113, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1115, [Data]) Fensterbreite in Pixel
+    (Z1117, [Data]) Fensterhöhe in Pixel
+    (Z1124, [Data]) Spielerschiff-Info: hud_ship_text1_engine
+    (Z1133, [Item52]) Diffuse Color grün, wenn Status ok. Gelb, wenn angeschlagen.
+    (Z1134, [Item52]) Rot, wenn kurz vor kaputt gehen. Schwarz, wenn kaputt
+    (Z1140, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1142, [Data]) Fensterbreite in Pixel
+    (Z1144, [Data]) Fensterhöhe in Pixel
+    (Z1153, [Data]) Spielerschiff-Info: hud_ship_engine_shield
+    (Z1166, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1168, [Data]) Fensterbreite in Pixel
+    (Z1170, [Data]) Fensterhöhe in Pixel
+    (Z1177, [Data]) Spielerschiff-Info: hud_ship_text1_generator
+    (Z1186, [Item54]) Diffuse Color grün, wenn Status ok. Gelb, wenn angeschlagen.
+    (Z1187, [Item54]) Rot, wenn kurz vor kaputt gehen. Schwarz, wenn kaputt
+    (Z1193, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1195, [Data]) Fensterbreite in Pixel
+    (Z1197, [Data]) Fensterhöhe in Pixel
+    (Z1206, [Data]) Spielerschiff-Info: hud_ship_generator_shield
+    (Z1219, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1221, [Data]) Fensterbreite in Pixel
+    (Z1223, [Data]) Fensterhöhe in Pixel
+    (Z1230, [Data]) Spielerschiff-Info: hud_ship_shield_kin_right
+    (Z1246, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1248, [Data]) Fensterbreite in Pixel
+    (Z1250, [Data]) Fensterhöhe in Pixel
+    (Z1257, [Data]) Spielerschiff-Info: hud_ship_shield_emp
+    (Z1273, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1275, [Data]) Fensterbreite in Pixel
+    (Z1277, [Data]) Fensterhöhe in Pixel
+    (Z1284, [Data]) Spielerschiff-Info: hud_ship_shield_kin_front
+    (Z1300, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1302, [Data]) Fensterbreite in Pixel
+    (Z1304, [Data]) Fensterhöhe in Pixel
+    (Z1311, [Data]) Spielerschiff-Info: hud_ship_shield_kin_left
+    (Z1327, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1329, [Data]) Fensterbreite in Pixel
+    (Z1331, [Data]) Fensterhöhe in Pixel
+    (Z1338, [Data]) Spielerschiff-Info: hud_ship_shield_kin_back
+    (Z1354, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1356, [Data]) Fensterbreite in Pixel
+    (Z1358, [Data]) Fensterhöhe in Pixel
+    (Z1365, [Data]) Spielerschiff-Info: hud_ship_symbols_decompression
+    (Z1367, [Data]) Alarm: Dekompressionsschicht
+    (Z1368, [Data]) Wenn Alarm nicht gegeben: Opacity = 0.0
+    (Z1381, [Item61]) Spielerschiff-Info: hud_ship_symbols_current
+    (Z1383, [Item61]) Alarm: Strömung
+    (Z1384, [Item61]) Wenn Alarm nicht gegeben: Opacity = 0.0
+    (Z1397, [Item62]) Spielerschiff-Info: hud_ship_symbols_torpedo
+    (Z1399, [Item62]) Alarm: Incoming Torpedo
+    (Z1400, [Item62]) Wenn Alarm nicht gegeben: Opacity = 0.0
+    (Z1413, [Item63]) Spielerschiff-Info: hud_ship_symbols_attack
+    (Z1415, [Item63]) Alarm: Spieler wurde aufgeschaltet
+    (Z1416, [Item63]) Wenn Alarm nicht gegeben: Opacity = 0.0
+    (Z1429, [Item64]) Spielerschiff-Info: hud_frame_knop3
+    (Z1440, [Item65]) wenn man getroffen wurde
+    (Z1446, [Item65]) Radio message: hud_elf_text
+    (Z1457, [Item66]) Hier radiomessage anzeigen.
+    (Z1461, [Data]) Position in Pixelkoordinaten auf Textur (höchter Level)
+    (Z1463, [Data]) Fensterbreite in Pixel
+    (Z1465, [Data]) Fensterhöhe in Pixel
+    (Z1475, [Data]) Radio message: hud_elf_character
+    (Z1476, [Data]) *** new ***
+    (Z1627, [Item70]) Spielerschiff-Info: hud_repair_front_shield
+    (Z1640, [Item71]) Spielerschiff-Info: hud_repair_left_shield
+    (Z1653, [Item72]) Spielerschiff-Info: hud_repair_right_shield
+    (Z1666, [Item73]) Spielerschiff-Info: hud_repair_back_shield
+    (Z1679, [Item74]) Spielerschiff-Info: hud_repair_emp_shield
+    (Z1692, [Item75]) Spielerschiff-Info: hud_repair_sensor
+    (Z1705, [Item76]) Spielerschiff-Info: hud_repair_generator
+    (Z1718, [Item77]) Spielerschiff-Info: hud_repair_engine
+    (Z1731, [Item78]) Sniper Reticle: hud_sniper_frame
+    (Z1744, [Item79]) Sniper Reticle: hud_sniper_reticle
+
+--- dat\sty\briefing_d.des  (40 Kommentare) ---
+    (Z8, [Briefing0]) station: Topo' Asylum
+    (Z16, [Briefing1]) mission: 1H1
+    (Z24, [Briefing2]) mission: 1H2
+    (Z32, [Briefing3]) mission: 1H3
+    (Z40, [Briefing4]) mission: 1H4
+    (Z48, [Briefing5]) station: Entropoint II
+    (Z56, [Briefing6]) station: Entropoint
+    (Z64, [Briefing7]) mission: 1N1
+    (Z72, [Briefing8]) mission: 1N2
+    (Z80, [Briefing9]) station: Speicherkraftwerk
+    (Z88, [Briefing10]) mission: 2H1
+    (Z96, [Briefing11]) mission: 2H2
+    (Z104, [Briefing12]) mission: 2H3
+    (Z112, [Briefing13]) station: Entropoint VI
+    (Z120, [Briefing14]) mission: 2N1
+    (Z128, [Briefing15]) mission: 2N2
+    (Z136, [Briefing16]) mission: 2N3
+    (Z144, [Briefing17]) station: Scavenger
+    (Z152, [Briefing18]) mission: 3H1
+    (Z160, [Briefing19]) mission: 3H2
+    (Z168, [Briefing20]) mission: 3H3
+    (Z176, [Briefing21]) mission: 3H4
+    (Z184, [Briefing22]) station: Neopolis
+    (Z192, [Briefing23]) mission: 3N1
+    (Z200, [Briefing24]) mission: 4H1
+    (Z208, [Briefing25]) mission: 4H2
+    (Z216, [Briefing26]) mission: 4H3
+    (Z224, [Briefing27]) station: Entropoint VI
+    (Z232, [Briefing28]) mission: 4N1
+    (Z240, [Briefing29]) mission: 4N2
+    (Z248, [Briefing30]) station: Scavenger
+    (Z256, [Briefing31]) mission: 5H1
+    (Z264, [Briefing32]) mission: 5H2
+    (Z272, [Briefing33]) mission: 5H4
+    (Z280, [Briefing34]) mission: 5N2
+    (Z288, [Briefing35]) station: Neopolis
+    (Z296, [Briefing36]) mission: 6H1
+    (Z304, [Briefing37]) mission: 6H2
+    (Z312, [Briefing38]) mission: 6H3
+    (Z320, [Briefing39]) mission: 6H4
+
+--- dat\sty\mood_d.des  (22 Kommentare) ---
+    (Z16, [Mood1]) sarkastisch - sarcastical
+    (Z24, [Mood2]) abweisend - chilly
+    (Z40, [Mood4]) freundlich - friendly
+    (Z48, [Mood5]) euphorisch - euphoric
+    (Z56, [Mood6]) aufbrausend - irascible
+    (Z64, [Mood7]) besorgt - worried
+    (Z72, [Mood8]) lachend - laughing
+    (Z80, [Mood9]) verschwörerisch - conspirative
+    (Z88, [Mood10]) flüsternd - whispering
+    (Z96, [Mood11]) betrunken - drunk
+    (Z104, [Mood12]) verführerisch - seductive
+    (Z112, [Mood13]) schreiend - shouting
+    (Z120, [Mood14]) eifrig - eager
+    (Z128, [Mood15]) ernst - serious
+    (Z136, [Mood16]) ungeduldig - impatient
+    (Z144, [Mood17]) düster - gloomy
+    (Z152, [Mood18]) abwesend - absent-minded
+    (Z160, [Mood19]) verärgert - annoyed
+    (Z168, [Mood20]) aufgeregt - excited
+    (Z176, [Mood21]) belehrend - lecturing
+    (Z184, [Mood22]) gelangweilt - bored
+    (Z192, [Mood23]) verwundert - astonished
+
+--- dat\animation\old_belial.des  (19 Kommentare) ---
+    (Z1) Copyright (c) 2000, Massive Development. All Rights Reserved.
+    (Z2) This is UNPUBLISHED PROPRIETARY SOURCE CODE of Massive Development.
+    (Z3) The contents of this file may not be disclosed to third parties,
+    (Z4) copied or duplicated in any form, in whole or in part, without the
+    (Z5) prior written permission of Massive Development.
+    (Z8) $Header: /AQUANOX/dat/animation/old_belial.des 1     30.04.01 17:16 Christoph Luerig $
+    (Z11) $Log: /AQUANOX/dat/animation/old_belial.des $
+    (Z13) 1     30.04.01 17:16 Christoph Luerig
+    (Z15) 4     5.09.00 18:05 Steffen Bendel
+    (Z16) - remove physical, now in osd
+    (Z18) 3     5.09.00 16:47 Steffen Bendel
+    (Z19) - insert physical section
+    (Z21) 2     31.08.00 21:39 Oliver Weirich
+    (Z22) - reference frames renamed
+    (Z24) 1     31.08.00 21:37 Oliver Weirich
+    (Z26) 2     31.08.00 18:49 Patrick Decker
+    (Z27) - replaced animations and reference frame files
+    (Z29) 1     31.08.00 11:13 Stefan Karau
+    (Z32) 1     30.08.00 18:56 Christoph Luerig
+
+--- ini\mp_rules.des  (16 Kommentare) ---
+    (Z4, [Property]) Bonus: what you get for capture.
+    (Z6, [Property]) Bonus: what your team gets for capture.
+    (Z8, [Property]) Bonus: what you get for recovery.
+    (Z10, [Property]) Bonus: what you get for picking up enemy flag.
+    (Z12, [Property]) Bonus: what you get for fragging enemy flag carrier.
+    (Z14, [Property]) Bonus: what you get for fraggin someone who has recently hurt your flag carrier.
+    (Z16, [Property]) Bonus: what you get for fraggin someone while either you or your target are near your flag carrier.
+    (Z18, [Property]) Bonus: what you get for fraggin someone while either you or your target are near your flag.
+    (Z20, [Property]) Bonus: what you get for returning a flag that causes a capture to happen almost immediately.
+    (Z22, [Property]) Bonus: what you get for fragging a flag carrier if a capture happens almost immediately.
+    (Z25, [Property]) Time: -.
+    (Z27, [Property]) Time: -.
+    (Z29, [Property]) Time: -.
+    (Z31, [Property]) Time: -.
+    (Z34, [Property]) The radius around an object being defended where a target will be worth extra frags
+    (Z36, [Property]) The radius around an object being defended where an attacker will get extra frags when making kills.
+
+--- dat\animation\forneus.des  (13 Kommentare) ---
+    (Z1) Copyright (c) 2000, Massive Development. All Rights Reserved.
+    (Z2) This is UNPUBLISHED PROPRIETARY SOURCE CODE of Massive Development.
+    (Z3) The contents of this file may not be disclosed to third parties,
+    (Z4) copied or duplicated in any form, in whole or in part, without the
+    (Z5) prior written permission of Massive Development.
+    (Z8) $Header: /AQUANOX/dat/animation/forneus.des 2     23.08.01 18:17 Tobias Reis $
+    (Z11) $Log: /AQUANOX/dat/animation/forneus.des $
+    (Z13) 2     23.08.01 18:17 Tobias Reis
+    (Z15) 1     29.05.01 17:01 Tobias Reis
+    (Z17) 1     22.05.01 14:05 Tobias Reis
+    (Z19) 1     18.05.01 16:02 Christoph Luerig
+    (Z21) 1     30.04.01 17:16 Christoph Luerig
+    (Z23) 1     30.08.00 18:56 Christoph Luerig
+
+--- dat\animation\crocell.des  (12 Kommentare) ---
+    (Z1) Copyright (c) 2000, Massive Development. All Rights Reserved.
+    (Z2) This is UNPUBLISHED PROPRIETARY SOURCE CODE of Massive Development.
+    (Z3) The contents of this file may not be disclosed to third parties,
+    (Z4) copied or duplicated in any form, in whole or in part, without the
+    (Z5) prior written permission of Massive Development.
+    (Z8) $Header: /AQUANOX/dat/animation/crocell.des 2     31.05.01 11:52 Tobias Reis $
+    (Z11) $Log: /AQUANOX/dat/animation/crocell.des $
+    (Z13) 2     31.05.01 11:52 Tobias Reis
+    (Z15) 1     22.05.01 14:05 Tobias Reis
+    (Z17) 1     18.05.01 16:02 Christoph Luerig
+    (Z19) 1     30.04.01 17:16 Christoph Luerig
+    (Z21) 1     30.08.00 18:56 Christoph Luerig
+
+--- dat\animation\marax.des  (11 Kommentare) ---
+    (Z1) Copyright (c) 2000, Massive Development. All Rights Reserved.
+    (Z2) This is UNPUBLISHED PROPRIETARY SOURCE CODE of Massive Development.
+    (Z3) The contents of this file may not be disclosed to third parties,
+    (Z4) copied or duplicated in any form, in whole or in part, without the
+    (Z5) prior written permission of Massive Development.
+    (Z8) $Header: /AQUANOX/dat/animation/marax.des 2     23.05.01 19:24 Tobias Reis $
+    (Z11) $Log: /AQUANOX/dat/animation/marax.des $
+    (Z13) 2     23.05.01 19:24 Tobias Reis
+    (Z15) 1     18.05.01 16:02 Christoph Luerig
+    (Z17) 1     30.04.01 17:16 Christoph Luerig
+    (Z19) 1     30.08.00 18:56 Christoph Luerig
+
+--- map\1h1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\1h2\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\1h3\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\1h4\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\1n1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\1n2\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\2h1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\2h2\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\2h3\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\2n3\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\3h1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\3h2\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\3h3\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\3n1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\4h1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\4h2\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\4n1\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\5n2\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\6h3\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\dogfight\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_05_ctf\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_06_dm\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_07_ctf\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_08\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_09\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_10\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_11\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_12\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- map\mp_13\fog\fog.des  (11 Kommentare) ---
+    (Z1) DES file 'fog.des'.
+    (Z2) Do not modify.
+    (Z6, [Fog]) This is the tga input file without the tga extension.
+    (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
+    (Z10, [Fog]) Alpha-Value of the input TGA file.
+    (Z13, [Fog]) This is the viewing distance in water, that is covered by the fog.
+    (Z16, [Fog]) This is the water depth that is covered by the fog.
+    (Z19, [Fog]) This value indicates at which depth level the water begins.
+    (Z22, [Fog]) This value between 0 and 1 indicates, at which proportin of the
+    (Z23, [Fog]) complete viewing distance the fog starts getting opaque
+    (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
+
+--- dat\animation\belial.des  (9 Kommentare) ---
+    (Z1) Copyright (c) 2000, Massive Development. All Rights Reserved.
+    (Z2) This is UNPUBLISHED PROPRIETARY SOURCE CODE of Massive Development.
+    (Z3) The contents of this file may not be disclosed to third parties,
+    (Z4) copied or duplicated in any form, in whole or in part, without the
+    (Z5) prior written permission of Massive Development.
+    (Z8) $Header: /AQUANOX/dat/animation/belial.des 1     30.04.01 17:16 Christoph Luerig $
+    (Z11) $Log: /AQUANOX/dat/animation/belial.des $
+    (Z13) 1     30.04.01 17:16 Christoph Luerig
+    (Z15) 1     30.08.00 18:56 Christoph Luerig
+
+--- dat\sty\gun_d.des  (6 Kommentare) ---
+    (Z7, [Table]) gun long names (1 ... 100)
+    (Z72, [Text11]) gun short names (101 ... 200)
+    (Z137, [Text23]) ammo long names (201 ... 300)
+    (Z202, [Text35]) ammo short names (301 ... 400)
+    (Z267, [Text47]) general info long (401 ... 500)
+    (Z277, [Text48]) general info short (501 ... 600)
+
+--- dat\sty\mp_gun_d.des  (6 Kommentare) ---
+    (Z7, [Table]) gun long names (1 ... 100)
+    (Z72, [Text11]) gun short names (101 ... 200)
+    (Z137, [Text23]) ammo long names (201 ... 300)
+    (Z202, [Text35]) ammo short names (301 ... 400)
+    (Z267, [Text47]) general info long (401 ... 500)
+    (Z277, [Text48]) general info short (501 ... 600)
+
+--- dat\sty\mtake_mp_d.des  (6 Kommentare) ---
+    (Z8, [Take0]) For Mission MP_02
+    (Z18, [Take1]) For Mission MP_02
+    (Z28, [Take2]) For Mission MP_02
+    (Z38, [Take3]) For Mission MP_02
+    (Z48, [Take4]) For Mission MP_02
+    (Z58, [Take5]) For Mission MP_02
+
+--- dat\sty\pilot_d.des  (6 Kommentare) ---
+    (Z7, [Table]) PilotNames: Massive employees
+    (Z151, [Text146]) PilotNames: Vessel Classes
+    (Z499, [Text67]) PilotNames: Building Classes
+    (Z651, [Text88]) PilotNames: Player Ships
+    (Z726, [Text98]) PilotNames: Game Characters
+    (Z727, [Text98]) and additional stuff
+
+--- dat\sty\station_d.des  (6 Kommentare) ---
+    (Z2841, [Station19]) Entropoint VI (chapter 5)
+    (Z2991, [Station20]) Scavenger (chapter 5)
+    (Z3141, [Station21]) Atacama City (chapter 5)
+    (Z3291, [Station22]) Neopolis (chapter 6)
+    (Z3441, [Station23]) Neopolis (chapter 6) + scalarhowitzer
+    (Z3591, [Station24]) Deepdraft 1 (chapter 6)
+
+--- vfx\hud\mesh\hud_elf_character.msh  (4 Kommentare) ---
+    (Z1) 3DS-MAX Massive DES-File Object Exporter
+    (Z2) Filename: ""
+    (Z6, [Material]) Toplevel material 0
+    (Z43, [Map_Diffuse]) Node Name: Massive Import Object02
+
+--- vfx\hud\mesh\hud_elf_text.msh  (4 Kommentare) ---
+    (Z1) 3DS-MAX Massive DES-File Object Exporter
+    (Z2) Filename: ""
+    (Z6, [Material]) Toplevel material 0
+    (Z43, [Map_Diffuse]) Node Name: Massive Import Object02
+
+--- vfx\hud\mesh\hud_movie.msh  (4 Kommentare) ---
+    (Z1) 3DS-MAX Massive DES-File Object Exporter
+    (Z2) Filename: ""
+    (Z6, [Material]) Toplevel material 0
+    (Z73, [Map_Diffuse]) Node Name: Massive Import Object02
+
+--- dat\sty\nod_item_d.des  (1 Kommentare) ---
+    (Z7, [Table]) item names (1 ... 100)
+
+--- dat\version\locale.des  (1 Kommentare) ---
+    (Z4, [Locale]) "german", "english", "french"
+
+--- map\1h1\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\1h2\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\1h3\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\1n1\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\2n3\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\4h1\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\4n1\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\5n2\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\6h3\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\6h4\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\dogfight\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+
+--- map\mp_05_ctf\terrain\terrain.des  (1 Kommentare) ---
+    (Z5, [Parameter]) MinimumResolution = 10.0
+

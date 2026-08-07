@@ -466,3 +466,190 @@ T19 PRAEZISIERT -- DIE DATEI LAESST SICH JETZT ERWEITERN          (aus G2)
     Immer:   Original sichern. option~.des steuert die ganze
              Kampagne -- eine kaputte Datei heisst vermutlich, dass
              gar nichts mehr startet.
+
+--------------------------------------------------------------------------------
+T23 AQUALIVE STUFE 3 -- DIE MENUEGRENZE PER DLL ANHEBEN     *** BEREIT ***
+--------------------------------------------------------------------------------
+    Stand:   dinput8.dll (123.904 B) ist eingespielt, MENUPATCH liegt
+             im live-Ordner, hook.log ist geleert. Die Exe ist NICHT
+             veraendert -- der Patch passiert im Speicher.
+    Was tun: 1. Spiel starten.
+             2. mod_docu\live\hook.log ansehen, erwartet:
+                    ok  GUI MENU_Open   0x0058D520
+                    ok  GUI MENU_Close  0x0058D760
+                    MENUE: Arm angelegt bei 0x........
+                    MENUE: Grenze 0x24 -> 0x25  (Open 25, Close 25)
+                    MENUE: *** PATCH SITZT ***
+             3. Durch alle Menues klicken.
+             4. Eine Mission laden, ein paar Minuten spielen.
+    Erwartung: alles laeuft normal. Der Patch ist folgenlos, solange
+             menuinterface~.des nur 37 Eintraege hat -- niemand ruft
+             mit Index 37 auf. Genau das ist der Zweck: die Frage
+             "kann die DLL Code patchen" von der Frage "vertraegt die
+             Engine einen 38. Bildschirm" trennen.
+    Zurueck: MENUPATCH loeschen (Stufe 3 aus, Hot-Reload bleibt)
+             OFF anlegen (DLL ganz aus)
+             hook\dinput8_stufe2_sicherung.dll zurueckkopieren
+
+    ERGEBNIS 2026-08-07 19:36 -- *** BESTANDEN ***
+        === AquaLive gestartet ===
+          ok  NOD_Script::HeartBeat  0x0048D750
+          ok  lua_dobuffer           0x005D5790
+          ok  GUI MENU_Open          0x0058D520
+          ok  GUI MENU_Close         0x0058D760
+        MENUE: Arm angelegt bei 0x01110000 (pop edi/esi/ebx; ret 8)
+        MENUE: Grenze 0x24 -> 0x25  (Open 25, Close 25)
+        MENUE: Tabelleneintrag [37]  Open 0x01110000, Close 0x01110000
+        MENUE: *** PATCH SITZT ***
+
+    WAS DAMIT BEWIESEN IST:
+        Die DLL kann zur Laufzeit Bytes im CODESEGMENT der Exe
+        aendern (VirtualProtect + schreiben), eigenen ausfuehrbaren
+        Speicher anlegen und Sprungtabellen umbiegen. Beide Grenzen
+        wurden ZURUECKGELESEN und stehen wirklich auf 0x25.
+
+    WAS DAMIT NICHT BEWIESEN IST:
+        Dass ein 38. Bildschirm funktioniert. Der Patch ist
+        folgenlos, solange menuinterface~.des 37 Eintraege hat.
+        Naechster Schritt: T24.
+
+--------------------------------------------------------------------------------
+T24 VERTRAEGT DIE ENGINE EINEN 38. BILDSCHIRM?          (Nachfolger von T23)
+--------------------------------------------------------------------------------
+    Stand nach T23: die DLL kann Code patchen, die Grenze steht auf
+    0x25. Der Patch ist aber FOLGENLOS, weil menuinterface~.des nur
+    37 Eintraege hat und niemand mit Index 37 aufruft.
+
+    DIE OFFENE FRAGE
+        Beide Dispatcher-Ausgaenge machen
+            mov ecx, [esi + ebx*4 + 0x3a4]
+        und rufen dann ueber ecx auf. Bei Index 37 waere das
+        Offset 0x438. Ob dort noch ein gueltiger Zeiger steht,
+        entscheidet ueber Absturz oder nicht.
+
+    WARUM DAS STATISCH NICHT ZU KLAEREN IST
+        Der Bereich 0x3a4..0x440 ist in der Exe lueckenlos in
+        4er-Schritten belegt, auch 0x438 und darueber. ABER: eine
+        Suche nach 'mov [reg+0x438]' findet Zugriffe auf JEDES
+        Objekt der Exe, nicht nur auf dieses. Zwei Offsets im
+        Bereich (0x422, 0x42e) sind nicht durch 4 teilbar und
+        gehoeren also NICHT ins Array -- ein Zeichen, dass dort
+        gemischte Felder liegen.
+        Der Konstruktor liefert auch keine Klarheit: an operator new
+        (0x4279e0) gehen 85 verschiedene Groessen, keine davon
+        eindeutig diesem Objekt zuzuordnen.
+
+    DER SAUBERE WEG: ZUR LAUFZEIT MESSEN (AquaLive Stufe 4)
+        1. MENU_Open per Trampolin abfangen (nur lesen, nichts
+           aendern) und den this-Zeiger festhalten.
+        2. Mit HeapSize / _msize die Blockgroesse des Objekts
+           abfragen und protokollieren.
+        3. Ausserdem bei jedem Aufruf den Index protokollieren --
+           damit sieht man nebenbei, welcher Bildschirm wann
+           geoeffnet wird, und ob die fuenf schwer erreichbaren
+           (31, 34, 28, 29, 24) je vorkommen.
+        Das ist ungefaehrlich: es wird nichts geschrieben.
+
+    ERST DANACH lohnt der Versuch, menuinterface~.des mit
+    des_tool.py um einen Eintrag zu erweitern.
+
+    WICHTIG: bis dahin richtet der Patch aus T23 keinen Schaden an.
+    Er darf ruhig aktiv bleiben.
+
+--------------------------------------------------------------------------------
+T25 WIRD aquanox7.pak GELESEN?                          *** BESTANDEN ***
+--------------------------------------------------------------------------------
+    2026-08-07: JA. Ein Mod-PAK mit geaenderter dat\menu\text.des
+    (T612 "Credits" -> "Nachtschicht") wurde gebaut und eingespielt;
+    im Hauptmenue steht seither "Nachtschicht".
+
+    *** DAMIT IST DIE LETZTE GRUNDSAETZLICHE HUERDE FUER EIGENE
+    INHALTE GEFALLEN. *** Alles, was in Dateien steht, laesst sich
+    ueberschreiben, ohne eine Originaldatei anzufassen.
+
+    Rezept in Handoff Abschnitt 225.
+    Zurueck: dat\pak\aquanox7.pak loeschen.
+
+--------------------------------------------------------------------------------
+T23/T24 ERGEBNIS -- DER 38. BILDSCHIRM LAEUFT       *** BESTANDEN ***
+--------------------------------------------------------------------------------
+    Sieben DLL-Stufen, zwei Abstuerze, dann:
+    Ein Menuebildschirm an Index 37, den es im Original nicht gibt.
+    Er erscheint, hat eine eigene Item-Liste und reagiert auf die
+    Pfeiltasten. Erreichbar ueber F9 + Menuepunkt.
+
+    Die Eintraege sind zunaechst unsichtbar und erscheinen einzeln
+    beim Navigieren -- der Klon startet im Zustand 'eventclose'
+    (opacity 0), die Oeffnungsanimation ist nie gelaufen.
+
+    Details und Rezept: Handoff 226 bis 229.
+    Die beiden Absturzursachen: Handoff 228.
+
+--------------------------------------------------------------------------------
+T26 DEN HAUPTMENUEPUNKT PER TYP UMLEITEN            *** GESCHEITERT, LEHRREICH ***
+--------------------------------------------------------------------------------
+    2026-08-07: AquaLive Stufe 8 patcht 0x574dca von 'push 12' auf
+    'push 31' (MT_INSTANTFIGHT). Der Patch sass nachweislich:
+
+        STUFE 8: 0x00574DCA  push 12 -> push 31   (6A 1F)
+
+    Das Spiel lief, kein Absturz -- ABER es kamen weiterhin die
+    Credits. Die Stelle ist nicht der Ausloeser dieses Menuepunkts;
+    sie liegt am Ende von HeartBeat und wird bei diesem Klick nicht
+    durchlaufen.
+
+    NAECHSTER ANSATZ: GUI_Menu_Main::HeartBeat (0x5747f0) hat ELF
+    Zweige mit eigenem 'operator new' (Handoff 246). Der richtige
+    Ausloeser muss in einem der zehn uebrigen liegen. Zu finden
+    waere er, indem man jeden Zweig einzeln patcht -- oder indem
+    die DLL protokolliert, welcher Zweig beim Klick durchlaufen
+    wird.
+
+    Die Mechanik steht bereit: live\MENUTYP macht den Wert ohne
+    Neubau einstellbar, und der Ein-Byte-Patch ist erprobt.
+
+--------------------------------------------------------------------------------
+T27 EIGENER HAUPTMENUEPUNKT                              *** BESTANDEN ***
+--------------------------------------------------------------------------------
+    2026-08-07 21:48: Der dritte Hauptmenuepunkt heisst "Nachtschicht"
+    (Mod-PAK) und oeffnet einen anderen Bildschirm (AquaLive Stufe 9).
+
+        STUFE 9: eigener Zweig bei 0x00910000 (43 Byte)
+        STUFE 9: Tabelle[2]  0x00574D9A -> 0x00910000
+        STUFE 9: *** Hauptmenuepunkt 2 oeffnet jetzt Menuetyp 31 ***
+
+    Kein Absturz. Der Weg ist jetzt
+        Hauptmenue -> "Nachtschicht" -> Instant Fight -> <Nachtschicht>
+
+    BEOBACHTUNG: Typ 31 (MT_INSTANTFIGHT) oeffnet den SINGLEPLAYER-
+    Bildschirm, nicht die Gefechtsliste -- Index 31 ist in der
+    MENU_Open-Tabelle der Fehlerpfad, die Engine faellt zurueck.
+    Ohne Absturz, ohne Meldung. Details: Handoff 253.
+
+    Rezept und Schalter: Handoff 252 (live\MENUZWEIG).
+
+================================================================================
+T28 DER DIREKTE MISSIONSSTART AUS DEM HAUPTMENUE      *** BESTANDEN ***
+================================================================================
+    Datum: 07.08.2026, im Spiel bestaetigt.
+
+    FRAGE: Kann ein Hauptmenuepunkt eine Mission starten, ohne den
+           Umweg ueber Instant Fight?
+
+    ANTWORT: JA. "Nachtschicht" im Hauptmenue startet map\1n1\script\sp_1n1
+           direkt. Kein Zwischenmenue, kein Absturz.
+
+    WARUM ES VORHER NICHT GING: die Menue-HeartBeats haben zwei
+           Rueckgabewege -- eax fuer den naechsten BILDSCHIRM,
+           *(Argument bei +0x8C) fuer den naechsten ZUSTAND.
+           Stufe 9 schrieb nach eax. Es gibt keinen Menuetyp,
+           der ein Spiel startet; T26 suchte auf der falschen Achse.
+
+    AUFBAU: AquaLive Stufe 11, Schalter live\MISSIONSTART
+           Inhalt "2 map\1n1\script\sp_1n1"
+           Platz 2 = der Credits-Punkt. NICHT Platz 4 (= Beenden).
+
+    NEBENWIRKUNG: der Credits-Bildschirm ist nicht mehr erreichbar,
+           solange Stufe 11 auf Platz 2 liegt.
+
+    Einzelheiten: Handoff v108, Abschnitte 261-276.

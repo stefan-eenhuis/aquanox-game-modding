@@ -1,0 +1,33 @@
+SUBSYSTEME UND IHRE VERFLECHTUNG
+================================
+
+--- NOD_Message ---
+   160 Funktionen, 45491 Byte
+   ruft:        ANT_Rules__PM_StartTime, NOD_Item__GetItemClass, NOD_Player__Item_Add, NOD_Player__PlayPickupSound, TERMINATION, __ftol, operator_delete, operator_new, str_copy, str_len
+   gerufen von: ANT_Client_Transport__ReceiveNetworkMessages, ANT_Client__CreateObject, ANT_Client__CreateObject_2, ANT_Client__CreateObject_3, ANT_Client__HeartBeat, ANT_Client__PM_CreateObject, ANT_Client__PM_SendClientID, ANT_Client__PM_SendGameInfo, ANT_Client__PM_TimeStamp, ANT_Console__Map_GetMapName, ANT_Rules__Event_Drop, ANT_Rules__HasFlag_2, ANT_Rules__HasFlag_3, ANT_Rules__HasFlag_4, ... (+23)
+
+--- REB_Mesh ---
+   3 Funktionen, 2466 Byte
+   ruft:        DSP_Display__IndexBuffer_Create, DSP_Display__IndexBuffer_Destroy, DSP_Display__IndexBuffer_Lock, DSP_Display__IndexBuffer_Unlock, DSP_Display__VertexBuffer_Create, DSP_Display__VertexBuffer_Destroy, DSP_Display__VertexBuffer_Lock, DSP_Display__VertexBuffer_Lock_2, TERMINATION, operator_delete, operator_new
+   gerufen von: (keine)
+
+--- STY_Inventory ---
+   19 Funktionen, 13479 Byte
+   ruft:        CON_Cache<T>__Unlock_3, MAI_Display__EQU_BUT_Empty, MAI_Display__EQU_BUT_Off, MAI_Display__EQU_BUT_On, TERMINATION, operator_delete, operator_new, str_copy, str_len
+   gerufen von: MAI_Handler__Handle, MAI_Handler__Handle_Station, STY_Station__Load, Savegame__Load
+
+--- MAI_Display ---
+   28 Funktionen, 8012 Byte
+   ruft:        TERMINATION, str_copy
+   gerufen von: STY_Inventory__GetItemInfoByIndex_16
+
+--- NOD_Cockpit ---
+   2 Funktionen, 4862 Byte
+   ruft:        CON_Cache<T>__Unlock_10, CON_Cache<T>__Unlock_14, CON_Cache<T>__Unlock_28, CON_Cache<T>__Unlock_3, TERMINATION, __ftol, thunk_FUN_004414d0
+   gerufen von: (keine)
+
+--- REB_Map ---
+   1 Funktionen, 530 Byte
+   ruft:        DSP_Display__SetTextureStageState, TERMINATION
+   gerufen von: (keine)
+

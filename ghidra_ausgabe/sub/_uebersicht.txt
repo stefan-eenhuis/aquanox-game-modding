@@ -1,0 +1,33 @@
+SUBSYSTEME UND IHRE VERFLECHTUNG
+================================
+
+--- D3DUtil ---
+   2 Funktionen, 2368 Byte
+   ruft:        Direct3DCreate8, TERMINATION, operator_delete, operator_new
+   gerufen von: (keine)
+
+--- Aqua_Renderer ---
+   8 Funktionen, 6352 Byte
+   ruft:        DSP_Display__IndexBuffer_Lock, DSP_Display__IndexBuffer_Unlock, DSP_Display__IsTextureTypeSupported, DSP_Display__RequestTexture, DSP_Display__Texture_Create, DSP_Display__Texture_FlushTextures, DSP_Display__Texture_FlushTextures_2, DSP_Display__VertexBuffer_Lock, DSP_Display__VertexBuffer_Lock_2, MUI_Menu__RelocateResources, REB_TextureCache__RegisterTextureName, TERMINATION, operator_delete, operator_new, ... (+2)
+   gerufen von: NOD_FX_Plankton__ParseIniFile, NOD_FX_Sky__ParseIniFile, NOD_Game__PM_EndGame, NOD_Gun__HeartBeat, NOD_Terrain__LoadTerrain
+
+--- DSP_Display ---
+   32 Funktionen, 10879 Byte
+   ruft:        ClientToScreen, DSP_TextureCache__AllowFormat, DSP_TextureCache__AllowLevel, DSP_TextureCache__GetTextureLevel, DSP_TextureCache__GetTextureLevel_2, DSP_Texture__GetNumOfMipLevels, DSP_Texture__GetTexelCount, DSP_Texture__GetTexelCount_4, DSP_Texture__GetTextureHeight, DSP_Texture__GetTextureWidth, GetClientRect, GetWindowRect, TERMINATION, operator_delete, ... (+2)
+   gerufen von: Aqua_Renderer__LoadTextures, Aqua_Renderer__LoadTextures_2, Aqua_Renderer__Terrain_Triangulate, Aqua_State_Menu_InGame__HeartBeat, Aqua_State_SinglePlayer__HeartBeat, GUI_TextMenu__UploadTextureToHardware, NOD_Hud_MP_Info__Render, NOD_Hud_MP_Info__Update_DM, NOD_Hud_MP_Info__Update_TDM_CTF, REB_Map__SetMapToRenderState, REB_Mesh__Reconstruct, REB_Mesh__Reconstruct_2, REB_Mesh__Reconstruct_3, REP_Hud_VS__RenderStatic_EOA, ... (+3)
+
+--- NOD_Camera ---
+   4 Funktionen, 2295 Byte
+   ruft:        TERMINATION
+   gerufen von: (keine)
+
+--- NOD_PhysicalCharacter ---
+   1 Funktionen, 3145 Byte
+   ruft:        BHV_PhysicalCharacter_A_Attack__ParseIniFile, BHV_Vessel_A_DipolIn__ParseIniFile, CON_Cache<T>__Unlock_26, MOT_OldOne__Parse, NOD_Character__ParseIniFile, NOD_Node__LoadSons, NOD_ShieldedBody__ParseIniFile, TERMINATION, operator_delete, operator_new, str_copy, str_len
+   gerufen von: (keine)
+
+--- NOD_Vessel ---
+   5 Funktionen, 11427 Byte
+   ruft:        Aqua_Spawn__GetBulletRange, BHV_Vehicle_A_Attack__ParseIniFile, BHV_Vehicle_A_DipolIn__ParseIniFile, BHV_Vessel_A_Attack__ParseIniFile, BHV_Vessel_A_DipolIn__ParseIniFile, BHV_Vessel_A_DipolOut__ParseIniFile, BHV_Vessel_A_EscapeTo__ReadDataFrom, BVH_Vehcile_A_Patrol__ParseIniFile, BVH_Vessel_A_Patrol__ParseIniFile, CON_Cache<T>__Unlock_19, MOT_Player__Parse, MOT_Vehicle__Parse, MOT_Vessel__Parse, NOD_Body__Key_ParseIniFile, ... (+8)
+   gerufen von: (keine)
+

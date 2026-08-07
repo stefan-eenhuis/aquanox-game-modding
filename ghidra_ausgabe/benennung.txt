@@ -1,0 +1,39 @@
+SCHRITT 1: VTABLE-SCAN
+======================
+  Vtable-artige Bloecke gefunden: 64
+  daraus neu angelegte Funktionen: 2683
+
+SCHRITT 2: BENENNUNG UEBER MELDUNGSSTRINGS
+==========================================
+  Zeichenketten mit 'Klasse::Methode(': 496
+  daraus benannte Funktionen:           732
+
+SCHRITT 3: HANDARBEIT AUS DER CAPSTONE-PHASE
+============================================
+  0x005749d0  GUI_Menu_Main__HeartBeat  ->  GUI_Menu_Main__HeartBeat
+  0x00575000  GUI_Menu_Singleplayer__HeartBeat_2  ->  GUI_Menu_SinglePlayer__HeartBeat
+  0x00575737  liegt INNERHALB von GUI_Menu_SinglePlayer__HeartBeat ab 0x00575730  -- nicht umbenannt
+  0x00575d87  liegt INNERHALB von GUI_Menu_Singleplayer__HeartBeat ab 0x00575d80  -- nicht umbenannt
+  0x004247e0  FUN_004247e0  ->  Aqua_State_InstantFight__ctor
+  0x004208c0  FUN_004208c0  ->  Aqua_State_Game__ctor
+  0x0058ac70  FUN_0058ac70  ->  MAI_Result__Init
+  0x0058ac90  MAI_Result__AddOrder  ->  MAI_Result__AddOrder
+  0x0058d520  GUI_Menu_Interface__MENU_Open  ->  MENU_Open
+  0x0058d760  GUI_Menu_Interface__MENU_Close  ->  MENU_Close
+  0x00563300  STY_Base__Option_LoadTable_2  ->  Savegame__Load
+  0x005632a0  FUN_005632a0  ->  Savegame__ctor
+  0x0041f430  Aqua_State_Menu__GetNameByType  ->  Aqua_State_Menu__GetNameByType
+  0x0048d750  FUN_0048d750  ->  NOD_Script__HeartBeat
+  0x005d5790  FUN_005d5790  ->  lua_dobuffer
+  0x004279e0  FUN_004279e0  ->  operator_new
+  0x004279f0  FUN_004279f0  ->  operator_delete
+  0x00524340  FUN_00524340  ->  TERMINATION
+  0x00520620  FUN_00520620  ->  str_copy
+  0x00520750  FUN_00520750  ->  str_len
+
+ERGEBNIS
+========
+  neu angelegte Funktionen: 2683
+  ueber Meldungen benannt:  732
+  von Hand eingetragen:     18
+  Funktionen jetzt gesamt:  8095

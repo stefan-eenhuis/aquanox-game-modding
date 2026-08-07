@@ -1,0 +1,13 @@
+﻿
+[19:36:30] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[19:36:30]   ok  NOD_Script::HeartBeat  0x0048D750
+[19:36:30]   ok  lua_dobuffer           0x005D5790
+[19:36:30] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730610E0
+[19:36:30] --- Stufe 3: Menuegrenze (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUPATCH gefunden) ---
+[19:36:30]   ok  GUI MENU_Open          0x0058D520
+[19:36:30]   ok  GUI MENU_Close         0x0058D760
+[19:36:30] MENUE: Arm angelegt bei 0x01110000 (pop edi/esi/ebx; ret 8)
+[19:36:30] MENUE: Grenze 0x24 -> 0x25  (Open 25, Close 25)
+[19:36:30] MENUE: Tabelleneintrag [37]  Open 0x01110000, Close 0x01110000
+[19:36:30] MENUE: *** PATCH SITZT ***
+[19:36:30] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua

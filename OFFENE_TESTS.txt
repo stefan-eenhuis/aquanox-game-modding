@@ -373,3 +373,96 @@ T19 EIGENE KAMPAGNENKETTE IN option~.des                        (aus E1)
              descook.py zum Schreiben ertuechtigt werden.
     Ergebnis: Ohne diesen Schritt laesst sich Nachtschicht nur als
              Schnellgefecht spielen (T18), nicht als Kampagne.
+
+--------------------------------------------------------------------------------
+T19 PRAEZISIERT -- option~.des IST JETZT LESBAR                  (aus F4)
+--------------------------------------------------------------------------------
+    NEU:     Das gekochte .des-Format ist geknackt (Handoff 192).
+             mod_docu\tools\des_tool.py liest option~.des
+             vollstaendig und kann gleich lange Werte aendern.
+    ABER:    Neue Optionen HINZUFUEGEN geht noch nicht -- dafuer
+             fehlen die Offset-Regeln fuer das next-Feld.
+    Was tun: ZUERST die billige Frage klaeren -- nimmt die Engine
+             auch eine KLARTEXT-Fassung von option~.des an?
+             102 der 270 .des-Dateien im Spiel sind Klartext, die
+             Engine kann also beides lesen. Wenn ja, ist die
+             Kampagnenkette in einem Texteditor baubar.
+    Probe:   Mit des_tool.py setz einen bestehenden Wert aendern
+             (z.B. einen AddCredit-Betrag), Spiel starten, und
+             sehen ob die Aenderung greift und nichts abstuerzt.
+             Das prueft Format und Werkzeug in einem Schritt.
+
+--------------------------------------------------------------------------------
+T20 DER LIGHTMAP-VERWEIS -- jetzt mit voller Begruendung         (aus F6)
+--------------------------------------------------------------------------------
+    Warum:   F6 hat gezeigt, dass AquaNox 2 seine vorberechnete
+             Beleuchtung als VertexColors (.vc, Klartext) je Modell
+             ablegt, AquaNox 1 dagegen als Lightmap-Textur
+             (lightmapN.dds) mit Verweis im zweiten Materialslot.
+             Ein aus AN2 uebernommenes Modell bringt also eine
+             Beleuchtung mit, die AN1 nicht kennt -- und hat
+             keinen Lightmap-Verweis, den AN1 erwartet.
+    Was tun: Ergaenzt T17: den zweiten Materialslot mit
+             _slot(0x0200, "lightmap0") fuellen UND darauf achten,
+             dass map\<Ziellevel>\Ltex\lightmap0.dds existiert.
+    Zusatz:  Falls das Objekt beweglich ist (nod_vessel), zuerst
+             pruefen, was ein ORIGINAL-Schiff im zweiten Slot
+             stehen hat -- Schiffe brauchen keine Lightmap, dort
+             steht moeglicherweise etwas ganz anderes.
+
+--------------------------------------------------------------------------------
+T21 MENUE UND HUD SIND KLARTEXT -- direkt bearbeitbar            (aus G3)
+--------------------------------------------------------------------------------
+    NEU:     vfx\menu\menu.des (150.030 B) und vfx\hud\hud.des
+             (41.810 B) sind KLARTEXT, nicht gekocht. Ihr Kopf
+             heisst [MENU] bzw. [HUD] statt [Table] -- deshalb hatte
+             mein Pruefkriterium sie falsch einsortiert.
+    Was tun: Eine harmlose Aenderung im Menue vornehmen (etwa einen
+             Eintrag umbenennen), Spiel starten, nachsehen.
+             Wenn das greift, sind Menue und HUD ohne jedes Werkzeug
+             gestaltbar -- ein Texteditor genuegt.
+    Wert:    Fuer Nachtschicht hiesse das: eigenes Hauptmenue,
+             eigener Titel, angepasstes HUD. Bisher galt das als
+             blockiert.
+
+--------------------------------------------------------------------------------
+T22 EIN TRAEGES SCHIFF -- Noir-Flugverhalten erproben            (aus G8)
+--------------------------------------------------------------------------------
+    Warum:   Die Flugmodelle sind vollstaendig lesbar (Handoff 210):
+             mass, movepv/movenv, movet, turnpv/turnnv/turnt,
+             swingt/swinga, movefriction als Vec3.
+    Was tun: In einer KOPIE eines Schiff-OSD die Werte in Richtung
+             traege verschieben -- mass hoch, turnpv und turnt
+             runter, movefriction in Z hoch -- und im Instant Fight
+             fliegen.
+    Achtung: osd_tool.py setz aendert nur gleich lange Werte.
+             Fliesskommazahlen sind immer 4 Byte, also unkritisch.
+    Erwartung: Wenn sich das Fluggefuehl merklich aendert, ist die
+             Atmosphaere von Nachtschicht ueber die OSDs steuerbar
+             und braucht keinen Eingriff in die Engine.
+
+--------------------------------------------------------------------------------
+T19 PRAEZISIERT -- DIE DATEI LAESST SICH JETZT ERWEITERN          (aus G2)
+--------------------------------------------------------------------------------
+    NEU:     Das gekochte .des-Format ist vollstaendig entschluesselt
+             (Handoff 216). des_tool.py liest, aendert UND fuegt
+             Eintraege ein. Rundlaufprobe: 100 von 100 gekochten
+             Dateien byte-identisch, dazu alle 1.262 OSDs.
+    STUFE 1 (billig, klaert die Kernfrage):
+             Mit des_tool.py setz einen bestehenden Wert in einer
+             KOPIE von option~.des aendern -- etwa einen
+             AddCredit-Betrag. Spiel starten, nachsehen ob die
+             Aenderung greift.
+             Das prueft in einem Schritt: nimmt die Engine eine
+             veraenderte Datei ueberhaupt an?
+    STUFE 2 (wenn Stufe 1 klappt):
+             Mit fuege_feld_ein ein Feld hinzufuegen und dasselbe
+             pruefen. Hier zeigt sich, ob die sechs nicht
+             entschluesselten Stempel-Bytes je Block eine
+             Pruefsumme sind -- wenn ja, scheitert Stufe 2, waehrend
+             Stufe 1 funktioniert. Genau darum die Reihenfolge.
+    STUFE 3: Eine ganze Option anlegen. Dafuer fehlt noch die
+             Funktion zum Einfuegen von BLOECKEN.
+    Immer:   Original sichern. option~.des steuert die ganze
+             Kampagne -- eine kaputte Datei heisst vermutlich, dass
+             gar nichts mehr startet.

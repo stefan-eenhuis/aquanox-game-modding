@@ -1,0 +1,6396 @@
+{
+ "titel": "AquaNox 1 -- die Flugmodelle",
+ "beschreibung": "Aus den OSD-Dateien gelesen. Die Felder: mass (Traegheit), maxvelocity und movepv/movenv (Hoechstgeschwindigkeit vorwaerts/rueckwaerts), movet (Beschleunigungszeit), turnpv/turnnv/turnt/turnr (Drehen), strafe* (Seitwaerts), swingt/swinga (Rollen in der Kurve), movefriction und turnfriction als Vec3 (Reibung je Achse), restitution (Rueckprall), lookaheaddistance und avoidanceradius (wie weit die KI vorausschaut). Ein traeges Noir-Flugverhalten entsteht ueber hohe mass, niedrige turnpv und hohe movefriction.",
+ "anzahl": 225,
+ "schiffe": {
+  "atl_bomber_b~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 14.0,
+   "strafevertvel": 14.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.8,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 2.0,
+   "soundemissionlevel": "none",
+   "maxvelocity": 20.0
+  },
+  "atl_bomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 2.0,
+   "soundemissionlevel": "none"
+  },
+  "atl_fregatte~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 1.0,
+   "strafevertvel": 1.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.2,
+    0.49
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 2.0,
+   "soundemissionlevel": "none"
+  },
+  "atl_ghost~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 1.0,
+   "strafevertvel": 1.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.2,
+    0.49
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 2.0
+  },
+  "atl_pscout~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 42.0,
+   "movenv": 21.0,
+   "movet": 0.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "atl_scout1~.osd": {
+   "restitution": 0.4,
+   "mass": 4200.0,
+   "movepv": 32.0,
+   "movenv": 24.0,
+   "movet": 1.2,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 95.0,
+   "turnnv": 95.0,
+   "turnt": 2.0,
+   "turnr": 0.75,
+   "swingt": 10.0,
+   "swinga": 0.34,
+   "movefriction": [
+    0.08,
+    0.07,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "atl_scout2~.osd": {
+   "restitution": 0.4,
+   "mass": 5600.0,
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 35.0,
+   "strafevertvel": 35.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.4
+  },
+  "atl_tank1~.osd": {
+   "description": "Vehicle",
+   "lookaheaddistance": 150.0,
+   "avoidanceradius": 2.0,
+   "restitution": 0.1,
+   "mass": 20.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none"
+  },
+  "atl_tank2~.osd": {
+   "description": "Vehicle",
+   "lookaheaddistance": 100.0,
+   "avoidanceradius": 2.0,
+   "restitution": 0.1,
+   "mass": 20.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none"
+  },
+  "atl_triops~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 1.0,
+   "strafevertvel": 1.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.2,
+    0.49
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 2.0
+  },
+  "bio_bomber_d~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 220.0,
+   "turnnv": 220.0,
+   "turnt": 1.0,
+   "turnr": 0.2,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_bomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 220.0,
+   "turnnv": 220.0,
+   "turnt": 1.0,
+   "turnr": 0.2,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_clunker02a_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_clunker02b_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_clunker03a_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_clunker03b_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_clunker04a_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_clunker05_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_clunker06_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 0.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "bio_scout_d1~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 18.0,
+   "movenv": 0.0,
+   "movet": 2.1,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.25,
+   "turnr": 0.4,
+   "swingt": 10.0,
+   "swinga": 0.7,
+   "movefriction": [
+    0.03,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_scout_d2~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 26.0,
+   "movenv": 0.0,
+   "movet": 1.6,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.25,
+   "turnr": 0.4,
+   "swingt": 10.0,
+   "swinga": 0.5,
+   "movefriction": [
+    0.03,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "bio_scout_d3~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 36.0,
+   "movenv": 0.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.25,
+   "turnr": 0.4,
+   "swingt": 10.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.03,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "bio_scout~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 55.0,
+   "movenv": 27.0,
+   "movet": 1.1,
+   "strafehorrvel": 27.0,
+   "strafevertvel": 27.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 150.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_seismobomb~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 50.0,
+   "movenv": 0.0,
+   "movet": 0.2,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.1,
+   "swingt": 0.1,
+   "swinga": 0.1,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "camera_angle~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 55.0,
+   "movenv": 27.0,
+   "movet": 1.1,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.6,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "camera_mesh~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "cla_nudimund~.osd": {
+   "restitution": 0.1,
+   "mass": 40000.0,
+   "movepv": 25.0,
+   "movenv": 12.5,
+   "movet": 1.5,
+   "strafehorrvel": 12.5,
+   "strafevertvel": 12.5,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "cra_bomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 8.0,
+   "strafevertvel": 8.0,
+   "turnpv": 220.0,
+   "turnnv": 220.0,
+   "turnt": 1.0,
+   "turnr": 0.6,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.4,
+    0.1,
+    0.4
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_fregatte~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 20.0,
+   "movenv": 20.0,
+   "movet": 2.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 2.0,
+   "turnr": 0.001,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.3,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 350.0,
+   "avoidanceradius": 2.0
+  },
+  "cra_magmaeater~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.001,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.4,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 5.0
+  },
+  "cra_raupe~.osd": {
+   "restitution": 0.1,
+   "mass": 20.0,
+   "movepv": 9.0,
+   "movenv": 9.0,
+   "movet": 1.5,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.001,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "Vehicle",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "cra_scout1~.osd": {
+   "restitution": 0.1,
+   "mass": 8400.0,
+   "movepv": 30.25,
+   "movenv": 15.12,
+   "movet": 1.0,
+   "strafehorrvel": 15.12,
+   "strafevertvel": 15.12,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 0.8,
+   "turnr": 0.4,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.12,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "cra_scout2v1~.osd": {
+   "restitution": 0.1,
+   "mass": 8820.0,
+   "movepv": 33.0,
+   "movenv": 16.5,
+   "movet": 2.0,
+   "strafehorrvel": 16.5,
+   "strafevertvel": 16.5,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 0.6,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "cra_scout2v2~.osd": {
+   "restitution": 0.1,
+   "mass": 8960.0,
+   "movepv": 33.549999,
+   "movenv": 16.77,
+   "movet": 1.5,
+   "strafehorrvel": 16.77,
+   "strafevertvel": 16.77,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_tursas~.osd": {
+   "restitution": 0.1,
+   "mass": 120000.0,
+   "soundemissionlevel": "medium",
+   "movepv": 35.0,
+   "movenv": 17.5,
+   "movet": 3.5,
+   "strafehorrvel": 12.0,
+   "strafevertvel": 12.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 2.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.75,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "des_schrott2a_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott2b_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott2~.osd": {
+   "restitution": 0.4,
+   "mass": 10000.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott3a_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott3b_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott3~.osd": {
+   "restitution": 0.4,
+   "mass": 10000.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott4a_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott4b_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott4~.osd": {
+   "restitution": 0.4,
+   "mass": 10000.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott5~.osd": {
+   "restitution": 0.4,
+   "mass": 10000.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott6_low~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "des_schrott6~.osd": {
+   "restitution": 0.4,
+   "mass": 10000.0,
+   "maxvelocity": 10.0,
+   "movepv": 4.0,
+   "movenv": 4.0,
+   "movet": 4.9,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 30.0,
+   "turnnv": 30.0,
+   "turnt": 6.7,
+   "turnr": 0.65,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.1,
+   "soundemissionlevel": "silent"
+  },
+  "elt_mole~.osd": {
+   "restitution": 0.3,
+   "mass": 320000.0,
+   "maxvelocity": 40.0,
+   "movepv": 7.5,
+   "movenv": 3.75,
+   "movet": 1.5,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.3,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "LargeVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "ent_bomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.6,
+    0.2,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_capefear_big~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 5.0,
+   "strafevertvel": 5.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.9,
+    0.5,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6,
+   "soundemissionlevel": "none"
+  },
+  "ent_capefear~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "maxvelocity": 20.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.9,
+    0.5,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.2,
+   "soundemissionlevel": "none"
+  },
+  "ent_deathblow~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.45
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "ent_jumpship_dam~.osd": {
+   "restitution": 0.1,
+   "mass": 160000.0,
+   "movepv": 6.25,
+   "movenv": 0.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.8
+  },
+  "ent_jumpship~.osd": {
+   "restitution": 0.1,
+   "mass": 160000.0,
+   "movepv": 600.0,
+   "movenv": 10.0,
+   "movet": 2.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 10.0,
+   "turnnv": 10.0,
+   "turnt": 10.0,
+   "turnr": 0.1,
+   "swingt": 0.5,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "LargeVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.8
+  },
+  "ent_pscout~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 42.0,
+   "movenv": 21.0,
+   "movet": 0.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 350.0,
+   "avoidanceradius": 1.5
+  },
+  "ent_raupe~.osd": {
+   "restitution": 0.1,
+   "mass": 20.0,
+   "movepv": 6.75,
+   "movenv": 2.0,
+   "movet": 1.5,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 2.9,
+   "swingt": 3.0,
+   "swinga": 0.5,
+   "movefriction": [
+    0.6,
+    0.1,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "Vehicle",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_scout~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 16.0,
+   "strafevertvel": 16.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.45
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "gen_avenger~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 20.0,
+   "movenv": 20.0,
+   "movet": 1.8,
+   "strafehorrvel": 19.0,
+   "strafevertvel": 19.0,
+   "turnpv": 140.0,
+   "turnnv": 140.0,
+   "turnt": 1.4,
+   "turnr": 0.25,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "gen_drowsymaggie~.osd": {
+   "restitution": 0.1,
+   "mass": 15000.0,
+   "movepv": 29.0,
+   "movenv": 20.0,
+   "movet": 4.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.1
+  },
+  "gen_escapepod~.osd": {
+   "restitution": 0.1,
+   "mass": 11000.0,
+   "movepv": 20.75,
+   "movenv": 0.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.47,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 20.0,
+   "avoidanceradius": 1.1
+  },
+  "gen_freighter1~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.3,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "gen_freighter2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 8.75,
+   "movenv": 0.0,
+   "movet": 17.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 10.0,
+   "turnnv": 10.0,
+   "turnt": 17.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.4,
+   "movefriction": [
+    0.9,
+    0.5,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_mine~.osd": {
+   "restitution": 0.1,
+   "mass": 3000.0,
+   "maxvelocity": 10.0,
+   "movepv": 130.0,
+   "movenv": 0.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.001,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 0.9
+  },
+  "gen_phobocaster~.osd": {
+   "restitution": 0.1,
+   "mass": 11000.0,
+   "movepv": 50.0,
+   "movenv": 35.0,
+   "movet": 2.0,
+   "strafehorrvel": 25.0,
+   "strafevertvel": 25.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.4
+  },
+  "gen_raupe~.osd": {
+   "restitution": 0.1,
+   "mass": 20.0,
+   "movepv": 6.75,
+   "movenv": 2.0,
+   "movet": 1.5,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 2.9,
+   "swingt": 3.0,
+   "swinga": 0.5,
+   "movefriction": [
+    0.6,
+    0.1,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "Vehicle",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.3
+  },
+  "gen_skipjack~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 23.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.75,
+   "maxvelocity": 20.0
+  },
+  "gen_succubus2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 20.0,
+   "movenv": 20.0,
+   "movet": 1.8,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 140.0,
+   "turnnv": 140.0,
+   "turnt": 1.4,
+   "turnr": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "gen_succubus~.osd": {
+   "restitution": 0.1,
+   "mass": 10000.0,
+   "movepv": 44.0,
+   "movenv": 30.0,
+   "movet": 2.0,
+   "strafehorrvel": 22.0,
+   "strafevertvel": 22.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 2.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.4,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_tiburon~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 23.0,
+   "movenv": 23.0,
+   "movet": 1.6,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 130.0,
+   "turnnv": 130.0,
+   "turnt": 1.3,
+   "turnr": 0.05,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.4,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.5
+  },
+  "gen_toiler~.osd": {
+   "restitution": 0.1,
+   "mass": 3000.0,
+   "movepv": 32.0,
+   "movenv": 22.0,
+   "movet": 4.0,
+   "strafehorrvel": 16.0,
+   "strafevertvel": 16.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.48,
+   "swingt": 5.0,
+   "swinga": 0.34,
+   "movefriction": [
+    0.04,
+    0.03,
+    0.06
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_torptower~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "maxvelocity": 20.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_turret~.osd": {
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "restitution": 0.1,
+   "mass": 0.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_vesselcont~.osd": {
+   "restitution": 0.1,
+   "mass": 40.0,
+   "maxvelocity": 10.0,
+   "movepv": 9.81,
+   "movenv": 9.81,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 1.0,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.09,
+    0.09,
+    0.09
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "gen_voodoobreath~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 18.0,
+   "movenv": 18.0,
+   "movet": 1.8,
+   "strafehorrvel": 18.0,
+   "strafevertvel": 18.0,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.5,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_vortex~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 20.0,
+   "movenv": 20.0,
+   "movet": 1.8,
+   "strafehorrvel": 19.0,
+   "strafevertvel": 19.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 1.5,
+   "turnr": 0.2,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.1
+  },
+  "hi_drowsymaggie~.osd": {
+   "restitution": 0.1,
+   "mass": 15000.0,
+   "movepv": 24.5,
+   "movenv": 12.25,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.1
+  },
+  "hi_phobocaster~.osd": {
+   "restitution": 0.1,
+   "mass": 11000.0,
+   "movepv": 60.0,
+   "movenv": 21.875,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.47,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.4
+  },
+  "hi_scout2~.osd": {
+   "restitution": 0.9,
+   "mass": 5600.0,
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.4
+  },
+  "hi_tiburon~.osd": {
+   "restitution": 0.1,
+   "mass": 25000.0,
+   "movepv": 21.0,
+   "movenv": 10.5,
+   "movet": 4.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 3.5,
+   "turnr": 0.05,
+   "swingt": 5.0,
+   "swinga": 0.34,
+   "movefriction": [
+    0.4,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "mac_nunet~.osd": {
+   "restitution": 0.1,
+   "mass": 100000.0,
+   "movepv": 20.0,
+   "movenv": 10.0,
+   "movet": 3.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 70.0,
+   "turnnv": 70.0,
+   "turnt": 3.0,
+   "turnr": 0.4,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "nv_avenger~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "maxvelocity": 10.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "nv_drowsymaggie~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "maxvelocity": 10.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 370.0,
+   "avoidanceradius": 1.1
+  },
+  "nv_pscout~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "maxvelocity": 10.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 450.0,
+   "avoidanceradius": 1.3
+  },
+  "nv_scout1~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "maxvelocity": 10.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 450.0,
+   "avoidanceradius": 1.5
+  },
+  "nv_toiler~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "maxvelocity": 10.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 0.9
+  },
+  "nv_voodoobreath~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "maxvelocity": 10.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 80.0,
+   "turnnv": 80.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.2
+  },
+  "old_belial~.osd": {
+   "restitution": 0.4,
+   "mass": 10000.0,
+   "movepv": 42.0,
+   "movenv": 21.0,
+   "movet": 0.5,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "Building",
+   "soundemissionlevel": "silent"
+  },
+  "old_crocell~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 0.0,
+   "strafevertvel": 0.0,
+   "turnpv": 720.0,
+   "turnnv": 720.0,
+   "turnt": 0.5,
+   "turnr": 0.4,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.2
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "soundemissionlevel": "none"
+  },
+  "old_forneus~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 720.0,
+   "turnnv": 720.0,
+   "turnt": 1.0,
+   "turnr": 0.2,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.2
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "soundemissionlevel": "silent"
+  },
+  "old_marax~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 20.0,
+   "strafevertvel": 20.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "turnr": 0.75,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "soundemissionlevel": "none"
+  },
+  "old_schax_bang~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 30.0,
+   "movenv": 15.0,
+   "movet": 2.0,
+   "strafehorrvel": 15.0,
+   "strafevertvel": 15.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 2.0,
+   "turnr": 0.75,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "old_schax_booster~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 36.0,
+   "movenv": 18.0,
+   "movet": 1.0,
+   "strafehorrvel": 18.0,
+   "strafevertvel": 18.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.0,
+   "turnr": 0.75,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "old_schax_head~.osd": {
+   "restitution": 0.1,
+   "mass": 60000.0,
+   "movepv": 10.0,
+   "movenv": 10.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 20.0,
+   "turnnv": 20.0,
+   "turnt": 1.0,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "old_schax_lighteater~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 80.0,
+   "movenv": 10.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "old_schax_raider~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 80.0,
+   "movenv": 10.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "old_schax_seed~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 48.0,
+   "movenv": 24.0,
+   "movet": 0.5,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 0.5,
+   "turnr": 0.75,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "old_schax_sneaker~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 10.0,
+   "movenv": 10.0,
+   "movet": 0.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 20.0,
+   "turnnv": 20.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "pe_leaking~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_raw~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_smoke~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_steam~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_stream~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_vulcan1~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_vulcan2~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pe_vulcan3~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "pla_avenger~.osd": {
+   "restitution": 0.1,
+   "mass": 4500.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_drowsymaggie~.osd": {
+   "restitution": 0.1,
+   "mass": 15000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_phobocaster~.osd": {
+   "restitution": 0.1,
+   "mass": 11000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "description": "SmallVessel",
+   "soundemissionlevel": "loud"
+  },
+  "pla_skipjack~.osd": {
+   "restitution": 0.1,
+   "mass": 4700.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_succubus2~.osd": {
+   "restitution": 0.1,
+   "mass": 10000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_tiburon~.osd": {
+   "restitution": 0.1,
+   "mass": 25000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_toiler~.osd": {
+   "restitution": 0.1,
+   "mass": 3000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_voodoobreath~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_vortex~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "sho_bomber~.osd": {
+   "restitution": 0.1,
+   "mass": 40000.0,
+   "movepv": 21.0,
+   "movenv": 10.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.1
+  },
+  "sho_scout~.osd": {
+   "restitution": 0.1,
+   "mass": 12600.0,
+   "movepv": 22.75,
+   "movenv": 11.375,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.7,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "tz_bomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.0,
+   "strafehorrvel": 9.0,
+   "strafevertvel": 9.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 2.0,
+   "turnr": 0.9,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 350.0,
+   "avoidanceradius": 1.0
+  },
+  "tz_creolegirl~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.0,
+   "strafehorrvel": 4.0,
+   "strafevertvel": 4.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.01,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 2.0
+  },
+  "tz_fregatte~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.0,
+   "strafehorrvel": 5.0,
+   "strafevertvel": 5.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 2.0,
+   "turnr": 0.9,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5,
+   "maxvelocity": 20.0
+  },
+  "tz_pscout~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 42.0,
+   "movenv": 21.0,
+   "movet": 0.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 0.5,
+   "turnr": 0.12,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "tz_scout1v1~.osd": {
+   "restitution": 0.1,
+   "mass": 5600.0,
+   "movepv": 38.5,
+   "movenv": 0.0,
+   "movet": 4.5,
+   "strafehorrvel": 13.0,
+   "strafevertvel": 13.0,
+   "turnpv": 75.0,
+   "turnnv": 75.0,
+   "turnt": 1.0,
+   "turnr": 0.4,
+   "swingt": 4.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.05
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 230.0,
+   "avoidanceradius": 1.5
+  },
+  "tz_scout1v2~.osd": {
+   "restitution": 0.1,
+   "mass": 5600.0,
+   "movepv": 39.599998,
+   "movenv": 0.0,
+   "movet": 4.1,
+   "strafehorrvel": 20.07,
+   "strafevertvel": 20.07,
+   "turnpv": 85.0,
+   "turnnv": 85.0,
+   "turnt": 1.0,
+   "turnr": 0.45,
+   "swingt": 4.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.05,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "tz_scout2v1~.osd": {
+   "restitution": 0.1,
+   "mass": 4200.0,
+   "movepv": 46.75,
+   "movenv": 23.370001,
+   "movet": 3.7,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 95.0,
+   "turnnv": 95.0,
+   "turnt": 1.2,
+   "turnr": 0.7,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.17,
+    0.1,
+    0.14
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "tz_scout2v2~.osd": {
+   "restitution": 0.1,
+   "mass": 4340.0,
+   "movepv": 47.849998,
+   "movenv": 23.92,
+   "movet": 3.4,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 105.0,
+   "turnnv": 105.0,
+   "turnt": 1.2,
+   "turnr": 0.7,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "tz_scout2v3~.osd": {
+   "restitution": 0.1,
+   "mass": 4620.0,
+   "movepv": 49.5,
+   "movenv": 24.75,
+   "movet": 2.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.2,
+   "turnr": 0.7,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "tz_scout2v4~.osd": {
+   "restitution": 0.1,
+   "mass": 4900.0,
+   "movepv": 51.150002,
+   "movenv": 25.57,
+   "movet": 2.0,
+   "strafehorrvel": 15.0,
+   "strafevertvel": 15.0,
+   "turnpv": 130.0,
+   "turnnv": 130.0,
+   "turnt": 1.2,
+   "turnr": 0.7,
+   "swingt": 5.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "tz_tank1~.osd": {
+   "restitution": 0.1,
+   "mass": 20.0,
+   "description": "Vehicle",
+   "lookaheaddistance": 150.0,
+   "avoidanceradius": 2.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.0,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 0.6,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none"
+  },
+  "tz_tank2~.osd": {
+   "restitution": 0.1,
+   "mass": 20.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.5,
+   "turnpv": 70.0,
+   "turnnv": 70.0,
+   "turnt": 1.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "Vehicle",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.3
+  },
+  "wng_bonham~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_chaka~.osd": {
+   "restitution": 0.5,
+   "mass": 20000.0,
+   "movepv": 25.5,
+   "movenv": 12.75,
+   "movet": 1.5,
+   "strafehorrvel": 12.75,
+   "strafevertvel": 12.75,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_degrange~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.7,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_harper~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_pico~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.55,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "atl_bomber_emp~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 2.0,
+   "soundemissionlevel": "none"
+  },
+  "atl_ghost_4h3~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 1.0,
+   "strafevertvel": 1.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.2,
+    0.49
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 2.0
+  },
+  "atl_scout1_emp~.osd": {
+   "restitution": 0.4,
+   "mass": 4200.0,
+   "movepv": 32.0,
+   "movenv": 24.0,
+   "movet": 1.2,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 95.0,
+   "turnnv": 95.0,
+   "turnt": 2.0,
+   "turnr": 0.75,
+   "swingt": 10.0,
+   "swinga": 0.34,
+   "movefriction": [
+    0.08,
+    0.07,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "atl_scout1_mov~.osd": {
+   "restitution": 0.4,
+   "mass": 4200.0,
+   "movepv": 32.0,
+   "movenv": 24.0,
+   "movet": 1.2,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 95.0,
+   "turnnv": 95.0,
+   "turnt": 2.0,
+   "turnr": 0.75,
+   "swingt": 10.0,
+   "swinga": 0.34,
+   "movefriction": [
+    0.08,
+    0.07,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "atl_scout2_4h2~.osd": {
+   "restitution": 0.4,
+   "mass": 5600.0,
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 35.0,
+   "strafevertvel": 35.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.4
+  },
+  "atl_scout2_emp~.osd": {
+   "restitution": 0.4,
+   "mass": 5600.0,
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 35.0,
+   "strafevertvel": 35.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.4
+  },
+  "atl_scout_fat~.osd": {
+   "restitution": 0.9,
+   "mass": 5600.0,
+   "movepv": 55.0,
+   "movenv": 27.0,
+   "movet": 0.55,
+   "strafehorrvel": 27.0,
+   "strafevertvel": 27.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 350.0,
+   "avoidanceradius": 1.5
+  },
+  "atl_techbomber_docking~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5,
+   "soundemissionlevel": "none"
+  },
+  "atl_techbomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5,
+   "soundemissionlevel": "none"
+  },
+  "bio_bomber_5n2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 220.0,
+   "turnnv": 220.0,
+   "turnt": 1.0,
+   "turnr": 0.2,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_scout_5n2~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 55.0,
+   "movenv": 27.0,
+   "movet": 1.1,
+   "strafehorrvel": 27.0,
+   "strafevertvel": 27.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 150.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_scout_d1_nohalo~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 18.0,
+   "movenv": 0.0,
+   "movet": 2.1,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.25,
+   "turnr": 0.4,
+   "swingt": 10.0,
+   "swinga": 0.7,
+   "movefriction": [
+    0.03,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "bio_scout_d2_nohalo~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 26.0,
+   "movenv": 0.0,
+   "movet": 1.6,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.25,
+   "turnr": 0.4,
+   "swingt": 10.0,
+   "swinga": 0.5,
+   "movefriction": [
+    0.03,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "bio_scout_d3_nohalo~.osd": {
+   "restitution": 0.1,
+   "mass": 14000.0,
+   "movepv": 36.0,
+   "movenv": 0.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 60.0,
+   "turnnv": 60.0,
+   "turnt": 1.25,
+   "turnr": 0.4,
+   "swingt": 10.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.03,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "cra_bomber_6h1~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 8.0,
+   "strafevertvel": 8.0,
+   "turnpv": 220.0,
+   "turnnv": 220.0,
+   "turnt": 1.0,
+   "turnr": 0.6,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.4,
+    0.1,
+    0.4
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_freighter~.osd": {
+   "restitution": 0.9,
+   "mass": 320000.0,
+   "movepv": 20.0,
+   "movenv": 0.0,
+   "movet": 6.0,
+   "strafehorrvel": 4.0,
+   "strafevertvel": 4.0,
+   "turnpv": 10.0,
+   "turnnv": 10.0,
+   "turnt": 6.0,
+   "turnr": 0.001,
+   "swingt": 0.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.3,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "LargeVessel",
+   "lookaheaddistance": 350.0,
+   "avoidanceradius": 2.0
+  },
+  "cra_magmaeater_6h2_gen~.osd": {
+   "restitution": 1.0,
+   "mass": 500000.0,
+   "movepv": 10.5,
+   "movenv": 0.0,
+   "movet": 9.0,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 4.0,
+   "turnnv": 4.0,
+   "turnt": 14.0,
+   "turnr": 0.001,
+   "swingt": 0.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.4,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "Building",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 5.0
+  },
+  "cra_magmaeater_6h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.001,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.4,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 5.0
+  },
+  "cra_scout1_6h1~.osd": {
+   "restitution": 0.1,
+   "mass": 8400.0,
+   "movepv": 30.25,
+   "movenv": 15.12,
+   "movet": 1.0,
+   "strafehorrvel": 15.12,
+   "strafevertvel": 15.12,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 0.8,
+   "turnr": 0.4,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.12,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "cra_scout1_g~.osd": {
+   "restitution": 0.1,
+   "mass": 8400.0,
+   "movepv": 30.25,
+   "movenv": 15.12,
+   "movet": 1.0,
+   "strafehorrvel": 15.12,
+   "strafevertvel": 15.12,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 0.8,
+   "turnr": 0.4,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.12,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_scout2v1_6h1~.osd": {
+   "restitution": 0.1,
+   "mass": 8820.0,
+   "movepv": 33.0,
+   "movenv": 16.5,
+   "movet": 2.0,
+   "strafehorrvel": 16.5,
+   "strafevertvel": 16.5,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 0.6,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "cra_scout2v1_g~.osd": {
+   "restitution": 0.1,
+   "mass": 8820.0,
+   "movepv": 33.0,
+   "movenv": 16.5,
+   "movet": 2.0,
+   "strafehorrvel": 16.5,
+   "strafevertvel": 16.5,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 0.6,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_scout2v2_6h1~.osd": {
+   "restitution": 0.1,
+   "mass": 8960.0,
+   "movepv": 33.549999,
+   "movenv": 16.77,
+   "movet": 1.5,
+   "strafehorrvel": 16.77,
+   "strafevertvel": 16.77,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_scout2v2_fat~.osd": {
+   "restitution": 0.1,
+   "mass": 8960.0,
+   "movepv": 50.0,
+   "movenv": 25.0,
+   "movet": 0.5,
+   "strafehorrvel": 25.0,
+   "strafevertvel": 25.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.01,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 2.0
+  },
+  "cra_scout2v2_g~.osd": {
+   "restitution": 0.1,
+   "mass": 8960.0,
+   "movepv": 33.549999,
+   "movenv": 16.77,
+   "movet": 1.5,
+   "strafehorrvel": 16.77,
+   "strafevertvel": 16.77,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.6,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_tank_3h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.5,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.0,
+   "turnr": 0.001,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "Vehicle",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_tank~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.5,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.0,
+   "turnr": 0.001,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "Vehicle",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "cra_tursas_6h3~.osd": {
+   "restitution": 0.1,
+   "mass": 120000.0,
+   "soundemissionlevel": "medium",
+   "movepv": 35.0,
+   "movenv": 17.5,
+   "movet": 3.5,
+   "strafehorrvel": 12.0,
+   "strafevertvel": 12.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 2.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.75,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "cra_tursas_6h4~.osd": {
+   "restitution": 0.1,
+   "mass": 120000.0,
+   "soundemissionlevel": "medium",
+   "movepv": 35.0,
+   "movenv": 17.5,
+   "movet": 3.5,
+   "strafehorrvel": 12.0,
+   "strafevertvel": 12.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 2.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.75,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "cra_tursas_nohalo~.osd": {
+   "restitution": 0.1,
+   "mass": 120000.0,
+   "soundemissionlevel": "medium",
+   "movepv": 35.0,
+   "movenv": 17.5,
+   "movet": 3.5,
+   "strafehorrvel": 12.0,
+   "strafevertvel": 12.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 2.0,
+   "turnr": 0.3,
+   "swingt": 23.0,
+   "swinga": 0.75,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "MediumVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "des_jumpship_dam~.osd": {
+   "restitution": 0.1,
+   "mass": 160000.0,
+   "movepv": 6.25,
+   "movenv": 0.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.5,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.8
+  },
+  "dir_cammesh_2h3~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "dir_cammesh_magma~.osd": {
+   "restitution": 0.1,
+   "mass": 1400.0,
+   "movepv": 40.0,
+   "movenv": 21.0,
+   "movet": 0.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 25.0,
+   "turnnv": 25.0,
+   "turnt": 0.5,
+   "turnr": 0.35,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.7
+  },
+  "dir_cammesh~.osd": {
+   "restitution": 0.1,
+   "mass": 10.0,
+   "maxvelocity": 10.0,
+   "movepv": 250.0,
+   "movenv": 50.0,
+   "movet": 1.0,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 5.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 0.5,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 1.0
+  },
+  "elt_transport~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.3,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "ent_bomber_2h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.6,
+    0.2,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_bomber_2h3~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.6,
+    0.2,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_bomber_docking~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.6,
+    0.2,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_changbomber~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 8.0,
+   "strafevertvel": 8.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.6,
+    0.2,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_scout_2h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 16.0,
+   "strafevertvel": 16.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.45
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_scout_2h3~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 16.0,
+   "strafevertvel": 16.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.45
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "ent_scout_6h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 16.0,
+   "strafevertvel": 16.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.8,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.3,
+    0.1,
+    0.45
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.6
+  },
+  "gen_freighter1_6h4~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.3,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.7,
+    0.3,
+    0.7
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5
+  },
+  "gen_freighter2_corpse~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 8.75,
+   "movenv": 0.0,
+   "movet": 17.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 10.0,
+   "turnnv": 10.0,
+   "turnt": 17.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.4,
+   "movefriction": [
+    0.9,
+    0.5,
+    0.9
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_phobocaster_inst~.osd": {
+   "restitution": 0.1,
+   "mass": 11000.0,
+   "movepv": 50.0,
+   "movenv": 35.0,
+   "movet": 0.5,
+   "strafehorrvel": 25.0,
+   "strafevertvel": 25.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.01,
+   "movefriction": [
+    0.09,
+    0.04,
+    0.12
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.4
+  },
+  "gen_skipjack_inst~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.5,
+   "strafehorrvel": 23.0,
+   "strafevertvel": 23.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.75,
+   "maxvelocity": 20.0
+  },
+  "gen_succubus2_inst~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 20.0,
+   "movenv": 20.0,
+   "movet": 1.8,
+   "strafehorrvel": 24.0,
+   "strafevertvel": 24.0,
+   "turnpv": 140.0,
+   "turnnv": 140.0,
+   "turnt": 1.4,
+   "turnr": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.0
+  },
+  "gen_succubus_instantfight~.osd": {
+   "restitution": 0.1,
+   "mass": 10000.0,
+   "movepv": 55.0,
+   "movenv": 27.0,
+   "movet": 0.55,
+   "strafehorrvel": 27.0,
+   "strafevertvel": 27.0,
+   "turnpv": 270.0,
+   "turnnv": 270.0,
+   "turnt": 1.0,
+   "turnr": 0.5,
+   "swingt": 10.0,
+   "swinga": 0.0001,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 350.0,
+   "avoidanceradius": 1.5
+  },
+  "gen_tiburon_docking~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 23.0,
+   "movenv": 23.0,
+   "movet": 1.6,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 130.0,
+   "turnnv": 130.0,
+   "turnt": 1.3,
+   "turnr": 0.05,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.4,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "none",
+   "description": "SmallVessel",
+   "lookaheaddistance": 300.0,
+   "avoidanceradius": 1.5
+  },
+  "gen_toiler_inst~.osd": {
+   "restitution": 0.1,
+   "mass": 3000.0,
+   "movepv": 32.0,
+   "movenv": 22.0,
+   "movet": 1.0,
+   "strafehorrvel": 16.0,
+   "strafevertvel": 16.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.48,
+   "swingt": 5.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.04,
+    0.03,
+    0.06
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_torptower_flash~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "maxvelocity": 20.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_torptower_maneater~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "maxvelocity": 20.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_trafoe3~.osd": {
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "restitution": 0.1,
+   "mass": 0.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_turrete3~.osd": {
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "restitution": 0.1,
+   "mass": 0.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_turret_hard~.osd": {
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "restitution": 0.1,
+   "mass": 0.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_turret_medium~.osd": {
+   "soundemissionlevel": "none",
+   "description": "Building",
+   "restitution": 0.1,
+   "mass": 0.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "swingt": 4.0,
+   "swinga": 0.01,
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "gen_voodoobreath_4n2~.osd": {
+   "restitution": 0.1,
+   "mass": 20000.0,
+   "movepv": 36.0,
+   "movenv": 25.0,
+   "movet": 3.0,
+   "strafehorrvel": 18.0,
+   "strafevertvel": 18.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.2,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "medium",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_voodoobreath_inst~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 18.0,
+   "movenv": 18.0,
+   "movet": 1.8,
+   "strafehorrvel": 18.0,
+   "strafevertvel": 18.0,
+   "turnpv": 120.0,
+   "turnnv": 120.0,
+   "turnt": 1.5,
+   "turnr": 1.0,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.2
+  },
+  "gen_vortex_inst~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 20.0,
+   "movenv": 20.0,
+   "movet": 1.8,
+   "strafehorrvel": 19.0,
+   "strafevertvel": 19.0,
+   "turnpv": 100.0,
+   "turnnv": 100.0,
+   "turnt": 1.5,
+   "turnr": 0.2,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.2,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.1
+  },
+  "pla_succubus2_team_blue~.osd": {
+   "restitution": 0.1,
+   "mass": 10000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "pla_succubus2_team_red~.osd": {
+   "restitution": 0.1,
+   "mass": 10000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "old_marax_6h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 20.0,
+   "strafevertvel": 20.0,
+   "turnpv": 180.0,
+   "turnnv": 180.0,
+   "turnt": 0.5,
+   "turnr": 0.75,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "soundemissionlevel": "none"
+  },
+  "old_marax_movie~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 1.0,
+   "strafehorrvel": 20.0,
+   "strafevertvel": 20.0,
+   "turnpv": 220.0,
+   "turnnv": 220.0,
+   "turnt": 1.0,
+   "turnr": 0.75,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "description": "SmallVessel",
+   "soundemissionlevel": "none"
+  },
+  "pla_succubus~.osd": {
+   "restitution": 0.1,
+   "mass": 10000.0,
+   "movefriction": [
+    0.1,
+    0.08,
+    0.17
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "movepv": 41.25,
+   "movenv": 35.0,
+   "movet": 1.2,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.63,
+   "swingt": 10.0,
+   "swinga": 0.3,
+   "soundemissionlevel": "loud",
+   "description": "SmallVessel"
+  },
+  "tz_creolegirl_6h2~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.0,
+   "strafehorrvel": 4.0,
+   "strafevertvel": 4.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 1.0,
+   "turnr": 0.01,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 400.0,
+   "avoidanceradius": 2.0
+  },
+  "tz_fregatte_creole~.osd": {
+   "restitution": 0.1,
+   "mass": 0.0,
+   "movepv": 24.0,
+   "movenv": 24.0,
+   "movet": 2.0,
+   "strafehorrvel": 5.0,
+   "strafevertvel": 5.0,
+   "turnpv": 110.0,
+   "turnnv": 110.0,
+   "turnt": 2.0,
+   "turnr": 0.9,
+   "swingt": 4.0,
+   "swinga": 0.0,
+   "movefriction": [
+    0.1,
+    0.1,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 250.0,
+   "avoidanceradius": 1.5,
+   "maxvelocity": 20.0
+  },
+  "tz_geb_brainfire_sat~.osd": {
+   "restitution": 0.1,
+   "mass": 99999997952.0,
+   "movepv": 42.0,
+   "movenv": 21.0,
+   "movet": 0.5,
+   "strafehorrvel": 10.0,
+   "strafevertvel": 10.0,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 0.5,
+   "turnr": 0.12,
+   "swingt": 3.0,
+   "swinga": 0.1,
+   "movefriction": [
+    0.3,
+    0.001,
+    0.1
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 450.0,
+   "avoidanceradius": 1.3
+  },
+  "wng_bonham_1h4~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_bonham_6h2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_bonham_6h3~.osd": {
+   "restitution": 0.5,
+   "mass": 1000000.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_bonham_c2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_bonham_c4~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_bonham_c5~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_bonham_c6~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_chaka_c4~.osd": {
+   "restitution": 0.5,
+   "mass": 20000.0,
+   "movepv": 25.5,
+   "movenv": 12.75,
+   "movet": 1.5,
+   "strafehorrvel": 12.75,
+   "strafevertvel": 12.75,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_chaka_c5~.osd": {
+   "restitution": 0.5,
+   "mass": 20000.0,
+   "movepv": 25.5,
+   "movenv": 12.75,
+   "movet": 1.5,
+   "strafehorrvel": 12.75,
+   "strafevertvel": 12.75,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_chaka_c6~.osd": {
+   "restitution": 0.5,
+   "mass": 20000.0,
+   "movepv": 25.5,
+   "movenv": 12.75,
+   "movet": 1.5,
+   "strafehorrvel": 12.75,
+   "strafevertvel": 12.75,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_chaka_mov1~.osd": {
+   "restitution": 0.5,
+   "mass": 20000.0,
+   "movepv": 25.5,
+   "movenv": 12.75,
+   "movet": 1.5,
+   "strafehorrvel": 12.75,
+   "strafevertvel": 12.75,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.6,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_degrange_c2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.7,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_degrange_c4~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.7,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_degrange_c5~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.7,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_degrange_c6~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.7,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_harper_5h2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 36.0,
+   "movenv": 18.0,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_harper_c2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_harper_c4~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_harper_c5~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_harper_c6~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.65,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_pico_6h2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.55,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_pico_c2~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.55,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_pico_c4~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.55,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_pico_c5~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.55,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  },
+  "wng_pico_c6~.osd": {
+   "restitution": 0.5,
+   "mass": 5600.0,
+   "movepv": 26.25,
+   "movenv": 13.125,
+   "movet": 1.5,
+   "strafehorrvel": 13.125,
+   "strafevertvel": 13.125,
+   "turnpv": 90.0,
+   "turnnv": 90.0,
+   "turnt": 1.5,
+   "turnr": 0.55,
+   "swingt": 2.0,
+   "swinga": 0.2,
+   "movefriction": [
+    0.1,
+    0.01,
+    0.3
+   ],
+   "turnfriction": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "soundemissionlevel": "silent",
+   "description": "SmallVessel",
+   "lookaheaddistance": 200.0,
+   "avoidanceradius": 1.5
+  }
+ }
+}

@@ -1,0 +1,667 @@
+{
+ "titel": "AquaNox 1 -- die Partikeleffekte",
+ "beschreibung": "Felder der fx_*.osd, mit Haeufigkeit und einem Beispielwert. Der Tippfehler 'trancparencytype' (statt transparency) steht so in den Originaldateien.",
+ "felder": {
+  "type": {
+   "anzahl": 993,
+   "beispiel": "linear"
+  },
+  "lifetime": {
+   "anzahl": 953,
+   "beispiel": 0.1
+  },
+  "translation": {
+   "anzahl": 942,
+   "beispiel": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "rotation0": {
+   "anzahl": 942,
+   "beispiel": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "rotation1": {
+   "anzahl": 942,
+   "beispiel": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "rotation2": {
+   "anzahl": 942,
+   "beispiel": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "namecla": {
+   "anzahl": 700,
+   "beispiel": "nod_fx_seeder"
+  },
+  "nameson": {
+   "anzahl": 541,
+   "beispiel": "final explo seeder"
+  },
+  "lift": {
+   "anzahl": 442,
+   "beispiel": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "rejectdistance": {
+   "anzahl": 409,
+   "beispiel": 100.0
+  },
+  "coneangle": {
+   "anzahl": 409,
+   "beispiel": 0.0
+  },
+  "parvelocity": {
+   "anzahl": 409,
+   "beispiel": [
+    0.0,
+    0.0
+   ]
+  },
+  "parrotation": {
+   "anzahl": 409,
+   "beispiel": [
+    -40.0,
+    40.0
+   ]
+  },
+  "parpersecond": {
+   "anzahl": 409,
+   "beispiel": 5.0
+  },
+  "rotvelocity": {
+   "anzahl": 409,
+   "beispiel": [
+    0.0,
+    0.0
+   ]
+  },
+  "friction": {
+   "anzahl": 409,
+   "beispiel": [
+    10.0,
+    10.0,
+    10.0
+   ]
+  },
+  "size": {
+   "anzahl": 409,
+   "beispiel": 2.5
+  },
+  "trancparencytype": {
+   "anzahl": 409,
+   "beispiel": "Filter"
+  },
+  "addtype": {
+   "anzahl": 401,
+   "beispiel": "father"
+  },
+  "delay": {
+   "anzahl": 401,
+   "beispiel": 0.0
+  },
+  "count": {
+   "anzahl": 401,
+   "beispiel": 1
+  },
+  "initialdelay": {
+   "anzahl": 391,
+   "beispiel": 7.4
+  },
+  "texture": {
+   "anzahl": 293,
+   "beispiel": "vfx\\tex\\fx\\exp_corpse1"
+  },
+  "namenod": {
+   "anzahl": 159,
+   "beispiel": "sound"
+  },
+  "textureset": {
+   "anzahl": 144,
+   "beispiel": "expl2\\expl2.tse"
+  },
+  "fps": {
+   "anzahl": 144,
+   "beispiel": 27.0
+  },
+  "frictiont": {
+   "anzahl": 101,
+   "beispiel": [
+    10.0,
+    10.0,
+    10.0
+   ]
+  },
+  "frictionr": {
+   "anzahl": 101,
+   "beispiel": [
+    10.0,
+    10.0,
+    10.0
+   ]
+  },
+  "name": {
+   "anzahl": 96,
+   "beispiel": "exp_med.wav"
+  },
+  "freq": {
+   "anzahl": 96,
+   "beispiel": 22050
+  },
+  "freqrnd": {
+   "anzahl": 96,
+   "beispiel": 11000
+  },
+  "vol": {
+   "anzahl": 96,
+   "beispiel": 250
+  },
+  "volrnd": {
+   "anzahl": 96,
+   "beispiel": 0
+  },
+  "cnt": {
+   "anzahl": 96,
+   "beispiel": 1
+  },
+  "minr": {
+   "anzahl": 96,
+   "beispiel": 100.0
+  },
+  "maxr": {
+   "anzahl": 96,
+   "beispiel": 400.0
+  },
+  "out": {
+   "anzahl": 60,
+   "beispiel": 10
+  },
+  "class": {
+   "anzahl": 48,
+   "beispiel": "nod_trash"
+  },
+  "rgb": {
+   "anzahl": 47,
+   "beispiel": [
+    1.0,
+    0.6,
+    0.2
+   ]
+  },
+  "range": {
+   "anzahl": 47,
+   "beispiel": [
+    100.0,
+    150.0
+   ]
+  },
+  "time": {
+   "anzahl": 42,
+   "beispiel": 0.4
+  },
+  "inmax": {
+   "anzahl": 40,
+   "beispiel": -1
+  },
+  "seedingtype": {
+   "anzahl": 34,
+   "beispiel": "Ordered"
+  },
+  "mode": {
+   "anzahl": 34,
+   "beispiel": "Hull"
+  },
+  "distancerelation": {
+   "anzahl": 34,
+   "beispiel": 1.0
+  },
+  "prob0": {
+   "anzahl": 34,
+   "beispiel": 0.5
+  },
+  "prob1": {
+   "anzahl": 34,
+   "beispiel": 0.5
+  },
+  "conemin": {
+   "anzahl": 33,
+   "beispiel": 0.0
+  },
+  "conemax": {
+   "anzahl": 33,
+   "beispiel": 180.0
+  },
+  "rollmin": {
+   "anzahl": 33,
+   "beispiel": 0.0
+  },
+  "rollmax": {
+   "anzahl": 33,
+   "beispiel": 180.0
+  },
+  "velocitymin": {
+   "anzahl": 33,
+   "beispiel": 20.0
+  },
+  "velocitymax": {
+   "anzahl": 33,
+   "beispiel": 20.0
+  },
+  "velocityrot": {
+   "anzahl": 33,
+   "beispiel": [
+    360.0,
+    0.0,
+    360.0
+   ]
+  },
+  "interval": {
+   "anzahl": 31,
+   "beispiel": null
+  },
+  "velocity": {
+   "anzahl": 28,
+   "beispiel": [
+    -20.0,
+    -30.0,
+    0.0
+   ]
+  },
+  "numofspawners": {
+   "anzahl": 27,
+   "beispiel": 8
+  },
+  "opacity": {
+   "anzahl": 25,
+   "beispiel": 80
+  },
+  "numofsprites": {
+   "anzahl": 25,
+   "beispiel": 256
+  },
+  "spriteboxscale": {
+   "anzahl": 25,
+   "beispiel": 15.0
+  },
+  "spritescale": {
+   "anzahl": 25,
+   "beispiel": [
+    0.20999999344348907,
+    0.3499999940395355
+   ]
+  },
+  "wavetexture": {
+   "anzahl": 25,
+   "beispiel": "vfx\\tex\\fx\\sky6_wave"
+  },
+  "lighttexture": {
+   "anzahl": 25,
+   "beispiel": "vfx\\tex\\fx\\sky0_light"
+  },
+  "scale": {
+   "anzahl": 25,
+   "beispiel": [
+    1.5,
+    1.5
+   ]
+  },
+  "offset": {
+   "anzahl": 25,
+   "beispiel": [
+    0.0010000000474974513,
+    0.0010000000474974513
+   ]
+  },
+  "showshield": {
+   "anzahl": 20,
+   "beispiel": 0
+  },
+  "damagepropagationratio": {
+   "anzahl": 20,
+   "beispiel": 1.0
+  },
+  "terrainoutpoints": {
+   "anzahl": 20,
+   "beispiel": 0
+  },
+  "leftrightactive": {
+   "anzahl": 20,
+   "beispiel": 0
+  },
+  "frontbackactive": {
+   "anzahl": 20,
+   "beispiel": 0
+  },
+  "topbottomactive": {
+   "anzahl": 20,
+   "beispiel": 0
+  },
+  "rightin": {
+   "anzahl": 20,
+   "beispiel": 560
+  },
+  "leftin": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "frontin": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "backin": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "topin": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "botin": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "rightinmax": {
+   "anzahl": 20,
+   "beispiel": 560
+  },
+  "leftinmax": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "frontinmax": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "backinmax": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "topinmax": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "botinmax": {
+   "anzahl": 20,
+   "beispiel": -1
+  },
+  "prob2": {
+   "anzahl": 16,
+   "beispiel": 0.1
+  },
+  "spawn0": {
+   "anzahl": 15,
+   "beispiel": null
+  },
+  "expansiontime": {
+   "anzahl": 15,
+   "beispiel": 5.0
+  },
+  "rotationvelocity": {
+   "anzahl": 15,
+   "beispiel": 10.0
+  },
+  "minimumkinshieldpoints": {
+   "anzahl": 15,
+   "beispiel": 500
+  },
+  "minimumradius": {
+   "anzahl": 15,
+   "beispiel": 5.0
+  },
+  "maximumradius": {
+   "anzahl": 15,
+   "beispiel": 100.0
+  },
+  "minimumalphavalue": {
+   "anzahl": 15,
+   "beispiel": 1.0
+  },
+  "maximumalphavalue": {
+   "anzahl": 15,
+   "beispiel": 1.0
+  },
+  "velocityincrement": {
+   "anzahl": 15,
+   "beispiel": 40.0
+  },
+  "emp": {
+   "anzahl": 15,
+   "beispiel": null
+  },
+  "osd": {
+   "anzahl": 13,
+   "beispiel": null
+  },
+  "numofcycles": {
+   "anzahl": 7,
+   "beispiel": 16
+  },
+  "maxnumofobjectsduringcycle": {
+   "anzahl": 7,
+   "beispiel": 3
+  },
+  "prob3": {
+   "anzahl": 6,
+   "beispiel": 0.2
+  },
+  "namemesh": {
+   "anzahl": 5,
+   "beispiel": "org_plant01_l0.msh"
+  },
+  "plantmap": {
+   "anzahl": 5,
+   "beispiel": "map\\magellan\\terrain\\plant1.tga"
+  },
+  "maxdistance": {
+   "anzahl": 5,
+   "beispiel": 150.0
+  },
+  "minx": {
+   "anzahl": 5,
+   "beispiel": 0.6
+  },
+  "maxx": {
+   "anzahl": 5,
+   "beispiel": 1.2
+  },
+  "miny": {
+   "anzahl": 5,
+   "beispiel": 0.6
+  },
+  "maxy": {
+   "anzahl": 5,
+   "beispiel": 1.2
+  },
+  "minz": {
+   "anzahl": 5,
+   "beispiel": 0.8
+  },
+  "maxz": {
+   "anzahl": 5,
+   "beispiel": 1.4
+  },
+  "renderfast": {
+   "anzahl": 5,
+   "beispiel": 1
+  },
+  "spawn4": {
+   "anzahl": 5,
+   "beispiel": null
+  },
+  "active": {
+   "anzahl": 5,
+   "beispiel": 1
+  },
+  "restitution": {
+   "anzahl": 5,
+   "beispiel": 0.1
+  },
+  "mass": {
+   "anzahl": 5,
+   "beispiel": 500.0
+  },
+  "maxnumofcollisions": {
+   "anzahl": 5,
+   "beispiel": 10
+  },
+  "maxnumofshothits": {
+   "anzahl": 5,
+   "beispiel": 20
+  },
+  "collisiondescription": {
+   "anzahl": 5,
+   "beispiel": "gen_clunker06_low.col"
+  },
+  "description": {
+   "anzahl": 5,
+   "beispiel": "SmallVessel"
+  },
+  "presence": {
+   "anzahl": 5,
+   "beispiel": 1
+  },
+  "visible": {
+   "anzahl": 5,
+   "beispiel": 1
+  },
+  "visibilityblocking": {
+   "anzahl": 5,
+   "beispiel": 0
+  },
+  "soundemissionlevel": {
+   "anzahl": 5,
+   "beispiel": "none"
+  },
+  "amplitudea": {
+   "anzahl": 5,
+   "beispiel": 30.0
+  },
+  "amplitudeb": {
+   "anzahl": 5,
+   "beispiel": 30.0
+  },
+  "amplitudec": {
+   "anzahl": 5,
+   "beispiel": 30.0
+  },
+  "phaseshifta": {
+   "anzahl": 5,
+   "beispiel": 270.0
+  },
+  "phaseshiftb": {
+   "anzahl": 5,
+   "beispiel": 150.0
+  },
+  "phaseshiftc": {
+   "anzahl": 5,
+   "beispiel": 60.0
+  },
+  "frequencya": {
+   "anzahl": 5,
+   "beispiel": 0.39
+  },
+  "frequencyb": {
+   "anzahl": 5,
+   "beispiel": 0.38
+  },
+  "frequencyc": {
+   "anzahl": 5,
+   "beispiel": 0.37
+  },
+  "minimumempshieldpoints": {
+   "anzahl": 4,
+   "beispiel": 0
+  },
+  "maxrays": {
+   "anzahl": 3,
+   "beispiel": 64
+  },
+  "minlifetime": {
+   "anzahl": 3,
+   "beispiel": 1.0
+  },
+  "maxlifetime": {
+   "anzahl": 3,
+   "beispiel": 5.0
+  },
+  "widthmin": {
+   "anzahl": 3,
+   "beispiel": 10.0
+  },
+  "widthmax": {
+   "anzahl": 3,
+   "beispiel": 30.0
+  },
+  "heightmin": {
+   "anzahl": 3,
+   "beispiel": 1000.0
+  },
+  "heightmax": {
+   "anzahl": 3,
+   "beispiel": 1000.0
+  },
+  "red": {
+   "anzahl": 3,
+   "beispiel": 51
+  },
+  "green": {
+   "anzahl": 3,
+   "beispiel": 76
+  },
+  "blue": {
+   "anzahl": 3,
+   "beispiel": 76
+  },
+  "alpha": {
+   "anzahl": 3,
+   "beispiel": 255
+  },
+  "birthoffsetzmin": {
+   "anzahl": 3,
+   "beispiel": -250.0
+  },
+  "birthoffsetzmax": {
+   "anzahl": 3,
+   "beispiel": -50.0
+  },
+  "maxopacity": {
+   "anzahl": 3,
+   "beispiel": 0.25
+  },
+  "bbgenerationscale": {
+   "anzahl": 3,
+   "beispiel": 0.7
+  },
+  "mintime": {
+   "anzahl": 2,
+   "beispiel": 10.0
+  },
+  "maxtime": {
+   "anzahl": 2,
+   "beispiel": 15.0
+  },
+  "stayingtime": {
+   "anzahl": 1,
+   "beispiel": 5.5
+  },
+  "child0": {
+   "anzahl": 1,
+   "beispiel": null
+  }
+ }
+}

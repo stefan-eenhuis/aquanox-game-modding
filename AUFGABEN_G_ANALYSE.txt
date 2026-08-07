@@ -1,0 +1,264 @@
+================================================================================
+AUFGABENLISTE G -- REINE ANALYSE, OHNE SPIELDURCHLAUF
+================================================================================
+Stand: 2026-07-28, nach Abschluss der F-Reihe (Handoff v96)
+
+Wie bisher: alles am Schreibtisch. Was das laufende Spiel braucht,
+steht in OFFENE_TESTS.txt (inzwischen T1 bis T20).
+
+VORBEMERKUNG -- ZWEI BEOBACHTUNGEN BEIM ZUSAMMENSTELLEN
+
+  1. sdialog~.des laesst sich mit dem neuen des_tool.py sofort
+     lesen, und der Inhalt ist besser als erhofft: 211 Dialoge mit
+     KLARNAMEN, Station, Raum und Take-Liste. Das ist das Bindeglied
+     zwischen option~.des (Abschnitt 175) und stake_d.des
+     (Abschnitt 190) -- die letzte fehlende Verbindung im Textsystem.
+
+  2. AquaNox 2 loest die Mehrsprachigkeit sauber ueber ORDNER:
+     dat\sty\en\briefing.loc, dat\sty\en\gun.loc, dazu je Mission
+     ein minfo_<Mission>.loc. AquaNox 1 haengt stattdessen _d oder
+     _e an den Dateinamen. Wer Nachtschicht je zweisprachig will,
+     hat in AN2 das bessere Vorbild vor sich.
+
+Reihenfolge ist Prioritaet.
+
+--------------------------------------------------------------------------------
+G1  DIE DIALOGSTRUKTUR AUSWERTEN -- sdialog~.des
+--------------------------------------------------------------------------------
+    Warum:   Der erste Blick zeigt schon den Aufbau:
+
+                 numofdialog = 211
+                 [Dialog]
+                   key       = 1
+                   type      = "story"
+                   name      = "1-20 Begruessung Perry"
+                   station   = 2
+                   room      = 130
+                   numoftake = 6
+                   take0..5  = 1, 2, 3, 4, 5, 6
+
+             Damit haengt alles zusammen: der Dialog nennt seine
+             Takes (aus stake_d.des, Abschnitt 190), seine Station
+             (station_d.des, Abschnitt 176) und seinen Raum
+             (room_d.des). Und die Namen sind sprechend.
+    Zu klaeren:
+             - Welche type-Werte gibt es ausser "story"?
+             - Verweisen die 206 dialog-Optionen aus option~.des
+               ueber typekey genau auf diese 211 Dialoge?
+             - Welcher Dialog spielt in welchem Raum welcher Station?
+             - Gibt es Antwortmoeglichkeiten, oder laeuft jeder
+               Dialog linear ab? (numoftake und take0..N sprechen
+               fuer linear -- aber das ist zu belegen.)
+    Ergebnis: aquanox1_stationsdialoge.json um die Dialogebene
+             ergaenzen. *** Danach ist das Textsystem von AquaNox 1
+             lueckenlos: Option -> Dialog -> Takes -> Sprachdatei. ***
+    Aufwand: klein bis mittel. Hoechster Nutzen je Aufwand.
+
+--------------------------------------------------------------------------------
+G2  DIE next-OFFSETS IM GEKOCHTEN .des -- der letzte Blocker
+--------------------------------------------------------------------------------
+    Warum:   des_tool.py liest gekochte Dateien und aendert gleich
+             lange Werte. Was fehlt, ist das HINZUFUEGEN von
+             Eintraegen -- und genau das braucht Nachtschicht, um
+             eigene Optionen in option~.des einzuhaengen (T19).
+    Zu klaeren:
+             - Wie berechnet sich das u32-next-Feld genau? Erste
+               Sichtung: es zeigt auf den naechsten Satz derselben
+               Ebene, 0xFFFFFFFF beendet sie. Zu pruefen ist, ob es
+               ein absoluter Dateioffset ist oder relativ.
+             - Wie werden Kindebenen abgegrenzt -- ueber next
+               allein oder ueber ein weiteres Feld?
+             - Laesst sich eine gekochte Datei aus ihrer eigenen
+               Satzliste BYTE-IDENTISCH neu schreiben? Das ist die
+               Probe: erst wenn das gelingt, darf man etwas
+               einfuegen.
+    Vorgehen: Ein Rundlauf-Test (lesen, unveraendert schreiben,
+             vergleichen) ueber alle 168 gekochten Dateien. Wo er
+             scheitert, sitzt die Luecke im Verstaendnis.
+    Ergebnis: des_tool.py wird voll schreibfaehig -- und die
+             Kampagnenkette baubar.
+    Aufwand: gross. Der einzige verbliebene echte Blocker.
+
+--------------------------------------------------------------------------------
+G3  DIE ZWEI GROSSEN UNGELESENEN: menu.des und hud.des
+--------------------------------------------------------------------------------
+    Warum:   vfx\menu\menu.des mit 150.030 B ist die groesste
+             gekochte Datei des Spiels, vfx\hud\hud.des mit
+             41.810 B die viertgroesste. Beide sind gekocht OHNE
+             Tilde. hud.des liess sich mit des_tool.py nicht
+             auslesen -- sie folgt offenbar einem anderen inneren
+             Aufbau (Abschnitt 195).
+    Zu klaeren:
+             - Warum liest des_tool.py hud.des nicht? Anderer
+               Satzaufbau, andere Typen, oder ein Kopf davor?
+             - Was steht in menu.des -- die ganze Menuestruktur?
+             - Welche HUD-Elemente gibt es, wo sitzen sie?
+             - Laesst sich daraus ablesen, wie lang ein Funktext
+               sein darf, bevor er abgeschnitten wird?
+    Ergebnis: Entweder eine Erweiterung von des_tool.py auf eine
+             zweite Formatvariante -- oder die Erkenntnis, dass es
+             ein ganz anderes Format ist. Beides klaert eine offene
+             Stelle aus Abschnitt 195.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+G4  DIE 211 DIALOGE INHALTLICH ERSCHLIESSEN
+--------------------------------------------------------------------------------
+    Warum:   1.269 Takes liegen vor, aber ungeordnet. Mit G1 kommt
+             die Struktur dazu. Dann lohnt der Schritt, den ich fuer
+             die Missionen laengst getan habe: lesen und
+             zusammenfassen.
+    Zu klaeren:
+             - Welcher Dialog erzaehlt was? Eine Zeile je Dialog.
+             - Wie ist ein Gespraech dramaturgisch gebaut --
+               Laenge, Sprecherwechsel, Stimmungsverlauf?
+             - Welche Figuren tauchen wo auf? (80 Sprecher in den
+               Stationsgespraechen, 85 in person_d.des)
+             - Wie viele Takes hat ein typischer Dialog?
+    Ergebnis: *** Das ist die Vorlage fuer Nachtschichts eigene
+             Dialoge. *** Wer sieben Missionen mit Noir-Ton bauen
+             will, sollte vorher wissen, wie das Original seine
+             Gespraeche schneidet.
+    Aufwand: mittel bis gross. Fuer die Kampagne der wichtigste
+             inhaltliche Punkt.
+
+--------------------------------------------------------------------------------
+G5  DIE AQUANOX-2-KAMPAGNENSTRUKTUR IM VERGLEICH
+--------------------------------------------------------------------------------
+    Warum:   AN2 hat 143 Dateien in dat\sty\, AN1 rund 70. Ob AN2
+             dieselbe option-Mechanik benutzt oder eine andere, ist
+             unbekannt -- und lehrreich, weil AN2 zwei Jahre spaeter
+             entstand.
+    Zu klaeren:
+             - Hat AN2 ein option.des? Wenn ja: gleicher Aufbau?
+             - Wie regelt AN2 den Fortschritt zwischen Missionen?
+             - Gibt es dort auch Stationen mit Haendlern?
+             - Was ist minfo_<Mission>.loc -- eine Missionsinfo je
+               Mission? AN1 hat nichts Vergleichbares.
+             - Und: minfo_081202_1.loc bis _4.loc tragen ein Datum
+               im Namen (08.12.02?) -- liegengebliebene Testdateien?
+    Ergebnis: Ein Abschnitt "so haette man es auch machen koennen",
+             plus moeglicherweise ein einfacheres Vorbild fuer die
+             Nachtschicht-Kampagne.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+G6  DIE MEHRSPRACHIGKEIT NACH AN2-VORBILD
+--------------------------------------------------------------------------------
+    Warum:   AN2 legt die englischen Fassungen als .loc in einen
+             eigenen Ordner dat\sty\en\. Das ist sauberer als AN1s
+             Suffix-Loesung -- und AN1 hat mit locale.des
+             ("german", "english", "french") die Umschaltung
+             vorgesehen (Abschnitt 197).
+    Zu klaeren:
+             - Wie ist eine .loc aufgebaut? Klartext oder gekocht?
+             - Enthaelt sie nur die Texte, oder die ganze Tabelle?
+             - Sucht AN1 bei Language = "english" nach _e-Dateien,
+               nach einem en\-Ordner, oder gar nicht?
+               (In der .exe muesste sich die Suchregel finden.)
+    Ergebnis: aquanox_sprachen.txt. Praktischer Nutzen: falls AN1
+             die englischen Dateien wirklich sucht, koennte
+             Nachtschicht von Anfang an zweisprachig angelegt
+             werden, statt es spaeter nachzuruesten.
+    Aufwand: klein bis mittel.
+
+--------------------------------------------------------------------------------
+G7  DIE WAFFEN- UND AUSRUESTUNGSWERTE VOLLSTAENDIG
+--------------------------------------------------------------------------------
+    Warum:   Drei Quellen liegen bereit und wurden nie
+             zusammengefuehrt:
+                 gun_d.des        50 Eintraege (F1 gelesen)
+                 item_d.des       33 Eintraege (F1 gelesen)
+                 ibox_*.osd       die Werte selbst (seit C1 lesbar)
+                 station_d.des    wer was verkauft (Abschnitt 176)
+    Zu klaeren:
+             - Welche Waffe hat welchen Schaden, welche Reichweite,
+               welchen Energiebedarf?
+             - Deckt sich die Nummerierung aller vier Quellen?
+             - Wann bekommt der Spieler was? (Body_AddItem in den
+               Missionen, Abschnitt 165, plus die Haendler)
+             - Gibt es Waffen, die nirgends verkauft werden?
+    Ergebnis: Eine einzige Tabelle mit allen Werten -- die
+             Balancing-Grundlage fuer Nachtschicht. Ohne sie ist
+             jede Schwierigkeitsabstimmung Raten.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+G8  DIE FLUGMODELLE DER SCHIFFE
+--------------------------------------------------------------------------------
+    Warum:   aquanox1_osd_werte.json enthaelt die Rohwerte aller
+             Schiffe (C3/C4), aber nie wurde untersucht, WELCHE
+             Felder das Flugverhalten bestimmen und wie sie
+             zusammenwirken.
+    Zu klaeren:
+             - Welche OSD-Felder steuern Beschleunigung,
+               Hoechstgeschwindigkeit, Wendigkeit, Traegheit?
+             - Wie unterscheiden sich die Spielerschiffe
+               voneinander? (Succubus, Toiler, ...)
+             - Was macht ein Schiff schwer oder wendig?
+             - Gibt es Werte, die kein Originalschiff nutzt?
+    Ergebnis: Wer fuer Nachtschicht ein eigenes Schiff einstellt,
+             braucht das. Und es sagt, ob sich ein
+             "Noir-Flugverhalten" (traege, schwer) ueberhaupt
+             einstellen laesst.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+G9  DIE BILDSCHRIFT -- Zeichenbreiten in font7.tga
+--------------------------------------------------------------------------------
+    Warum:   Der einzige Punkt aus F10 mit praktischem Nutzen.
+             AquaNox 1 setzt Text aus einer Bilddatei
+             (gfx\font\font7.tga). Wo die Zeichenbreiten stehen,
+             ist unbekannt.
+    Zu klaeren:
+             - Ist die Schrift ein festes Raster, oder gibt es je
+               Zeichen eine Breite?
+             - Falls variabel: wo steht die Breitentabelle -- in
+               der .tga, einer Nebendatei, der .exe?
+             - Welche Zeichen sind ueberhaupt enthalten? (Umlaute?
+               Anfuehrungszeichen?)
+             - Wieviele Zeichen passen in eine Funkmeldung?
+    Ergebnis: Praktisch fuer jeden eigenen Text. Und die Frage nach
+             den Umlauten ist fuer eine deutsche Kampagne nicht
+             nebensaechlich.
+    Aufwand: klein bis mittel.
+
+--------------------------------------------------------------------------------
+G10 DIE PARTIKELEFFEKTE UND DIE .ssc-DATEIEN
+--------------------------------------------------------------------------------
+    Warum:   Zwei liegengebliebene Restposten. C13 hat die
+             fx_*.osd nur GEZAEHLT, nie geoeffnet -- dabei sind sie
+             seit C1 lesbar. Und ssc_tool.py steht seit langem im
+             Werkzeugordner, ohne dass im Handoff steht, was eine
+             .ssc eigentlich ist.
+    Zu klaeren:
+             - Welche Felder hat eine fx-Definition? (Lebensdauer,
+               Ausstossrate, Farbverlauf, Textur?)
+             - Wie baut man eine eigene Explosion oder Blasenspur?
+             - Was ist eine .ssc, und wozu dient ssc_tool.py?
+               (AN2 hat genau eine im Archiv.)
+    Ergebnis: Fuer die Atmosphaere einer Noir-Mission sind
+             Partikeleffekte kein Beiwerk: Lichtkegel im Schwebstaub,
+             Blasen, Rauch. Bisher steht darueber nichts Brauchbares
+             im Handoff.
+    Aufwand: mittel.
+
+================================================================================
+NICHT AUF DIESER LISTE -- UND WARUM
+================================================================================
+    Alle Punkte aus OFFENE_TESTS.txt (T1 bis T20) -- sie brauchen
+    das laufende Spiel, nicht die Analyse.
+
+    Der .col-Baum bleibt draussen (seit D9): drei Originaldateien
+    mit 0 Byte machen den Nachbau vermutlich ueberfluessig.
+
+    Die .tse-Kaustikdatei bleibt draussen: F10 hat gezeigt, dass im
+    entpackten AquaNox-1-Bestand ueberhaupt keine .tse liegt. Ohne
+    Gegenstand keine Analyse. (AquaNox 2 hat sechs -- falls G5 oder
+    G10 ohnehin in die AN2-Archive fuehren, laesst sich eine
+    nebenbei mitnehmen.)
+
+    Die Kameramuster "MMMN" bleiben draussen (seit F): die Engine
+    gibt nichts her, was sie belegt, und Abschreiben funktioniert.
+
+================================================================================

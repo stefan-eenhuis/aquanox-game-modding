@@ -5,14 +5,14 @@
  "counts_by_category": {
   "scherz": 1,
   "arbeitspfad": 5,
-  "unfertig": 6,
+  "unfertig": 8,
   "mitgeliefert": 3,
   "geschnitten": 2,
   "unbenutzt": 6,
   "veraltet": 2,
-  "zeitkolorit": 5
+  "zeitkolorit": 6
  },
- "total": 30,
+ "total": 33,
  "findings": [
   {
    "kategorie": "scherz",
@@ -222,6 +222,27 @@
    "fund": "Tippfehler in der Item-Tabelle: 'lasergalting'",
    "fundort": "dat\\sty\\station_d.des, Inventarbloecke",
    "bemerkung": "Die Entwickler haben jeden Item-Key im Haendlerbestand kommentiert -- dadurch liegt die ganze Nummerntabelle offen. Key 7 heisst dort 'lasergalting' statt 'lasergatling'; Key 10 'doommortar', waehrend die Dateien gun_doomortar heissen. Die Kommentare sind trotzdem die beste Quelle fuer die Zuordnung Nummer zu Waffe.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "trancparencytype -- Tippfehler in allen 108 Partikeldateien",
+   "fundort": "vfx\\osd\\fx_*.osd",
+   "bemerkung": "Das Feld fuer die Transparenzart heisst durchgaengig 'trancparencytype' statt 'transparencytype'. Wer eigene Effekte schreibt, muss den Fehler mitschreiben, sonst findet die Engine das Feld nicht.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "unfertig",
+   "fund": "maxclimbeangle -- noch ein Tippfehler, in jedem Schiff",
+   "fundort": "die Schiffs-OSDs",
+   "bemerkung": "Steht so in allen 225 Objekten mit Flugmodell: 'maxclimbeangle' statt 'maxclimbangle'. Ein e zuviel, wie schon bei ProcesseStateChange.",
+   "spiel": "AquaNox 1"
+  },
+  {
+   "kategorie": "zeitkolorit",
+   "fund": "Die 211 Dialognamen sind die Story-Gliederung",
+   "fundort": "dat\\sty\\sdialog~.des",
+   "bemerkung": "Die Entwickler haben jeden Dialog sprechend benannt, mit Kapitel-Schritt-Nummer: '1-20 Begruessung Perry', '1-100 El Topo gibt ELF Auftrag', '2-30 Cox schickt Flint nach Gotham'. Zusammengelesen ergeben die 211 Namen das Drehbuch von AquaNox 1. Mit Tippfehler: '1-110 Terry unbd Patty reden ueber ELF'.",
    "spiel": "AquaNox 1"
   }
  ]

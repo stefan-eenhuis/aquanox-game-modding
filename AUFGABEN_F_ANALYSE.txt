@@ -1,0 +1,273 @@
+================================================================================
+AUFGABENLISTE F -- REINE ANALYSE, OHNE SPIELDURCHLAUF
+================================================================================
+Stand: 2026-07-28, nach Abschluss der E-Reihe (Handoff v95)
+
+Wie bei C, D und E: alles am Schreibtisch erledigbar. Was das laufende
+Spiel braucht, steht in OFFENE_TESTS.txt (inzwischen T1 bis T19).
+
+VORBEMERKUNG -- ZWEI BEOBACHTUNGEN, DIE DIESE LISTE PRAEGEN
+
+  1. In dat\sty\ liegen mehrere grosse Tabellen, die noch nie
+     geoeffnet wurden. Die groesste, stake_d.des mit 345.489 B, ist
+     die umfangreichste Textdatei des ganzen Spiels -- groesser als
+     alle 45 mtake-Dateien zusammen. Dort steckt das, was AquaNox
+     zwischen den Missionen erzaehlt.
+
+  2. Es gibt eine REGEL fuer das .des-Format: Dateien MIT Tilde im
+     Namen (option~.des, sdialog~.des) sind gekocht, Dateien OHNE
+     Tilde (mission_d.des, station_d.des, person_d.des) sind
+     Klartext. Von 26 gepruefen Dateien in dat\sty\ waren alle ohne
+     Tilde Klartext. Das ist ein Hebel fuer F4.
+
+Reihenfolge ist Prioritaet.
+
+--------------------------------------------------------------------------------
+F1  DIE UNGELESENEN TABELLEN IN dat\sty\ -- mit mood_d.des voran
+--------------------------------------------------------------------------------
+    Warum:   *** ES GIBT EINE mood_d.des. *** Abschnitt 181 endete
+             mit der offenen Frage, was der Mood-Wert der 738
+             Funksprueche steuert -- und die Antwort liegt seit
+             jeher in einer 2.965-Byte-Klartextdatei, die ich nie
+             geoeffnet habe. Das ist die billigste Antwort der
+             ganzen Liste.
+    Dazu:    Weitere ungelesene Tabellen, alle Klartext:
+                 item_d.des        9.026 B   die Item-Nummern
+                 acknowledge_d.des 14.844 B  Bestaetigungsfunk?
+                 room_d.des       20.392 B   Raeume in Stationen
+                 gun_d.des         2.986 B   Waffenwerte
+                 mp_gun_d.des      2.998 B   Waffen im Mehrspieler
+                 cargo_d.des       6.552 B   Frachtbezeichnungen
+                 inst_fightclub_d.des 4.559 B
+    Zu klaeren:
+             - Was bedeuten Mood 0 bis 24 wirklich?
+             - Deckt sich item_d.des mit den Kommentaren aus
+               station_d.des (Abschnitt 176)?
+             - Warum haben Waffen im Mehrspieler eigene Werte?
+    Ergebnis: Eine Korrektur zu Abschnitt 181 und eine
+             Gesamtuebersicht aller Tabellen des Spiels.
+    Aufwand: klein. Hoechster Nutzen je Aufwand.
+
+--------------------------------------------------------------------------------
+F2  DAS STATIONSGESPRAECH -- stake_d.des, sdialog~.des, briefing_d.des
+--------------------------------------------------------------------------------
+    Warum:   option~.des hat 206 Optionen vom Typ dialog und 40 vom
+             Typ briefing (Abschnitt 175) -- aber wo die Texte dazu
+             stehen, ist ungeklaert. Diese drei Dateien sind die
+             Kandidaten:
+                 stake_d.des    345.489 B  "Station Take"?
+                 sdialog~.des    55.663 B  gekocht
+                 briefing_d.des  12.840 B  Klartext
+    Zu klaeren:
+             - Wie ist ein Stationsgespraech aufgebaut? Gibt es
+               Antwortmoeglichkeiten oder laeuft es linear?
+             - Wie haengen stake-Keys mit den dialog-Optionen aus
+               option~.des zusammen?
+             - Haben die Gespraechstexte auch Person und Mood, so
+               wie die Funksprueche (Abschnitt 161)?
+             - Wo sind die Sprachaufnahmen dazu?
+    Ergebnis: aquanox1_stationsdialoge.json. *** Fuer eine
+             Noir-Kampagne ist das die zentrale Datei: Nachtschicht
+             lebt von dem, was zwischen den Einsaetzen gesprochen
+             wird, nicht vom Funk im Gefecht. ***
+    Aufwand: mittel bis gross. Nach F1 der wichtigste Punkt.
+
+--------------------------------------------------------------------------------
+F3  DIE 16 STATIONSSKRIPTE DEKOMPILIEREN
+--------------------------------------------------------------------------------
+    Warum:   Abschnitt 176 hat gezeigt, dass jede Station ein
+             eigenes EngineScript hat. Sechzehn davon liegen als
+             .sco im Spiel und wurden nie angesehen:
+                 sta_magellan.sco     113.799 B
+                 sta_vespucci.sco      62.284 B
+                 sta_eltopo.sco        56.714 B
+                 sta_entropoint.sco    51.104 B
+                 sta_dagama.sco        46.756 B
+                 sta_entropointii.sco  26.805 B  ... und zehn mehr
+    Zu klaeren:
+             - Was baut ein Stationsskript auf? Eine 3D-Szene, ein
+               Menue, beides?
+             - Nutzt es Triggerknoten wie eine Mission, oder etwas
+               anderes?
+             - Wie kommt der Spieler von der Station in die Mission?
+             - Wo wird der Haendler aufgerufen?
+    Vorgehen: lua4dec.py, genau wie bei den 64 AN2-Missionen (E3)
+             und den 27 Mehrspielerskripten (E4). Das Werkzeug
+             steht, es ist reine Fleissarbeit.
+    Ergebnis: mod_docu\an1_stationen_lua\ plus ein Handoff-
+             Abschnitt "wie eine Station gebaut ist".
+    Aufwand: klein bis mittel, sehr guter Ertrag.
+
+--------------------------------------------------------------------------------
+F4  DAS GEKOCHTE .des-FORMAT VOLLSTAENDIG KNACKEN
+--------------------------------------------------------------------------------
+    Warum:   *** DAS BLOCKIERT DIE GANZE KAMPAGNE. *** option~.des
+             steuert, welche Mission wann angeboten wird
+             (Abschnitt 175), liegt aber im gekochten Binaerformat.
+             descook.py liest bislang nur den Kopf. Ohne Schreib-
+             faehigkeit laesst sich Nachtschicht nur als
+             Schnellgefecht spielen, nicht als Kampagne (Test T19).
+    Der Hebel:
+             Die Tilde-Regel. Fast jede Tabelle liegt als Klartext
+             vor -- nur die mit Tilde sind gekocht. Es gibt also
+             fuer beide Formen Beispiele DESSELBEN Aufbaus. Wer
+             mission_d.des (Klartext) und option~.des (gekocht)
+             nebeneinanderlegt, sieht die Uebersetzungsregel.
+    Zu klaeren:
+             - Wie kodiert das gekochte Format Namen, Zahlen, Text
+               und Verschachtelung?
+             - Was sind die 4-Byte-Werte zwischen den Feldern
+               (bei der Sichtung sahen sie wie Offsets aus)?
+             - Laesst sich eine gekochte Datei aus Klartext
+               ERZEUGEN -- und wird sie byte-identisch?
+    Ergebnis: descook.py wird lese- UND schreibfaehig. Damit ist
+             T19 durchfuehrbar und die Kampagne baubar.
+    Aufwand: gross. Aber es ist der einzige echte Blocker.
+
+--------------------------------------------------------------------------------
+F5  DIE 64 AQUANOX-2-MISSIONEN AUSWERTEN
+--------------------------------------------------------------------------------
+    Warum:   E3 hat sie dekompiliert -- 16,2 MB Quelltext liegen in
+             mod_docu\an2_missionen\ und sind bisher nur GEZAEHLT
+             (3.459 Triggerknoten), nicht GELESEN. Fuer AquaNox 1
+             wurde diese Arbeit laengst gemacht (aquanox1_missions.json
+             mit Inhaltsangaben je Mission).
+    Zu klaeren:
+             - Wie setzt AN2 sein Zielsystem ein? Game_Primary
+               ObjectiveReached kommt 99x vor -- wie ist eine
+               Mission mit Teilzielen aufgebaut?
+             - Was macht Stream_SetDamageParameters (62x)?
+             - Wie funktionieren die Taunts?
+             - Welche Bausteine nutzt AN2 haeufiger oder anders?
+             - Gibt es Missionsarten, die AN1 nicht kennt?
+    Ergebnis: aquanox2_missionsbausteine.json analog zu
+             aquanox1_missionsbausteine.json, plus die Erkenntnisse,
+             die sich auf AN1 uebertragen lassen.
+    Aufwand: mittel. Der Rohstoff liegt schon da.
+
+--------------------------------------------------------------------------------
+F6  DIE 4.233 .vc-DATEIEN IN AQUANOX 2
+--------------------------------------------------------------------------------
+    Warum:   Die zweitgroesste Dateigruppe der AN2-Archive
+             (Abschnitt 177) und voellig unbekannt. 4.233 Stueck --
+             mehr als es Modelle gibt (4.757 .msb). Bei dieser Menge
+             ist es etwas Grundlegendes.
+    Zu klaeren:
+             - Was steckt drin? (Kopf lesen, Groessenverteilung,
+               Korrelation mit den .msb-Namen)
+             - Vermutung: "vertex cache" oder "vertex colors" --
+               vorberechnete Beleuchtung je Scheitelpunkt, das
+               waere der AN2-Ersatz fuer AN1s Lightmaps
+               (Abschnitt 179).
+             - Gibt es in AquaNox 1 eine Entsprechung?
+    Ergebnis: Wenn die Vermutung stimmt, erklaert das den
+             Beleuchtungsunterschied zwischen beiden Spielen -- und
+             warum der Modellimport von AN2 nach AN1 hakt.
+    Aufwand: mittel, Ausgang offen.
+
+--------------------------------------------------------------------------------
+F7  DAS ELF -- HUD, FUNKGERAET UND ANZEIGEN
+--------------------------------------------------------------------------------
+    Warum:   In person_d.des heisst das erste Bildfeld ImageElf und
+             verweist auf vfx\hud\picture\hud_elf_character01.tga
+             (Abschnitt 181). "ELF" ist offenbar das Funkgeraet im
+             Cockpit -- der Ort, an dem Nachtschicht seine Figuren
+             zeigen wuerde.
+    Zu klaeren:
+             - Wie ist das HUD aufgebaut, welche Elemente gibt es?
+             - Wofuer steht ELF?
+             - Wo wird bestimmt, welches Portrait wann erscheint?
+             - Die Knotenklasse NOD_Hud existiert in AN1, nicht in
+               AN2 (Abschnitt 166) -- was macht sie?
+             - Was ist nod_cockpit (AN1) gegen nod_console (AN2)?
+    Ergebnis: aquanox_hud.txt. Praktischer Nutzen: zu wissen, wie
+             viel Text eine Funkmeldung haben darf und wie die
+             Figur dabei aussieht.
+    Aufwand: mittel.
+
+--------------------------------------------------------------------------------
+F8  DIE AN2-BIBLIOTHEKEN GEGEN DIE AN1-FASSUNG
+--------------------------------------------------------------------------------
+    Warum:   AquaNox 2 liefert 15 .scr-QUELLTEXTE mit (Abschnitt
+             122), AquaNox 1 nur kompilierte Fassungen, die ich
+             dekompiliert habe. Beide liegen jetzt nebeneinander.
+             Ein Zeile-fuer-Zeile-Vergleich sagt zweierlei:
+    Zu klaeren:
+             - Wo hat Massive die Bausteine zwischen 2001 und 2003
+               geaendert? Das sind zwei Jahre Erfahrung mit dem
+               eigenen System.
+             - *** UND: wie gut ist mein Dekompilat wirklich? ***
+               Fuer die Bibliotheken gibt es beide Seiten. Ein
+               Abgleich von glue.lua (dekompiliert) gegen glue.scr
+               (Quelltext) ist die einzige Moeglichkeit, die
+               Qualitaet von lua4dec.py zu MESSEN statt zu schaetzen.
+    Ergebnis: Ein Guetenachweis fuer den Dekompiler -- oder eine
+             Liste seiner Schwaechen. Beides ist wertvoll, weil
+             alle Missionsanalysen darauf aufbauen.
+    Aufwand: mittel. Methodisch der sauberste Punkt der Liste.
+
+--------------------------------------------------------------------------------
+F9  DIE LOKALISIERUNG -- .loc in AN2, die Sprachkennungen in AN1
+--------------------------------------------------------------------------------
+    Warum:   AN2 hat 232 .loc-Dateien, AN1 loest dasselbe ueber
+             Namenszusaetze (mtake_5n4_e~.des ist die einzige
+             englische Datei im deutschen Stand, Abschnitt 161).
+             Wer Nachtschicht spaeter zweisprachig anlegen will,
+             muss wissen, wie das Spiel Sprachen trennt.
+    Zu klaeren:
+             - Wie ist eine .loc aufgebaut?
+             - Wie waehlt AN1 die Sprache -- ueber _d/_e im
+               Dateinamen, ueber einen Ordner, ueber die config?
+             - Was steht in dat\version\gametext_d.des und
+               ingametext_d.des?
+             - Warum liegt genau eine englische mtake-Datei im
+               deutschen Verkaufsstand?
+    Ergebnis: aquanox_sprachen.txt. Nebennutzen: die eine
+             uebriggebliebene englische Datei ist eine
+             Entwicklerspur.
+    Aufwand: klein bis mittel.
+
+--------------------------------------------------------------------------------
+F10 DIE RESTFORMATE -- .tse, .fnt, .vid
+--------------------------------------------------------------------------------
+    Warum:   Drei kleine Formate, die immer wieder auftauchen und
+             nie untersucht wurden:
+                 .tse    In Aqua.exe steht caustic\caustic.tse --
+                         das haengt an den Lichtreflexen auf dem
+                         Meeresboden (Abschnitt zur Beleuchtung).
+                         AN2 hat 6 davon.
+                 .fnt    87 Schriftdateien in AN2. AquaNox 1 nutzt
+                         gfx\font\font7.tga -- also Schrift als
+                         Bild. Wie kommt der Text auf den Schirm?
+                 .vid    26 Dateien in AN2 neben 6 .bik. Zwei
+                         Filmformate nebeneinander?
+    Zu klaeren:
+             - Was ist eine .tse und wie erzeugt sie die Kaustik?
+             - Wie ist eine Bildschrift aufgebaut (Zeichenbreiten)?
+               Das braucht jeder, der eigene Texte einbaut.
+             - Was unterscheidet .vid von .bik?
+    Ergebnis: Drei kurze Formatbeschreibungen. Die Schrift ist
+             davon die praktisch wichtigste.
+    Aufwand: klein bis mittel.
+
+================================================================================
+NICHT AUF DIESER LISTE -- UND WARUM
+================================================================================
+    Lightmap-Slot erproben                   -> Test T17 (geklaert,
+                                                aber Umsetzung im Spiel)
+    Eigene Kampagnenkette einspielen         -> Test T19 (braucht F4)
+    Schnellgefecht-Eintrag                   -> Test T18
+    Leere .col fuer eigenes Modell           -> Test T14
+    NumOfMission erhoehen                    -> Test T15
+    Mehrspielermodus                         -> Test T16
+    NOD_Light an einem Schiff                -> Test T6
+
+    Die vier Kamerastellen aus "MMMN" bleiben draussen: Abschnitt
+    184 hat gezeigt, dass die Engine nichts hergibt, was sie
+    belegt, und dass Abschreiben praktisch folgenlos ist. Eine
+    Aufgabe ohne erreichbares Ergebnis gehoert nicht auf die Liste.
+
+    Der .col-Baum bleibt draussen (seit D9): drei Originaldateien
+    mit 0 Byte machen den Nachbau vermutlich ueberfluessig.
+
+================================================================================

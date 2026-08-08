@@ -1,0 +1,28 @@
+SUBSYSTEME UND IHRE VERFLECHTUNG
+================================
+
+--- Aqua_Locale ---
+   3 Funktionen, 2739 Byte
+   ruft:        Aqua_State_SinglePlayer__EquipPlayerToEngine, STY_Base__Item_LoadTable, STY_Base__Mission_LoadTable, STY_Base__Mood_LoadTable, STY_Base__Movie_LoadTable, STY_Base__Person_LoadTable, STY_Base__Station_LoadTable, TERMINATION, operator_new, str_copy, str_len
+   gerufen von: Aqua_TextTable__LoadTable
+
+--- Aqua_TextTable ---
+   1 Funktionen, 852 Byte
+   ruft:        Aqua_Locale__GetLanguageTpye, TERMINATION, operator_delete, operator_new, str_copy, str_len
+   gerufen von: NOD_Game__PM_LoadTextTable
+
+--- GUI_Hardware_TextAdress ---
+   2 Funktionen, 1712 Byte
+   ruft:        TERMINATION
+   gerufen von: GUI_Menu_Interface__MENU_UpdateData
+
+--- BHV_ ---
+   12 Funktionen, 8441 Byte
+   ruft:        TERMINATION
+   gerufen von: NOD_PhysicalCharacter__ParseIniFile, NOD_Turret_Base__ParseIniFile_2, NOD_Vessel__ParseIniFile_2, NOD_Vessel__ParseIniFile_3
+
+--- NOD_Device ---
+   4 Funktionen, 2428 Byte
+   ruft:        TERMINATION, __ftol
+   gerufen von: NOD_Player__HeartBeat_MP_Thing
+

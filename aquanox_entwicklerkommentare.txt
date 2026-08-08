@@ -21,8 +21,8 @@ uebersehen, sondern nicht mehr vorhanden.
 
    ABSICHTEN -- was noch kommen sollte: 25
    OFFENE FRAGEN DER ENTWICKLER: 1
-   WARNUNGEN UND BEKANNTE MAENGEL: 0
-   ERKLAERUNGEN: 1164
+   WARNUNGEN UND BEKANNTE MAENGEL: 30
+   ERKLAERUNGEN: 1134
    NAMENSMARKEN (nur gezaehlt): 2012
 
 Die Namensmarken sind Kommentare, die nur aus einem Wort oder einer
@@ -38,25 +38,23 @@ Formulierungen wie 'sollte' und 'evtl.' zeigen an, dass die
 Wirkung zum Zeitpunkt der Auslieferung nicht umgesetzt war.
 Ob sie heute fehlt, laesst sich im Spiel pruefen.
 
+   Wortgleich in mehreren Dateien (erzeugte Kopfzeilen und Vorlagen):
+      4x  "Diffuse Color und Opacity sollte von hier aus überschreibbar sein"
+           z.B. vfx\hud\hud.des
+      4x  "evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)"
+           z.B. vfx\hud\hud.des
+      4x  "Wenn Alarm: evtl. blinkend"
+           z.B. vfx\hud\hud.des
+      3x  "evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),"
+           z.B. vfx\hud\hud.des
+
 --- vfx\hud\hud.des ---
-    (Z301, [Item11])
-        evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),
-    (Z318, [Item12])
-        evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),
-    (Z407, [Item17])
-        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
     (Z408, [Item17])
         evtl. weiß flashen lassen, wenn Gegner getroffen (emp Schaden)
-    (Z436, [Item18])
-        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
     (Z437, [Item18])
         evtl. weiß flashen lassen, wenn Gegner getroffen (kin Schaden)
-    (Z515, [Item22])
-        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
     (Z518, [Item22])
         evtl. blinken lassen (rot/weiß), wenn Gegner mich geortet hat
-    (Z533, [Item23])
-        Diffuse Color und Opacity sollte von hier aus überschreibbar sein
     (Z536, [Item23])
         evtl. blinken lassen (rot/weiß), wenn Gegner mich geortet hat
     (Z773, [Item35])
@@ -65,26 +63,8 @@ Ob sie heute fehlt, laesst sich im Spiel pruefen.
         evtl. spezielle Diffuse Color bei Noiselevel 0? (gelb?)
     (Z1023, [Item47])
         evtl. andere Diffuse Color, wenn buzzer = 0 (rot?)
-    (Z1239, [Item56])
-        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
     (Z1266, [Item57])
         evtl. weiß flashen lassen, wenn getroffen (emp Schaden)
-    (Z1293, [Item58])
-        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
-    (Z1320, [Item59])
-        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
-    (Z1347, [Item60])
-        evtl. weiß flashen lassen, wenn an der Stelle getroffen (kin. Schaden)
-    (Z1369, [Data])
-        Wenn Alarm: evtl. blinkend
-    (Z1385, [Item61])
-        Wenn Alarm: evtl. blinkend
-    (Z1401, [Item62])
-        Wenn Alarm: evtl. blinkend
-    (Z1417, [Item63])
-        Wenn Alarm: evtl. blinkend
-    (Z1439, [Item65])
-        evtl. flashen lassen (Diffuse weiß, Opacity = 1.0),
 
 --- vfx\menu\menu.des ---
     (Z96, [GEOMETRY])
@@ -110,6 +90,14 @@ an dieser Stelle selbst nicht sicher.
 Wer an diesen Stellen etwas aendert, sollte den Hinweis der
 Entwickler kennen.
 
+   Wortgleich in mehreren Dateien (erzeugte Kopfzeilen und Vorlagen):
+      29x  "Do not modify."
+           z.B. map\1h1\fog\fog.des (+28 weitere)
+
+--- vfx\menu\menu.des ---
+    (Z109, [Item0])
+        Caution: This material is MULTIPLICATIVE
+
 
 ================================================================================
 4. ERKLAERUNGEN, NACH DATEI
@@ -117,7 +105,7 @@ Entwickler kennen.
 Die uebrigen Kommentare. Sie erklaeren Felder, Werte und Aufbau --
 oft die einzige Beschreibung, die es zu einem Feld gibt.
 
---- vfx\menu\menu.des  (432 Kommentare) ---
+--- vfx\menu\menu.des  (431 Kommentare) ---
     (Z5, [MENU]) Parameter fuer das Schwingen des MENU
     (Z9, [MOTION]) Sensitivität fuer X Schwingung
     (Z11, [MOTION]) Steifigkeit fuer X Schwingung
@@ -139,7 +127,6 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z86, [GEOMETRY]) + Rotation um eine Achse pro Sek.
     (Z91, [GEOMETRY]) + Rotation um eine Achse pro Sek.
     (Z100, [GEOMETRY]) Main: Tinting background
-    (Z109, [Item0]) Caution: This material is MULTIPLICATIVE
     (Z114, [Item0]) Main: Background circle 02
     (Z118, [Item1]) New type: Mesh with translation and rotation (+ rot/sec)
     (Z128, [Item1]) Main: Background (yellow)
@@ -915,9 +902,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z17) 1     30.04.01 17:16 Christoph Luerig
     (Z19) 1     30.08.00 18:56 Christoph Luerig
 
---- map\1h1\fog\fog.des  (11 Kommentare) ---
+--- map\1h1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -928,9 +914,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\1h2\fog\fog.des  (11 Kommentare) ---
+--- map\1h2\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -941,9 +926,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\1h3\fog\fog.des  (11 Kommentare) ---
+--- map\1h3\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -954,9 +938,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\1h4\fog\fog.des  (11 Kommentare) ---
+--- map\1h4\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -967,9 +950,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\1n1\fog\fog.des  (11 Kommentare) ---
+--- map\1n1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -980,9 +962,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\1n2\fog\fog.des  (11 Kommentare) ---
+--- map\1n2\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -993,9 +974,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\2h1\fog\fog.des  (11 Kommentare) ---
+--- map\2h1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1006,9 +986,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\2h2\fog\fog.des  (11 Kommentare) ---
+--- map\2h2\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1019,9 +998,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\2h3\fog\fog.des  (11 Kommentare) ---
+--- map\2h3\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1032,9 +1010,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\2n3\fog\fog.des  (11 Kommentare) ---
+--- map\2n3\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1045,9 +1022,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\3h1\fog\fog.des  (11 Kommentare) ---
+--- map\3h1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1058,9 +1034,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\3h2\fog\fog.des  (11 Kommentare) ---
+--- map\3h2\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1071,9 +1046,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\3h3\fog\fog.des  (11 Kommentare) ---
+--- map\3h3\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1084,9 +1058,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\3n1\fog\fog.des  (11 Kommentare) ---
+--- map\3n1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1097,9 +1070,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\4h1\fog\fog.des  (11 Kommentare) ---
+--- map\4h1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1110,9 +1082,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\4h2\fog\fog.des  (11 Kommentare) ---
+--- map\4h2\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1123,9 +1094,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\4n1\fog\fog.des  (11 Kommentare) ---
+--- map\4n1\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1136,9 +1106,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\5n2\fog\fog.des  (11 Kommentare) ---
+--- map\5n2\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1149,9 +1118,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\6h3\fog\fog.des  (11 Kommentare) ---
+--- map\6h3\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1162,9 +1130,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\dogfight\fog\fog.des  (11 Kommentare) ---
+--- map\dogfight\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1175,9 +1142,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_05_ctf\fog\fog.des  (11 Kommentare) ---
+--- map\mp_05_ctf\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1188,9 +1154,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_06_dm\fog\fog.des  (11 Kommentare) ---
+--- map\mp_06_dm\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1201,9 +1166,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_07_ctf\fog\fog.des  (11 Kommentare) ---
+--- map\mp_07_ctf\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1214,9 +1178,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_08\fog\fog.des  (11 Kommentare) ---
+--- map\mp_08\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1227,9 +1190,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_09\fog\fog.des  (11 Kommentare) ---
+--- map\mp_09\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1240,9 +1202,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_10\fog\fog.des  (11 Kommentare) ---
+--- map\mp_10\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1253,9 +1214,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_11\fog\fog.des  (11 Kommentare) ---
+--- map\mp_11\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1266,9 +1226,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_12\fog\fog.des  (11 Kommentare) ---
+--- map\mp_12\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.
@@ -1279,9 +1238,8 @@ oft die einzige Beschreibung, die es zu einem Feld gibt.
     (Z23, [Fog]) complete viewing distance the fog starts getting opaque
     (Z26, [Fog]) The maximal alpha, that should be reached at the closing barrier.
 
---- map\mp_13\fog\fog.des  (11 Kommentare) ---
+--- map\mp_13\fog\fog.des  (10 Kommentare) ---
     (Z1) DES file 'fog.des'.
-    (Z2) Do not modify.
     (Z6, [Fog]) This is the tga input file without the tga extension.
     (Z9, [Fog]) This is a weighting factor for the opacity, that is multiplied to each
     (Z10, [Fog]) Alpha-Value of the input TGA file.

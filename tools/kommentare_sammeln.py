@@ -29,7 +29,11 @@ PROBLEM = ("achtung", "vorsicht", "problem", "bug", "falsch", "geht nicht",
            "funktioniert nicht", "hack", "workaround", "notloesung",
            "nicht schoen", "haesslich", "quatsch", "murks", "wichtig",
            "beachten", "nicht aendern", "nicht ändern", "obsolet",
-           "veraltet", "unused", "unbenutzt", "dummy", "test")
+           "veraltet", "unused", "unbenutzt", "dummy",
+           # Die Kommentare sind gemischt deutsch und englisch --
+           # menu.des und fog.des sind ueberwiegend englisch.
+           "caution", "warning", "careful", "note:", "attention",
+           "don't", "do not", "must not", "never ")
 
 # Viele Kommentare sind keine Saetze, sondern Marken: Take-Nummern
 # ("5H4-ELF281") oder Gegenstandsnamen ("plasmagatling"). Sie sind
@@ -167,12 +171,32 @@ def schreibe(funde, dateien):
     ):
         w("=" * 80 + "\n" + titel + "\n" + "=" * 80 + "\n")
         w(hinweis + "\n\n")
-        nach_datei = collections.defaultdict(list)
+        # Wortgleiche Kommentare zusammenfassen. "Do not modify." steht
+        # in jeder erzeugten Datei -- einmal genannt genuegt.
+        nach_text = collections.defaultdict(list)
         for f in nach_art[art]:
+            nach_text[f["text"]].append(f)
+        mehrfach = {t: v for t, v in nach_text.items() if len(v) > 2}
+        einzeln = [v[0] for t, v in nach_text.items() if len(v) <= 2] + \
+                  [f for t, v in nach_text.items() if len(v) == 2 for f in v[1:]]
+
+        if mehrfach:
+            w("   Wortgleich in mehreren Dateien (erzeugte Kopfzeilen "
+              "und Vorlagen):\n")
+            for t, v in sorted(mehrfach.items(), key=lambda x: -len(x[1])):
+                orte = sorted({f["datei"] for f in v})
+                w(f"      {len(v)}x  \"{t}\"\n")
+                w(f"           z.B. {orte[0]}"
+                  + (f" (+{len(orte)-1} weitere)" if len(orte) > 1 else "")
+                  + "\n")
+            w("\n")
+
+        nach_datei = collections.defaultdict(list)
+        for f in einzeln:
             nach_datei[f["datei"]].append(f)
         for datei in sorted(nach_datei):
             w(f"--- {datei} ---\n")
-            for f in nach_datei[datei]:
+            for f in sorted(nach_datei[datei], key=lambda x: x["zeile"]):
                 ort = f"Z{f['zeile']}"
                 if f["block"]:
                     ort += f", [{f['block']}]"

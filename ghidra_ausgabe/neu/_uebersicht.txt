@@ -1,0 +1,28 @@
+SUBSYSTEME UND IHRE VERFLECHTUNG
+================================
+
+--- COS_ ---
+   4 Funktionen, 996 Byte
+   ruft:        TERMINATION, operator_new, str_len
+   gerufen von: (keine)
+
+--- VCA_ ---
+   10 Funktionen, 3325 Byte
+   ruft:        TERMINATION, __ftol, operator_delete, operator_new
+   gerufen von: NOD_Character__ParseIniFile
+
+--- BHV_Goto3D ---
+   3 Funktionen, 1970 Byte
+   ruft:        TERMINATION
+   gerufen von: (keine)
+
+--- Aqua_Simulation ---
+   2 Funktionen, 184 Byte
+   ruft:        TERMINATION
+   gerufen von: (keine)
+
+--- REM_Fog ---
+   1 Funktionen, 533 Byte
+   ruft:        GFX_PictureTGA__ReadData_RGBA8888, TERMINATION, operator_delete, operator_new
+   gerufen von: (keine)
+

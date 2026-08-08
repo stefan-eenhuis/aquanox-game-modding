@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>AquaNox Level-Ansicht</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden;
+               background:#10171d; color:#c8d4dc;
+               font:13px/1.45 "Segoe UI", system-ui, sans-serif; }
+  #buehne { position:absolute; inset:0; }
+  #kopf { position:absolute; left:10px; top:10px; z-index:5;
+          background:rgba(12,20,26,.82); border:1px solid #2a3a46;
+          border-radius:6px; padding:8px 11px; max-width:340px; }
+  #kopf h1 { margin:0 0 4px; font-size:14px; font-weight:600; color:#e8f0f5; }
+  #kopf .z { color:#8fa4b2; font-size:12px; }
+  #fuss { position:absolute; left:10px; bottom:10px; z-index:5;
+          background:rgba(12,20,26,.82); border:1px solid #2a3a46;
+          border-radius:6px; padding:7px 10px; font-size:12px; }
+  #warnung { position:absolute; right:10px; top:10px; z-index:5;
+             background:rgba(52,30,10,.9); border:1px solid #7a5a2a;
+             border-radius:6px; padding:8px 11px; max-width:330px;
+             font-size:12px; color:#e8d4b0; }
+  #warnung b { color:#ffd890; }
+  #warnung ul { margin:5px 0 0; padding-left:16px; }
+  #warnung li { margin:2px 0; }
+  .marke { position:absolute; z-index:4; cursor:pointer;
+           font-size:11px; color:#9fe8c0; text-shadow:0 0 3px #000;
+           white-space:nowrap; transform:translate(-50%,-50%);
+           padding:1px 4px; border-radius:3px; user-select:none; }
+  .marke:hover { background:rgba(20,32,42,.9); color:#fff;
+                 outline:1px solid #4a6a80; }
+  #laden { position:absolute; inset:0; display:flex; z-index:9;
+           align-items:center; justify-content:center;
+           background:#10171d; font-size:14px; color:#8fa4b2; }
+</style>
+</head>
+<body>
+<div id="buehne"></div>
+<div id="kopf"><h1>Keine Karte geladen</h1>
+  <div class="z">Links im Baum eine Karte waehlen.</div></div>
+<div id="fuss">—</div>
+<div id="warnung" style="display:none"></div>
+<div id="laden">bereit</div>
+
+<!-- OrbitControls importiert intern von "three" -- einem blossen
+     Namen ohne Pfad. Ohne diese Zuordnung bricht der Modulimport ab
+     ("Failed to resolve module specifier"), und die Ansicht bleibt
+     schwarz. Kein Bundler noetig, Chromium kann Import-Maps. -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./lib/three.module.js",
+    "three/addons/": "./lib/"
+  }
+}
+</script>
+<script type="module" src="./viewer.js"></script>
+</body>
+</html>

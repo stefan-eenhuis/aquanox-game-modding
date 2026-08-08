@@ -1,106 +1,217 @@
 ================================================================================
-DAS .col-FORMAT (KOLLISIONSNETZE)
+DAS .col-FORMAT (KOLLISIONSNETZE) -- VOLLSTAENDIG
 ================================================================================
-Stand: 2026-07-27, Aufgabe A3
-ERGEBNIS: der vordere Teil ist vollstaendig, der Baum am Ende zu etwa
-zwei Dritteln. Fuer einen SCHREIBER reicht es noch nicht.
+Stand: 2026-08-08. Ersetzt die Fassung vom 2026-07-27.
+ERGEBNIS: das Format ist GANZ geklaert, der Baum eingeschlossen.
+GEGENPROBE: alle 508 nicht-leeren Originaldateien lassen sich aus der
+Deutung BYTE FUER BYTE wieder herstellen (col_tool.py rundlauf).
+Ein SCHREIBER ist moeglich und liegt als tools\col_tool.py bereit.
+
+Die alte Fassung war im vorderen Teil richtig und im Baum falsch
+gruppiert: sie las an Knotenanfang drei Floats, wo in Wirklichkeit
+EIN Float (der Kugelradius) und danach erst ein Vektor steht. Daher
+die "versetzte Wiederholung" bei +36, die keine war.
 
 --------------------------------------------------------------------------------
-1. DER AUFBAU
+1. WO DAS IN DER EXE STEHT
 --------------------------------------------------------------------------------
-    uint32  nTri
-    Tri[nTri]      je 8 B   -- LAYOUT WIE IM .msb:
-                               3x uint16 Vertexindex + uint16 Flagwort
-    uint32  nVert
-    Vertex[nVert]  je 12 B  -- 3x float32, KEINE Normale, KEIN UV
-    ----- ab hier der frueher unbekannte Teil -----
-    uint32  n      == nTri
-    uint32  index[n]        *** EINE VOLLSTAENDIGE PERMUTATION
-                                der Dreiecksindizes 0..nTri-1 ***
-    <Baum>                  variabel
+    0x602e78   "vfx\col\"      der einzige Verweis liegt bei 0x40124b
+    0x4d1120   COS_OBBS_Tree_Cache::Konstruktor, new(0x590c)
+    0x4d11c0   COS_OBBS_Tree_Cache::AllocateTree
+    0x4d1370   dieselbe Funktion ohne Namensuche
+    0x521a80   Datei oeffnen (fopen "rb" bzw. Eintrag im PAK)
+    0x521f10   u32 lesen         0x521ec0  u16 lesen
+    0x4da950   DAS NETZ lesen   (Dreiecke, Vertices, Dreiecksliste)
+ *  0x4dcb80   DEN BAUM lesen   -- die gesuchte Ladefunktion
+    0x4dafe0   EINEN KNOTEN lesen
+    0x4dc730   Wurzel-AABB nachrechnen (nur Speicher, nicht Datei)
+    0x4dba4a   die Blattschleife im Kollisionstest
 
-BELEGT an atl_pscout.col (413 Dreiecke), gen_boje.col (92) und
-hi_scout2.col (2044): das erste uint32 nach den Vertices ist jedes Mal
-exakt nTri, und die folgenden nTri Werte sind jedes Mal eine
-vollstaendige Permutation ohne Luecken und ohne Doppelte.
-=> Es ist die SORTIERREIHENFOLGE der Dreiecke fuer den Baum. Die
-   Blattknoten verweisen vermutlich auf zusammenhaengende Abschnitte
-   dieser Liste, statt Dreiecksindizes einzeln zu speichern.
+Warum die Datei so lange nicht zu finden war: in der Exe gibt es
+keinen String ".col". Der Name kommt aus der .osd
+([collision] collisiondescription = "atl_pscout.col"), der Ordner
+aus 0x602e78. In AllocateTree wird nur der Name durchgereicht.
 
 --------------------------------------------------------------------------------
-2. DER BAUM -- an der kleinsten Datei des Spiels
+2. DER DATEIAUFBAU (alles little endian)
 --------------------------------------------------------------------------------
-cra_turret_gun.col ist 168 Byte gross und enthaelt EIN Dreieck. Damit
-laesst sich der Baum vollstaendig ansehen:
+    u32   nTri
+    nTri x { u16 i0, u16 i1, u16 i2, u16 typ }        je  8 B
+    u32   nVert
+    nVert x { f32 x, f32 y, f32 z }                   je 12 B
+    u32   nIdx
+    nIdx x u32                     Dreiecksnummern; die Blaetter des
+                                   Baums zeigen auf zusammenhaengende
+                                   Abschnitte DIESER Liste
+    u32   A                        Kennzahl des Erzeugers (Abschnitt 5)
+    u32   N                        Zahl der Baumknoten
+    N x KNOTEN
+    u32   B                        wird gelesen und WEGGEWORFEN
+                                   (0x4dcc77); in allen 508 Dateien 2*N
+    N x { u32 links, u32 rechts }  0xFFFFFFFF = kein Kind (Blatt)
 
-    +0    u32 = 4                 Art oder Zahl der folgenden Eintraege
-    +4    u32 = 1                 = nTri
-    +8    3x f32  0.2796 -0.0526  1.0067
-    +20   3x f32  0.4449  0.2159  0.1777
-    +32   u32 = 0
-    +36   3x f32 -0.0526  1.0067  0.4449   <- versetzte Wiederholung
-    +48   3x f32 -0.4598 -0.5588  0.6901   Laenge exakt 1.0
-    +60   3x f32  0.8880 -0.2894  0.3574   Laenge exakt 1.0
-    +72   3x f32  0.0000  0.7771  0.6293   Laenge exakt 1.0
-    +84   u32 = 1
-    +88   u32 = 0
-    +92   u32 = 0
-    +96   u32 = 2
-    +100  0xFFFFFFFF
-    +104  0xFFFFFFFF
+    KNOTEN, 68 Byte, bei einem Blatt 76 Byte:
+        f32     radius             Kugel um den GANZEN Teilbaum
+        f32[3]  kugelmittelpunkt
+        f32[3]  halbmasse          des Kastens, laengs der drei Achsen
+        f32[3]  kastenmittelpunkt
+        f32[3]  achse0             Einheitsvektoren, im Speicher als
+        f32[3]  achse1             drei 12-B-Objekte ab Knoten+0x10
+        f32[3]  achse2
+        u32     blatt              0 = innerer Knoten, 1 = Blatt
+        u32     erster             nur wenn blatt: Bereich in der
+        u32     letzter            Dreiecksliste, EINSCHLIESSLICH
 
-WAS DAVON GESICHERT IST
-    * Die drei Vektoren bei +48, +60 und +72 haben EXAKT Laenge 1.0.
-      Das sind Normalen -- bei einem einzelnen Dreieck naheliegend die
-      drei KANTENNORMALEN, die man fuer die Kollisionspruefung
-      braucht (Punkt-in-Dreieck-Test).
-    * 0xFFFFFFFF am Ende sind Terminatoren, das uebliche "kein Kind"
-      in Baumstrukturen.
-    * Die Werte bei +8 und +20 sind nicht normalisiert und liegen im
-      Koordinatenbereich des Objekts -- vermutlich Stuetzpunkt und
-      Ausdehnung.
-
-WAS OFFEN IST
-    * Die Knotengroesse ist NICHT konstant. 12.068 Byte Baum bei 413
-      Dreiecken teilen sich weder durch 16, 20, 24, 28, 32, 40 noch 48
-      glatt. Es ist also ein Baum mit variablen Knoten, nicht ein Feld.
-    * Die Bedeutung der u32 bei +0, +4, +84, +88, +92, +96 ist
-      unklar -- Kandidaten sind Achse, Tiefe, Kindzeiger und
-      Blattlaenge.
-    * Wie die Blaetter auf die Permutationsliste zeigen.
+    Reihenfolge im Speicher (Knoten 0x70 B): +0 vtable, +4 Kasten-
+    mittelpunkt, +0x10/+0x1c/+0x28 Achsen, +0x34 Halbmasse, +0x40
+    groesste Halbmasse, +0x48 Kugelmittelpunkt, +0x54 radius,
+    +0x58 radius*radius, +0x5c 1.0/radius, +0x60/+0x64 Kindzeiger,
+    +0x68/+0x6c Blattbereich. Die Datei hat eine ANDERE Reihenfolge
+    als der Speicher -- deshalb ist der Radius das erste Feld.
 
 --------------------------------------------------------------------------------
-3. GROESSENVERHAELTNISSE (397 Dateien vermessen)
+3. WAS AN DEN 508 DATEIEN NACHGEMESSEN IST
 --------------------------------------------------------------------------------
-    Rest/nTri    Median 32,1   Mittel 72,5   von 5,8 bis 978
-    Rest/nVert   Median 22,1   Mittel 57,4   von 4,9 bis 1168
-    Die grosse Streuung passt zu einem Baum, dessen Tiefe von der
-    Geometrie abhaengt -- nicht zu einer festen Tabelle.
-    Auffaellig: hi_phobocaster.col hat bei 4.032 Dreiecken 500.336 B
-    Baum (124 B je Dreieck), hi_tiburon.col bei 4.354 Dreiecken nur
-    138.600 B (31,8). Der Unterschied duerfte an der Verteilung der
-    Geometrie im Raum liegen.
+    * Rundlauf byte-genau: 508 von 508.
+    * Wurzel ist IMMER Knoten 0 (der einzige, der nirgends Kind ist).
+    * blatt-Kennung und 0xFFFFFFFF stimmen ausnahmslos ueberein
+      (44.941 Blaetter, 44.433 innere Knoten).
+    * Die Blattbereiche kacheln [0, nIdx) luecken- und ueberlappungs-
+      frei und liegen in Tiefensuchreihenfolge -- 508 von 508.
+    * B == 2*N -- 508 von 508.
+    * Baumtiefe 1 bis 18. Groesstes Blatt meist 10 Dreiecke.
+    * Kugel und Kasten UMSCHLIESSEN alle Dreiecke des Teilbaums
+      (nachgerechnet an gen_boje, atl_pscout, hi_tiburon: kein
+      einziger Verstoss).
+    * radius == Laenge der Halbmasse gilt nur bei einem einzelnen
+      Dreieck; sonst ist die Kugel eigenstaendig angepasst.
+    * N=1 kommt vor: cra_turret_gun.col (1 Dreieck, 168 B),
+      gen_extra_werbung20.col, atl_dock1_block1.col (18 Dreiecke,
+      ein einziges Blatt). Ein Baum mit einem Knoten ist also gueltig.
 
 --------------------------------------------------------------------------------
-4. WAS DAS PRAKTISCH HEISST
+4. DAS NETZ IST DAS SICHTNETZ
 --------------------------------------------------------------------------------
-    EINE .col ZU SCHREIBEN ist damit noch nicht moeglich -- der Baum
-    fehlt.
-    DREI WEGE STEHEN OFFEN:
-    (a) Weiter am Baum arbeiten. Der Ansatz ist klar: Dateien mit 2, 3
-        und 4 Dreiecken vergleichen und sehen, wie der Baum waechst.
-        Solche Dateien gibt es (gen_extra_werbung20.col hat 2).
-    (b) PRUEFEN, OB DIE ENGINE OHNE BAUM AUSKOMMT. Wenn der Baum nur
-        eine Beschleunigung ist und die Engine bei fehlendem oder
-        trivialem Baum auf lineare Suche zurueckfaellt, koennte eine
-        .col mit leerem Baum genuegen. Das waere mit einem Testwuerfel
-        in Minuten geklaert -- und wuerde die ganze Arbeit an (a)
-        ersparen.
-    (c) Der bisherige Behelf: eine vorhandene .col aehnlicher Groesse
-        weiterverwenden. Taugt fuer ein Wrack, nicht fuer einen Raum.
+    Von 469 Paaren .col/.msb gleichen Namens haben
+        435  identische Vertexlisten (gleiche Zahl, gleiche Reihenfolge)
+        438  identische Dreiecksindizes
+        440  typ == HOHES Byte des .msb-Flagworts
+    *** Die Kollision benutzt in aller Regel das unveraenderte
+    Sichtnetz. *** Wer ein eigenes .msb hat, braucht fuer die .col
+    keine zweite Geometrie -- nur den Baum.
+    Die Ausnahmen (z. B. atl_parlament, ent_gbuild01/02, ent_hgeb)
+    haben ein eigenes, meist groeberes Kollisionsnetz.
 
-    EMPFEHLUNG: (b) zuerst. Es ist die billigste Frage mit dem
-    groessten Hebel.
+    Das Feld "typ" im Dreieck ist der einzige Wert, der im .col steht
+    und im .msb anders aussieht. Werte 0..7 kommen vor.
+    COS_LIST_BoxAttributes (0x438bc0) laesst hoechstens 32 Typen zu
+    ("Maximum number of 32 type allowed in current release"), was zu
+    einem Oberflaechen-/Materialkennzeichen passt.
+    VERMUTUNG, nicht belegt: damit werden Trefferwirkung oder
+    Aufschlaggeraeusch je Flaeche unterschieden.
+
+--------------------------------------------------------------------------------
+5. DAS FELD A
+--------------------------------------------------------------------------------
+    Vorkommende Werte:  100 (372x), 4 (87x), 10 (15x), 0 (12x),
+                        2 (8x), 1 (6x), 5 (4x), 3 (2x), 30 (2x).
+    Der Lader legt A nur bei Baum+0 ab. Ein Zugriff darauf war im
+    Kollisionscode nicht zu finden.
+    Es ist NICHT der Anteil der uebernommenen Dreiecke: bei fast allen
+    Dateien ist nTri im .col gleich nTri im .msb, auch bei A=3.
+    *** Da 12 ausgelieferte Dateien A=0 haben und funktionieren, ist
+    der Wert unschaedlich. *** col_tool.py schreibt 100.
+    OFFEN: wofuer der Erzeuger ihn gesetzt hat.
+
+--------------------------------------------------------------------------------
+6. EINE MERKWUERDIGKEIT DES ERZEUGERS
+--------------------------------------------------------------------------------
+    nIdx/nTri ist immer genau 1, 4 oder 16:
+        1  -> 270 Dateien     4 -> 181 Dateien     16 -> 57 Dateien
+    Bei den 4er- und 16er-Dateien steht JEDE Dreiecksnummer genau
+    vier- bzw. sechzehnmal in der Liste. Extremfall atl_dock1_block1.col:
+    18 Dreiecke, 72 Listenplaetze, EIN Blatt -- die Engine prueft dort
+    jedes Dreieck viermal. hi_phobocaster.col ist mit 564.916 B die
+    groesste .col des Spiels und gehoert in diese Gruppe.
+    Fuer eigene Dateien: Verhaeltnis 1 nehmen. Das spart Platz und
+    Rechenzeit, ohne dass etwas verloren geht.
+
+--------------------------------------------------------------------------------
+7. GRENZEN, DIE DIE ENGINE SETZT
+--------------------------------------------------------------------------------
+    Dateiname          hoechstens 32 Zeichen mit Endung
+                       (0x4d11d4: str_len > 0x20 -> "name too long").
+                       Der laengste Originalname hat 31.
+    Baeume gleichzeitig  512 (0x4d1231: "tree cache overflow").
+                       Das Spiel liefert 511 .col-Dateien -- wer viele
+                       neue hinzufuegt, sollte das im Auge behalten.
+    Vertexindizes      u16, also 65.535 Vertices je Datei.
+    Dreieckstyp        0..31 (COS_LIST_BoxAttributes).
+    radius             darf NICHT 0 sein: der Lader rechnet 1.0/radius
+                       (0x4db03a, Konstante 1.0 bei 0x5f3350).
+
+--------------------------------------------------------------------------------
+8. LEERE .col-DATEIEN
+--------------------------------------------------------------------------------
+    Drei Originale sind 0 Byte gross: gen_diver.col, gun_doomortar.col,
+    gun_plasmagatlin.col. Aus dem Code ist jetzt klar, warum das geht:
+    der Lader prueft NICHTS. Das Oeffnen gelingt, alle Lesevorgaenge
+    liefern nichts, die Felder bleiben auf den Nullen, die
+    AllocateTree vorher gesetzt hat -- nTri=0, nVert=0, N=0.
+    Ein Haken bleibt: 0x4dc730 kopiert danach 24 Byte ab Knotenfeld+0x48,
+    obwohl bei N=0 nur 4 Byte belegt sind. Das liest fremden Speicher.
+    Es faellt in der Praxis nicht auf, ist aber kein sauberer Zustand.
+    *** Sicherer als eine leere Datei ist jetzt eine echte mit einem
+    einzigen Knoten -- die kann col_tool.py schreiben. ***
+
+--------------------------------------------------------------------------------
+9. WIE DIE ENGINE DEN BAUM BENUTZT
+--------------------------------------------------------------------------------
+    Blattschleife bei 0x4dba4a:
+        for (i = knoten[0x68]; i <= knoten[0x6c]; i++) { ... }
+    Bei einem Treffer wird bei 0x4dbb1f/0x4dbb22 aus Netz+0x1c
+    (der Dreiecksliste) der Wert idx[i] geholt und als getroffene
+    DREIECKSNUMMER zurueckgegeben.
+    *** Damit ist "letzter" als EINSCHLIESSENDES Ende belegt --
+    doppelt: aus dem Code und daraus, dass die Summe aller
+    (letzter-erster+1) in allen 508 Dateien genau nIdx ergibt. ***
+
+--------------------------------------------------------------------------------
+10. DAS WERKZEUG
+--------------------------------------------------------------------------------
+    tools\col_tool.py
+        info     <datei.col> ...        Kennzahlen
+        baum     <datei.col>            Baum ausgeben
+        rundlauf <ordner>               Byte-Gegenprobe ueber alle
+        pruefe   <datei.col>            alle Bezuege nachrechnen
+        wuerfel  <ziel.col> [kante]     Testwuerfel
+        aus_msb  <quelle.msb> <ziel.col> [max_blatt]
+
+    Der Baumbau teilt jeweils an der laengsten Achse am Median der
+    Dreiecksschwerpunkte und macht bei hoechstens zehn Dreiecken ein
+    Blatt -- so wie die Originale. Die drei Achsen bleiben die
+    Einheitsachsen; das ist erlaubt (sie muessen nur orthonormal sein)
+    und unempfindlich gegen entartete Geometrie.
+
+    Vergleich an atl_pscout (413 Dreiecke, 716 Vertices):
+        Original      25.628 B   131 Knoten   Tiefe 10
+        col_tool.py   25.260 B   127 Knoten   Tiefe  7
+
+--------------------------------------------------------------------------------
+11. WAS DAS PRAKTISCH HEISST
+--------------------------------------------------------------------------------
+    * Eigene Objekte bekommen jetzt eine eigene Kollision. Der Behelf
+      "eine vorhandene .col aehnlicher Groesse weiterverwenden"
+      entfaellt.
+    * Fuer ein eigenes Schiff oder Gebaeude reicht:
+          msb_write.py obj  modell.obj  vfx\msh\meins.msb
+          col_tool.py aus_msb vfx\msh\meins.msb vfx\col\meins.col
+      und in der .osd [collision] collisiondescription = "meins.col".
+    * Raeume und Wracks, durch die man bisher hindurchfuhr, lassen
+      sich damit begehbar machen.
+    * Wer nur eine grobe Huelle will, nimmt ein vereinfachtes Netz --
+      .col und .msb muessen NICHT dasselbe Netz haben, sie tun es in
+      den Originalen nur meistens.
 
 ================================================================================
 ENDE

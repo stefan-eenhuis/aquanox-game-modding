@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>AquaNox Missionsgraph</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden;
+               background:#141a20; color:#c8d4dc;
+               font:13px/1.45 "Segoe UI", system-ui, sans-serif; }
+  #leinwand { position:absolute; inset:0; overflow:hidden; cursor:grab; }
+  #leinwand.zieht { cursor:grabbing; }
+  #welt { position:absolute; transform-origin:0 0; }
+  svg#kanten { position:absolute; left:0; top:0; overflow:visible;
+               pointer-events:none; }
+
+  .knoten { position:absolute; box-sizing:border-box;
+            background:#1e2831; border:1px solid #33475a;
+            border-radius:7px; padding:6px 8px; width:220px;
+            box-shadow:0 2px 8px rgba(0,0,0,.45); }
+  .knoten:hover { border-color:#5b86a8; }
+  .knoten.gewaehlt { border-color:#7fd0ff; box-shadow:0 0 0 2px #2b6a91; }
+  .knoten .kopf { display:flex; align-items:baseline; gap:6px;
+                  margin-bottom:3px; }
+  .knoten .kennung { font-weight:600; color:#e6f0f7; }
+  .knoten .art { font-size:10px; color:#7d92a4; text-transform:uppercase;
+                 letter-spacing:.4px; }
+  .knoten .szene { font-size:11px; color:#9fc4a8; word-break:break-all; }
+  .knoten .befehle { font-size:10px; color:#8d9fae; margin-top:3px;
+                     max-height:44px; overflow:hidden; }
+
+  /* Farbe nach Art -- der linke Balken */
+  .knoten.wert      { border-left:4px solid #4a90d9; }
+  .knoten.bedingung { border-left:4px solid #d9a24a; }
+  .knoten.befehl    { border-left:4px solid #6ac47a; }
+  .knoten.unbekannt { border-left:4px solid #666; }
+  .knoten.start     { box-shadow:0 0 0 1px #4ad98a, 0 2px 8px rgba(0,0,0,.45); }
+  .knoten.ende      { box-shadow:0 0 0 1px #d9564a, 0 2px 8px rgba(0,0,0,.45); }
+
+  .fahne { display:inline-block; font-size:10px; padding:1px 5px;
+           border-radius:8px; margin-right:3px; }
+  .fahne.start { background:#1d4c33; color:#7ff0b0; }
+  .fahne.ende  { background:#4c1d1d; color:#ff9a90; }
+  .fahne.zeit  { background:#3a2a4c; color:#d9b0ff; }
+
+  /* Die Funkspruch-Kachel */
+  .funk { display:flex; gap:7px; margin-top:6px; padding:6px;
+          background:#182430; border:1px solid #2c4256;
+          border-radius:6px; align-items:flex-start; }
+  .funk img { width:44px; height:44px; border-radius:5px; flex:0 0 44px;
+              background:#0e151b; object-fit:cover; }
+  .funk .leer { width:44px; height:44px; border-radius:5px; flex:0 0 44px;
+                background:#0e151b; display:flex; align-items:center;
+                justify-content:center; color:#4a5a68; font-size:18px; }
+  .funk .inhalt { min-width:0; flex:1; }
+  .funk .wer { font-size:11px; font-weight:600; color:#bfe0ff; }
+  .funk .stimmung { font-size:10px; color:#8fa4b2; font-style:italic; }
+  .funk .text { font-size:11px; color:#d6e2ea; margin-top:2px;
+                word-break:break-word; }
+  .funk .knopf { margin-top:4px; display:flex; gap:5px; align-items:center; }
+  .funk button { background:#26445c; color:#d8ecfa;
+                 border:1px solid #3d6a8c; border-radius:4px; cursor:pointer;
+                 font-size:11px; padding:2px 8px; }
+  .funk button:hover { background:#31597a; }
+  .funk .key { font-size:10px; color:#6d8397; }
+
+  #kopfleiste { position:absolute; left:10px; top:10px; z-index:6;
+                background:rgba(14,21,27,.9); border:1px solid #2a3a46;
+                border-radius:6px; padding:8px 11px; max-width:420px; }
+  #kopfleiste h1 { margin:0 0 3px; font-size:14px; color:#e8f0f5; }
+  #kopfleiste .z { color:#8fa4b2; font-size:12px; }
+  #hinweis { position:absolute; right:10px; top:10px; z-index:6;
+             background:rgba(52,30,10,.92); border:1px solid #7a5a2a;
+             border-radius:6px; padding:8px 11px; max-width:330px;
+             font-size:11px; color:#e8d4b0; }
+  #legende { position:absolute; left:10px; bottom:10px; z-index:6;
+             background:rgba(14,21,27,.9); border:1px solid #2a3a46;
+             border-radius:6px; padding:7px 10px; font-size:11px; }
+  #legende span { margin-right:10px; }
+  #legende i { display:inline-block; width:9px; height:9px;
+               border-radius:2px; margin-right:3px; vertical-align:middle; }
+</style>
+</head>
+<body>
+<div id="leinwand"><div id="welt"><svg id="kanten"></svg></div></div>
+<div id="kopfleiste"><h1>Kein Missionsgraph geladen</h1>
+  <div class="z">Links eine Karte waehlen.</div></div>
+<div id="hinweis" style="display:none"></div>
+<div id="legende"></div>
+<script src="./graph.js"></script>
+</body>
+</html>

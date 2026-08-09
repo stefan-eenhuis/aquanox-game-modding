@@ -73,13 +73,20 @@ _NIMMT_EINEN = frozenset((
 
 
 class Aufruf:
-    __slots__ = ("funktion", "argumente", "proto", "stelle")
+    __slots__ = ("funktion", "argumente", "proto", "stelle", "zuweisung")
 
     def __init__(self, funktion, argumente, proto, stelle):
         self.funktion = funktion        # str oder None
         self.argumente = argumente      # Liste: str, float, None
         self.proto = proto
         self.stelle = stelle
+        # *** Der Variablenname, in den das Ergebnis geht. ***
+        # node8 = Node_CreateNode("nod_generic", "elt_asylum_1")
+        # steht im Bytecode als CALL gefolgt von SETGLOBAL "node8".
+        # Ohne diesen Namen laesst sich ein spaeteres
+        # Body_SetCS(node8, ...) nicht seinem Knoten zuordnen --
+        # dann bleibt nur die Reihenfolge, und die verrutscht.
+        self.zuweisung = None
 
     @property
     def zahlen(self):
@@ -212,6 +219,16 @@ def lies(proto, weg="main", lua4dis=None, tiefe=0, aus=None):
             if u < len(stapel):
                 stapel[u] = w
         elif name == "SETGLOBAL":
+            # Steht der SETGLOBAL unmittelbar hinter einem Aufruf
+            # DIESES Protos, dann nimmt er dessen Rueckgabewert auf.
+            # Belegt: 13.018 von 13.018 Node_CreateNode werden von
+            # einem SETGLOBAL gefolgt.
+            u = argU(i)
+            ziel = kstr[u] if u < len(kstr) else None
+            if ziel and aus and aus[-1].proto == weg \
+                    and aus[-1].stelle == stelle - 1 \
+                    and aus[-1].zuweisung is None:
+                aus[-1].zuweisung = ziel
             if stapel:
                 stapel.pop()
         elif name == "SETTABLE" or name == "SETLIST":

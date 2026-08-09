@@ -1,0 +1,1255 @@
+[
+ {
+  "index": 0,
+  "nod_item_key": 1,
+  "name": "gun_doommortar",
+  "engine_string": "GUN_DOOMMORTAR",
+  "klasse": "gun",
+  "anzeigename": "DoomMortar",
+  "im_skript": 3,
+  "dateien": [
+   "4h1.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua"
+  ],
+  "schreibweisen": [
+   "GUN_DOOMMORTAR",
+   "gun_doommortar"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": false
+ },
+ {
+  "index": 1,
+  "nod_item_key": 2,
+  "name": "gun_empactor",
+  "engine_string": "GUN_EMPACTOR",
+  "klasse": "gun",
+  "anzeigename": "EMPactor",
+  "im_skript": 4,
+  "dateien": [
+   "4h1.lua",
+   "4h2.lua",
+   "4h3.lua",
+   "4n2.lua"
+  ],
+  "schreibweisen": [
+   "gun_empactor"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 2,
+  "nod_item_key": 3,
+  "name": "gun_flak",
+  "engine_string": "GUN_FLAK",
+  "klasse": "gun",
+  "anzeigename": "Hitman",
+  "im_skript": 10,
+  "dateien": [
+   "1h4.lua",
+   "2h1.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "3n1.lua"
+  ],
+  "schreibweisen": [
+   "gun_flak"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": false
+ },
+ {
+  "index": 3,
+  "nod_item_key": 4,
+  "name": "gun_lasergatlin",
+  "engine_string": "GUN_LASERGATLIN",
+  "klasse": "gun",
+  "anzeigename": "LaserGatling",
+  "im_skript": 11,
+  "dateien": [
+   "5h4.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "dogfight.lua",
+   "inst_succubus.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "gun_lasergatlin"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 4,
+  "nod_item_key": 5,
+  "name": "gun_plasma1",
+  "engine_string": "GUN_PLASMA1",
+  "klasse": "gun",
+  "anzeigename": "PlasmaGun1",
+  "im_skript": 5,
+  "dateien": [
+   "1h4.lua",
+   "2h1.lua",
+   "2h2.lua",
+   "2n1.lua",
+   "2n2.lua"
+  ],
+  "schreibweisen": [
+   "GUN_PLASMA1",
+   "gun_plasma1"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": false
+ },
+ {
+  "index": 5,
+  "nod_item_key": 6,
+  "name": "gun_plasma2",
+  "engine_string": "GUN_PLASMA2",
+  "klasse": "gun",
+  "anzeigename": "QuantumBlaster",
+  "im_skript": 7,
+  "dateien": [
+   "2h3.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "3n1.lua"
+  ],
+  "schreibweisen": [
+   "gun_plasma2"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 6,
+  "nod_item_key": 7,
+  "name": "gun_plasmagatlin",
+  "engine_string": "GUN_PLASMAGATLIN",
+  "klasse": "gun",
+  "anzeigename": "PlasmaGatling",
+  "im_skript": 9,
+  "dateien": [
+   "4h2.lua",
+   "4h3.lua",
+   "4n1.lua",
+   "4n2.lua",
+   "5h1.lua",
+   "5h2.lua",
+   "5n2.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua"
+  ],
+  "schreibweisen": [
+   "GUN_PLASMAGATLIN",
+   "gun_plasmagatlin"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 7,
+  "nod_item_key": 8,
+  "name": "gun_scalarhowitzer",
+  "engine_string": "GUN_SCALARHOWITZER",
+  "klasse": "gun",
+  "anzeigename": "ScalarHaubitze",
+  "im_skript": 2,
+  "dateien": [
+   "6h3.lua",
+   "6h4.lua"
+  ],
+  "schreibweisen": [
+   "gun_scalarhowitzer"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": false
+ },
+ {
+  "index": 8,
+  "nod_item_key": 9,
+  "name": "gun_sizzler",
+  "engine_string": "GUN_SIZZLER",
+  "klasse": "gun",
+  "anzeigename": "Sizzler",
+  "im_skript": 12,
+  "dateien": [
+   "5h1.lua",
+   "5h2.lua",
+   "5h4.lua",
+   "5n2.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "dogfight.lua",
+   "inst_succubus.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "gun_sizzler"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 9,
+  "nod_item_key": 10,
+  "name": "gun_vendetta1",
+  "engine_string": "GUN_VENDETTA1",
+  "klasse": "gun",
+  "anzeigename": "VendettaSniper",
+  "im_skript": 5,
+  "dateien": [
+   "1h1.lua",
+   "1h2.lua",
+   "1h3.lua",
+   "1n1.lua",
+   "sp_1n1.lua"
+  ],
+  "schreibweisen": [
+   "GUN_VENDETTA1",
+   "gun_vendetta1"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 10,
+  "nod_item_key": 11,
+  "name": "gun_vendetta2",
+  "engine_string": "GUN_VENDETTA2",
+  "klasse": "gun",
+  "anzeigename": "VendettaGun",
+  "im_skript": 7,
+  "dateien": [
+   "1h2.lua",
+   "1h3.lua",
+   "1n1.lua",
+   "1n2.lua",
+   "2h2.lua",
+   "2n2.lua",
+   "sp_1n1.lua"
+  ],
+  "schreibweisen": [
+   "GUN_VENDETTA2",
+   "gun_vendetta2"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 11,
+  "nod_item_key": 12,
+  "name": "gun_vendettagatlin",
+  "engine_string": "GUN_VENDETTAGATLIN",
+  "klasse": "gun",
+  "anzeigename": "VendettaGatling",
+  "im_skript": 11,
+  "dateien": [
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "4n1.lua",
+   "dogfight.lua",
+   "inst_fightclub.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "GUN_VENDETTAGATLIN",
+   "gun_vendettagatlin"
+  ],
+  "mengen": [
+   "1",
+   "99"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 12,
+  "nod_item_key": 13,
+  "name": "gun_torpedolauncher",
+  "engine_string": "GUN_TORPEDOLAUNCHER",
+  "klasse": "gun",
+  "anzeigename": "TorpedoLauncher",
+  "im_skript": 39,
+  "dateien": [
+   "1h1.lua",
+   "1h2.lua",
+   "1h3.lua",
+   "1h4.lua",
+   "1n1.lua",
+   "1n2.lua",
+   "2h1.lua",
+   "2h2.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n2.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "3n1.lua",
+   "4h1.lua",
+   "4h2.lua",
+   "4h3.lua",
+   "4n1.lua",
+   "4n2.lua",
+   "5h1.lua",
+   "5h2.lua",
+   "5h4.lua",
+   "5n2.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "dogfight.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua",
+   "inst_succubus.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "GUN_TORPEDOLAUNCHER",
+   "GUN_torpedolauncher",
+   "gun_torpedolauncher"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": true,
+  "osd_ibox": true
+ },
+ {
+  "index": 13,
+  "nod_item_key": 14,
+  "name": "ammo_energy",
+  "engine_string": "AMMO_ENERGY",
+  "klasse": "ammo_energy",
+  "anzeigename": "Energy Pack",
+  "im_skript": 33,
+  "dateien": [
+   "1h4.lua",
+   "2h1.lua",
+   "2h2.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n2.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "3n1.lua",
+   "4h1.lua",
+   "4h2.lua",
+   "4h3.lua",
+   "4n1.lua",
+   "4n2.lua",
+   "5h1.lua",
+   "5h2.lua",
+   "5h4.lua",
+   "5n2.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "dogfight.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua",
+   "inst_succubus.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "AMMO_ENERGY",
+   "ammo_energy"
+  ],
+  "mengen": [
+   "10",
+   "500",
+   "1000",
+   "1500",
+   "2000",
+   "2001",
+   "3000",
+   "4000",
+   "5000",
+   "6000"
+  ],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 14,
+  "nod_item_key": 15,
+  "name": "ammo_shell",
+  "engine_string": "AMMO_SHELL",
+  "klasse": "ammo_kin",
+  "anzeigename": "Shells",
+  "im_skript": 29,
+  "dateien": [
+   "1h1.lua",
+   "1h2.lua",
+   "1h3.lua",
+   "1h4.lua",
+   "1n1.lua",
+   "1n2.lua",
+   "2h1.lua",
+   "2h2.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n2.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "3n1.lua",
+   "4n1.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "dogfight.lua",
+   "inst_fightclub.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "AMMO_SHELL",
+   "ammo_shell"
+  ],
+  "mengen": [
+   "255",
+   "500",
+   "2000",
+   "3000",
+   "4000",
+   "5000",
+   "6000"
+  ],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 15,
+  "nod_item_key": 16,
+  "name": "torpedo_bigbang1",
+  "engine_string": "TORPEDO_BIGBANG1",
+  "klasse": "torpedo",
+  "anzeigename": "BigBang1",
+  "im_skript": 2,
+  "dateien": [
+   "2h1.lua",
+   "5h4.lua"
+  ],
+  "schreibweisen": [
+   "torpedo_bigbang1"
+  ],
+  "mengen": [
+   "1",
+   "3"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 16,
+  "nod_item_key": 17,
+  "name": "torpedo_bigbang2",
+  "engine_string": "TORPEDO_BIGBANG2",
+  "klasse": "torpedo",
+  "anzeigename": "BigBang2",
+  "im_skript": 4,
+  "dateien": [
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua"
+  ],
+  "schreibweisen": [
+   "torpedo_bigbang2"
+  ],
+  "mengen": [
+   "2",
+   "3",
+   "4"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 17,
+  "nod_item_key": 18,
+  "name": "torpedo_bullshark",
+  "engine_string": "TORPEDO_BULLSHARK",
+  "klasse": "torpedo",
+  "anzeigename": "BullShark",
+  "im_skript": 7,
+  "dateien": [
+   "1h4.lua",
+   "2h1.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n3.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua"
+  ],
+  "schreibweisen": [
+   "TORPEDO_BULLSHARK",
+   "torpedo_bullshark"
+  ],
+  "mengen": [
+   "2",
+   "3",
+   "4",
+   "6"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 18,
+  "nod_item_key": 19,
+  "name": "torpedo_flashshark",
+  "engine_string": "TORPEDO_FLASHSHARK",
+  "klasse": "torpedo",
+  "anzeigename": "FlashShark",
+  "im_skript": 6,
+  "dateien": [
+   "1n2.lua",
+   "4h1.lua",
+   "4h2.lua",
+   "4h3.lua",
+   "4n1.lua",
+   "4n2.lua"
+  ],
+  "schreibweisen": [
+   "TORPEDO_FLASHSHARK",
+   "torpedo_flashshark"
+  ],
+  "mengen": [
+   "2",
+   "5",
+   "8"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 19,
+  "nod_item_key": 20,
+  "name": "torpedo_hammerhead",
+  "engine_string": "TORPEDO_HAMMERHEAD",
+  "klasse": "torpedo",
+  "anzeigename": "Hammerhead",
+  "im_skript": 9,
+  "dateien": [
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "dogfight.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "torpedo_hammerhead"
+  ],
+  "mengen": [
+   "4",
+   "8",
+   "9",
+   "10"
+  ],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 20,
+  "nod_item_key": 21,
+  "name": "torpedo_leech",
+  "engine_string": "TORPEDO_LEECH",
+  "klasse": "torpedo",
+  "anzeigename": "Leech",
+  "im_skript": 4,
+  "dateien": [
+   "5h2.lua",
+   "5n2.lua",
+   "6h2.lua",
+   "6h3.lua"
+  ],
+  "schreibweisen": [
+   "torpedo_leech"
+  ],
+  "mengen": [
+   "0",
+   "2",
+   "3"
+  ],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 21,
+  "nod_item_key": 22,
+  "name": "torpedo_maneater",
+  "engine_string": "TORPEDO_MANEATER",
+  "klasse": "torpedo",
+  "anzeigename": "Maneater",
+  "im_skript": 18,
+  "dateien": [
+   "3h2.lua",
+   "3h3.lua",
+   "3h4.lua",
+   "4h2.lua",
+   "4n1.lua",
+   "4n2.lua",
+   "5h1.lua",
+   "5h2.lua",
+   "5h4.lua",
+   "5n2.lua",
+   "dogfight.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua",
+   "inst_succubus.lua",
+   "sp_1n1.lua",
+   "sp_narrow.lua",
+   "sp_vertical.lua",
+   "sp_vulcano.lua"
+  ],
+  "schreibweisen": [
+   "TORPEDO_MANEATER",
+   "torpedo_maneater"
+  ],
+  "mengen": [
+   "2",
+   "4",
+   "6",
+   "7",
+   "8",
+   "9"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 22,
+  "nod_item_key": 23,
+  "name": "torpedo_stanley",
+  "engine_string": "TORPEDO_STANLEY",
+  "klasse": "torpedo",
+  "anzeigename": "Stanley",
+  "im_skript": 3,
+  "dateien": [
+   "1h1.lua",
+   "1n1.lua",
+   "sp_1n1.lua"
+  ],
+  "schreibweisen": [
+   "TORPEDO_STANLEY",
+   "torpedo_stanley"
+  ],
+  "mengen": [
+   "2",
+   "4"
+  ],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 23,
+  "nod_item_key": 24,
+  "name": "torpedo_threshershark",
+  "engine_string": "TORPEDO_THRESHERSHARK",
+  "klasse": "torpedo",
+  "anzeigename": "ThresherShark",
+  "im_skript": 4,
+  "dateien": [
+   "1h2.lua",
+   "1h3.lua",
+   "1n1.lua",
+   "sp_1n1.lua"
+  ],
+  "schreibweisen": [
+   "TORPEDO_THRESHERSHARK",
+   "torpedo_threshershark"
+  ],
+  "mengen": [
+   "2",
+   "6"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 24,
+  "nod_item_key": 25,
+  "name": "torpedo_tigershark",
+  "engine_string": "TORPEDO_TIGERSHARK",
+  "klasse": "torpedo",
+  "anzeigename": "TigerShark",
+  "im_skript": 12,
+  "dateien": [
+   "1n2.lua",
+   "2h1.lua",
+   "2h2.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n2.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3n1.lua",
+   "4h3.lua",
+   "5h1.lua",
+   "inst_fightclub.lua"
+  ],
+  "schreibweisen": [
+   "TORPEDO_TIGERSHARK",
+   "torpedo_tigershark"
+  ],
+  "mengen": [
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "10"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 25,
+  "nod_item_key": 26,
+  "name": "device_repair0",
+  "engine_string": "DEVICE_REPAIR0",
+  "klasse": "device",
+  "anzeigename": "Repair Device 0",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 26,
+  "nod_item_key": 27,
+  "name": "device_repair1",
+  "engine_string": "DEVICE_REPAIR1",
+  "klasse": "device",
+  "anzeigename": "Repair Device 1",
+  "im_skript": 4,
+  "dateien": [
+   "2n2.lua",
+   "3h4.lua",
+   "4h1.lua",
+   "inst_fightclub.lua"
+  ],
+  "schreibweisen": [
+   "DEVICE_REPAIR1",
+   "device_repair1"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 27,
+  "nod_item_key": 28,
+  "name": "device_repair2",
+  "engine_string": "DEVICE_REPAIR2",
+  "klasse": "device",
+  "anzeigename": "Repair Device 2",
+  "im_skript": 3,
+  "dateien": [
+   "5h1.lua",
+   "inst_asylum.lua",
+   "inst_succubus.lua"
+  ],
+  "schreibweisen": [
+   "device_repair2"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 28,
+  "nod_item_key": 29,
+  "name": "device_repair3",
+  "engine_string": "DEVICE_REPAIR3",
+  "klasse": "device",
+  "anzeigename": "Repair Device 3",
+  "im_skript": 4,
+  "dateien": [
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua"
+  ],
+  "schreibweisen": [
+   "DEVICE_REPAIR3",
+   "device_repair3"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 29,
+  "nod_item_key": 30,
+  "name": "device_generator0",
+  "engine_string": "DEVICE_GENERATOR0",
+  "klasse": "device",
+  "anzeigename": "Generator 0",
+  "im_skript": 4,
+  "dateien": [
+   "2h2.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua"
+  ],
+  "schreibweisen": [
+   "device_generator0"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 30,
+  "nod_item_key": 31,
+  "name": "device_generator1",
+  "engine_string": "DEVICE_GENERATOR1",
+  "klasse": "device",
+  "anzeigename": "Generator 1",
+  "im_skript": 3,
+  "dateien": [
+   "2n2.lua",
+   "3h4.lua",
+   "inst_fightclub.lua"
+  ],
+  "schreibweisen": [
+   "DEVICE_GENERATOR1",
+   "DEVICE_generator1"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 31,
+  "nod_item_key": 32,
+  "name": "device_generator2",
+  "engine_string": "DEVICE_GENERATOR2",
+  "klasse": "device",
+  "anzeigename": "Generator 2",
+  "im_skript": 4,
+  "dateien": [
+   "4h1.lua",
+   "5h1.lua",
+   "inst_asylum.lua",
+   "inst_succubus.lua"
+  ],
+  "schreibweisen": [
+   "device_generator2"
+  ],
+  "mengen": [
+   "1",
+   "1000"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 32,
+  "nod_item_key": 33,
+  "name": "device_generator3",
+  "engine_string": "DEVICE_GENERATOR3",
+  "klasse": "device",
+  "anzeigename": "Generator 3",
+  "im_skript": 4,
+  "dateien": [
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua"
+  ],
+  "schreibweisen": [
+   "device_generator3"
+  ],
+  "mengen": [
+   "1"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 33,
+  "nod_item_key": 34,
+  "name": "device_noiselevelreducer",
+  "engine_string": "DEVICE_NOISELEVELREDUCER",
+  "klasse": "device",
+  "anzeigename": "NoiseLevelReducer",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 34,
+  "nod_item_key": 35,
+  "name": "device_booster",
+  "engine_string": "DEVICE_BOOSTER",
+  "klasse": "device",
+  "anzeigename": "Booster",
+  "im_skript": 8,
+  "dateien": [
+   "3n1.lua",
+   "5h1.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "inst_asylum.lua",
+   "inst_succubus.lua"
+  ],
+  "schreibweisen": [
+   "DEVICE_BOOSTER",
+   "device_booster"
+  ],
+  "mengen": [
+   "99",
+   "999",
+   "2000",
+   "10000",
+   "15000"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 35,
+  "nod_item_key": 36,
+  "name": "flag_red",
+  "engine_string": "FLAG_RED",
+  "klasse": "flag_rot",
+  "anzeigename": "Red Flag",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 36,
+  "nod_item_key": 37,
+  "name": "flag_blue",
+  "engine_string": "FLAG_BLUE",
+  "klasse": "flag_blau",
+  "anzeigename": "Blue Flag",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 37,
+  "nod_item_key": 38,
+  "name": "buzzer_normal",
+  "engine_string": "BUZZER_NORMAL",
+  "klasse": "buzzer",
+  "anzeigename": "Buzzer",
+  "im_skript": 21,
+  "dateien": [
+   "1n1.lua",
+   "2h1.lua",
+   "2h2.lua",
+   "2h3.lua",
+   "2n1.lua",
+   "2n3.lua",
+   "3h1.lua",
+   "3h2.lua",
+   "3h3.lua",
+   "3n1.lua",
+   "4h3.lua",
+   "5h1.lua",
+   "5h4.lua",
+   "6h1.lua",
+   "6h2.lua",
+   "6h3.lua",
+   "6h4.lua",
+   "inst_asylum.lua",
+   "inst_fightclub.lua",
+   "inst_succubus.lua",
+   "sp_1n1.lua"
+  ],
+  "schreibweisen": [
+   "BUZZER_NORMAL",
+   "buzzer_normal"
+  ],
+  "mengen": [
+   "2",
+   "4",
+   "5",
+   "6",
+   "8",
+   "10",
+   "12"
+  ],
+  "osd_gun": false,
+  "osd_ibox": false
+ },
+ {
+  "index": 38,
+  "nod_item_key": 39,
+  "name": "pickup_repair25",
+  "engine_string": "PICKUP_REPAIR25",
+  "klasse": "mp_pickup",
+  "anzeigename": "Repair25",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 39,
+  "nod_item_key": 40,
+  "name": "pickup_repair50",
+  "engine_string": "PICKUP_REPAIR50",
+  "klasse": "mp_pickup",
+  "anzeigename": "Repair50",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 40,
+  "nod_item_key": 41,
+  "name": "pickup_armor5",
+  "engine_string": "PICKUP_ARMOR5",
+  "klasse": "mp_pickup",
+  "anzeigename": "Armor5",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 41,
+  "nod_item_key": 42,
+  "name": "pickup_armor25",
+  "engine_string": "PICKUP_ARMOR25",
+  "klasse": "mp_pickup",
+  "anzeigename": "Armor25",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 42,
+  "nod_item_key": 43,
+  "name": "pickup_boost",
+  "engine_string": "PICKUP_BOOST",
+  "klasse": "mp_pickup",
+  "anzeigename": "Boost",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 43,
+  "nod_item_key": 44,
+  "name": "pickup_armor100",
+  "engine_string": "PICKUP_ARMOR100",
+  "klasse": "mp_pickup",
+  "anzeigename": "Armor100",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 44,
+  "nod_item_key": 45,
+  "name": "pickup_absorb",
+  "engine_string": "PICKUP_ABSORB",
+  "klasse": "mp_pickup",
+  "anzeigename": "Absorb",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 45,
+  "nod_item_key": 46,
+  "name": "pickup_maxdamage",
+  "engine_string": "PICKUP_MAXDAMAGE",
+  "klasse": "mp_pickup",
+  "anzeigename": "MaxDamage",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 46,
+  "nod_item_key": 47,
+  "name": "pickup_cloak",
+  "engine_string": "PICKUP_CLOAK",
+  "klasse": "mp_pickup",
+  "anzeigename": "Cloak",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 47,
+  "nod_item_key": 48,
+  "name": "pickup_amplify",
+  "engine_string": "PICKUP_AMPLIFY",
+  "klasse": "mp_pickup",
+  "anzeigename": "Amplify",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 48,
+  "nod_item_key": 49,
+  "name": "ammo_emp",
+  "engine_string": "AMMO_EMP",
+  "klasse": "ammo_emp",
+  "anzeigename": "EMP Charge",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ },
+ {
+  "index": 49,
+  "nod_item_key": 50,
+  "name": "ammo_sizzler",
+  "engine_string": "AMMO_SIZZLER",
+  "klasse": "ammo_sizzler",
+  "anzeigename": "Sizzler Core",
+  "im_skript": 0,
+  "dateien": [],
+  "schreibweisen": [],
+  "mengen": [],
+  "osd_gun": false,
+  "osd_ibox": true
+ }
+]

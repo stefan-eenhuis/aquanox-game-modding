@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QTreeWidgetItem, QTabWidget, QPlainTextEdit, QLabel, QFileDialog,
     QComboBox, QCheckBox, QDoubleSpinBox, QPushButton, QLineEdit,
     QTableWidget, QTableWidgetItem, QStatusBar, QHeaderView, QMessageBox,
-    QSlider, QTextBrowser,
+    QSlider, QTextBrowser, QDialog,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
@@ -51,7 +51,10 @@ class Hauptfenster(QMainWindow):
         self.projekt = None
         self.level = None
         self.meta = None               # Wissensdatenbank aus mod_docu
-        self.setWindowTitle("AquaNox-1-Toolkit â€” Ansicht (read-only)")
+        self._letzte_auswahl = None    # was das Eigenschaftenfenster zeigt
+        self._aenderungen = []         # verschobene Objekte
+        self._eig_stumm = False
+        self.setWindowTitle("AquaNox-1-Toolkit — Ansicht (read-only)")
         self.resize(1500, 900)
         self._aufbauen()
 
@@ -78,10 +81,131 @@ class Hauptfenster(QMainWindow):
         teiler = QSplitter(Qt.Horizontal)
         teiler.addWidget(self._links())
         teiler.addWidget(self._rechts())
+        teiler.addWidget(self._eigenschaften())
         teiler.setStretchFactor(0, 0)
         teiler.setStretchFactor(1, 1)
-        teiler.setSizes([420, 1080])
+        teiler.setStretchFactor(2, 0)
+        teiler.setSizes([400, 820, 280])
         self.setCentralWidget(teiler)
+
+    # ------------------------------------------------------------------
+    def _eigenschaften(self):
+        """Das Eigenschaftenfenster rechts.
+
+        *** ES AENDERT NUR DIE ANSICHT. *** Was hier eingestellt wird,
+        landet in einer Aenderungsliste und laesst sich als Text
+        ausgeben -- geschrieben wird nichts. Solange nicht geklaert
+        ist, wie viele PAKs die Engine liest (Handoff 471/474),
+        waere alles andere leichtsinnig.
+        """
+        w = QWidget()
+        lay = QVBoxLayout(w)
+        lay.setContentsMargins(3, 6, 6, 6)
+
+        self.eigkopf = QLabel("<i>Kein Objekt gewaehlt</i>")
+        self.eigkopf.setWordWrap(True)
+        self.eigkopf.setTextFormat(Qt.RichText)
+        lay.addWidget(self.eigkopf)
+
+        gitter = QVBoxLayout()
+        self.felder = {}
+        for gruppe, bez, achsen in (
+                ("position", "Position (x, y, z)", ("x", "y", "z")),
+                ("drehung", "Drehung (Grad)", ("0", "1", "2"))):
+            lay.addWidget(QLabel(f"<b>{bez}</b>"))
+            z = QHBoxLayout()
+            for i, a in enumerate(achsen):
+                f = QDoubleSpinBox()
+                f.setRange(-100000.0, 100000.0)
+                f.setDecimals(2)
+                f.setSingleStep(10.0 if gruppe == "position" else 1.0)
+                f.setKeyboardTracking(False)   # erst bei Enter/Fokus
+                f.valueChanged.connect(self._eig_uebernehmen)
+                f.setEnabled(False)
+                self.felder[(gruppe, i)] = f
+                z.addWidget(f)
+            lay.addLayout(z)
+        lay.addLayout(gitter)
+
+        # *** Kein Skalierungsfeld. *** Body_SetCS kennt nur Lage und
+        # Drehung; eine Skalierung gaebe es im Skript nicht wieder.
+        hinweis = QLabel(
+            "<span style='color:#888;font-size:11px'>"
+            "Body_SetCS kennt nur Lage und Drehung — eine Skalierung "
+            "liesse sich nicht ins Skript zurueckschreiben.</span>")
+        hinweis.setWordWrap(True)
+        lay.addWidget(hinweis)
+
+        z0 = QHBoxLayout()
+        self.eig_einfuegen = QPushButton("Asset einfuegen ...")
+        self.eig_einfuegen.setToolTip(
+            "Waehlt eines der 1.267 Assets und setzt es dort ab,\n"
+            "wohin die Kamera blickt -- auf Terrainhoehe.")
+        self.eig_einfuegen.clicked.connect(self._asset_einfuegen)
+        z0.addWidget(self.eig_einfuegen)
+        lay.addLayout(z0)
+
+        z0b = QHBoxLayout()
+        self.eig_duplizieren = QPushButton("Duplizieren")
+        self.eig_duplizieren.setToolTip(
+            "Legt eine Kopie 50 Einheiten daneben an.\n"
+            "Sie erscheint in der Ausgabe als vier neue Zeilen:\n"
+            "Node_CreateNode, Node_AddSon, Body_SetCS, "
+            "Node_ParseIniFile.")
+        self.eig_duplizieren.clicked.connect(self._eig_duplizieren)
+        self.eig_duplizieren.setEnabled(False)
+        z0b.addWidget(self.eig_duplizieren)
+        lay.addLayout(z0b)
+
+        z = QHBoxLayout()
+        self.eig_zuruecksetzen = QPushButton("Zuruecksetzen")
+        self.eig_zuruecksetzen.setToolTip(
+            "Setzt dieses Objekt auf seine Werte aus dem Skript.")
+        self.eig_zuruecksetzen.clicked.connect(self._eig_zuruecksetzen)
+        self.eig_zuruecksetzen.setEnabled(False)
+        z.addWidget(self.eig_zuruecksetzen)
+        lay.addLayout(z)
+
+        lay.addWidget(QLabel("<b>Aenderungen</b>"))
+        self.aenderungsliste = QPlainTextEdit()
+        self.aenderungsliste.setReadOnly(True)
+        self.aenderungsliste.setPlaceholderText(
+            "Noch nichts geaendert.\n\n"
+            "1. Objekt in der 3D-Ansicht anklicken\n"
+            "2. an einem Pfeil ziehen, oder oben die Zahlen aendern\n"
+            "3. hier erscheinen die Skriptzeilen\n\n"
+            "VERSCHOBENE Objekte lassen sich einspielen.\n"
+            "NEUE (Duplizieren/Einfuegen) nur als Text ausgeben --\n"
+            "sie brauchen zusaetzliche Befehle im Skript.")
+        lay.addWidget(self.aenderungsliste, 1)
+
+        # *** Der einzige Knopf, der eine Spieldatei anlegt. ***
+        # Er laeuft durch schreiber.ziel_pruefen() und legt nie ein
+        # vorhandenes PAK an.
+        self.knopf_ausliefern = QPushButton("Alle Aenderungen speichern ...")
+        self.knopf_ausliefern.setToolTip(
+            "Uebernimmt ALLES: verschobene Objekte per\n"
+            "Konstantentausch, neue per Quelltext an __StartUp.\n\n"
+            "Patcht das Missionsskript und legt es als neues PAK ab\n"
+            "oder lose in den Spielordner. Originale bleiben\n"
+            "unangetastet.\n\n"
+            "Neue Objekte (Duplizieren, Asset einfuegen) gehen nur\n"
+            "ueber 'Als Text ausgeben' -- sie brauchen zusaetzliche\n"
+            "Befehle im Skript, die ein Konstantentausch nicht\n"
+            "erzeugen kann.")
+        self.knopf_ausliefern.clicked.connect(self._einspielen)
+        lay.addWidget(self.knopf_ausliefern)
+
+        z2 = QHBoxLayout()
+        knopf = QPushButton("Als Text ausgeben")
+        knopf.setToolTip("Schreibt die Aenderungen in eine Textdatei.")
+        knopf.clicked.connect(self._aenderungen_ausgeben)
+        z2.addWidget(knopf)
+        alles = QPushButton("Alle verwerfen")
+        alles.clicked.connect(self._alle_verwerfen)
+        z2.addWidget(alles)
+        lay.addLayout(z2)
+        return w
 
     # ------------------------------------------------------------------
     def _links(self):
@@ -103,7 +227,21 @@ class Hauptfenster(QMainWindow):
         self.karten.setColumnWidth(1, 170)
         self.karten.setColumnWidth(2, 60)
         self.karten.itemDoubleClicked.connect(self._karte_gewaehlt)
-        self.reiter.addTab(self.karten, "Karten")
+        self.kartenreiter = self.reiter.addTab(self.karten, "Karten")
+
+        # --- Stationen. Sie sind KEINE Karten: mehrere Stationen
+        #     teilen sich eine (1n2 hat sechs), und elf der 25 haben
+        #     ueberhaupt keine Dialoge.
+        self.stationen = QTreeWidget()
+        self.stationen.setHeaderLabels(["Station", "Karte", "Tiefe",
+                                        "Dialoge"])
+        self.stationen.setColumnWidth(0, 170)
+        self.stationen.setColumnWidth(1, 60)
+        self.stationen.setColumnWidth(2, 60)
+        self.stationen.itemClicked.connect(self._station_gewaehlt)
+        self.stationen.itemDoubleClicked.connect(self._station_gewaehlt)
+        self.stationsreiter = self.reiter.addTab(self.stationen, "Stationen")
+        self.reiter.currentChanged.connect(self._quelle_gewechselt)
 
         # --- Assets
         assets = QWidget()
@@ -237,6 +375,34 @@ class Hauptfenster(QMainWindow):
         z5.addWidget(self.sicht, 1)
         sl.addLayout(z5)
 
+        # *** Der einzige Knopf, der etwas ausserhalb des Toolkits
+        # tut. *** Er startet das Spiel -- lesend bleibt alles andere.
+        self.startknopf = QPushButton("Karte im Spiel starten")
+        self.startknopf.setToolTip(
+            "Startet Aqua.exe mit -s <Skriptpfad>.\n"
+            "Aendert nichts am Spiel; der Schalter ist seit 2001 da.")
+        self.startknopf.clicked.connect(self._karte_starten)
+        sl.addWidget(self.startknopf)
+
+        z7 = QHBoxLayout()
+        # Vollbild ist der Normalfall -- -window ist nur zum
+        # Vergleichen neben dem Toolkit nuetzlich.
+        self.startfenster = QCheckBox("im Fenster")
+        self.startfenster.setChecked(False)
+        self.startfenster.setToolTip(
+            "Mit Haken: -window. Ohne: Vollbild.\n"
+            "Im Fenster laesst sich das Spiel neben dem Toolkit "
+            "vergleichen.")
+        z7.addWidget(self.startfenster)
+        self.startprotokoll = QCheckBox("Protokoll")
+        self.startprotokoll.setChecked(True)
+        self.startprotokoll.setToolTip(
+            "-logfile -logunknown: schreibt log.txt mit "
+            "[SCRIPTERROR]-Zeilen.")
+        z7.addWidget(self.startprotokoll)
+        z7.addStretch(1)
+        sl.addLayout(z7)
+
         knopf_ueb = QPushButton("Ganzes Level zeigen")
         knopf_ueb.clicked.connect(
             lambda: self._js("window.aqtk.uebersicht()"))
@@ -261,31 +427,52 @@ class Hauptfenster(QMainWindow):
         e.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
         self.blick.load(QUrl.fromLocalFile(os.path.join(WEB, "viewer.html")))
 
-        # --- Der Missionsgraph als zweite Seite neben der 3D-Ansicht
-        self.graph = QWebEngineView()
-        self.graph.setPage(Seite(self._sag, self.graph))
-        ge = self.graph.settings()
-        ge.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
-        ge.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
-        # Ohne das lehnt Chromium jedes play() ab, das nicht aus einem
-        # echten Mausklick kommt -- und unsere Knoepfe schicken den
-        # Klick durch einen eigenen Handler.
-        ge.setAttribute(
-            QWebEngineSettings.PlaybackRequiresUserGesture, False)
-        # Der Schema-Handler holt Portraits und Ton aus dem Bestand.
+        # --- Zwei Graphseiten: das Triggernetz der Karte und die
+        #     Stationsdialoge der Kampagne. Beide benutzen dieselbe
+        #     Seite (graph.html) und dasselbe Datenformat, haengen
+        #     aber an verschiedenen Daten -- die Dialoge gehoeren zur
+        #     Kampagne, nicht zu einer Karte.
         from .schema import AquaSchema, SCHEMA
         self._aqua = AquaSchema(
             lambda: self.projekt.bestand if self.projekt else None,
-            self._sag, self.graph)
-        for seite in (self.graph.page(), self.blick.page()):
-            seite.profile().installUrlSchemeHandler(SCHEMA, self._aqua)
-        self.graph.load(QUrl.fromLocalFile(os.path.join(WEB, "graph.html")))
+            self._sag, self)
+
+        def graphseite():
+            v = QWebEngineView()
+            v.setPage(Seite(self._sag, v))
+            e = v.settings()
+            e.setAttribute(
+                QWebEngineSettings.LocalContentCanAccessFileUrls, True)
+            e.setAttribute(
+                QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
+            # Ohne das lehnt Chromium jedes play() ab, das nicht aus
+            # einem echten Mausklick kommt -- und unsere Knoepfe
+            # schicken den Klick durch einen eigenen Handler.
+            e.setAttribute(
+                QWebEngineSettings.PlaybackRequiresUserGesture, False)
+            v.page().profile().installUrlSchemeHandler(SCHEMA, self._aqua)
+            v.load(QUrl.fromLocalFile(os.path.join(WEB, "graph.html")))
+            return v
+
+        self.graph = graphseite()          # Missionsnetz
+        self.dialoggraph = graphseite()    # Stationsdialoge
+        self.blick.page().profile().installUrlSchemeHandler(
+            SCHEMA, self._aqua)
 
         self.ansichten = QTabWidget()
         self.ansichten.addTab(self.blick, "3D-Ansicht")
-        self.graphreiter = self.ansichten.addTab(self.graph, "Missionsgraph")
+        self.graphreiter = self.ansichten.addTab(self.graph, "Missionsnetz")
+        self.dialogreiter = self.ansichten.addTab(
+            self.dialoggraph, "Stationsdialoge")
         self.ansichten.currentChanged.connect(self._ansicht_gewechselt)
         lay.addWidget(self.ansichten, 3)
+
+        # Die Auswahl aus der 3D-Ansicht abholen. Fuenf Mal je
+        # Sekunde genuegt und spart die QWebChannel-Einrichtung.
+        self._auswahluhr = QTimer(self)
+        self._auswahluhr.setInterval(200)
+        self._auswahluhr.timeout.connect(self._auswahl_abholen)
+        self._auswahluhr.start()
 
         unten = QTabWidget()
         self.meldungen = QPlainTextEdit()
@@ -326,7 +513,7 @@ class Hauptfenster(QMainWindow):
         self.desdatei = QLineEdit()
         self.desdatei.setPlaceholderText(
             "Pfad einer .des/.osd, z.B. dat/sty/mission_d.des  "
-            "â€” oder im Asset-Browser doppelklicken")
+            "— oder im Asset-Browser doppelklicken")
         self.desdatei.returnPressed.connect(self._des_zeigen)
         knopf = QPushButton("anzeigen")
         knopf.clicked.connect(self._des_zeigen)
@@ -403,7 +590,7 @@ class Hauptfenster(QMainWindow):
             "Es veraendert keine Originaldateien, patcht keine PAKs, "
             "schreibt keine .des, .osd oder .sco und erzeugt kein "
             "Mod-PAK. Die Parser-Schicht oeffnet Dateien nur mit \"rb\".\n\n"
-            "Was unsicher ist, wird als unsicher angezeigt â€” geraten "
+            "Was unsicher ist, wird als unsicher angezeigt — geraten "
             "wird nichts.")
 
     def _asset_geoeffnet(self, zeile, _spalte):
@@ -453,36 +640,586 @@ class Hauptfenster(QMainWindow):
         self.blick.page().runJavaScript(code)
 
     # ------------------------------------------------------------------
-    def _ansicht_gewechselt(self, index):
-        """Den Missionsgraph erst bauen, wenn er gebraucht wird.
+    # ------------------------------------------------------------------
+    def _auswahl_abholen(self):
+        """Die Auswahl aus der 3D-Ansicht ins Eigenschaftenfenster.
 
-        Er kostet je nach Karte 300 bis 700 Knoten samt Portraits --
-        das laedt man nicht auf Verdacht mit.
+        Wird per Zeitgeber abgefragt statt ueber QWebChannel -- das
+        spart die ganze Kanal-Einrichtung, und bei fuenf Abfragen je
+        Sekunde merkt niemand einen Unterschied.
         """
-        if index == self.graphreiter and self.level is not None:
-            if getattr(self, "_graph_fuer", None) != self.level.name:
-                self._graph_zeigen()
+        if not self.level:
+            return
+        self.blick.page().runJavaScript(
+            "window.aqtk.auswahl()", self._auswahl_zeigen)
 
-    def _graph_zeigen(self):
+    def _auswahl_zeigen(self, roh):
+        try:
+            d = json.loads(roh) if roh and roh != "null" else None
+        except Exception:
+            d = None
+        if d == self._letzte_auswahl:
+            return
+        self._letzte_auswahl = d
+
+        an = d is not None
+        for f in self.felder.values():
+            f.setEnabled(an)
+        self.eig_zuruecksetzen.setEnabled(bool(d and d.get("geaendert")))
+        self.eig_duplizieren.setEnabled(an)
+        if not an:
+            self.eigkopf.setText("<i>Kein Objekt gewaehlt</i><br>"
+                                 "<span style='color:#888;font-size:11px'>"
+                                 "In der 3D-Ansicht auf ein Objekt "
+                                 "klicken.</span>")
+            return
+
+        kennung = d.get("variable") or "—"
+        self.eigkopf.setText(
+            f"<b>{d['name']}</b>"
+            + (" <span style='color:#c88'>(geaendert)</span>"
+               if d.get("geaendert") else "")
+            + f"<br><span style='color:#888;font-size:11px'>"
+            f"Variable {kennung} · {d.get('art', '')}"
+            + (f" · {d['teile']} Zusatzteile" if d.get("teile") else "")
+            + f"<br>{d.get('osd') or 'ohne OSD'}</span>")
+
+        # Ohne Blockade loeste jedes Setzen ein valueChanged aus und
+        # schriebe die Werte gleich wieder zurueck.
+        self._eig_stumm = True
+        for gruppe in ("position", "drehung"):
+            werte = d.get(gruppe) or [0, 0, 0]
+            for i in range(3):
+                self.felder[(gruppe, i)].setValue(float(werte[i]))
+        self._eig_stumm = False
+
+    def _eig_uebernehmen(self, *_):
+        if getattr(self, "_eig_stumm", False):
+            return
+        d = self._letzte_auswahl
+        if not d:
+            return
+        pos = [self.felder[("position", i)].value() for i in range(3)]
+        dre = [self.felder[("drehung", i)].value() for i in range(3)]
+        self.blick.page().runJavaScript(
+            f"window.aqtk.setzen({d['index']}, "
+            f"{json.dumps(pos)}, {json.dumps(dre)})")
+        self._letzte_auswahl = None      # erzwingt Neuanzeige
+        QTimer.singleShot(60, self._aenderungen_abholen)
+
+    def _asset_einfuegen(self):
+        """Ein Asset aus der Liste in die Szene setzen.
+
+        Die Geometrie wird hier nachgeladen -- sie ist noch nicht in
+        der Szene, weil kein Objekt sie benutzt. Abgesetzt wird dort,
+        wohin die Kamera blickt, auf Terrainhoehe.
+        """
+        if not self.projekt or not self.level:
+            self._sag("Erst eine Karte laden.")
+            return
+        from ..modell.level import assetliste, asset_geometrie
+        from .assetwahl import AssetWahl
+
+        if not getattr(self, "_assetliste", None):
+            self._assetliste = assetliste(self.projekt)
+            self._sag(f"{len(self._assetliste)} Assets gefunden")
+
+        dlg = AssetWahl(self._assetliste, self)
+        if dlg.exec() != QDialog.Accepted:
+            return
+        a = dlg.auswahl()
+        if not a:
+            return
+
+        self._sag(f"{a['name']} wird geladen ...")
+        try:
+            paket = asset_geometrie(self.projekt, a["verweis"], self.level)
+        except Exception as e:
+            self._sag(f"FEHLER beim Laden: {type(e).__name__}: {e}")
+            return
+        if paket.get("fehler"):
+            self._sag(f"{a['name']}: {paket['fehler']}")
+            return
+
+        # *** Nur die Geometrie schicken, nicht die ganze Szene. ***
+        # Ein voller szeneSetzen() waere bei 83 Objekten mit 75
+        # Texturen unnoetig teuer.
+        self.blick.page().runJavaScript(
+            f"window.aqtk.einfuegen("
+            f"{json.dumps(paket, ensure_ascii=False)}, "
+            f"{json.dumps(a['name'] + '_neu')})")
+        self._letzte_auswahl = None
+        QTimer.singleShot(120, self._aenderungen_abholen)
+        n = len(paket.get("meshes") or {})
+        self._sag(f"{a['name']} eingefuegt ({n} Mesh(es), "
+                  f"{len(paket.get('bilder') or {})} Texturen)")
+
+    def _eig_duplizieren(self):
+        d = self._letzte_auswahl
+        if not d:
+            return
+        self.blick.page().runJavaScript(
+            f"window.aqtk.duplizieren({d['index']}, [50, 50, 0])")
+        self._letzte_auswahl = None
+        QTimer.singleShot(80, self._aenderungen_abholen)
+        self._sag(f"{d['name']} dupliziert -- die Kopie braucht im "
+                  f"Skript vier neue Zeilen (siehe Ausgabe).")
+
+    def _eig_zuruecksetzen(self):
+        d = self._letzte_auswahl
+        if not d or not d.get("ursprung"):
+            return
+        u = d["ursprung"]
+        self.blick.page().runJavaScript(
+            f"window.aqtk.setzen({d['index']}, "
+            f"{json.dumps(u['position'])}, {json.dumps(u['drehung'])})")
+        self._letzte_auswahl = None
+        QTimer.singleShot(60, self._aenderungen_abholen)
+
+    def _alle_verwerfen(self):
+        self.blick.page().runJavaScript("window.aqtk.aenderungenVerwerfen()")
+        self._letzte_auswahl = None
+        QTimer.singleShot(80, self._aenderungen_abholen)
+
+    def _aenderungen_abholen(self):
+        self.blick.page().runJavaScript(
+            "window.aqtk.aenderungen()", self._aenderungen_zeigen)
+        self.blick.page().runJavaScript(
+            "window.aqtk.neulinge()", self._neulinge_zeigen)
+
+    def _neulinge_zeigen(self, roh):
+        try:
+            self._neulinge = json.loads(roh) if roh else []
+        except Exception:
+            self._neulinge = []
+        self._text_auffrischen()
+
+    def _aenderungen_zeigen(self, roh):
+        try:
+            self._aenderungen = json.loads(roh) if roh else []
+        except Exception:
+            self._aenderungen = []
+        self._text_auffrischen()
+
+    def _text_auffrischen(self):
+        t = self._aenderungstext(self._aenderungen,
+                                 getattr(self, "_neulinge", []), kurz=True)
+        self.aenderungsliste.setPlainText(t)
+
+    def _aenderungstext(self, liste, neulinge=None, kurz=False):
+        """Die Aenderungen als Lua-Zeilen.
+
+        *** Das ist Text zum Einbauen, kein Patch. *** Die Zeilen
+        entsprechen dem, was im Dekompilat steht; wer sie uebernimmt,
+        muss das Skript selbst neu uebersetzen -- oder auf den
+        Patcher warten (Handoff 458, 474).
+        """
+        neulinge = neulinge or []
+        z = []
+        if not kurz:
+            z += [f"# AquaNox-Toolkit -- Aenderungen an "
+                  f"{self.level.name if self.level else '?'}",
+                  f"# {len(liste)} verschoben, {len(neulinge)} neu.",
+                  "# Die Zeilen entsprechen dem Dekompilat in "
+                  "mod_docu\\an1_missionen_lua\\.",
+                  "# Position und Drehung in AquaNox-Achsen "
+                  "(Z ist die Hochachse).",
+                  "#",
+                  "# *** DAS IST TEXT ZUM EINBAUEN, KEIN PATCH. ***",
+                  "# Das Toolkit schreibt nichts ins Spiel.", ""]
+
+        if liste:
+            if not kurz:
+                z.append("# --- verschobene Objekte ---")
+            for a in liste:
+                v = a.get("variable") or a.get("name")
+                p, dr = a["position"], a["drehung"]
+                ap, ad = a["alt_position"], a["alt_drehung"]
+                if not kurz:
+                    z.append(f"# {a['name']}   vorher "
+                             f"({ap[0]:.1f}, {ap[1]:.1f}, {ap[2]:.1f}) "
+                             f"/ ({ad[0]:.2f}, {ad[1]:.2f}, {ad[2]:.2f})")
+                z.append(
+                    f"Body_SetCS({v}, MAT_Vector3({p[0]:.5f}, {p[1]:.5f}, "
+                    f"{p[2]:.5f}), MAT_Vector3({dr[0]:.5f}, {dr[1]:.5f}, "
+                    f"{dr[2]:.5f}))")
+
+        if neulinge:
+            z.append("")
+            z.append("# --- neue Objekte ---")
+            if not kurz:
+                z += ["# *** Jedes braucht VIER Zeilen und eine freie "
+                      "Variable. ***",
+                      "# Die Namen nodeNEU1.. sind Vorschlaege -- im "
+                      "Skript muessen sie",
+                      "# eindeutig sein. Node_AddSon haengt den Knoten "
+                      "in das Verzeichnis,",
+                      "# in dem auch die Vorlage haengt; welches das "
+                      "ist, steht im Skript.", ""]
+            for i, n in enumerate(neulinge, 1):
+                v = f"nodeNEU{i}"
+                p, dr = n["position"], n["drehung"]
+                z.append(f"# {n['name']}  (Vorlage: {n.get('vorlage')})")
+                z.append(f'{v} = Node_CreateNode("nod_generic", '
+                         f'"{n["name"]}")')
+                z.append(f"Node_AddSon(<Verzeichnis>, {v})")
+                z.append(
+                    f"Body_SetCS({v}, MAT_Vector3({p[0]:.5f}, {p[1]:.5f}, "
+                    f"{p[2]:.5f}), MAT_Vector3({dr[0]:.5f}, {dr[1]:.5f}, "
+                    f"{dr[2]:.5f}))")
+                if n.get("osd"):
+                    z.append(f'Node_ParseIniFile({v}, "{n["osd"]}")')
+                z.append("")
+        return "\n".join(z)
+
+    def _einspielen(self):
+        """Die verschobenen Objekte ins Spiel bringen.
+
+        *** Der einzige Weg, auf dem das Toolkit eine Spieldatei
+        anlegt. *** Deshalb: erst zeigen, was passiert, dann fragen.
+        Originale werden nie ueberschrieben -- schreiber.ziel_pruefen()
+        laesst das gar nicht zu.
+
+        NEUE Objekte gehen NICHT mit: sie brauchen Node_CreateNode
+        und Node_AddSon, also zusaetzliche Befehle im Bytecode. Der
+        Patcher tauscht nur Konstanten. Fuer sie bleibt die
+        Textausgabe.
+        """
+        liste = getattr(self, "_aenderungen", None) or []
+        neu = getattr(self, "_neulinge", None) or []
+
+        if not liste and not neu:
+            QMessageBox.information(
+                self, "Nichts zu tun",
+                "Es ist noch nichts geaendert.\n\n"
+                "So geht es:\n"
+                "  1. In der 3D-Ansicht auf ein Objekt klicken --\n"
+                "     Rahmen und drei Pfeile erscheinen.\n"
+                "  2. An einem Pfeil ziehen, oder rechts die Zahlen\n"
+                "     aendern. Oder 'Asset einfuegen' fuer ein neues.\n"
+                "  3. Dann wieder hierher.")
+            return
         if not self.projekt or not self.level:
             return
+
+        from ..schreiber import (freie_pak_nummer, SchreibFehler)
+        from ..schreiber import sco_position, mod as _mod
+
+        spiel = self.projekt.ordner
+        skript = (self.level.skriptpfad
+                  or f"map/{self.level.name}/script/{self.level.name}.sco")
+        skript = skript.replace("\\", "/").lower()
+        if not skript.endswith(".sco"):
+            skript += ".sco"
+        roh = self.projekt.bestand.lesen(skript)
+        if roh is None:
+            self._sag(f"Skript nicht lesbar: {skript}")
+            return
+
+        nummer = freie_pak_nummer(spiel)
+        teile = []
+        if liste:
+            teile.append(f"{len(liste)} verschobene(s) Objekt(e) "
+                         f"(Konstantentausch)")
+        if neu:
+            teile.append(f"{len(neu)} neue(s) Objekt(e) "
+                         f"(Quelltext an __StartUp)")
+        text = (
+            f"{' und '.join(teile)} werden in\n  {skript}\n"
+            f"uebernommen und abgelegt als\n\n"
+            f"  A)  dat\\pak\\aquanox{nummer}.pak   (empfohlen, "
+            f"abschaltbar)\n"
+            f"  B)  lose unter {spiel}\\{skript.replace('/', chr(92))}\n\n"
+            f"Originale werden nicht angefasst.")
+        if neu:
+            text += (
+                "\n\n*** ZU DEN NEUEN OBJEKTEN: *** sie kommen als "
+                "Lua-Quelltext ans Ende von __StartUp, den die Engine "
+                "per dostring uebersetzt. Ob ein so angelegter Knoten "
+                "wirklich erscheint, ist NICHT geprueft -- moeglich, "
+                "dass er entsteht, aber am Ursprung steht. Das "
+                "entscheidet nur der Spieltest.")
+
+        kasten = QMessageBox(self)
+        kasten.setWindowTitle("Alle Aenderungen speichern")
+        kasten.setText(text)
+        a = kasten.addButton(f"A) aquanox{nummer}.pak",
+                             QMessageBox.AcceptRole)
+        b = kasten.addButton("B) lose Datei", QMessageBox.AcceptRole)
+        kasten.addButton("Abbrechen", QMessageBox.RejectRole)
+        kasten.exec()
+        gewaehlt = kasten.clickedButton()
+        if gewaehlt not in (a, b):
+            self._sag("Abgebrochen.")
+            return
+
+        neue_bytes = roh
+        # 1) Verschobene: Konstanten tauschen.
+        if liste:
+            try:
+                neue_bytes, bericht = sco_position.anwenden(
+                    neue_bytes, liste, self._sag)
+            except Exception as e:
+                self._sag(f"PATCH FEHLGESCHLAGEN: {type(e).__name__}: {e}")
+                return
+            for u in bericht["uebersprungen"]:
+                self._sag(f"uebersprungen: {u['variable']} -- {u['grund']}")
+
+        # 2) Neue: Quelltext anhaengen. *** Muss NACH dem Patchen
+        # kommen *** -- sco_position sucht Body_SetCS-Muster, und der
+        # angehaengte dostring-Aufruf enthaelt keine.
+        if neu:
+            from ..schreiber import sco_neu
+            try:
+                neue_bytes, b2 = sco_neu.anhaengen(
+                    neue_bytes, neu, melder=self._sag)
+                for u in b2["ungeprueft"]:
+                    self._sag("ungeprueft: " + u)
+            except Exception as e:
+                self._sag(f"ANHAENGEN FEHLGESCHLAGEN: "
+                          f"{type(e).__name__}: {e}")
+                return
+
+        dateien = {skript: neue_bytes}
+        try:
+            if gewaehlt is a:
+                ziel = _mod.pak_bauen(spiel, dateien, melder=self._sag)
+                probe = _mod.probe_lesen(ziel, list(dateien))
+                if probe["fehlend"]:
+                    self._sag(f"WARNUNG: fehlt im Archiv: "
+                              f"{probe['fehlend']}")
+                else:
+                    self._sag(f"Fertig. {os.path.basename(ziel)} enthaelt "
+                              f"{probe['eintraege']} Datei(en). "
+                              f"Zum Abschalten die Datei loeschen.")
+            else:
+                pfade = _mod.lose_ablegen(spiel, dateien, self._sag)
+                self._sag(f"Fertig. Lose Dateien schlagen jedes PAK -- "
+                          f"zum Abschalten loeschen: {pfade[0]}")
+        except SchreibFehler as e:
+            self._sag(f"ABGELEHNT: {e}")
+        except Exception as e:
+            self._sag(f"FEHLER: {type(e).__name__}: {e}")
+
+    def _aenderungen_ausgeben(self):
+        liste = getattr(self, "_aenderungen", None) or []
+        neu = getattr(self, "_neulinge", None) or []
+        if not liste and not neu:
+            self._sag("Nichts geaendert.")
+            return
+        vorschlag = os.path.join(
+            os.path.expanduser("~"),
+            f"aquanox_aenderungen_{self.level.name}.txt")
+        pfad, _ = QFileDialog.getSaveFileName(
+            self, "Aenderungen ausgeben", vorschlag,
+            "Textdatei (*.txt)")
+        if not pfad:
+            return
+        try:
+            with open(pfad, "w", encoding="utf-8") as f:
+                f.write(self._aenderungstext(liste, neu) + "\n")
+            self._sag(f"{len(liste)} verschoben, {len(neu)} neu "
+                      f"-- geschrieben: {pfad}")
+        except Exception as e:
+            self._sag(f"Schreiben fehlgeschlagen: {e}")
+
+    def _karte_starten(self):
+        """Die gewaehlte Karte im Spiel starten.
+
+        *** Das ist der einzige Punkt, an dem das Toolkit etwas
+        ausserhalb seiner selbst tut. *** Deshalb wird der Befehl
+        vorher gezeigt und muss bestaetigt werden -- niemand soll
+        aus Versehen ein Spiel starten.
+        """
+        if not self.projekt or not self.level:
+            self._sag("Erst eine Karte waehlen.")
+            return
+        from ..modell.level import startbefehl
+        exe, args, hinweise = startbefehl(
+            self.projekt, self.level.name,
+            fenster=self.startfenster.isChecked(),
+            protokoll=self.startprotokoll.isChecked())
+        if not exe:
+            self._sag("Startbefehl nicht bildbar: "
+                      + "; ".join(hinweise))
+            return
+
+        zeile = f'"{exe}" ' + " ".join(args)
+        text = (f"Folgender Befehl wird ausgefuehrt:\n\n{zeile}\n\n"
+                f"Arbeitsverzeichnis: {self.projekt.ordner}")
+        if hinweise:
+            text += "\n\nHinweise:\n" + "\n".join("  - " + h
+                                                  for h in hinweise)
+        antwort = QMessageBox.question(
+            self, "Karte im Spiel starten", text,
+            QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
+        if antwort != QMessageBox.Yes:
+            self._sag("Start abgebrochen.")
+            return
+
+        import subprocess
+        try:
+            subprocess.Popen([exe] + args, cwd=self.projekt.ordner)
+            self._sag(f"gestartet: {zeile}")
+        except Exception as e:
+            self._sag(f"Start fehlgeschlagen: {type(e).__name__}: {e}")
+
+    def _quelle_gewechselt(self, index):
+        """Karten- oder Stationsliste gewaehlt -- passenden Graph zeigen.
+
+        Bei Karten ist das Missionsnetz gemeint, bei Stationen die
+        Dialoge. Die 3D-Ansicht bleibt unangetastet, wenn sie
+        gerade offen ist -- sie passt zu beidem.
+        """
+        if self.ansichten.currentIndex() == 0:
+            return
+        if index == self.stationsreiter:
+            self.ansichten.setCurrentIndex(self.dialogreiter)
+        elif index == self.kartenreiter:
+            self.ansichten.setCurrentIndex(self.graphreiter)
+
+    def _stationen_fuellen(self):
+        """Die Stationsliste, mit der Zahl ihrer Dialoge."""
+        from ..modell.level import stationen_lesen
+        self.stationen.clear()
+        if not self.projekt:
+            return
+        try:
+            liste = stationen_lesen(self.projekt)
+        except Exception as e:
+            self._sag(f"Stationen nicht lesbar: {e}")
+            return
+        # Wie viele Dialoge hat jede? Einmal zaehlen, nicht je Zeile.
+        zaehler = {}
+        try:
+            from ..parser import stake as _st
+            netz = _st.lies(self.projekt.bestand)
+            for d in netz.dialoge.values():
+                s = d.get("station")
+                if s is not None:
+                    zaehler[s] = zaehler.get(s, 0) + 1
+        except Exception:
+            pass
+
+        for s in liste:
+            n = zaehler.get(s["key"], 0)
+            it = QTreeWidgetItem([s["name"], s["karte"] or "—",
+                                  f"{s['tiefe']} m" if s["tiefe"] else "—",
+                                  str(n) if n else "—"])
+            it.setData(0, Qt.UserRole, s["key"])
+            if not n:
+                # Elf der 25 sind reine Handelsposten ohne Sprache.
+                it.setForeground(0, Qt.GlobalColor.gray)
+            it.setToolTip(0, f"Territorium {s['territorium']}\n"
+                             f"{s['skript']}")
+            self.stationen.addTopLevelItem(it)
+        mit = sum(1 for s in liste if zaehler.get(s["key"]))
+        self._sag(f"{len(liste)} Stationen, {mit} mit Dialogen")
+
+    def _station_gewaehlt(self, item, spalte=0):
+        """Station gewaehlt: 3D-Szene laden UND Dialoge filtern.
+
+        Die Station hat ein eigenes Skript in derselben Karte -- der
+        Level-Lader nimmt es statt des Missionsskripts. Terrain,
+        Texturen und Wasser kommen aus der Karte.
+        """
+        key = item.data(0, Qt.UserRole)
+        if key is None or not self.projekt:
+            return
+        self._station = key
+
+        from ..modell.level import stationen_lesen
+        eintrag = next((s for s in stationen_lesen(self.projekt)
+                        if s["key"] == key), None)
+        if eintrag and eintrag["karte"]:
+            self._sag(f"{eintrag['name']}: Szene wird geladen "
+                      f"(Karte {eintrag['karte']}) ...")
+            try:
+                lv = Level.laden(self.projekt, eintrag["karte"],
+                                 fortschritt=self._sag,
+                                 skript=eintrag["skript"])
+                lv.anzeigename = f"{eintrag['name']} ({eintrag['karte']})"
+                self.level = lv
+                self._graph_fuer = None
+                self._neu_zeichnen()
+                self._infos_fuellen()
+            except Exception as e:
+                self._sag(f"FEHLER beim Laden der Station: "
+                          f"{type(e).__name__}: {e}")
+
+        # Der Reiter richtet sich danach, was gerade offen ist:
+        # aus der 3D-Ansicht heraus bleibt man dort.
+        if self.ansichten.currentIndex() != 0:
+            self.ansichten.setCurrentIndex(self.dialogreiter)
+            self._dialoge_zeigen(erzwingen=True)
+        else:
+            self._dialoge_fuer = "?"     # beim naechsten Wechsel neu
+
+    def _ansicht_gewechselt(self, index):
+        """Einen Graph erst bauen, wenn sein Reiter sichtbar wird.
+
+        Das Missionsnetz kostet je nach Karte 300 bis 700 Knoten, die
+        Dialoge 308 Knoten mit 1.237 Kacheln samt Portraits -- das
+        laedt man nicht auf Verdacht mit.
+        """
+        if index == self.graphreiter:
+            self._graph_zeigen()
+        elif index == self.dialogreiter:
+            self._dialoge_zeigen()
+
+    def _graph_zeigen(self, erzwingen=False):
+        """Das Triggernetz der gewaehlten Karte."""
+        if not self.projekt or not self.level:
+            return
+        if not erzwingen and getattr(self, "_graph_fuer", None) \
+                == self.level.name:
+            return
         from ..modell.level import missionsgraph
-        self._sag(f"{self.level.name}: Missionsgraph wird aufgebaut ...")
+        self._sag(f"{self.level.name}: Missionsnetz wird aufgebaut ...")
         try:
             g = missionsgraph(self.projekt, self.level.name)
         except Exception as e:
-            self._sag(f"FEHLER beim Missionsgraph: {e}")
+            self._sag(f"FEHLER beim Missionsnetz: {type(e).__name__}: {e}")
             return
         self._graph_fuer = self.level.name
         self.graph.page().runJavaScript(
             f"window.aqgraph.setzen({json.dumps(g, ensure_ascii=False)})")
         if g.get("fehler"):
-            self._sag(f"Missionsgraph: {g['fehler']}")
+            self._sag(f"Missionsnetz: {g['fehler']}")
         else:
             z = g.get("kennzahlen") or {}
             self._sag(f"{self.level.name}: {z.get('knoten')} Knoten, "
                       f"{z.get('kanten')} Kanten, "
                       f"{z.get('funksprueche')} Funkstellen")
+
+    def _dialoge_zeigen(self, erzwingen=False):
+        """Die Stationsdialoge der ganzen Kampagne.
+
+        *** Haengen NICHT an der gewaehlten Karte *** -- deshalb wird
+        einmal gebaut und dann behalten.
+        """
+        if not self.projekt:
+            return
+        station = getattr(self, "_station", None)
+        if not erzwingen and getattr(self, "_dialoge_fuer", "?") == station:
+            return
+        from ..modell.level import stationsgraph
+        self._sag("Stationsdialoge werden aufgebaut ..."
+                  if station is None
+                  else f"Dialoge der Station {station} ...")
+        try:
+            g = stationsgraph(self.projekt, station=station)
+        except Exception as e:
+            self._sag(f"FEHLER bei den Stationsdialogen: "
+                      f"{type(e).__name__}: {e}")
+            return
+        self._dialoge_fuer = station
+        self.dialoggraph.page().runJavaScript(
+            f"window.aqgraph.setzen({json.dumps(g, ensure_ascii=False)})")
+        z = g.get("kennzahlen") or {}
+        self._sag(f"Stationsdialoge: {z.get('knoten')} Optionen, "
+                  f"{z.get('kanten')} Verweise, "
+                  f"{z.get('funksprueche')} Gespraechszeilen")
 
     def _meta_sichern(self):
         """Die Wissensdatenbank laden, falls noch nicht geschehen.
@@ -565,7 +1302,7 @@ class Hauptfenster(QMainWindow):
             unter.append(h(d["typ"]))
         if d["kapitel"] is not None:
             unter.append(f"Kapitel {h(d['kapitel'])}"
-                         + (f" â€” {h(d['kapitel_name'])}"
+                         + (f" — {h(d['kapitel_name'])}"
                             if d["kapitel_name"] else ""))
         unter.append(f"Karte <code>{h(level)}</code>")
         s.append(f"<div style='color:#6a7884'>{' Â· '.join(unter)}</div>")
@@ -575,7 +1312,7 @@ class Hauptfenster(QMainWindow):
             s.append("<h3>Worum es geht</h3>")
             s.append(f"<div class='prosa'>{h(d['prosa'])}</div>")
             s.append(quelle(
-                "Nacherzaehlung (englisch) â€” geschrieben nach den "
+                "Nacherzaehlung (englisch) — geschrieben nach den "
                 "Briefings und Funkspruechen des Spiels, abgeglichen mit "
                 "Komplettloesungen. Kein Text aus dem Spiel."))
 
@@ -608,7 +1345,7 @@ class Hauptfenster(QMainWindow):
             s.append(f"<h3>Funksprueche</h3><table>"
                      f"<tr><td class='k'>Anzahl</td><td>{h(fk['anzahl'])}"
                      f"</td></tr>"
-                     f"<tr><td class='k'>Sprecher</td><td>{spr or 'â€”'}"
+                     f"<tr><td class='k'>Sprecher</td><td>{spr or '—'}"
                      f"</td></tr>"
                      f"<tr><td class='k'>Tabelle</td>"
                      f"<td><code>{h(fk.get('datei'))}</code></td></tr>"
@@ -672,7 +1409,7 @@ class Hauptfenster(QMainWindow):
             p = o.get("position") or [0, 0, 0]
             k = QTreeWidgetItem([
                 o.get("name", "?"),
-                o.get("mesh") or "â€”",
+                o.get("mesh") or "—",
                 f"{p[0]:.0f}, {p[1]:.0f}, {p[2]:.0f}",
                 o.get("art", ""),
             ])
@@ -703,7 +1440,7 @@ class Hauptfenster(QMainWindow):
         p = Projekt(ordner)
         if not p.gueltig:
             self._sag("WARNUNG: sieht nicht nach einer AquaNox-Installation "
-                      "aus (kein dat\\ und keine Aqua.exe) â€” versuche es "
+                      "aus (kein dat\\ und keine Aqua.exe) — versuche es "
                       "trotzdem.")
         if not p.oeffnen(fortschritt=self._sag):
             self._sag("Konnte nicht geoeffnet werden.")
@@ -714,6 +1451,9 @@ class Hauptfenster(QMainWindow):
         # Fehlt sie, laeuft alles andere unveraendert weiter.
         self.meta = None
         self._meta_sichern()
+
+        self._stationen_fuellen()
+
 
         u = p.uebersicht()
         self._sag(f"{u['dateien']} Dateien, {len(u['paks'])} Quellen, "
@@ -748,7 +1488,7 @@ class Hauptfenster(QMainWindow):
                 missionsname = d.get("typ") or ""
 
             it = QTreeWidgetItem([name, missionsname,
-                                  "ja" if k["hat_terrain"] else "â€”",
+                                  "ja" if k["hat_terrain"] else "—",
                                   str(len(k["skripte"]))])
             it.setData(0, Qt.UserRole, name)
             if not d.get("name_de"):
@@ -757,7 +1497,7 @@ class Hauptfenster(QMainWindow):
                 teile = []
                 if d.get("kapitel") is not None:
                     teile.append(f"Kapitel {d['kapitel']}"
-                                 + (f" â€” {d['kapitel_name']}"
+                                 + (f" — {d['kapitel_name']}"
                                     if d.get("kapitel_name") else ""))
                 if d.get("typ"):
                     teile.append(d["typ"])
@@ -771,7 +1511,7 @@ class Hauptfenster(QMainWindow):
             self.karten.addTopLevelItem(it)
         self.karten.resizeColumnToContents(0)
         self._sag(f"{self.karten.topLevelItemCount()} Karten gefunden, "
-                  f"{mit_namen} mit Missionsnamen â€” Doppelklick zum Laden")
+                  f"{mit_namen} mit Missionsnamen — Doppelklick zum Laden")
 
     def _assets_fuellen(self):
         if not self.projekt:
@@ -867,5 +1607,7 @@ class Hauptfenster(QMainWindow):
             self.skriptsicht.setPlainText("\n".join(z))
         else:
             self.skriptsicht.setPlainText("kein Skript geladen")
+
+
 
 

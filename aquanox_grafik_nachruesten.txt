@@ -148,3 +148,116 @@ WAS ES BRINGT UND WAS NICHT
 ================================================================================
 ENDE
 ================================================================================
+
+
+================================================================================
+NACHTRAG: *** DIE ENGINE KANN BUMPMAPPING -- DIE DATEN NUTZEN ES NICHT ***
+================================================================================
+
+KORREKTUR AN DIESEM TEXT. Oben steht, jedes Material habe "genau eine
+Diffustextur". *** Das ist falsch, und es widerspricht der eigenen
+Beleuchtungsdatei ***, die den zweiten Materialslot laengst richtig
+beschreibt (aquanox_beleuchtung.txt, "GEPRUEFT UND VERWORFEN: der
+zweite Materialslot ist NICHT die Lightmap ... bei Objektmeshes traegt
+er eine zweite Diffustextur").
+
+NACHGEMESSEN an 657 Objektmeshes mit 3.177 Materialbloecken:
+    Slot 1 belegt   3.149   99,1 %
+    Slot 2 belegt   1.036   32,6 %
+    Slot-2-Namen: atl_geb_detail01 (936x), old_detail01 (44x),
+                  old_detail02 (29x), tz_creole_detail01 (24x)
+Ein Drittel der Objektgeometrie benutzt also schon MULTITEXTURING mit
+Detailtexturen. Die Engine kann mehr als eine Textur je Material.
+
+*** UND SIE KANN BUMPMAPPING. *** In Aqua.exe stehen:
+    ren_objectprelit_bumpmap        ein fertiger Shader
+    ren_terrain_bumpmap             ein zweiter, fuer das Terrain
+    Map_Bump                        ein MATERIALFELD, direkt neben
+                                    Parse_Diffuse() und Parse_Detail()
+    VEC_Material::Parse_Detail()    der Leser fuer die Detailschicht
+    MRT_TileData::CreateNormalMap() Normalmap-Erzeugung zur Laufzeit
+    DSP_Display::SetTextureStageState()
+
+*** ABER: Map_Bump kommt in KEINER Datendatei vor. *** Gesucht wurde
+in allen .des und .osd des Spiels: 0 Treffer. Die Faehigkeit ist da,
+die Daten rufen sie nie auf.
+
+WAS DAS BEDEUTET -- und es ist deutlich besser als die urspruengliche
+Einschaetzung dieses Textes:
+
+  1. Fuer HUEBSCHERE TEXTUREN braucht es KEINEN DLL-Eingriff. Die
+     Diffustexturen sind zu 786 von 1.072 bereits 512x512; hoeher
+     aufgeloeste Fassungen als .dds in einem Ueberlagerungs-PAK
+     ersetzen sie, ohne dass eine Originaldatei angefasst wird.
+     UNGEPRUEFT: ob die Engine groessere als 512x512 annimmt.
+  2. Fuer BUMPMAPPING waere der erste Versuch, Map_Bump in eine OSD zu
+     schreiben und zu sehen, ob die Engine es liest und den
+     bumpmap-Shader waehlt. *** Das ist ein Datenmod, kein Codeeingriff. ***
+     UNGEPRUEFT: die Feldschreibweise, der erwartete Wertetyp, und ob
+     der Shader ohne weitere Vorbedingung greift.
+  3. Erst fuer echtes PBR (Rauheit, Metallizitaet, Energieerhaltung)
+     braucht es neue Shader. Direct3D 8 bietet Pixel Shader 1.1 bis
+     1.4; bei 1.1 sind das ACHT Instruktionen. Dot3-Bumpmapping passt
+     hinein, eine GGX-Beleuchtung nicht.
+
+ZUR VERWECHSLUNGSGEFAHR "d3d8to9": AquaNox bleibt ein
+Direct3D-8-Spiel. d3d8to9 ist eine ERSATZ-d3d8.dll, die die
+DX8-Aufrufe des Spiels entgegennimmt und auf Direct3D 9 umsetzt. Das
+Spiel merkt davon nichts. Der Gewinn waere, dass man an der
+Schnittstelle Shader Model 2.0/3.0 zur Verfuegung haette statt 1.1 --
+also Platz fuer eine PBR-Beleuchtung. Das ist ein Umbau des
+Renderpfades, nicht mehr ein Datenmod.
+
+REIHENFOLGE, falls jemand es angeht: erst 1 (kostet nichts, wirkt
+sofort), dann 2 (ein Datenversuch an einem einzigen Objekt), und nur
+wenn 2 traegt, ueberhaupt an 3 denken.
+
+
+================================================================================
+NACHTRAG 2: DIE ELF SHADER -- UND EIN IRRWEG
+================================================================================
+
+In Aqua.exe stehen genau elf ren_-Shadernamen:
+
+    ren_object_dlight          ren_terrain_bumpmap
+    ren_objectprelit_bumpmap   ren_terrain_dlight
+    ren_plankton_detail        ren_terrain_dshadow
+    ren_plant_detail           ren_terrain_lod
+    ren_radar_detail           ren_terrain_singlepass
+    ren_rays_enable
+
+*** ren_terrain_dshadow LAEUFT WIRKLICH. *** Das Spielerschiff wirft
+in JEDEM Level einen dynamischen Schatten aufs Terrain -- vom Nutzer
+im Spiel geprueft. Er flackert allerdings und faellt deshalb oft
+nicht auf.
+
+*** MEIN IRRWEG DABEI, als Warnung: *** Auf die Beobachtung "Schatten
+nur in 6h4" hin habe ich die Lichtwerte aller Karten verglichen und
+gefunden, dass 6h4 rund dreimal so helles Parallellicht hat wie die
+Kapitel-1-Karten (0,286 gegen 0,173 im Gruenkanal):
+
+    Karte  Ambient                    ParallelLightT
+    6h4    0,043 / 0,110 / 0,043      0,114 / 0,286 / 0,114
+    6h3    0,043 / 0,110 / 0,043      0,114 / 0,290 / 0,114
+    1h1    0,020 / 0,086 / 0,141      0,039 / 0,173 / 0,282
+    4h1    0,020 / 0,086 / 0,141      0,039 / 0,173 / 0,282
+
+Das war eine saubere Messung -- und eine Antwort auf die FALSCHE
+FRAGE. Der Schatten ist ueberall, er faellt nur unterschiedlich auf.
+*** Wer eine Erklaerung fuer etwas sucht, das gar nicht der Fall
+ist, findet trotzdem eine. *** Bevor man erklaert, warum etwas nur
+hier auftritt, gehoert geprueft, ob es anderswo wirklich fehlt.
+
+GEMESSEN BLEIBT: alle Karten rufen dieselben vier Lichtfunktionen
+(Game_SetLightCache, Game_SetAmbientLight, Game_SetParallelLightT,
+Game_SetParallelLightB), und nod_light-Objekte gibt es in KEINER
+einzigen Karte. Die Beleuchtung ist ueberall dieselbe Bauart, nur
+mit anderen Werten. Die Zahlen oben stimmen also weiterhin -- sie
+erklaeren nur nicht, was sie erklaeren sollten.
+
+WAS DAS FUER DEN GRAFIK-PLAN BEDEUTET: die Engine kann mehr als
+oben angenommen -- dynamische Schatten UND Bumpmapping-Shader sind
+vorhanden. Das Flackern deutet auf Shadow Acne oder eine kleine
+Shadow Map; ueber einen Wrapper waere das theoretisch angehbar.
+*** Ob AquaNox die Shadow Map ueberhaupt in einer Textur haelt,
+ist ungeprueft. ***

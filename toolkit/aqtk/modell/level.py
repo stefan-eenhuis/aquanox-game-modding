@@ -42,13 +42,25 @@ class Level:
         self.szene_objekte = None      # aus parser/szene.py
         self.kartenordner = None       # aus Game_SetLightCache
         self.terrainordner = None      # woher das Terrain wirklich kam
+        self.skriptpfad = None         # abweichendes Skript (Stationen)
+        self.anzeigename = name        # was im Kopf steht
         self._osd_speicher = {}        # OSD-Verweis -> Meshpfad
         self.hinweise = []
 
     # ------------------------------------------------------------------
     @classmethod
-    def laden(cls, projekt, name, fortschritt=None):
+    def laden(cls, projekt, name, fortschritt=None, skript=None):
+        """Eine Karte laden.
+
+        skript: ein ABWEICHENDER Skriptpfad. Damit lassen sich die
+        Stationen zeigen -- sie liegen in denselben Karten wie die
+        Missionen, bringen aber ein eigenes .sco mit:
+            map\\1n2\\script\\sta_entropointII.sco
+        Alle 25 sind vorhanden und lesbar (58 bis 155 Knoten, 23 bis
+        71 mit Position), und alle liegen in Karten MIT Terrain.
+        """
         lv = cls(name)
+        lv.skriptpfad = skript
         b = projekt.bestand
 
         # *** ERST DAS SKRIPT, DANN DAS TERRAIN. ***
@@ -62,13 +74,20 @@ class Level:
         # Drittel aller Karten gar kein Terrain.
         if fortschritt:
             fortschritt(f"{name}: Skript wird gelesen ...")
-        pfad = f"map/{name}/script/{name}.sco"
-        roh = b.lesen(pfad)
-        if roh is None:
-            for p in b.eintraege:
-                if p.startswith(f"map/{name}/script/") and p.endswith(".sco"):
-                    pfad, roh = p, b.lesen(p)
-                    break
+        if skript:
+            pfad = skript.replace("\\", "/").lower()
+            if not pfad.endswith(".sco"):
+                pfad += ".sco"
+            roh = b.lesen(pfad)
+        else:
+            pfad = f"map/{name}/script/{name}.sco"
+            roh = b.lesen(pfad)
+            if roh is None:
+                for p in b.eintraege:
+                    if (p.startswith(f"map/{name}/script/")
+                            and p.endswith(".sco")):
+                        pfad, roh = p, b.lesen(p)
+                        break
         if roh is None:
             lv.hinweise.append("kein Missionsskript gefunden")
         else:
@@ -240,6 +259,10 @@ class Level:
             if not o.vollstaendig:
                 continue
             eintrag = {"name": o.name, "art": o.art,
+                       # var ist die eindeutige Kennung (siehe
+                       # parser/szene.py) -- ohne sie laesst sich
+                       # eine Aenderung keinem Body_SetCS zuordnen.
+                       "var": o.var, "proto": o.proto,
                        "position": list(o.position),
                        "drehung": list(o.drehung or (0, 0, 0)),
                        "osd": o.osd or "", "mesh": None}
@@ -500,7 +523,7 @@ class Level:
                           "hinweise": []}
 
         return {
-            "level": self.name,
+            "level": self.anzeigename or self.name,
             "terrain": {
                 "breite": b, "hoehe": h, "werte": werte,
                 "schritt": schritt,
@@ -626,6 +649,282 @@ def missionsgraph(projekt, level, hoechstens=400):
     for h in funk.hinweise:
         g["hinweise"].append(h)
     return g
+
+
+def startbefehl(projekt, karte, fenster=False, protokoll=True):
+    """Die Kommandozeile, die diese Karte direkt startet.
+
+    *** DER SCHALTER HEISST -s UND IST SEIT 2001 EINGEBAUT. ***
+        Aqua.exe -window -s map\\1n1\\script\\sp_1n1
+    Er wurde in diesem Projekt 41 Handoff-Fassungen lang uebersehen,
+    weil die Schaltersuche nach -[a-z][a-z0-9_]{1,24} suchte -- das
+    verlangt hinter dem Minus mindestens ZWEI Zeichen. -s hat eines.
+
+    Der Skriptpfad steht in dat\\sty\\mission_d.des als
+    Name -> EngineScript (30 Kampagnenmissionen). Fuer Karten, die
+    dort nicht stehen, wird map\\<karte>\\script\\<karte> gebildet.
+
+    *** FALLSTRICKE, alle am Code belegt: ***
+      - Der Trenner ist ein LEERZEICHEN. strtok kennt keine
+        Anfuehrungszeichen; ein Pfad mit Leerzeichen geht nicht.
+      - Folgt auf -s kein Token, ruft die Exe strcpy(ziel, NULL)
+        und stuerzt ab. Deshalb wird hier nie ein leeres -s erzeugt.
+      - Unbekannte Schalter sind unschaedlich: WinMain kopiert die
+        Zeile per strncpy und sucht nur mit strstr, es gibt keinen
+        Validator.
+
+    Gibt (programm, argumente, hinweise) zurueck. *** Diese Funktion
+    startet NICHTS *** -- sie stellt nur den Befehl zusammen.
+    """
+    import os as _os
+    from ..parser import mtake as _mt
+
+    hinweise = []
+    n = (karte or "").strip().lower()
+    if not n:
+        return None, [], ["keine Karte angegeben"]
+
+    # 1) Der offizielle Pfad aus mission_d.des
+    skript = None
+    try:
+        for b in _mt._des_bloecke(
+                projekt.bestand.lesen("dat/sty/mission_d.des"), "Mission"):
+            if str(b.get("name") or "").strip().lower() == n:
+                skript = (b.get("enginescript") or "").strip()
+                break
+    except Exception as e:
+        hinweise.append(f"mission_d.des nicht lesbar: {e}")
+
+    # 2) Sonst aus dem Kartennamen bilden
+    if not skript:
+        skript = f"map\\{n}\\script\\{n}"
+        hinweise.append("Pfad aus dem Kartennamen gebildet -- die Karte "
+                        "steht nicht in mission_d.des")
+
+    skript = skript.replace("/", "\\")
+    if not projekt.bestand.lesen(skript.replace("\\", "/").lower() + ".sco"):
+        hinweise.append(f"{skript}.sco liegt nicht im Bestand")
+
+    # Ein sp_-Skript derselben Karte als Rueckfall nennen: fuer
+    # Kampagnenskripte OHNE Spielstand ist ungeprueft, ob sie laufen.
+    sp = f"map/{n}/script/sp_{n}.sco"
+    if sp in projekt.bestand.eintraege:
+        hinweise.append(f"Falls die Kampagnenkarte ohne Spielstand hakt: "
+                        f"map\\{n}\\script\\sp_{n}")
+
+    if " " in skript:
+        hinweise.append("*** Der Pfad enthaelt ein Leerzeichen -- strtok "
+                        "bricht ihn dort ab. So geht es nicht. ***")
+
+    exe = _os.path.join(projekt.ordner, "Aqua.exe")
+    if not _os.path.isfile(exe):
+        hinweise.append(f"Aqua.exe nicht gefunden unter {exe}")
+
+    args = []
+    if fenster:
+        args.append("-window")
+    if protokoll:
+        args += ["-logfile", "-logunknown"]
+    args += ["-s", skript]
+    return exe, args, hinweise
+
+
+def assetliste(projekt):
+    """Alle platzierbaren Assets: OSD-Verweis, Gruppe, Name.
+
+    1.267 OSD-Dateien unter vfx\\osd\\, in 38 Gruppen. Ob eine OSD
+    ein Mesh hat, wird hier NICHT geprueft -- das kostet je Datei
+    einen Baumdurchlauf. Von 400 Stichproben hatten 392 eines; die
+    acht ohne melden sich beim Einfuegen.
+
+    *** Die Tilde gehoert zur gekochten Fassung *** und muss aus dem
+    Verweis heraus, sonst findet szene.osd_pfad() nichts.
+    """
+    aus = []
+    for e in projekt.bestand.eintraege:
+        if not e.startswith("vfx/osd/") or not e.endswith(".osd"):
+            continue
+        teile = e.split("/")
+        gruppe = teile[2] if len(teile) > 3 else "(oben)"
+        datei = teile[-1]
+        name = datei.replace("~.osd", "").replace(".osd", "")
+        # Der Verweis, wie ihn ein Skript schreibt: ohne vfx/, ohne ~
+        verweis = e[len("vfx/"):].replace("~.osd", ".osd")
+        aus.append({"verweis": verweis, "gruppe": gruppe,
+                    "name": name, "datei": e})
+    return sorted(aus, key=lambda x: (x["gruppe"], x["name"]))
+
+
+def asset_geometrie(projekt, osd_verweis, level=None):
+    """Ein einzelnes Asset zum Einfuegen aufbereiten.
+
+    Liefert dasselbe Format wie welt(): meshes, bilder, teile --
+    damit die 3D-Ansicht es ohne Sonderweg anzeigen kann.
+    """
+    lv = level or Level("_asset")
+    lv._osd_speicher = {}
+    teile = lv._osd_teile(projekt, osd_verweis)
+    if not teile:
+        return {"fehler": f"kein Mesh in {osd_verweis}"}
+
+    meshes, bilder, fehlend = {}, {}, []
+    for t in teile:
+        mp = t["mesh"]
+        if mp in meshes:
+            continue
+        g = lv._mesh_geometrie(projekt, mp)
+        if g:
+            meshes[mp] = g
+        else:
+            fehlend.append(mp)
+    namen = set()
+    for g in meshes.values():
+        for gr in g.get("gruppen") or []:
+            n = (gr.get("textur") or "").strip()
+            if n:
+                namen.add(n)
+    for n in sorted(namen):
+        bp = textur.aufloesen(projekt.bestand, n,
+                              lv.terrainordner if level else None)
+        roh = projekt.bestand.lesen(bp) if bp else None
+        uri, art = (textur.objekttextur(roh, groesse=512)
+                    if roh else (None, "keine"))
+        if uri:
+            bilder[n] = {"bild": uri, "alpha": art}
+
+    brauchbar = [t for t in teile if t["mesh"] in meshes]
+    return {
+        "osd": osd_verweis,
+        "mesh": brauchbar[0]["mesh"] if brauchbar else None,
+        "teile": brauchbar[1:],
+        "meshes": meshes,
+        "bilder": bilder,
+        "fehlend": fehlend,
+    }
+
+
+def stationen_lesen(projekt):
+    """Die Stationen aus dat/sty/station_d.des.
+
+    Gibt eine Liste von dicts: key, name, territorium, tiefe, skript,
+    karte. Die Karte wird aus dem Skriptpfad map\\<karte>\\script\\...
+    gezogen -- mehrere Stationen teilen sich eine Karte (1n2 hat
+    sechs).
+    """
+    import re as _re
+    from ..parser import mtake as _mt
+
+    aus = []
+    roh = projekt.bestand.lesen("dat/sty/station_d.des")
+    for s in _mt._des_bloecke(roh, "Station"):
+        k = _mt._zahl(s.get("key"))
+        if k is None:
+            continue
+        # *** Das Feld heisst enginescript, nicht script. ***
+        # In aquanox1_kampagnenstruktur.json steht es unter "script" --
+        # das ist die aufbereitete Fassung, nicht der Originalname.
+        skript = (s.get("enginescript") or s.get("script") or "")
+        skript = skript.replace("/", "\\").replace("\\\\", "\\")
+        t = _re.match(r"map\\([^\\]+)\\", skript)
+        aus.append({
+            "key": k,
+            "name": str(s.get("name") or f"Station {k}").strip(),
+            "territorium": _mt._zahl(s.get("territory")),
+            "tiefe": _mt._zahl(s.get("depth")),
+            "skript": skript,
+            "karte": t.group(1).lower() if t else None,
+        })
+    return sorted(aus, key=lambda x: x["key"])
+
+
+def stationsgraph(projekt, hoechstens=400, station=None):
+    """Die Stationsdialoge im selben Format wie missionsgraph().
+
+    Knoten sind die Optionen aus option~.des, Kanten die
+    AddOption/SubOption-Verweise. Jeder dialog-Knoten traegt seine
+    Gespraechs-Takes als Kacheln -- Text, Sprecher, Stimmung,
+    Portrait, Ton.
+
+    *** Haengt NICHT an der gewaehlten Karte. *** Die Dialoge
+    gehoeren zur Kampagne, nicht zu einem Level.
+    """
+    from ..parser import stake as _st
+
+    try:
+        netz = _st.lies(projekt.bestand)
+    except Exception as e:
+        return {"level": "Stationsdialoge", "knoten": [], "kanten": [],
+                "fehler": f"{type(e).__name__}: {e}"}
+
+    # Stationsnamen fuer die Kopfzeile der Kacheln
+    stationen = {}
+    try:
+        from ..parser import mtake as _mt
+        for s in _mt._des_bloecke(
+                projekt.bestand.lesen("dat/sty/station_d.des"), "Station"):
+            k = _st._zahl(s.get("key"))
+            if k is not None and s.get("name"):
+                stationen[k] = str(s["name"]).strip()
+    except Exception:
+        pass
+
+    _st.takes_anhaengen(netz, projekt.bestand, stationen)
+    eb = _st.ebenen(netz)
+
+    alle = sorted(netz.knoten.values(),
+                  key=lambda n: (0 if n["funk"] else 1, -n["grad_aus"]))
+
+    # *** Auf eine Station einschraenken. ***
+    # Gezeigt werden ihre Dialoge und alles, was unmittelbar daran
+    # haengt -- also auch die Mission oder das Briefing, das ein
+    # Gespraech freischaltet. Ohne diese Nachbarn waeren die Knoten
+    # zusammenhanglos.
+    titel = "Stationsdialoge (option~.des + sdialog~.des)"
+    if station is not None:
+        eigene = set()
+        for n in alle:
+            d = netz.dialoge.get(n["typkey"])
+            if n["art"] == "dialog" and d and d.get("station") == station:
+                eigene.add(n["id"])
+        nachbarn = set(eigene)
+        for k in netz.kanten:
+            if k["von"] in eigene:
+                nachbarn.add(k["nach"])
+            if k["nach"] in eigene:
+                nachbarn.add(k["von"])
+        alle = [n for n in alle if n["id"] in nachbarn]
+        name = stationen.get(station, f"Station {station}")
+        titel = f"{name} — Dialoge"
+        if not eigene:
+            titel = f"{name} — keine Dialoge"
+
+    weggelassen = max(0, len(alle) - hoechstens)
+    alle = alle[:hoechstens]
+    behalten = {n["id"] for n in alle}
+
+    knoten = []
+    for n in alle:
+        e = dict(n)
+        e["ebene"] = eb.get(n["id"], 0)
+        # Der Name steht in der Kopfzeile mit
+        if n["name"]:
+            e["befehle"] = [n["name"]] + list(n["befehle"])[:6]
+        knoten.append(e)
+
+    hinweise = list(netz.hinweise)
+    if weggelassen:
+        hinweise.append(f"{weggelassen} Knoten nicht gezeigt "
+                        f"(Grenze {hoechstens})")
+    return {
+        "level": titel,
+        "quelle": "option~.des",
+        "knoten": knoten,
+        "kanten": [k for k in netz.kanten
+                   if k["von"] in behalten and k["nach"] in behalten],
+        "kennzahlen": netz.kennzahlen(),
+        "weggelassen": weggelassen,
+        "hinweise": hinweise,
+    }
 
 
 def mesh_szene(projekt, pfad, hoechstens=60000):

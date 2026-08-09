@@ -335,7 +335,12 @@ function scharfStellen(t) {
   t.generateMipmaps = true;
   t.minFilter = THREE.LinearMipmapLinearFilter;
   t.magFilter = THREE.LinearFilter;
-  t.needsUpdate = true;
+  // *** needsUpdate NICHT hier setzen. *** Die Textur wird
+  // asynchron geladen; ein needsUpdate auf einem noch leeren Bild
+  // erzeugt je Bild eine Warnung
+  //   "Texture marked for update but no image data found"
+  // und flutet das Protokoll. three.js setzt das Flag selbst,
+  // sobald das Bild da ist.
   return t;
 }
 
@@ -842,6 +847,294 @@ function meshZeigen(daten) {
   letzteSzene = null;
 }
 
+// ----------------------------------------------------------- Auswahl
+//
+// *** DIE OBJEKTIDENTITAET IST DER VARIABLENNAME. *** Nicht der
+// Knotenname -- in 1h1 gibt es 349 Node_CreateNode, aber nur 258
+// verschiedene Namen. Body_SetCS adressiert ueber die Variable
+// (node8), und genau die muss eine Aenderung spaeter nennen.
+let gewaehltesObjekt = null;      // { index, netz, daten }
+const aenderungen = new Map();    // Variable -> {position, drehung}
+let rahmen = null;
+
+const strahlwerfer = new THREE.Raycaster();
+const mausNdc = new THREE.Vector2();
+
+function objektUnterMaus(ereignis) {
+  if (!objektGruppe) return null;
+  const r = renderer.domElement.getBoundingClientRect();
+  mausNdc.x = ((ereignis.clientX - r.left) / r.width) * 2 - 1;
+  mausNdc.y = -((ereignis.clientY - r.top) / r.height) * 2 + 1;
+  strahlwerfer.setFromCamera(mausNdc, kamera);
+  // true = auch Kinderteile treffen (ein Geschuetzturm besteht aus
+  // mehreren Meshes); von dort zum Elternobjekt hochlaufen.
+  const treffer = strahlwerfer.intersectObjects(
+    objektGruppe.children, true);
+  if (!treffer.length) return null;
+  let n = treffer[0].object;
+  while (n && n.parent !== objektGruppe) n = n.parent;
+  if (!n) return null;
+  const i = objektGruppe.children.indexOf(n);
+  return i < 0 ? null : i;
+}
+
+// Hervorhebung ueber einen RAHMEN, nicht ueber Materialtausch: die
+// Materialien sind zwischen Objekten geteilt, ein Tausch faerbte
+// alle Vorkommen desselben Modells ein.
+function hervorheben(netz) {
+  if (rahmen) { szene.remove(rahmen); rahmen = null; }
+  if (!netz) return;
+  rahmen = new THREE.BoxHelper(netz, 0x7fd0ff);
+  rahmen.renderOrder = 5;
+  szene.add(rahmen);
+}
+
+function zustandDesObjekts() {
+  if (!gewaehltesObjekt) return null;
+  const { index, daten } = gewaehltesObjekt;
+  const kennung = daten.var || daten.name;
+  const ae = aenderungen.get(kennung);
+  return {
+    index,
+    name: daten.name,
+    variable: daten.var || null,
+    art: daten.art,
+    osd: daten.osd || '',
+    mesh: daten.mesh || '',
+    // Werte in AQUANOX-Achsen, wie sie im Skript stehen.
+    position: daten.position,
+    drehung: daten.drehung,
+    ursprung: ae ? ae.ursprung : null,
+    geaendert: !!ae,
+    teile: (daten.teile || []).length,
+  };
+}
+
+function auswaehlen(index) {
+  gewaehltesObjekt = null;
+  hervorheben(null);
+  if (index !== null && index !== undefined && objektGruppe
+      && letzteSzene) {
+    const netz = objektGruppe.children[index];
+    const daten = letzteSzene.objekte[index];
+    if (netz && daten) {
+      gewaehltesObjekt = { index, netz, daten };
+      hervorheben(netz);
+    }
+  }
+  anfasserZeigen(gewaehltesObjekt ? gewaehltesObjekt.netz : null);
+  if (typeof window.aqtkAuswahl === 'function') {
+    window.aqtkAuswahl(JSON.stringify(zustandDesObjekts()));
+  }
+}
+
+// Position/Drehung setzen -- in AquaNox-Achsen, wie im Skript.
+function objektSetzen(index, position, drehung) {
+  if (!objektGruppe || !letzteSzene) return false;
+  const netz = objektGruppe.children[index];
+  const daten = letzteSzene.objekte[index];
+  if (!netz || !daten) return false;
+
+  const kennung = daten.var || daten.name;
+  if (!aenderungen.has(kennung)) {
+    // Den Ursprungszustand EINMAL sichern, bevor er ueberschrieben
+    // wird -- sonst laesst sich nicht mehr sagen, was sich geaendert
+    // hat.
+    aenderungen.set(kennung, {
+      variable: daten.var || null, name: daten.name,
+      ursprung: { position: daten.position.slice(),
+                  drehung: (daten.drehung || [0, 0, 0]).slice() },
+    });
+  }
+  if (position) {
+    daten.position = position.slice(0, 3).map(Number);
+    netz.position.copy(ausAquanox(daten.position));
+  }
+  if (drehung) {
+    daten.drehung = drehung.slice(0, 3).map(Number);
+    if (drehungAn) {
+      netz.quaternion.setFromRotationMatrix(
+        drehungAusAquanox(daten.drehung));
+    }
+  }
+  const e = aenderungen.get(kennung);
+  e.position = daten.position.slice();
+  e.drehung = (daten.drehung || [0, 0, 0]).slice();
+  if (rahmen && gewaehltesObjekt && gewaehltesObjekt.index === index) {
+    rahmen.setFromObject(netz);
+    anfasserNachfuehren();
+  }
+  markenNachfuehren();
+  return true;
+}
+
+// Klick waehlt aus. Ein Klick ins Leere hebt die Auswahl auf.
+// *** Nur wenn nicht geschwenkt wurde *** -- sonst waehlt jedes
+// Drehen der Kamera versehentlich etwas aus.
+let klickStart = null;
+renderer_bereit(() => {
+  const el = renderer.domElement;
+  el.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    // *** Der Anfasser hat Vorrang vor der Auswahl. *** Sonst waehlt
+    // ein Griff auf den Pfeil das Objekt dahinter aus.
+    if (zugStarten(e)) { e.preventDefault(); return; }
+    klickStart = { x: e.clientX, y: e.clientY };
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (ziehen) { zugFortsetzen(e); return; }
+    // Zeigerform aendern, wenn ein Griff unter der Maus liegt.
+    if (anfasser) el.style.cursor = anfasserGetroffen(e) ? 'move' : '';
+  });
+  window.addEventListener('mouseup', (e) => {
+    if (ziehen) { zugBeenden(); return; }
+    if (e.button !== 0 || !klickStart) return;
+    const weit = Math.abs(e.clientX - klickStart.x)
+               + Math.abs(e.clientY - klickStart.y);
+    klickStart = null;
+    if (weit > 4) return;              // war ein Schwenk
+    auswaehlen(objektUnterMaus(e));
+  });
+});
+
+function renderer_bereit(f) {
+  if (renderer && renderer.domElement) f();
+  else setTimeout(() => renderer_bereit(f), 50);
+}
+
+// ----------------------------------------------------------- Anfasser
+//
+// *** SELBST GESCHRIEBEN, weil TransformControls nicht im Bundle
+// liegt *** -- three.module.js r169 bringt BoxHelper, Raycaster und
+// ArrowHelper mit, aber keine Transform- oder DragControls. Ein
+// eigener Anfasser braucht rund 120 Zeilen und hat den Vorteil, dass
+// er die AquaNox-Achsen beschriften kann statt der von three.js.
+//
+// DIE ACHSEN SIND VERTAUSCHT: three.js y ist die Hoehe, in AquaNox
+// ist es z. Die Pfeile heissen deshalb nach AquaNox (X, Y, Z=Hoehe),
+// zeigen aber in three.js-Richtungen.
+const ANFASSER_ACHSEN = [
+  // [three.js-Richtung, AquaNox-Index, Farbe, Beschriftung]
+  [new THREE.Vector3(1, 0, 0), 0, 0xff5555, 'X'],
+  [new THREE.Vector3(0, 0, 1), 1, 0x55ff55, 'Y'],
+  [new THREE.Vector3(0, 1, 0), 2, 0x5599ff, 'Z'],
+];
+
+let anfasser = null;          // THREE.Group mit den drei Pfeilen
+let ziehen = null;            // laufende Zugbewegung
+
+function anfasserZeigen(netz) {
+  if (anfasser) { szene.remove(anfasser); anfasser = null; }
+  if (!netz) return;
+  const box = new THREE.Box3().setFromObject(netz);
+  const g = box.getSize(new THREE.Vector3());
+  // Die Pfeile sollen zum Objekt passen, aber nie winzig werden.
+  const laenge = Math.max(40, Math.max(g.x, g.y, g.z) * 0.9);
+
+  anfasser = new THREE.Group();
+  ANFASSER_ACHSEN.forEach(([richtung, achse, farbe], i) => {
+    const pfeil = new THREE.ArrowHelper(
+      richtung, new THREE.Vector3(0, 0, 0), laenge, farbe,
+      laenge * 0.22, laenge * 0.12);
+    // Der duenne Schaft ist kaum zu treffen -- ein unsichtbarer
+    // Zylinder daneben faengt die Klicks.
+    const griff = new THREE.Mesh(
+      new THREE.CylinderGeometry(laenge * 0.09, laenge * 0.09, laenge, 6),
+      new THREE.MeshBasicMaterial({ visible: false }));
+    griff.position.copy(richtung).multiplyScalar(laenge / 2);
+    if (achse === 0) griff.rotation.z = -Math.PI / 2;
+    if (achse === 1) griff.rotation.x = Math.PI / 2;
+    griff.userData.achse = achse;
+    griff.userData.richtung = richtung;
+    anfasser.add(pfeil);
+    anfasser.add(griff);
+  });
+  anfasser.position.copy(netz.position);
+  anfasser.renderOrder = 6;
+  szene.add(anfasser);
+}
+
+function anfasserNachfuehren() {
+  if (anfasser && gewaehltesObjekt) {
+    anfasser.position.copy(gewaehltesObjekt.netz.position);
+  }
+}
+
+function anfasserGetroffen(ereignis) {
+  if (!anfasser) return null;
+  const r = renderer.domElement.getBoundingClientRect();
+  mausNdc.x = ((ereignis.clientX - r.left) / r.width) * 2 - 1;
+  mausNdc.y = -((ereignis.clientY - r.top) / r.height) * 2 + 1;
+  strahlwerfer.setFromCamera(mausNdc, kamera);
+  const t = strahlwerfer.intersectObjects(anfasser.children, false);
+  for (const x of t) {
+    if (x.object.userData.achse !== undefined) return x.object.userData;
+  }
+  return null;
+}
+
+// Die Mausbewegung auf die gewaehlte Achse projizieren: eine Ebene
+// durch das Objekt legen, die moeglichst senkrecht zur Kamera steht,
+// den Strahl darauf schneiden und den Anteil entlang der Achse nehmen.
+function zugPunkt(ereignis, richtung, ursprung) {
+  const r = renderer.domElement.getBoundingClientRect();
+  mausNdc.x = ((ereignis.clientX - r.left) / r.width) * 2 - 1;
+  mausNdc.y = -((ereignis.clientY - r.top) / r.height) * 2 + 1;
+  strahlwerfer.setFromCamera(mausNdc, kamera);
+
+  const blick = new THREE.Vector3();
+  kamera.getWorldDirection(blick);
+  // Normale der Zugebene: senkrecht zur Achse, so gut es geht zur
+  // Kamera gewandt.
+  const n = new THREE.Vector3().crossVectors(
+    richtung, new THREE.Vector3().crossVectors(blick, richtung));
+  if (n.lengthSq() < 1e-8) n.copy(blick);
+  n.normalize();
+
+  const ebene = new THREE.Plane().setFromNormalAndCoplanarPoint(
+    n, ursprung);
+  const treffer = new THREE.Vector3();
+  if (!strahlwerfer.ray.intersectPlane(ebene, treffer)) return null;
+  // Nur der Anteil entlang der Achse zaehlt.
+  return treffer.sub(ursprung).dot(richtung);
+}
+
+function zugStarten(ereignis) {
+  const griff = anfasserGetroffen(ereignis);
+  if (!griff || !gewaehltesObjekt) return false;
+  const ursprung = gewaehltesObjekt.netz.position.clone();
+  const t = zugPunkt(ereignis, griff.richtung, ursprung);
+  if (t === null) return false;
+  ziehen = {
+    achse: griff.achse, richtung: griff.richtung.clone(),
+    ursprung, anfang: t,
+    startwert: gewaehltesObjekt.daten.position.slice(),
+    index: gewaehltesObjekt.index,
+  };
+  steuerung.enabled = false;      // sonst dreht die Kamera mit
+  return true;
+}
+
+function zugFortsetzen(ereignis) {
+  if (!ziehen) return;
+  const t = zugPunkt(ereignis, ziehen.richtung, ziehen.ursprung);
+  if (t === null) return;
+  const delta = t - ziehen.anfang;
+  const neu = ziehen.startwert.slice();
+  neu[ziehen.achse] = ziehen.startwert[ziehen.achse] + delta;
+  objektSetzen(ziehen.index, neu, null);
+  anfasserNachfuehren();
+}
+
+function zugBeenden() {
+  if (!ziehen) return;
+  ziehen = null;
+  steuerung.enabled = true;
+  if (typeof window.aqtkAuswahl === 'function') {
+    window.aqtkAuswahl(JSON.stringify(zustandDesObjekts()));
+  }
+}
+
 // ------------------------------------------------- Bruecke nach Python
 // QWebChannel wird von Qt eingespielt. Die Python-Seite ruft
 // window.aqtk.szeneSetzen(...) ueber runJavaScript auf -- deshalb
@@ -879,6 +1172,153 @@ window.aqtk = {
       szeneSetzen(letzteSzene);
     }
   },
+  // --- Auswahl und Bearbeitung ---
+  auswaehlen: (index) => { auswaehlen(index); },
+
+  // *** DUPLIZIEREN LEGT NUR EINE ANSICHTSKOPIE AN. ***
+  // Ein neuer Knoten braucht im Skript Node_CreateNode, Node_AddSon,
+  // Body_SetCS und Node_ParseIniFile -- vier Zeilen, die der
+  // Ausgabetext nennt. Die Kopie bekommt eine Kennung mit "neu",
+  // damit sie sich von den vorhandenen unterscheidet.
+  duplizieren: (index, versatz) => {
+    if (!objektGruppe || !letzteSzene) return null;
+    const netz = objektGruppe.children[index];
+    const daten = letzteSzene.objekte[index];
+    if (!netz || !daten) return null;
+    const v = versatz || [50, 50, 0];
+    const kopie = {
+      ...daten,
+      name: daten.name + '_kopie',
+      var: null,                     // hat noch keine Skriptvariable
+      neu: true,
+      vorlage: daten.var || daten.name,
+      position: [daten.position[0] + v[0], daten.position[1] + v[1],
+                 daten.position[2] + v[2]],
+      drehung: (daten.drehung || [0, 0, 0]).slice(),
+    };
+    letzteSzene.objekte.push(kopie);
+    // Dieselbe Geometrie, dasselbe Material -- kein neuer Speicher.
+    const n2 = new THREE.Mesh(netz.geometry, netz.material);
+    n2.position.copy(ausAquanox(kopie.position));
+    n2.quaternion.copy(netz.quaternion);
+    for (const k of netz.children) {
+      const kk = new THREE.Mesh(k.geometry, k.material);
+      kk.position.copy(k.position);
+      kk.quaternion.copy(k.quaternion);
+      n2.add(kk);
+    }
+    objektGruppe.add(n2);
+    const neuerIndex = objektGruppe.children.length - 1;
+    auswaehlen(neuerIndex);
+    return neuerIndex;
+  },
+
+  // *** EIN NEUES ASSET EINFUEGEN. ***
+  // Python liefert Geometrie und Texturen fertig (level.py,
+  // asset_geometrie); hier wird daraus ein Netz gebaut und an die
+  // Stelle gesetzt, auf die die Kamera blickt.
+  einfuegen: (paket, name) => {
+    if (!letzteSzene || !objektGruppe || !paket || paket.fehler) {
+      return null;
+    }
+    // Die vorhandenen Meshes und Bilder ergaenzen, nicht ersetzen --
+    // die Szene wird dabei nicht neu gebaut.
+    Object.assign(letzteSzene.meshes, paket.meshes || {});
+    letzteSzene.meshbilder = letzteSzene.meshbilder || {};
+    Object.assign(letzteSzene.meshbilder, paket.bilder || {});
+
+    // Vor der Kamera absetzen, auf Terrainhoehe wenn moeglich.
+    const ziel = steuerung.target.clone();
+    if (terrainNetz) {
+      const s = new THREE.Raycaster(
+        new THREE.Vector3(ziel.x, 100000, ziel.z),
+        new THREE.Vector3(0, -1, 0));
+      const t = s.intersectObject(terrainNetz, false);
+      if (t.length) ziel.y = t[0].point.y;
+    }
+    // Zurueck in AquaNox-Achsen: three(x,y,z) -> aquanox(x,z,y)
+    const position = [ziel.x, ziel.z, ziel.y];
+
+    const eintrag = {
+      name: name || (paket.osd || 'neu').split('/').pop()
+                      .replace('.osd', '') + '_neu',
+      var: null, neu: true, vorlage: null,
+      art: 'objekt', osd: paket.osd || '',
+      mesh: paket.mesh, teile: paket.teile || [],
+      position, drehung: [0, 0, 0],
+    };
+    letzteSzene.objekte.push(eintrag);
+
+    // *** Die Szene neu bauen. *** Ein Einzelnetz von Hand
+    // zusammenzusetzen waere fehleranfaellig -- objekteBauen() kennt
+    // Materialgruppen, Alphakanal und Kinderteile bereits.
+    const merker = letzteSzene.objekte.length - 1;
+    objekteBauen(letzteSzene.objekte, letzteSzene.meshes,
+                 letzteSzene.meshbilder);
+    auswaehlen(merker);
+    return merker;
+  },
+
+  // Die neu angelegten Objekte -- getrennt von den verschobenen,
+  // weil sie andere Skriptzeilen brauchen.
+  neulinge: () => JSON.stringify(
+    (letzteSzene ? letzteSzene.objekte : [])
+      .map((o, i) => ({ ...o, index: i }))
+      .filter((o) => o.neu)
+      .map((o) => ({
+        index: o.index, name: o.name, vorlage: o.vorlage,
+        osd: o.osd || '', art: o.art,
+        position: o.position, drehung: o.drehung,
+      }))),
+
+  auswahl: () => JSON.stringify(zustandDesObjekts()),
+  // Position und Drehung in AQUANOX-Achsen setzen.
+  setzen: (index, position, drehung) =>
+    objektSetzen(index, position, drehung),
+
+  // Alle Aenderungen als Liste -- Grundlage der Skriptausgabe.
+  aenderungen: () => {
+    const aus = [];
+    for (const [kennung, e] of aenderungen) {
+      // Nur melden, was sich wirklich unterscheidet.
+      const gleich = (a, b) => a && b
+        && Math.abs(a[0] - b[0]) < 1e-4 && Math.abs(a[1] - b[1]) < 1e-4
+        && Math.abs(a[2] - b[2]) < 1e-4;
+      if (gleich(e.position, e.ursprung.position)
+          && gleich(e.drehung, e.ursprung.drehung)) continue;
+      aus.push({
+        kennung, variable: e.variable, name: e.name,
+        position: e.position, drehung: e.drehung,
+        alt_position: e.ursprung.position,
+        alt_drehung: e.ursprung.drehung,
+      });
+    }
+    return JSON.stringify(aus);
+  },
+  aenderungenVerwerfen: () => {
+    // Jedes geaenderte Objekt auf seinen Ursprung zuruecksetzen.
+    for (const [, e] of aenderungen) {
+      if (!letzteSzene) break;
+      const i = letzteSzene.objekte.findIndex(
+        (o) => (o.var || o.name) === (e.variable || e.name));
+      if (i < 0) continue;
+      const netz = objektGruppe.children[i];
+      const daten = letzteSzene.objekte[i];
+      daten.position = e.ursprung.position.slice();
+      daten.drehung = e.ursprung.drehung.slice();
+      if (netz) {
+        netz.position.copy(ausAquanox(daten.position));
+        if (drehungAn) {
+          netz.quaternion.setFromRotationMatrix(
+            drehungAusAquanox(daten.drehung));
+        }
+      }
+    }
+    aenderungen.clear();
+    if (gewaehltesObjekt) auswaehlen(gewaehltesObjekt.index);
+    markenNachfuehren();
+  },
+
   // Alle drei Drehachsen oder nur die Hochachse (zum Vergleichen).
   drehung: (an) => {
     drehungAn = !!an;
@@ -1009,6 +1449,10 @@ window.aqtk = {
           : terrainNetz.geometry.attributes.position.count / 3
         : 0,
       farbkarte: !!(m && m.map),
+      anfasser: !!anfasser,
+      anfasserTeile: anfasser ? anfasser.children.length : 0,
+      gewaehlt: gewaehltesObjekt ? gewaehltesObjekt.index : null,
+      geaendert: aenderungen.size,
       meshtextur: zeigeMeshtextur,
       objekteMitTextur: letzteMitTextur,
       objekteMitAlpha: letzteMitAlpha,

@@ -1,4 +1,4 @@
-"""Die Objekte eines Levels aus dem Missionsskript zusammensetzen.
+﻿"""Die Objekte eines Levels aus dem Missionsskript zusammensetzen.
 
 *** GRUNDLAGE: die Gegenpruefung des Mesh-Workflows (2026-08-08),
 belegt an 3.271 Meshes und allen 88 Missionsskripten. ***
@@ -31,7 +31,10 @@ import re
 class Objekt:
     """Ein Weltobjekt mit Lage und Modellverweis."""
 
-    __slots__ = ("name", "position", "drehung", "osd", "proto", "art")
+    # var ist der Variablenname aus dem Skript ("node8") -- er ist
+    # die EINDEUTIGE Kennung; name ist nur die Beschriftung.
+    __slots__ = ("name", "position", "drehung", "osd", "proto", "art",
+                 "var")
 
     def __init__(self, name, position=None, drehung=None, osd=None,
                  proto="", art="objekt"):
@@ -42,15 +45,23 @@ class Objekt:
         self.proto = proto                # Fundstelle im Bytecode
         self.art = art
 
+        self.var = None
+
     @property
     def vollstaendig(self):
         return self.position is not None
 
     def as_dict(self):
         return {"name": self.name,
+                # *** var ist die EINDEUTIGE Kennung. *** Ohne sie
+                # laesst sich eine geaenderte Position keinem
+                # Body_SetCS zuordnen -- Knotennamen kommen mehrfach
+                # vor (349 CreateNode, 258 Namen in 1h1).
+                "var": self.var,
                 "position": list(self.position or (0, 0, 0)),
                 "drehung": list(self.drehung or (0, 0, 0)),
-                "osd": self.osd or "", "art": self.art}
+                "osd": self.osd or "", "art": self.art,
+                "proto": self.proto}
 
 
 def _vektoren(argumente):
@@ -80,6 +91,21 @@ def _vektoren(argumente):
     return aus
 
 
+def _ueber_variable(a, nach_var):
+    """Den Knoten aus dem ersten Argument holen, falls moeglich.
+
+    Body_SetCS('node8', ...) nennt den Variablennamen. Steht dort
+    nichts Brauchbares, gibt die Funktion None -- der Aufrufer faellt
+    dann auf die Reihenfolge zurueck.
+    """
+    if not a.argumente:
+        return None
+    erstes = a.argumente[0]
+    if isinstance(erstes, str):
+        return nach_var.get(erstes)
+    return None
+
+
 def lies(aufrufe):
     """Wertet die Aufrufliste eines Skripts aus.
 
@@ -105,11 +131,25 @@ def lies(aufrufe):
         if ordner:
             break
 
-    # 2) Die Knoten. Node_CreateNode(klasse, name) -- der Rueckgabewert
-    #    landet in einer lokalen Variablen, die der Aufrufleser nicht
-    #    verfolgt. Deshalb wird ueber die REIHENFOLGE zugeordnet:
-    #    Body_SetCS und Node_ParseIniFile folgen ihrem Knoten.
+    # 2) Die Knoten.
+    #
+    # *** ZUORDNUNG UEBER DEN VARIABLENNAMEN, NICHT UEBER DIE
+    # REIHENFOLGE. *** Im Bytecode steht
+    #     node8 = Node_CreateNode("nod_generic", "elt_asylum_1")
+    #     ...
+    #     Body_SetCS(node8, MAT_Vector3(...), MAT_Vector3(...))
+    # Der Variablenname kommt aus dem SETGLOBAL hinter dem Aufruf
+    # (aufrufe.py, Feld zuweisung); Body_SetCS nennt ihn als erstes
+    # Argument.
+    #
+    # Frueher lief die Zuordnung ueber die Reihenfolge: der zuletzt
+    # angelegte Knoten bekam die naechste Position. Das verrutscht,
+    # sobald ein Body_SetCS nicht unmittelbar auf sein
+    # Node_CreateNode folgt -- in 1h1 gingen so ZWOELF von 188
+    # Positionen verloren, in 6h3 vier. Die Reihenfolge bleibt als
+    # Rueckfall, wenn kein Variablenname bekannt ist.
     aktuell = None
+    nach_var = {}          # "node8" -> Objekt
     for a in aufrufe:
         f = a.funktion
         if f == "Node_CreateNode":
@@ -122,32 +162,43 @@ def lies(aufrufe):
             if not name:
                 aktuell = None
                 continue
-            o = objekte.get(name)
+            # *** GESCHLUESSELT WIRD NACH DER VARIABLEN, NICHT NACH
+            # DEM NAMEN. *** In 1h1 gibt es 349 Node_CreateNode, aber
+            # nur 258 verschiedene Knotennamen -- 91 wuerden sonst
+            # verschmelzen, und mit ihnen ihre Positionen.
+            # Der Variablenname ist dagegen eindeutig.
+            kennung = a.zuweisung or f"#{a.proto}:{a.stelle}"
+            o = objekte.get(kennung)
             if o is None:
                 o = Objekt(name, proto=f"{a.proto}:{a.stelle}",
                            art=_art(a.argumente))
-                objekte[name] = o
-                reihenfolge.append(name)
+                objekte[kennung] = o
+                reihenfolge.append(kennung)
+            if a.zuweisung:
+                o.var = a.zuweisung
+                nach_var[a.zuweisung] = o
             aktuell = o
 
         elif f == "Body_SetCS":
             zaehler["Body_SetCS"] += 1
-            if aktuell is None:
+            ziel = _ueber_variable(a, nach_var) or aktuell
+            if ziel is None:
                 continue
             # Body_SetCS(node, position, drehung)
             v = _vektoren(a.argumente)
-            if v and aktuell.position is None:
-                aktuell.position = v[0]
-            if len(v) > 1 and aktuell.drehung is None:
-                aktuell.drehung = v[1]
+            if v and ziel.position is None:
+                ziel.position = v[0]
+            if len(v) > 1 and ziel.drehung is None:
+                ziel.drehung = v[1]
 
         elif f == "Node_ParseIniFile":
             zaehler["Node_ParseIniFile"] += 1
-            if aktuell is None:
+            ziel = _ueber_variable(a, nach_var) or aktuell
+            if ziel is None:
                 continue
             for arg in a.argumente[1:]:
                 if isinstance(arg, str) and ".osd" in arg.lower():
-                    aktuell.osd = arg.replace("\\", "/")
+                    ziel.osd = arg.replace("\\", "/")
                     break
 
     liste = [objekte[n] for n in reihenfolge]
@@ -200,3 +251,4 @@ def mesh_pfad(namemesh):
     n = namemesh.replace("\\", "/").lower().strip()
     stamm = n.rsplit("/", 1)[-1].rsplit(".", 1)[0]
     return f"vfx/msh/{stamm}.msb"
+

@@ -164,17 +164,32 @@ def pak_bauen(spielordner, dateien, nummer=None, melder=None):
     """
     import shutil
 
+    from . import eigene_pak_nummer
+
+    gemerkt = nummer is not None
     if nummer is None:
         # Erst unseres, dann ein neues -- nicht bei jedem Aufruf
         # einen weiteren Slot verbrauchen.
-        from . import eigene_pak_nummer
         nummer = eigene_pak_nummer(spielordner)
+        gemerkt = nummer is not None
     if nummer is None:
         nummer = freie_pak_nummer(spielordner)
     if nummer is None:
         raise SchreibFehler(
             "Alle 32 PAK-Nummern sind belegt -- die Engine liest nur "
             "aquanox0 bis aquanox31.")
+
+    # *** GEMESSEN, nicht vermutet: *** ohne diese Zeilen lagen im
+    # Spielordner aquanox8, 9 und 10 -- dreimal dieselbe 1h2.sco,
+    # angelegt um 02:35, 02:39 und 02:42. pak_bauen() nahm jedesmal
+    # die naechste freie Nummer und hielt seine Wahl nirgends fest,
+    # also war sie beim naechsten Aufruf wieder frei. Wer eine Nummer
+    # zieht, muss sie auch eintragen.
+    if not gemerkt:
+        b = mod_lesen(spielordner)
+        if b.get("pak_nummer") != nummer:
+            b["pak_nummer"] = nummer
+            mod_schreiben(spielordner, b)
 
     ziel = os.path.join(spielordner, "dat", "pak", f"aquanox{nummer}.pak")
     ziel_pruefen(ziel, spielordner)              # wirft bei Gefahr
@@ -196,6 +211,72 @@ def pak_bauen(spielordner, dateien, nummer=None, melder=None):
     if melder:
         melder(f"aquanox{nummer}.pak gebaut: {len(eintraege)} Datei(en), "
                f"{os.path.getsize(ziel)} Byte")
+    return ziel
+
+
+def altlasten_finden(spielordner, original_bis=5):
+    """PAKs, die sehr wahrscheinlich von uns stammen.
+
+    Erkannt an drei Dingen zugleich, nicht an einem:
+      - Nummer oberhalb der Originale (Standardauslieferung 0..5)
+      - nicht unser aktuelles Mod-PAK
+      - wenige Eintraege (ein Original hat Hunderte bis Tausende)
+
+    *** Keines wird angefasst, nur gemeldet. *** Die Entscheidung
+    faellt der Aufrufer, denn aquanox6 ist zwar auch klein, enthaelt
+    aber fremde Arbeit (Menue-Mod) -- ein automatischer Aufraeumer
+    haette sie geloescht.
+    """
+    from . import eigene_pak_nummer
+    import re
+
+    unseres = eigene_pak_nummer(spielordner)
+    ordner = os.path.join(spielordner, "dat", "pak")
+    aus = []
+    if not os.path.isdir(ordner):
+        return aus
+    pt = _pak_tool()
+    for name in sorted(os.listdir(ordner)):
+        m = re.fullmatch(r"aquanox(\d+)\.pak", name, re.I)
+        if not m:
+            continue
+        n = int(m.group(1))
+        if n <= original_bis or n == unseres:
+            continue
+        p = os.path.join(ordner, name)
+        try:
+            eintraege = [e[0] if isinstance(e, (tuple, list)) else e
+                         for e in pt.list_pak(p)]
+        except Exception:
+            continue
+        aus.append({"nummer": n, "pfad": p, "name": name,
+                    "byte": os.path.getsize(p),
+                    "eintraege": eintraege,
+                    "zeit": os.path.getmtime(p)})
+    return aus
+
+
+def beiseite_legen(spielordner, pakpfad, melder=None):
+    """Ein PAK aus dem Spiel nehmen, ohne es zu loeschen.
+
+    Es wandert nach mod_docu\\altlasten\\. Loeschen waere endgueltig,
+    und bei einer Fehleinschaetzung waere fremde Arbeit weg --
+    aquanox7 sieht einem Wegwerf-PAK zum Verwechseln aehnlich und
+    enthaelt den Menue-Mod.
+    """
+    import shutil
+
+    ablage = os.path.join(spielordner, "mod_docu", "altlasten")
+    os.makedirs(ablage, exist_ok=True)
+    ziel = os.path.join(ablage, os.path.basename(pakpfad))
+    zaehler = 1
+    while os.path.exists(ziel):
+        wurzel, endung = os.path.splitext(os.path.basename(pakpfad))
+        ziel = os.path.join(ablage, f"{wurzel}.{zaehler}{endung}")
+        zaehler += 1
+    shutil.move(pakpfad, ziel)
+    if melder:
+        melder(f"beiseite gelegt: {os.path.basename(pakpfad)} -> {ziel}")
     return ziel
 
 

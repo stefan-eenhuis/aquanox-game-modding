@@ -902,7 +902,8 @@ class Hauptfenster(QMainWindow):
         if not self.projekt or not self.level:
             return
 
-        from ..schreiber import (freie_pak_nummer, SchreibFehler)
+        from ..schreiber import (freie_pak_nummer, eigene_pak_nummer,
+                                 SchreibFehler)
         from ..schreiber import sco_position, mod as _mod
 
         spiel = self.projekt.ordner
@@ -916,7 +917,13 @@ class Hauptfenster(QMainWindow):
             self._sag(f"Skript nicht lesbar: {skript}")
             return
 
-        nummer = freie_pak_nummer(spiel)
+        # *** EIN PAK FUER ALLES. *** Gibt es unser Mod-PAK schon,
+        # wird es wieder benutzt statt einen weiteren der 32 Slots zu
+        # verbrauchen. Der Mod-Ordner sammelt, das PAK wird daraus
+        # jedesmal komplett neu gebaut.
+        eigen = eigene_pak_nummer(spiel)
+        nummer = eigen if eigen is not None else freie_pak_nummer(spiel)
+        schon = _mod.mod_lesen(spiel).get("dateien") or {}
         teile = []
         if liste:
             teile.append(f"{len(liste)} verschobene(s) Objekt(e) "
@@ -931,6 +938,16 @@ class Hauptfenster(QMainWindow):
             f"abschaltbar)\n"
             f"  B)  lose unter {spiel}\\{skript.replace('/', chr(92))}\n\n"
             f"Originale werden nicht angefasst.")
+        if eigen is not None:
+            andere = [p for p in schon if p != skript]
+            text += (
+                f"\n\n*** Weg A nimmt UNSER vorhandenes "
+                f"aquanox{eigen}.pak. *** Alle eigenen Aenderungen "
+                f"liegen in einem einzigen Archiv, nicht in einem je "
+                f"Aenderung -- die Engine liest nur 32 Slots.")
+            if andere:
+                text += (f"\nSchon darin: {len(andere)} weitere Datei(en), "
+                         f"z.B. {andere[0]}. Sie bleiben erhalten.")
         if neu:
             text += (
                 "\n\n*** ZU DEN NEUEN OBJEKTEN: *** sie kommen als "
@@ -983,14 +1000,19 @@ class Hauptfenster(QMainWindow):
         dateien = {skript: neue_bytes}
         try:
             if gewaehlt is a:
-                ziel = _mod.pak_bauen(spiel, dateien, melder=self._sag)
+                # Nicht pak_bauen(): das legte jedesmal ein neues
+                # Archiv an. mod_aufnehmen() ergaenzt den Mod-Ordner
+                # und baut daraus IMMER DASSELBE PAK neu.
+                ziel, besch = _mod.mod_aufnehmen(spiel, dateien,
+                                                 melder=self._sag)
                 probe = _mod.probe_lesen(ziel, list(dateien))
                 if probe["fehlend"]:
                     self._sag(f"WARNUNG: fehlt im Archiv: "
                               f"{probe['fehlend']}")
                 else:
                     self._sag(f"Fertig. {os.path.basename(ziel)} enthaelt "
-                              f"{probe['eintraege']} Datei(en). "
+                              f"{probe['eintraege']} Datei(en) -- alle "
+                              f"eigenen Aenderungen in einem Archiv. "
                               f"Zum Abschalten die Datei loeschen.")
             else:
                 pfade = _mod.lose_ablegen(spiel, dateien, self._sag)

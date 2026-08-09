@@ -1,0 +1,23 @@
+-logunknown                                    7859
+Aqua.exe                                    2502656
+Aqua.exe - Verkn?pfung.lnk                     1244
+AquaGog.exe                                 2502656
+Launch AquaNox.lnk                             1338
+Readme.txt                                     7182
+binkw32.dll                                  308275
+d3d8.dll                                     124416
+dinput8.dll                                  158720
+gog.ico                                       69248
+goggame-1207658842.hashdb                      2763
+goggame-1207658842.ico                       136639
+goggame-1207658842.info                        1254
+goggame-1207658842.script                      4181
+goggame-galaxyFileList.ini                     2706
+goglog.ini                                     1434
+manual.pdf                                   812142
+mss32.dll                                    348160
+support.ico                                   62895
+unins000.dat                                1327285
+unins000.exe                                1343048
+unins000.ini                                     41
+unins000.msg                                  23147

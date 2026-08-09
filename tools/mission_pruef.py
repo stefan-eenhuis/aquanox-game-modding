@@ -8,6 +8,8 @@ WAS ES PRUEFT
     4. Existieren die genannten OSD-, Mesh- und Texturdateien?
     5. Sind die Textschluessel belegt? (pilot_d.des, cargo_d.des)
     6. Passen die FoF-Werte? (1=Freund 2=Neutral 3=Unbekannt 4=Feind)
+    7. Gibt es den Gegenstand? (Body_AddItem gegen die 50 Namen aus
+       der Exe -- ein unbekannter Name wird STILLSCHWEIGEND verworfen)
 
 WARUM
     398 Kommandos mit bis zu 18 Argumenten, 1.262 OSDs, mehrere
@@ -72,6 +74,58 @@ def _lade_dateien():
         if os.path.isfile(p):
             aus.add(os.path.basename(p).lower())
     return aus
+
+
+def _lade_gegenstaende():
+    """Die 50 gueltigen Gegenstandsnamen -- AUS DER EXE.
+
+    *** WARUM AUS DER EXE UND NICHT AUS EINER .des: *** die Namen
+    stehen NICHT in einer Datei, sondern hart in Aqua.exe als
+    Zeichenkettentabelle bei VA 0x0060db84..0x0060dec4 (50 Eintraege,
+    GUN_DOOMMORTAR bis AMMO_SIZZLER). Aufgeloest werden sie von
+    0x0043eca0, einer Kette aus 50 stricmp-Vergleichen; Rueckgabe ist
+    der Index 0..49, bei Nichttreffer 50.
+
+    *** UND WARUM DIE PRUEFUNG NOETIG IST: *** alle drei Aufrufer
+    (0x00461c26 NOD_Player Body_AddItem, 0x0047aa3c und 0x0047b351
+    NOD_ItemBox::ParseIniFile) pruefen "cmp eax,0x32; je <ausgang>"
+    und verwerfen einen unbekannten Namen STILLSCHWEIGEND -- keine
+    Meldung, kein Protokoll, kein Gegenstand. Ein Tippfehler faellt
+    im Spiel nur dadurch auf, dass etwas fehlt.
+
+    Der Vergleich ist ein stricmp: Gross- und Kleinschreibung sind
+    egal (Faltung bei 0x0043378a).
+
+    Rueckfall auf mod_docu\\aquanox1_items.json, falls die Exe nicht
+    lesbar ist. Handoff-Abschnitt 529.1.
+    """
+    exe = os.path.join(SPIEL, "Aqua.exe")
+    if os.path.isfile(exe):
+        try:
+            b = open(exe, "rb").read()
+            roh = b[0x0060DB84 - 0x400000:0x0060DEC4 - 0x400000 + 16]
+            namen = {t.decode("latin-1").lower()
+                     for t in roh.split(b"\x00")
+                     if re.fullmatch(rb"[A-Z][A-Z_0-9]{2,30}", t)}
+            if len(namen) >= 45:          # Plausibilitaet: es sind 50
+                return namen
+        except Exception:
+            pass
+    p = os.path.join(DOC, "aquanox1_items.json")
+    if os.path.isfile(p):
+        try:
+            d = json.load(open(p, encoding="utf-8"))
+            eintraege = d if isinstance(d, list) else d.get("items", [])
+            aus = set()
+            for e in eintraege:
+                n = e.get("name") if isinstance(e, dict) else e
+                if isinstance(n, str):
+                    aus.add(n.lower())
+            if aus:
+                return aus
+        except Exception:
+            pass
+    return set()
 
 
 # Lua-Standardbibliothek und Engine-Globals (Handoff Abschnitt 123)
@@ -212,6 +266,51 @@ def pruefe(pfad):
         if w > 15:
             fehler.append((zeile, f"FoF-Gruppe {w} -- die Originale "
                                   f"nutzen 0..15"))
+
+    # 7: Gegenstandsnamen (siehe _lade_gegenstaende)
+    gegenstaende = _lade_gegenstaende()
+    if gegenstaende:
+        for m in re.finditer(
+                r'Body_AddItem\s*\(\s*[^,]+,\s*"([^"]*)"\s*(?:,\s*([^)]*))?',
+                code, re.I):
+            zeile = code[:m.start()].count("\n") + 1
+            name = m.group(1)
+            if name.lower() in gegenstaende:
+                # Anzahl ist ein uint16 (Feld +2 der Itemstruktur,
+                # gelesen bei 0x0043eb80).
+                anz = (m.group(2) or "").strip()
+                if re.fullmatch(r"\d+", anz) and int(anz) > 65535:
+                    warnung.append(
+                        (zeile, f"Anzahl {anz} fuer {name} -- das Feld "
+                                f"ist ein uint16, mehr als 65535 laeuft "
+                                f"ueber"))
+                continue
+            # *** Der haeufigste Fall: die Stufe fehlt. *** In der
+            # Kampagne stehen device_repair und device_generator ohne
+            # Ziffer; die Engine kennt nur die Stufen 0..3. Das ist
+            # dort Absicht (Upgrade-System, Handoff 530) -- in einem
+            # eigenen Skript ist es fast immer ein Versehen.
+            stufen = sorted(g for g in gegenstaende
+                            if g.startswith(name.lower()))
+            if stufen:
+                fehler.append(
+                    (zeile, f'"{name}" gibt es nicht, nur mit Stufe: '
+                            f'{", ".join(stufen)} -- der Aufruf wird '
+                            f'STILLSCHWEIGEND verworfen. (In der '
+                            f'ORIGINALkampagne steht das absichtlich so, '
+                            f'wo es kein Geraet geben soll; im eigenen '
+                            f'Skript ist es fast immer ein Versehen.)'))
+                continue
+            # Naheliegende Verschreiber vorschlagen
+            import difflib
+            nah = difflib.get_close_matches(name.lower(),
+                                            sorted(gegenstaende), 3, 0.75)
+            hinweis = (" -- gemeint war vielleicht: " + ", ".join(nah)) \
+                if nah else ""
+            fehler.append(
+                (zeile, f'"{name}" ist kein Gegenstand der Engine; der '
+                        f'Aufruf wird STILLSCHWEIGEND verworfen{hinweis}'))
+
     return fehler, warnung
 
 

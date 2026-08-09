@@ -209,3 +209,231 @@
 [02:43:08] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x730534A0 (gerettet: 53 8B 5C 24 0C)
 [02:43:08] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
 [02:43:15] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[14:07:51] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[14:07:51]   ok  NOD_Script::HeartBeat  0x0048D750
+[14:07:51]   ok  lua_dobuffer           0x005D5790
+[14:07:51] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[14:07:51] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[14:07:51] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[14:07:51] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[14:07:51] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[14:07:51] STUFE 11: Missionszweig bei 0x01120000 (30 Byte)
+[14:07:51] STUFE 11: Tabelle[2]  0x00574D9A -> 0x01120000
+[14:07:51] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[14:07:51] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[14:07:51] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[14:07:51] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[14:07:51] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[14:07:51]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[14:07:51] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[14:07:51] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[14:08:12] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[16:22:51] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[16:22:51]   ok  NOD_Script::HeartBeat  0x0048D750
+[16:22:51]   ok  lua_dobuffer           0x005D5790
+[16:22:51] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[16:22:51] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[16:22:51] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[16:22:51] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[16:22:51] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[16:22:51] STUFE 11: Missionszweig bei 0x01280000 (30 Byte)
+[16:22:51] STUFE 11: Tabelle[2]  0x00574D9A -> 0x01280000
+[16:22:51] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[16:22:51] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[16:22:51] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[16:22:51] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[16:22:51] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[16:22:51]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[16:22:51] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[16:22:51] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[16:23:06] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[16:24:52] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[16:24:52]   ok  NOD_Script::HeartBeat  0x0048D750
+[16:24:52]   ok  lua_dobuffer           0x005D5790
+[16:24:52] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[16:24:52] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[16:24:52] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[16:24:52] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[16:24:52] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[16:24:52] STUFE 11: Missionszweig bei 0x010E0000 (30 Byte)
+[16:24:52] STUFE 11: Tabelle[2]  0x00574D9A -> 0x010E0000
+[16:24:52] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[16:24:52] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[16:24:52] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[16:24:52] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[16:24:52] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[16:24:52]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[16:24:52] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[16:24:52] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[16:25:05] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[18:22:32] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[18:22:32]   ok  NOD_Script::HeartBeat  0x0048D750
+[18:22:32]   ok  lua_dobuffer           0x005D5790
+[18:22:32] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[18:22:32] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[18:22:32] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[18:22:32] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[18:22:32] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[18:22:32] STUFE 11: Missionszweig bei 0x010E0000 (30 Byte)
+[18:22:32] STUFE 11: Tabelle[2]  0x00574D9A -> 0x010E0000
+[18:22:32] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[18:22:32] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[18:22:32] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[18:22:32] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[18:22:32] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[18:22:32]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[18:22:32] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[18:22:32] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[18:22:47] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[18:23:10] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[18:23:10]   ok  NOD_Script::HeartBeat  0x0048D750
+[18:23:10]   ok  lua_dobuffer           0x005D5790
+[18:23:10] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[18:23:10] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[18:23:10] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[18:23:10] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[18:23:10] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[18:23:10] STUFE 11: Missionszweig bei 0x01130000 (30 Byte)
+[18:23:10] STUFE 11: Tabelle[2]  0x00574D9A -> 0x01130000
+[18:23:10] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[18:23:10] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[18:23:10] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[18:23:10] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[18:23:10] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[18:23:10]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[18:23:10] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[18:23:10] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[18:23:25] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[19:09:14] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[19:09:14]   ok  NOD_Script::HeartBeat  0x0048D750
+[19:09:14]   ok  lua_dobuffer           0x005D5790
+[19:09:14] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730517F0
+[19:09:14] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[19:09:14] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[19:09:14] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[19:09:14] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[19:09:14] STUFE 11: Missionszweig bei 0x010E0000 (30 Byte)
+[19:09:14] STUFE 11: Tabelle[2]  0x00574D9A -> 0x010E0000
+[19:09:14] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[19:09:14] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[19:09:14] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[19:09:14] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[19:09:14] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[19:09:14]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[19:09:14] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x730534A0 (gerettet: 53 8B 5C 24 0C)
+[19:09:14] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[19:09:28] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[19:24:29] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[19:24:29]   ok  NOD_Script::HeartBeat  0x0048D750
+[19:24:29]   ok  lua_dobuffer           0x005D5790
+[19:24:29] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730517F0
+[19:24:29] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[19:24:29] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[19:24:29] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[19:24:29] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[19:24:29] STUFE 11: Missionszweig bei 0x027D0000 (30 Byte)
+[19:24:29] STUFE 11: Tabelle[2]  0x00574D9A -> 0x027D0000
+[19:24:29] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[19:24:29] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[19:24:29] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[19:24:29] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[19:24:29] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[19:24:29]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[19:24:29] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x730534A0 (gerettet: 53 8B 5C 24 0C)
+[19:24:29] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[19:24:42] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[19:27:03] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[19:27:03]   ok  NOD_Script::HeartBeat  0x0048D750
+[19:27:03]   ok  lua_dobuffer           0x005D5790
+[19:27:03] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[19:27:03] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[19:27:03] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[19:27:03] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[19:27:03] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[19:27:03] STUFE 11: Missionszweig bei 0x012B0000 (30 Byte)
+[19:27:03] STUFE 11: Tabelle[2]  0x00574D9A -> 0x012B0000
+[19:27:03] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[19:27:03] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[19:27:03] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[19:27:03] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[19:27:03] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[19:27:03]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[19:27:03] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[19:27:03] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[19:27:16] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[20:48:59] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[20:48:59]   ok  NOD_Script::HeartBeat  0x0048D750
+[20:48:59]   ok  lua_dobuffer           0x005D5790
+[20:48:59] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730517F0
+[20:48:59] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[20:48:59] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[20:48:59] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[20:48:59] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[20:48:59] STUFE 11: Missionszweig bei 0x00940000 (30 Byte)
+[20:48:59] STUFE 11: Tabelle[2]  0x00574D9A -> 0x00940000
+[20:48:59] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[20:48:59] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[20:48:59] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[20:48:59] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[20:48:59] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[20:48:59]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[20:48:59] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x730534A0 (gerettet: 53 8B 5C 24 0C)
+[20:48:59] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[20:49:14] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[20:51:27] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[20:51:27]   ok  NOD_Script::HeartBeat  0x0048D750
+[20:51:27]   ok  lua_dobuffer           0x005D5790
+[20:51:27] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[20:51:27] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[20:51:27] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[20:51:27] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[20:51:27] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[20:51:27] STUFE 11: Missionszweig bei 0x01120000 (30 Byte)
+[20:51:27] STUFE 11: Tabelle[2]  0x00574D9A -> 0x01120000
+[20:51:27] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[20:51:27] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[20:51:27] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[20:51:27] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[20:51:27] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[20:51:27]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[20:51:27] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[20:51:27] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[20:51:41] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[21:57:35] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[21:57:35]   ok  NOD_Script::HeartBeat  0x0048D750
+[21:57:35]   ok  lua_dobuffer           0x005D5790
+[21:57:35] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x730517F0
+[21:57:35] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[21:57:35] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[21:57:35] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[21:57:35] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[21:57:35] STUFE 11: Missionszweig bei 0x010E0000 (30 Byte)
+[21:57:35] STUFE 11: Tabelle[2]  0x00574D9A -> 0x010E0000
+[21:57:35] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[21:57:35] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[21:57:35] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[21:57:35] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[21:57:35] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[21:57:35]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[21:57:35] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x730534A0 (gerettet: 53 8B 5C 24 0C)
+[21:57:35] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[21:58:21] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)
+[00:41:36] === AquaLive gestartet, Exe-Verzeichnis C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\ ===
+[00:41:36]   ok  NOD_Script::HeartBeat  0x0048D750
+[00:41:36]   ok  lua_dobuffer           0x005D5790
+[00:41:36] Vtable 0x005F6218+0x20: 0x0048D750 -> 0x6E5E17F0
+[00:41:36] Stufe 3 uebersprungen (keine Datei live\MENUPATCH).
+[00:41:36] Stufe 6 (38. Bildschirm): aus (keine Datei live\MENU38)   Klonquelle: Index 5
+[00:41:36] Stufe 10 uebersprungen (keine Datei live\LADEWATCH).
+[00:41:36] --- Stufe 11: Menuepunkt 2 startet Mission "map\1n1\script\sp_1n1" ---
+[00:41:36] STUFE 11: Missionszweig bei 0x01120000 (30 Byte)
+[00:41:36] STUFE 11: Tabelle[2]  0x00574D9A -> 0x01120000
+[00:41:36] STUFE 11: *** Hauptmenuepunkt 2 startet jetzt DIREKT die Mission "map\1n1\script\sp_1n1" ***
+[00:41:36] Stufe 9 uebersprungen (keine Datei live\MENUZWEIG).
+[00:41:36] Stufe 8 uebersprungen (keine Datei live\MENUTYP).
+[00:41:36] Stufe 7 (F9 oeffnet Bildschirm 37): aus (keine Datei live\MENU38KEY)
+[00:41:36] --- Stufe 4: Beobachter (Schalter C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\MENUWATCH gefunden) ---
+[00:41:36]   ok  MENU_Open (erste 5 Byte) 0x0058D520
+[00:41:36] BEOBACHTER: MENU_Open 0x0058D520 -> Trampolin 0x6E5E34A0 (gerettet: 53 8B 5C 24 0C)
+[00:41:36] aktiv. Datei speichern und sie laeuft: C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua
+[00:41:50] beobachte C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\mod_docu\live\live.lua (2182 Bytes)

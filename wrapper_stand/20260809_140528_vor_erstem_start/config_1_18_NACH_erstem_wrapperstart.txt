@@ -1,0 +1,486 @@
+// DES file 'C:\Users\steve\AppData\Roaming\AquaNox\config_1_18.txt'.
+// Do not modify.
+
+[CVar0]
+{
+	Name = "inp_ff_impact"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar1]
+{
+	Name = "inp_ff_fire"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar2]
+{
+	Name = "inp_ff_force"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar3]
+{
+	Name = "inp_ff_enable"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar4]
+{
+	Name = "inp_joystickenable"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar5]
+{
+	Name = "men_mapname"
+	Type = "cstring"
+	Value = "dm_isolation"
+}
+
+[CVar6]
+{
+	Name = "men_showempty"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar7]
+{
+	Name = "men_showfull"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar8]
+{
+	Name = "men_sortby"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar9]
+{
+	Name = "men_activenet"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar10]
+{
+	Name = "men_activegametype"
+	Type = "s32"
+	Value = 3
+}
+
+[CVar11]
+{
+	Name = "men_activeprofile"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar12]
+{
+	Name = "net_bandwidth"
+	Type = "s32"
+	Value = 3000
+}
+
+[CVar13]
+{
+	Name = "g_autochangegun"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar14]
+{
+	Name = "g_showgun"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar15]
+{
+	Name = "g_identify_target"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar16]
+{
+	Name = "g_cdkey"
+	Type = "cstring"
+	Value = "1cf2-18ee-109a-2592"
+}
+
+[CVar17]
+{
+	Name = "gi_capturelimit"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar18]
+{
+	Name = "gi_fraglimit"
+	Type = "s32"
+	Value = 10
+}
+
+[CVar19]
+{
+	Name = "gi_timelimit"
+	Type = "s32"
+	Value = 10
+}
+
+[CVar20]
+{
+	Name = "gi_gametype"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar21]
+{
+	Name = "si_pinglimit"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar22]
+{
+	Name = "si_password"
+	Type = "cstring"
+	Value = ""
+}
+
+[CVar23]
+{
+	Name = "si_dedicated"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar24]
+{
+	Name = "si_advertise"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar25]
+{
+	Name = "si_maxplayers"
+	Type = "s32"
+	Value = 4
+}
+
+[CVar26]
+{
+	Name = "si_map"
+	Type = "s32"
+	Value = 3
+}
+
+[CVar27]
+{
+	Name = "si_name"
+	Type = "cstring"
+	Value = "Server"
+}
+
+[CVar28]
+{
+	Name = "pi_password"
+	Type = "cstring"
+	Value = ""
+}
+
+[CVar29]
+{
+	Name = "pi_ship"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar30]
+{
+	Name = "pi_team"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar31]
+{
+	Name = "pi_name"
+	Type = "cstring"
+	Value = "Player1"
+}
+
+[CVar32]
+{
+	Name = "snd_music_volume"
+	Type = "s32"
+	Value = 9
+}
+
+[CVar33]
+{
+	Name = "snd_fx_volume"
+	Type = "s32"
+	Value = 9
+}
+
+[CVar34]
+{
+	Name = "snd3d_speakertype"
+	Type = "cstring"
+	Value = "2speaker"
+}
+
+[CVar35]
+{
+	Name = "snd3d_provider"
+	Type = "cstring"
+	Value = "fast"
+}
+
+[CVar36]
+{
+	Name = "snd3d_volume"
+	Type = "s32"
+	Value = 127
+}
+
+[CVar37]
+{
+	Name = "snd3d_channels"
+	Type = "s32"
+	Value = 8
+}
+
+[CVar38]
+{
+	Name = "snd3d_enable"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar39]
+{
+	Name = "snd2d_volume"
+	Type = "s32"
+	Value = 127
+}
+
+[CVar40]
+{
+	Name = "snd2d_channels"
+	Type = "s32"
+	Value = 16
+}
+
+[CVar41]
+{
+	Name = "snd2d_rate"
+	Type = "s32"
+	Value = 44100
+}
+
+[CVar42]
+{
+	Name = "snd2d_enable"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar43]
+{
+	Name = "ren_radar_detail"
+	Type = "s32"
+	Value = 9
+}
+
+[CVar44]
+{
+	Name = "ren_object_dlight"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar45]
+{
+	Name = "ren_objectprelit_bumpmap"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar46]
+{
+	Name = "ren_terrain_lod"
+	Type = "s32"
+	Value = 9
+}
+
+[CVar47]
+{
+	Name = "ren_terrain_singlepass"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar48]
+{
+	Name = "ren_terrain_dshadow"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar49]
+{
+	Name = "ren_terrain_dlight"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar50]
+{
+	Name = "ren_terrain_bumpmap"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar51]
+{
+	Name = "ren_plant_detail"
+	Type = "s32"
+	Value = 9
+}
+
+[CVar52]
+{
+	Name = "ren_plankton_detail"
+	Type = "s32"
+	Value = 9
+}
+
+[CVar53]
+{
+	Name = "ren_rays_enable"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar54]
+{
+	Name = "dsp_avoidframebuffering"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar55]
+{
+	Name = "dsp_gammacorrection"
+	Type = "f32"
+	Value = 1.000000
+}
+
+[CVar56]
+{
+	Name = "dsp_forcealphatest"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar57]
+{
+	Name = "dsp_usecompressedtextures"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar58]
+{
+	Name = "dsp_usemipmap"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar59]
+{
+	Name = "dsp_pixelshader"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar60]
+{
+	Name = "dsp_fsaa"
+	Type = "s32"
+	Value = 0
+}
+
+[CVar61]
+{
+	Name = "dsp_texturecachesize"
+	Type = "s32"
+	Value = 50331650
+}
+
+[CVar62]
+{
+	Name = "dsp_anisotropyquality"
+	Type = "s32"
+	Value = 6
+}
+
+[CVar63]
+{
+	Name = "dsp_trilinear"
+	Type = "s32"
+	Value = 2
+}
+
+[CVar64]
+{
+	Name = "dsp_triplebuffer"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar65]
+{
+	Name = "dsp_vsync"
+	Type = "s32"
+	Value = 1
+}
+
+[CVar66]
+{
+	Name = "dsp_depth"
+	Type = "s32"
+	Value = 32
+}
+
+[CVar67]
+{
+	Name = "dsp_height"
+	Type = "s32"
+	Value = 2160
+}
+
+[CVar68]
+{
+	Name = "dsp_width"
+	Type = "s32"
+	Value = 3840
+}
+

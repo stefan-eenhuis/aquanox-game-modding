@@ -46293,3 +46293,94 @@ DAS ABNAHMEKRITERIUM, ehrlich formuliert:
     Ruempfe und Waende werden bei STREIFENDEM Blick sichtbar heller/
     blaeulicher (Fresnel-Spiegelung der Wasseroberflaeche), frontal
     kaum. Danach kann der Metallkanal der ORM-Karten aktiviert werden.
+
+================================================================================
+579. OPTION B: DIE DOPPEL-FASSUNG -- GEBAUT, NICHT GETESTET
+================================================================================
+
+    Ziel: Spiegelung und Relief auch auf den Waenden, die meist ueber
+    Fixed Function laufen. Kernidee: *** JEDER VERTEXSHADER EXISTIERT
+    IN ZWEI FASSUNGEN ***
+      Shader     = unveraendertes vs_1_1-Original. Gueltig mit Fixed
+                   Function, ps_1_x des Spiels und unseren ps_2_0.
+      ShaderVS3  = uebersetzte vs_3_0-Kopie MIT oT5..oT7-Durchreichung
+                   (Normale/Position/Farbe) -- fuer ALLE Shader, auch
+                   vorbeleuchtete. Gueltig NUR mit unseren ps_3_0.
+    SetVertexShader bindet stets das Original; AqVorZeichnen schaltet
+    je Zeichenaufruf auf die Fassung um, die zum Pixelshader passt.
+    *** EINE UNGUELTIGE PAARUNG (F12/F16) IST DAMIT KONSTRUKTIV
+    UNMOEGLICH. Die Notbehelfe F17a..d sind ersatzlos entfallen. ***
+
+    NEU: DER PRELIT-PFAD (Modus 19). Vorbeleuchtete Objekte (Waende!)
+    mit Zweitfassung und ohne Spiel-PS bekommen: Nachbau der
+    Texturkette + Vertexfarbe unveraendert (KEINE Hemisphaere, KEINE
+    Punktlichter -- die Farbe ist schon fertig beleuchtet) + Relief
+    (TBN) + Umgebungsspiegelung. 68 von 512 Anweisungen, offline
+    assembliert. Effekte (additiv) bleiben ausgenommen, Fehlschlaege
+    fallen auf echtes FF zurueck (Original + kein PS).
+
+    ZWEIGLEISIG NACH MODUSFAMILIE: die ps_2_0-Modi (3/4/10..13)
+    haengen wie bisher ans ORIGINAL an (ihre Pixelshader lesen t5..t7
+    aus vs_1_1); nur die ps_3_0-Familie nutzt die Zweitfassung. Die
+    Familien mischen nie -- AQUANOX_PP ist prozesskonstant.
+
+    ABGEFANGENE FALLEN BEIM BAU:
+      - Prelit-Konstantenupload laedt ALLE Konstanten (c8..c29 + c0 +
+        c2), nicht nur die eigenen: er verbraucht das Schmutzig-Flag,
+        und der naechste Licht-Zeichenaufruf sonst veraltete Werte.
+      - ps_2_0-Regression: ohne den Legacy-Anhang haetten Modus 4/12
+        undefinierte t5..t7 gelesen.
+      - Fuenfstufige Objekte (Original nutzt oT5+) bekommen KEINE
+        Zweitfassung -- lieber keine Spiegelung als zerstoerte
+        Koordinaten.
+      - ShaderVS3 wird in DeleteVertexShader freigegeben.
+      - kn.Modus=2-Nachbau im alten Zweig C entfiel mitsamt Zweig.
+=====================================================================
+582. GELBPROBE BESTAETIGT OPTION B -- LADEBILDSCHIRM VIA CULL_NONE
+     AUSGESCHLOSSEN (11.08.2026)
+=====================================================================
+
+Ergebnis der Doppel-Gelbprobe (581c, Modus 18 faerbt Licht- UND
+Prelit-Pfad):
+
+  1. ALLE Gebaeude zuverlaessig gelb, OHNE Beschuss, OHNE Flackern.
+     => Der Prelit-Pfad uebernimmt die vorbeleuchteten Waende
+     vollstaendig und stabil. OPTION B IST IM KERN BEWIESEN.
+     Spiegelung/Relief liegen auf den Waenden an; dass Stefan sie
+     im Normalbild kaum sieht, ist reine Staerke-Abstimmung.
+  2. HUD nicht gelb, Ferne in Ordnung -- die Ausschluesse aus 581
+     (Tiefentest, SRCALPHA) halten.
+     Randbeobachtung Screenshot: das MINIMAP-GELAENDE (3D-Karte
+     unten mitte) zeigt gelbe Flaechen -- die Minikarte ist ein
+     echter 3D-Durchlauf mit Tiefentest und laeuft mit durch den
+     Prelit-Pfad. Im Normalmodus unauffaellig (subtile Effekte auf
+     Miniatur-Gelaende); falls es doch stoert, waere der
+     Unterscheider die Viewport-Groesse.
+  3. Ladebildschirm VOLLTON GELB => er lief trotz Tiefentest-,
+     Alpha- und Transformiert-Filter durch den Prelit-Pfad. Damit
+     war klar: weiterer Unterscheider noetig, und zwar einer, der
+     Vollbild-Quads von Weltgeometrie trennt.
+
+Abhilfe (582): D3DRS_CULLMODE geschattet (AqCull, Vorgabe CCW,
+in SetRenderState hinter !IsRecordingState). Prelit-Bedingung um
+  && AqCull != D3DCULL_NONE
+ergaenzt. Begruendung: Vollbild-Quads (Ladebildschirm, Filme,
+Blenden) zeichnen praktisch immer mit abgeschalteter Rueckseiten-
+entfernung, echte Weltobjekte praktisch nie. Schlimmster Fall bei
+Fehleinschaetzung: eine Wand mit CULL_NONE faellt still auf FF
+zurueck (keine Spiegelung) -- kein Fehlerbild moeglich.
+
+Warum die drei bisherigen Filter NICHT griffen: Der Ladebildschirm
+wird offenbar mit Tiefentest AN, opak (kein SRCALPHA) und ueber
+einen regulaeren transformierenden Vertexshader mit v1/v2 im Strom
+gezeichnet -- er ist aus Sicht aller drei Kriterien "Welt". Nur der
+Cull-Modus unterscheidet ihn.
+
+Stand: Quelle d3d8to9_device_s582.cpp, DLL 206848 B vom 11.08.
+00:03 als d3d8_mit_log.dll eingespielt. Test durch Stefan steht
+aus (AquaNox_VS3Test.cmd: Ladebildschirm wieder normal? Spiel
+unveraendert gut?).
+
+Offen danach: stille Fassung auf Option-B-Stand heben
+(AquaNox_Spielen.cmd traegt noch den 174080-B-Stand OHNE Option B),
+Metallkanal, NumOfSprites, Terrain-Relief, Staerken-Feinschliff.

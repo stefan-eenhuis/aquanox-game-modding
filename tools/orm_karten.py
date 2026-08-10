@@ -1,4 +1,4 @@
-"""Erzeugt ORM-Karten (Occlusion/Roughness/Metal) aus den Albedo-Texturen.
+﻿"""Erzeugt ORM-Karten (Occlusion/Roughness/Metal) aus den Albedo-Texturen.
 
 *** ALLES HIER IST HEURISTIK, KEINE MESSUNG. *** Aus einer Farbkarte
 laesst sich keine echte Materialeigenschaft ableiten. Die Annahmen:
@@ -43,7 +43,9 @@ def orm(pfad):
     l2 = (luma + np.roll(luma, 1, 0) + np.roll(luma, 1, 1)
           + np.roll(np.roll(luma, 1, 0), 1, 1)) * 0.25
 
-    rough = np.clip(0.9 - 0.55 * l2, 0.35, 0.9)
+    # Entschaerft (577): die erste Formel machte fast alles 0.8+ rau,
+    # was GGX-Glanz UND Spiegelung gleichermassen erstickte.
+    rough = np.clip(0.78 - 0.55 * l2, 0.28, 0.82)
 
     aus = np.stack([np.ones_like(rough),       # R: Occlusion = 1
                     rough,                     # G: Rauheit
@@ -72,3 +74,4 @@ for q in quellen:
         print("FEHLER %s: %s" % (name, e))
 
 print("%d ORM-Karten erzeugt in %s" % (n, ziel))
+

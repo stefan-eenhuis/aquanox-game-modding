@@ -45608,3 +45608,688 @@ DAS ABNAHMEKRITERIUM, ehrlich formuliert:
 
     Dateien: d3d8_mit_log.dll 176.128 B (Modi 4/10/11/12/13),
     Quelltext gesichert als hook\d3d8to9_device_s559_fresnel.cpp.
+================================================================================
+560. *** DAS FEHLERREGISTER F1 BIS F13 ***
+================================================================================
+
+    Dreizehn Fehler, verstreut ueber die Abschnitte 547 bis 559.
+    Hier zusammengezogen, mit dem, was zaehlt: WORAN MAN SIE ERKENNT.
+
+    F1  Stufenklemmung fehlte
+        Fixed Function klemmt nach JEDER Texturstufe, nicht nur am
+        Ende. Erkennung: Flaechen zu hell oder zu dunkel, bis zu 45
+        von 255 Stufen daneben. Betraf 5 von 19 Ketten.
+        *** MODULATE2X klemmt NACH dem Verdoppeln, nicht davor. ***
+
+    F2  Shader klebte nach ApplyStateBlock
+        AqSchattenGueltig wurde vor dem Abraeumen auf false gesetzt.
+        Erkennung: ein Objekt bleibt nach einer Zwischensequenz
+        eingefaerbt, bis zum Missionsende.
+
+    F3  Glanz oD1 fiel weg, dazu Cachekollision
+        Vier Shader schreiben oD1; ohne das Merkmal teilten sie sich
+        den Cacheeintrag mit ihren glanzlosen Zwillingen.
+        Erkennung: Glanz fehlt ZUFAELLIG, nicht durchgaengig.
+
+    F4  Hemisphaere bekam eine Obergrenze, die es nicht gibt
+        Sie klemmt im Original nur nach unten. Die Asymmetrie ist
+        Absicht.
+
+    F5  Zwei Klemmungen statt einer beim additiven Anteil
+        Das Original rechnet "mad oD0, r0, v2, c50" -- EINE Klemmung.
+        Erkennung: nur bei negativen Anteilen in c50 sichtbar.
+
+    F6  Anweisungsbudget reisst
+        4 Lichter + Hemi + additiv + 3 Stufen = 65 von 64 erlaubten.
+        Abgefangen durch stufenweisen Rueckfall (siehe 559.2).
+
+    F7  Reset liess Handles stehen
+    F8  Platzpruefung nahm die Zahl aus dem Kommentar statt
+        InstructionCount -- die Zahl im Kommentar beschreibt den
+        ORIGINALSHADER, nicht den bereits erweiterten.
+
+    F9  *** sprintf_s in einen zu kleinen Puffer ***
+        295 Zeichen in char z[256]. Erkennung: Absturz mit
+        0xC0000409 (STATUS_STACK_BUFFER_OVERRUN) aus ucrtbase.dll,
+        OHNE Ausnahme, OHNE Logzeile. Werkzeug: scratchpad\puffer.py.
+
+    F10 lrp-Ziel war zugleich erste Quelle
+        error X5234 bzw. X5766. Vom Pruefskript VOR dem Bauen
+        gefunden -- der einzige Fehler, der es nie ins Spiel schaffte.
+
+    F11 pow(0, n) ergibt NaN
+        pow rechnet exp2(y*log2(x)); log2(0) ist minus unendlich.
+        N.H ist bei jedem abgewandten Bildpunkt exakt 0.
+        *** SACHLICH RICHTIG, ABER NICHT DIE URSACHE DES DAMALIGEN
+        FEHLERS -- die Klemmung bleibt trotzdem drin. ***
+
+    F12 *** ps_3_0 vertraegt sich nicht mit vs_1_1 ***
+        Die 3.0-Profile muessen paarweise benutzt werden. Erkennung:
+        Assembler uebersetzt, CreatePixelShader meldet Erfolg, kein
+        Protokolleintrag -- und das Bild ist trotzdem falsch. Der
+        INHALT des Shaders ist dabei gleichgueltig (Modus 9 gab
+        Knallrot aus, das Fehlerbild blieb identisch).
+
+    F13 *** Glanz stand VOR der Texturkette statt dahinter ***
+        Er lag auf r2 (Diffusfarbe) und wurde danach mit der Textur
+        multipliziert. Unterwassertexturen sind dunkel -> unsichtbar.
+        Erkennung: der Effekt fehlt vollstaendig, AUCH bei absichtlich
+        vierfacher Ueberhoehung. *** Viermal fast nichts ist immer
+        noch fast nichts. ***
+
+
+560.1 DIE TEUERSTE FEHLERKLASSE: "MELDET ERFOLG UND TUT NICHTS"
+--------------------------------------------------------------------------------
+
+    *** DREI DER DREIZEHN GEHOEREN ZUSAMMEN, UND SIE HABEN DIE MEISTE
+    ZEIT GEKOSTET: ***
+
+      F9   sprintf_s uebersetzt sauber und toetet den Prozess.
+      F12  Assembler und CreatePixelShader melden Erfolg, das Bild
+           ist trotzdem falsch.
+      F13  Die Rechnung ist korrekt, das Ergebnis wird direkt danach
+           wegmultipliziert.
+
+    Dazu zwei Werkzeugfehler derselben Art:
+      - /p:DefineConstants meldet einen erfolgreichen Bau und setzt
+        die Definition nicht (554.3).
+      - Die Logmeldung nannte den ANGEFORDERTEN statt des GEBAUTEN
+        Modus (557.4) -- 15 Zeilen "Modus 10" haetten auch dann dort
+        gestanden, wenn jeder Shader zurueckgefallen waere.
+
+    *** DIE GEGENMASSNAHME IST IMMER DIESELBE: AM ERGEBNIS PRUEFEN,
+    NICHT AN DER MELDUNG. ***
+      - Bau: d.count(b'Redirecting') muss 0 sein
+      - Puffer: scratchpad\puffer.py misst gegen die Deklaration
+      - Shaderversion: nur ein Trennversuch mit IDENTISCHER Rechnung
+        beweist etwas (Modus 6)
+      - Sichtbarkeit: absichtlich uebertreiben (Modus 11), und wenn
+        selbst das unsichtbar bleibt, liegt es nicht am Parameter
+
+
+560.2 DIE METHODE, DIE FUNKTIONIERT HAT
+--------------------------------------------------------------------------------
+
+    Am Abend des 10.08.2026 wurden vier Hypothesen aufgestellt (NaN,
+    farbabhaengige Mischung, Alpha, Nebel) und alle vier waren falsch.
+    Was die Ursache fand, war nicht Deuten, sondern Halbieren:
+
+    *** BEI EINEM FEHLER NACH EINER UMSTELLUNG ZUERST DIE UMSTELLUNG
+    HALBIEREN, NICHT DIE SYMPTOME DEUTEN. *** Modus 6 (identische
+    Rechnung, neue Shaderversion) hat die Frage in einem Lauf
+    beantwortet und stand von Anfang an zur Verfuegung.
+
+    Die Trennversuche als Muster, vom Groben zum Feinen:
+        Modus 6  alles gleich, nur die Version anders
+        Modus 7  ein einzelner Wert hart gesetzt (Alpha = 1)
+        Modus 8  die ganze Rechnung verworfen (Weiss)
+        Modus 9  eine Farbe, die in der Szene nicht vorkommt (Rot)
+
+    *** MODUS 9 WAR DER BEWEIS: gibt der Shader Knallrot aus und das
+    Fehlerbild bleibt unveraendert, dann laeuft er dort nicht. ***
+================================================================================
+561. vs_3_0-UMBAU: DIE ANALYSE (Umsetzung steht noch aus)
+================================================================================
+
+    Ziel: F12 aufheben. Erst mit vs_3_0 wird ps_3_0 nutzbar, und damit
+    Fresnel (7 von 512 statt 7 von 64), GGX, Normalenkarten und Glanz
+    fuer alle vier Lichter.
+
+561.1 *** DIE SEMANTIKTABELLE -- DIE WICHTIGSTE FALLE ***
+--------------------------------------------------------------------------------
+
+    d3d8to9_device.cpp Zeile 1330..1346 bildet die REGISTERNUMMER auf
+    die Semantik ab. Das ist die feste D3D8-Zuordnung:
+
+        v0  POSITION 0      v5  COLOR 0        v10 TEXCOORD 3
+        v1  BLENDWEIGHT 0   v6  COLOR 1        v11 TEXCOORD 4
+        v2  BLENDINDICES 0  v7  TEXCOORD 0     v12 TEXCOORD 5
+        v3  NORMAL 0        v8  TEXCOORD 1     v13 TEXCOORD 6
+        v4  PSIZE 0         v9  TEXCOORD 2     v14 TEXCOORD 7
+        v16 POSITION 1      v17 NORMAL 1
+
+    *** v1 IST FORMAL BLENDWEIGHT, NICHT NORMAL. *** Die AquaNox-
+    Shader transportieren dort faktisch die Normale ("mov oT5, v1",
+    nachweislich richtig -- der Glanz stimmt). In vs_1_1 ist die
+    Semantik nur ein Etikett; das Register traegt, was das Spiel
+    hineinschreibt.
+
+    *** IN vs_3_0 WIRD DAS ETIKETT VERBINDLICH. *** Dort muss jedes
+    Eingaberegister mit dcl_<semantik> deklariert werden, und die
+    Semantik muss zur DEKLARATION passen, nicht zum Inhalt:
+
+        richtig:  dcl_blendweight v1
+        falsch:   dcl_normal v1      <- inhaltlich stimmig, bricht aber
+
+    Wer hier nach dem Inhalt geht statt nach der Tabelle, erzeugt
+    genau wieder einen Fehler der F12-Klasse: uebersetzt sauber,
+    meldet Erfolg, zeichnet falsch.
+
+561.2 DER ANSATZPUNKT IM QUELLTEXT
+--------------------------------------------------------------------------------
+
+    Zeile 1483  D3DXDisassembleShader liefert den Quelltext
+    Zeile 1539  SourceCode.replace(VersionPosition, 6, "vs_1_1")
+                *** HIER wird die Zielversion gesetzt. ***
+    Zeile 1623..1628  bestehende Reparaturen (oFog/oPts-Swizzles)
+    Zeile 1712..1757  das Anhaengen von oT5/oT6/oT7 (AquaNox)
+    Zeile 1760 ff.    der m*x*-Fix (Zielregister != erste Quelle)
+
+561.3 WAS DIE UMSETZUNG LEISTEN MUSS
+--------------------------------------------------------------------------------
+
+    a) Version "vs_1_1" -> "vs_3_0".
+
+    b) EINGAENGE deklarieren. Welche Register belegt sind, steht in
+       der uebergebenen Deklaration (pDeclaration) -- daraus und aus
+       der Tabelle 561.1 ergibt sich je Register ein dcl_<semantik>.
+       *** Gemessen: die AquaNox-Shader belegen v0..v4. ***
+
+    c) AUSGAENGE umschreiben. vs_3_0 kennt kein oPos/oD0/oTn mehr,
+       sondern nur noch o0..o11 mit Semantik:
+
+           oPos -> dcl_position o0
+           oD0  -> dcl_color0   o1
+           oD1  -> dcl_color1   o2
+           oT0  -> dcl_texcoord0 o3   ... oT7 -> dcl_texcoord7 o10
+           oFog -> dcl_fog      (kommt in 456 Disassemblaten 0x vor)
+
+       Jedes Vorkommen im Rumpf muss ersetzt werden. Wortgrenzen
+       beachten: "oT1" darf nicht in "oT10" treffen (in vs_1_1 gibt
+       es oT10 zwar nicht, aber die Ersetzung laeuft auf Text).
+
+    d) *** DIE REIHENFOLGE BEACHTEN. *** Das Anhaengen von oT5/oT6/oT7
+       (561.2, Zeile 1712) geschieht VOR dem m*x*-Fix und muesste vor
+       der Umschreibung stattfinden -- sonst haengt es Register an,
+       die es in vs_3_0 nicht mehr gibt.
+
+561.4 WIE ES ZU PRUEFEN IST -- VOR DEM EINBAU
+--------------------------------------------------------------------------------
+
+    *** NICHT WIEDER AUF DIE ERFOLGSMELDUNG VERLASSEN (560.1). ***
+    D3DXAssembleShader uebersetzt auch Unsinn, wenn er syntaktisch
+    stimmt. Die belastbare Probe ist:
+
+      1. Alle 456 Disassemblate aus einem Messlauf durch die
+         Uebersetzung schicken und assemblieren. Fehler = sofort
+         sichtbar.
+      2. *** DANACH DER TRENNVERSUCH NACH DEM MUSTER VON MODUS 6: ***
+         vs_3_0 MIT ps_2_0 laufen lassen, also nur die Vertexseite
+         umgestellt. Sieht das Bild unveraendert aus, ist die
+         Uebersetzung korrekt. Erst dann ps_3_0 dazunehmen.
+         Wer beides gleichzeitig umstellt, sucht wieder blind --
+         genau der Fehler, der am 10.08. vier Testlaeufe gekostet hat.
+================================================================================
+562. *** vs_3_0 + ps_3_0 LAEUFT -- F12 IST UEBERWUNDEN ***
+================================================================================
+
+    Stefan am 10.08.2026: "Mit AquaNox_VS3Test.cmd startet das Spiel,
+    ich sehe Intro, das Hauptmenue und kann auch ein Level starten und
+    in der 3D Ansicht sieht alles normal aus."
+
+    Aus dem Protokoll, und das ist der eigentliche Befund:
+
+        Vertexshader auf vs_3_0 umgestellt:  315 von 456
+        Pixelshader erzeugt (Modus 5):        13
+        *** ZURUECKGEFALLEN: 0.  VERWORFEN: 0.  Fehler: 0. ***
+
+    *** ALLE DREIZEHN TRAGEN GLANZ UND FRESNEL IN ps_3_0. *** In
+    ps_2_0 war Fresnel nie unterzubringen -- dort fielen ALLE zwoelf
+    Shader zurueck (557/559). Jetzt greift kein einziger Rueckfall.
+    Das Anweisungsbudget ist als Schranke erledigt: 512 statt 64.
+
+
+562.1 *** F16: vs_3_0 VERLANGT ps_3_0 -- IN BEIDE RICHTUNGEN ***
+--------------------------------------------------------------------------------
+
+    F12 sagte: ps_3_0 braucht vs_3_0. *** DIE UMKEHRUNG GILT EBENSO:
+    vs_3_0 ist mit Fixed-Function-Pixelverarbeitung und mit ps_1_x
+    unzulaessig. *** Nur das Paar ist gueltig.
+
+    Der erste Versuch stellte pauschal ALLE 296 Vertexshader um. Folge:
+    *** schwarzes Bild schon beim Intro, lange vor der ersten
+    3D-Ansicht -- aber mit Ton. *** Kein Fehler, kein Protokolleintrag.
+    Wieder die Klasse aus 560.1: meldet Erfolg, tut nichts.
+
+    Die Loesung ist die Kopplung an AqLicht: umgestellt wird nur, wofuer
+    der Wrapper spaeter auch selbst einen Pixelshader bindet. 315 von
+    456 -- Terrain, Wasser, HUD und die Filme bleiben bei vs_1_1.
+
+    *** EIN TRENNVERSUCH IST HIER PRINZIPIELL UNMOEGLICH. *** Beide
+    Seiten muessen gleichzeitig umgestellt werden. Das ist die einzige
+    Stelle im ganzen Projekt, an der die Methode aus 560.2 nicht
+    anwendbar ist -- nicht aus Bequemlichkeit, sondern weil jede
+    Zwischenstufe ungueltig waere.
+
+
+562.2 F14 UND F15 -- VOM PRUEFSKRIPT GEFUNDEN
+--------------------------------------------------------------------------------
+
+    F14  Das Disassemblat bringt bereits dcl-Zeilen mit. Eigene
+         dazuzulegen ergibt "error X5633: Declaration for register v0
+         overlaps previous declaration" -- das Spiel bricht beim Start
+         ab mit "Unknown D3D Error". Die vorhandenen muessen zuerst
+         entfernt werden.
+
+    F15  Skalare Anweisungen brauchen ab vs_2_0 einen replizierenden
+         Swizzle: "rsq r1, r1" wird zu "rsq r1, r1.x".
+         error X5795. Betraf 9 der 456 Shader.
+
+    *** BEIDE HAETTE scratchpad\pruefe_vs3.py IN ZWEI MINUTEN
+    GEFUNDEN. Ich hatte die Pruefung in 561.4 selbst als Vorbedingung
+    festgelegt und dann uebersprungen -- das hat einen Absturz und
+    einen Testlauf gekostet. *** Nach dem Nachholen: 456 von 456
+    assemblieren.
+
+
+562.3 WAS JETZT ERREICHBAR IST
+--------------------------------------------------------------------------------
+
+    Mit 512 Anweisungen faellt die Schranke, an der bisher alles
+    scheiterte:
+
+      - Fresnel     laeuft bereits (Modus 5), 0 Rueckfaelle
+      - Glanz       fuer ALLE vier Lichter statt nur das erste
+      - Normalenkarten -- Objektraum, ohne Tangenten, weil die
+        Normale schon durchgereicht wird (t5/v6)
+      - GGX und Metallizitaet, also echtes PBR
+      - Umgebungstextur fuer Spiegelungen
+
+    OFFEN und unveraendert: das Plankton (558.3a) -- Sprites bekommen
+    vollen Glanz, weil ihre Normalen zum Betrachter zeigen. Braucht
+    einen Messlauf, keine Vermutung.
+
+    *** NICHT GEPRUEFT: ob Objekte fehlen. *** Der Vertexshader wird
+    beim ERZEUGEN umgestellt, der Pixelshader erst beim ZEICHNEN
+    gewaehlt. Scheitert dort der Schluesselaufbau (vier von neunzehn
+    Ketten haben eine Stufe ohne gebundene Textur), steht ein vs_3_0
+    ohne Partner -- das Objekt verschwindet lautlos. In der
+    getesteten Szene ist es nicht aufgefallen; systematisch geprueft
+    ist es nicht.
+================================================================================
+563. *** F17: EIN vs_3_0 OHNE PIXELSHADER-PARTNER VERSCHWINDET ***
+================================================================================
+
+    Stefan: "Perfekt, jetzt sieht es gut aus."
+
+    Damit laeuft vs_3_0 + ps_3_0 mit Glanz und Fresnel vollstaendig.
+    *** DAS IST DER STAND, AUF DEM PBR AUFBAUT. ***
+
+563.1 DER FEHLER UND SEINE VIER WEGE
+--------------------------------------------------------------------------------
+
+    Symptom: Bodenpflanzen verschwanden beim Wegdrehen und kamen beim
+    Hinsehen wieder. *** KEIN LOD-PROBLEM: *** faehrt man rueckwaerts
+    und behaelt den Blick darauf, bleiben sie erhalten. Nur der
+    NEUAUFBAU beim Wiedereintritt ins Sichtfeld loeste es aus.
+
+    Ursache: AqVorZeichnen raeumt an VIER Stellen den Pixelshader ab
+    oder setzt gar keinen. Bei vs_1_1 ist das richtig -- dann
+    uebernimmt Fixed Function. *** BEI vs_3_0 IST ES TOEDLICH. ***
+
+        a) Schluessel nicht baubar (Stufe ohne gebundene Textur)
+        b) Schluessel baubar, aber Erzeugung scheitert (Budget)
+        c) Objekt gilt als "nicht zustaendig" und wird abgeraeumt
+        d) *** AqSchattenGueltig == false -> sofortiges return ***
+
+    Behoben durch einen Not-Pixelshader (Textur 0 mal Diffusfarbe) an
+    allen vier Stellen.
+
+    *** DIE REIHENFOLGE DER ENTDECKUNG IST DIE LEHRE: *** Ich habe
+    (a) repariert, dann (b) und (c), dann (d) -- und jedes Mal einen
+    Testlauf verbraucht. Stefans Beobachtungen waren dabei praeziser
+    als meine Vermutungen:
+        "reproduzierbar beim Wegschauen"     -> Neuaufbau, nicht Zufall
+        "kein LOD, Rueckwaertsfahren geht"   -> schloss LOD sauber aus
+        "bei Naehe weg, in der Ferne noch"   -> zeigte, dass (d) fehlte
+
+    *** MERKE: Bei einem Fehler dieser Art ZUERST ALLE RUECKGABEPFADE
+    EINER FUNKTION SUCHEN, dann alle zugleich absichern. Nicht den
+    erstbesten reparieren und testen lassen. ***
+
+563.2 DER STAND ZUM SPIELEN
+--------------------------------------------------------------------------------
+
+        d3d8_still.dll    167.936 B  still, vs_3_0 + Modus 5
+        d3d8_mit_log.dll  189.952 B  dieselbe mit Protokoll
+
+        *** AquaNox_Spielen.cmd *** <- der beste Stand, still
+        AquaNox_VS3Test.cmd          derselbe mit Protokoll
+        AquaNox_GlanzHemi.cmd        ps_2_0-Stand (Rueckfallebene)
+
+    Jedes Startskript spielt seine DLL selbst ein.
+
+563.3 WAS JETZT OHNE WEITERE HUERDE MOEGLICH IST
+--------------------------------------------------------------------------------
+
+    512 Anweisungen statt 64, keine Rueckfaelle mehr:
+
+      - Glanz fuer ALLE VIER Lichter (bisher nur das erste)
+      - Normalenkarten im Objektraum -- OHNE Tangenten, weil die
+        Normale bereits durchgereicht wird
+      - GGX und Metallizitaet, also echtes PBR
+      - Umgebungstextur (Cubemap) fuer Spiegelungen; AquaNox nutzt
+        selbst keine einzige, sie muesste der Wrapper anlegen
+
+    OFFEN: das Plankton (558.3a). Sprites bekommen vollen Glanz, weil
+    ihre Normalen zum Betrachter zeigen. Braucht einen Messlauf mit
+    Plankton UND Punktlicht im Bild -- keine Vermutung.
+================================================================================
+564. *** vs_3_0: DER NOTBEHELF WAR DER FALSCHE WEG (F20) ***
+================================================================================
+
+    *** DIE MESSUNG, DIE ALLES UMWARF: ***
+
+        vs_3_0-Zeichenaufrufe  88.000
+        Notbehelf             759.534
+        OHNE Pixelshader            0
+
+    *** KEIN EINZIGES OBJEKT GING JE OHNE PIXELSHADER DURCH. *** Die
+    vier Absicherungen aus F17 greifen lueckenlos -- und waren damit
+    von Anfang an die Loesung fuer ein Problem, das es nicht gab.
+
+    Der Notbehelf, als seltene Rettung gedacht, zeichnet den
+    GROESSTEN TEIL DER SZENE: 8,6 Einsaetze je vs_3_0-Zeichenaufruf.
+    Er ist der Hauptpfad geworden. Und er ist absichtlich primitiv --
+    Textur mal Diffusfarbe, ohne die nachgebaute Texturkette.
+
+    *** DARAUS FOLGT: die Pflanzen verschwinden nicht mangels Shader,
+    sondern weil der Notbehelf sie falsch zeichnet. Ihn zu flicken
+    (F21: Alpha mitmultiplizieren) hat nichts gebracht und das
+    Fehlerbild sogar veraendert -- vorher kamen sie beim Hinsehen
+    wieder, danach blieben sie weg. ***
+
+564.1 WAS ICH FALSCH GEMACHT HABE
+--------------------------------------------------------------------------------
+
+    Fuenf Aenderungen hintereinander, jede auf Verdacht, jede mit
+    einem Testlauf des Nutzers bezahlt:
+
+      F17a  Schluessel nicht baubar        -> Notbehelf
+      F17b  Erzeugung gescheitert          -> Notbehelf
+      F17c  "nicht zustaendig"             -> Notbehelf
+      F17d  Schatten ungueltig             -> Notbehelf
+      F19   Absicherung an anderes Merkmal -> VERSCHLECHTERT
+      F21   Alpha im Notbehelf             -> wirkungslos
+
+    *** DIE MESSUNG HAETTE AM ANFANG STEHEN MUESSEN, NICHT NACH DER
+    FUENFTEN AENDERUNG. *** Drei Zahlen haben in einem Lauf gezeigt,
+    was fuenf Vermutungen nicht klaeren konnten. Das ist dieselbe
+    Lehre wie 560.2 -- und ich habe sie ein zweites Mal gebraucht.
+
+564.2 DER RICHTIGE WEG, FUER DEN NAECHSTEN ANLAUF
+--------------------------------------------------------------------------------
+
+    *** NICHT den Notbehelf verbessern. Die Frage ist, warum so viele
+    Objekte ueberhaupt dort landen. ***
+
+    Zu klaeren ist, welcher der drei Wege die 759.534 Einsaetze
+    erzeugt -- die Zaehler muessen dafuer getrennt werden:
+        a) AqBaueSchluessel scheitert (Stufe ohne gebundene Textur?)
+        b) AqHolePS gibt nullptr
+        c) "nicht zustaendig" (Spiel hat eigenen PS / Fixed Function)
+
+    Ist es (c), dann ist die Umstellung auf vs_3_0 schlicht ZU WEIT
+    GEFASST: sie trifft Shader, die beim Zeichnen gar nicht in unsere
+    Zustaendigkeit fallen. Dann darf nicht der Notbehelf gerettet
+    werden, sondern die UMSTELLUNG muss enger werden -- nur Shader,
+    die nachweislich immer einen eigenen Pixelshader bekommen.
+
+    *** DAS IST DIE KERNSPANNUNG DES GANZEN vs_3_0-WEGES: *** die
+    Umstellung geschieht beim ERZEUGEN, die Zustaendigkeit entscheidet
+    sich beim ZEICHNEN. Beides muss zusammenpassen, sonst entsteht
+    genau diese Luecke. Ein Messlauf mit getrennten Zaehlern beantwortet,
+    ob das ueberhaupt sauber geht.
+
+564.3 DER STAND
+--------------------------------------------------------------------------------
+
+    *** ZUM SPIELEN TAUGT DERZEIT NUR DER ps_2_0-STAND: ***
+    AquaNox_GlanzHemi.cmd -- Hemisphaerenglanz pro Bildpunkt, kein
+    Pflanzenproblem, kein vs_3_0.
+
+    Der vs_3_0-Stand (AquaNox_VS3Test.cmd) laeuft, zeigt Glanz und
+    Fresnel, hat aber das Pflanzenproblem. *** NICHT ALS SPIELSTAND
+    GEEIGNET. ***
+
+    Erreicht ist trotzdem: vs_3_0 + ps_3_0 laeuft grundsaetzlich
+    (F12 ueberwunden), 315 Shader werden umgestellt, 456 von 456
+    assemblieren, Glanz und Fresnel sind sichtbar. Was fehlt, ist
+    die saubere Zuordnung von Umstellung und Zustaendigkeit.
+================================================================================
+565. *** vs_3_0 ZURUECKGESTELLT -- WAS ERREICHT IST UND WAS NICHT ***
+================================================================================
+
+565.1 DER STAND, DER FUNKTIONIERT
+--------------------------------------------------------------------------------
+
+    *** AquaNox_GlanzHemi.cmd -- ps_2_0, Modus 12. ***
+    Hemisphaerenglanz pro Bildpunkt, im Spiel bestaetigt, kein
+    Pflanzenproblem. Startet per "-s" direkt ins Level.
+
+    Das ist der Stand, auf dem aufgebaut werden sollte.
+
+565.2 WAS AM vs_3_0-ZWEIG ERREICHT IST
+--------------------------------------------------------------------------------
+
+    Es laeuft grundsaetzlich, und das ist keine Kleinigkeit:
+      - F12 ueberwunden: vs_3_0 + ps_3_0 zusammen ist gueltig
+      - 456 von 456 Vertexshadern assemblieren nach der Uebersetzung
+      - 315 Objektshader werden umgestellt, Intro/Menue/Terrain nicht
+      - Glanz UND Fresnel laufen, 0 Rueckfaelle (in ps_2_0 fielen
+        ALLE zurueck)
+      - 512 statt 64 Anweisungen -- die Schranke fuer PBR ist weg
+
+565.3 *** WAS NICHT FUNKTIONIERT UND WARUM ICH ES ABBRECHE ***
+--------------------------------------------------------------------------------
+
+    Bodenpflanzen verschwinden und kommen bei Blickwechsel zurueck.
+    Rund 10 Prozent bleiben immer stehen.
+
+    *** DIE URSACHE IST NICHT GEFUNDEN. *** Und schlimmer: die
+    Messinstrumente, mit denen ich sie gesucht habe, WIDERSPRECHEN
+    SICH:
+
+        keine einzige "AUFGEGEBEN"-Zeile  -> der Generator bricht nie ab
+        kein VS3Aktiv = 0                 -> das Flag ist immer gesetzt
+        B Erzeugung = 192.758             -> haengt an derselben
+                                             Bedingung und zaehlt doch
+
+    Das kann nicht zugleich stimmen. Die Zaehler wurden ueber mehrere
+    PowerShell-Ersetzungen eingebaut und sitzen nachweislich nicht
+    dort, wo sie sitzen sollten.
+
+    *** WER HIER WEITERMACHT: DIE ZAEHLER NICHT REPARIEREN, SONDERN
+    NEU SETZEN -- von Hand, einzeln, mit Blick auf den umgebenden
+    Code. Eine Messung, deren Zuordnung man nicht kennt, ist
+    schaedlicher als keine: sie sieht aus wie Evidenz. ***
+
+565.4 DIE FEHLER DIESER SITZUNG, EHRLICH
+--------------------------------------------------------------------------------
+
+    F17a..d  Vier Absicherungen fuer Objekte ohne Pixelshader --
+             gebaut, bevor gemessen war. Die Messung ergab spaeter
+             "OHNE Pixelshader = 0". *** Das Problem gab es nie. ***
+    F19      Absicherung auf ein anderes Merkmal umgehaengt,
+             "verschlechterte" es -- in Wahrheit lief bei jenem Test
+             bereits eine veraltete DLL. Rueckname war falsch.
+    F21      Alpha im Notbehelf -- wirkungslos.
+    F22      Nachbau statt Notbehelf -- griff NIE (C-Nachbau=0).
+    F23      Notbehelf an ALLE Objekte mit Vertexshader gebunden,
+             weil ich AqVS3 (globaler Schalter) statt AqVS3Aktiv
+             (Merkmal des Shaders) geprueft habe. *** 2,1 MILLIONEN
+             Objekte -- Terrain, Wasser, Partikel -- bekamen meinen
+             primitiven Ersatzshader. *** Das war real und ist behoben.
+
+    *** DAS MUSTER: Ich habe siebenmal gebaut und danach gemessen.
+    Jedes Mal, wenn ich zuerst gemessen habe (560.2, 564), war die
+    Antwort in einem Lauf da. ***
+
+565.5 DER NAECHSTE ANLAUF, WENN JEMAND IHN NIMMT
+--------------------------------------------------------------------------------
+
+    Die offene Frage ist eng: warum liefert AqHolePS ein nullptr,
+    obwohl weder der Generator aufgibt noch CreatePixelShader
+    fehlschlaegt? Der Cache speichert nullptr dauerhaft
+    ("auch nullptr ist ein gueltiges Ergebnis") -- das erklaert, warum
+    betroffene Objekte haengen bleiben, bis ein Blickwechsel einen
+    anderen Schluessel erzeugt.
+
+    Erster Schritt: EINEN sauberen Zaehler direkt vor "return
+    Fund->second" setzen, der zaehlt, wie oft ein nullptr AUS DEM
+    CACHE kommt. Das trennt "einmal fehlgeschlagen und fuer immer
+    gemerkt" von "scheitert jedes Mal neu". Nichts anderes bauen,
+    bevor diese eine Zahl vorliegt.
+    *** ZUM PFLANZENPROBLEM GIBT ES EINE EIGENE, VOLLSTAENDIGE DATEI:
+    mod_docu\PFLANZENPROBLEM_vs30.txt *** Sie ist eigenstaendig lesbar
+    und enthaelt alle Beobachtungen im Wortlaut, jeden gescheiterten
+    Ansatz mit Begruendung, die gemessenen Zahlen samt ihrer
+    Widersprueche, die heisseste Spur (Cache speichert nullptr
+    dauerhaft) und den genauen naechsten Schritt.
+
+================================================================================
+569. TAGESABSCHLUSS 10.08. (NACHT): F26..F31 -- UND DIE PBR-KETTE STEHT
+================================================================================
+
+    Vollstaendige Herleitung in mod_docu\PFLANZENPROBLEM_vs30.txt --
+    die Datei ist eigenstaendig lesbar und enthaelt jede Messung,
+    jeden Irrweg und die Aufloesung. Hier nur der Endstand:
+
+    *** DAS "PFLANZENPROBLEM" WAR NIE IM WRAPPER. *** Ursache war die
+    Pflanzen-Weitsicht (MaxDistance 1200, Handoff 551): der
+    Sprite-Pool der Engine lief ueber und warf Instanzen vor der
+    Kamera raus (F31). Geloest durch moderate Werte (300/400/512).
+    Ein Tag Shader-Forensik im falschen Stockwerk, weil die
+    Basislinie nie geprueft wurde -- Lehre siehe Problemdatei.
+
+    ECHTE FUNDE DES TAGES:
+      F26  Zaehlzeilen an klammerlosen ifs (Textersetzungs-Artefakt):
+           saemtliche Notbehelf-Messungen aus 564/566 waren Fiktion.
+           Ehrliche M567-Zaehler, alle von Hand, alle geklammert.
+      F27  Modus-14-Probe wurde vom Hemisphaerenblock ueberschrieben;
+           Probe jetzt als letzte Anweisung -> *** PBR-KETTE END-ZU-END
+           BEWIESEN: Textur -> Hash -> PNG -> Normalenkarte -> Sampler
+           -> Shader -> Bild (violetter Screenshot). ***
+      F28/F30  Kette mit fehlender Textur: FF schneidet die Kaskade
+           ab. In ps_2_0-Modi gilt wieder Ablehnung -> echtes FF; nur
+           unter vs_3_0 wird abgeschnitten (dort gibt es kein FF).
+           Der Notbehelf feuert seither NIE mehr (NotA 3594 -> 0).
+      F29  "AqWurdeVS3 = true" stand in #ifndef D3D8TO9NOLOG -- die
+           stille Fassung haette das Merkmal nie gesetzt. *** Zustand
+           gehoert NIE in Protokollklammern. ***
+      F31  s.o. -- dazu als Grundlagenwissen: *** DIE ENGINE WECHSELT
+           VERTEXSHADER DYNAMISCH JE LICHTSITUATION *** (456 Creates
+           auf 76 Shader; Modus 9 faerbte Gebaeude nur bei
+           Projektillicht rot). Ausserdem Semantiktabelle korrigiert:
+           Register 15/16 = POSITION1/NORMAL1 (nicht 16/17).
+
+    DATEISTAND:
+      AquaNox_Spielen.cmd   voller Stand, still (172.032 B, F29 drin)
+      AquaNox_VS3Test.cmd   derselbe mit Protokoll (199.680 B)
+      AquaNox_GlanzHemi.cmd ps_2_0-Rueckfallebene
+      Quelltexte gesichert bis hook\d3d8to9_device_s569_F30.cpp
+
+================================================================================
+570/571. TANGENTEN PER ABLEITUNG + GGX/ORM -- GEBAUT, NICHT GETESTET
+================================================================================
+
+    In 30 Minuten autonomer Arbeit entstanden; jede Annahme offline am
+    Assembler geprueft (Vollshader: 114 von 512 Anweisungen). *** IM
+    SPIEL NOCH NICHT ERPROBT -- Teststand ist AquaNox_VS3Test.cmd
+    (201.216 B), die stille Spielfassung blieb unangetastet. ***
+
+570. ECHTE TANGENTEN (Punkt 3)
+--------------------------------------------------------------------------------
+    Die Normalenkarte wird nicht mehr als blosse x/y-Stoerung addiert
+    (Richtung stimmte nur zufaellig), sondern ueber einen im Pixel
+    rekonstruierten Tangentenrahmen gedreht (Schueler-Verfahren):
+    dsx/dsy von Ort (t6) und Texturkoordinate (t0) liefern T und B,
+    die Karte wird vom Tangenten- in den Objektraum gebracht und die
+    Normale renormalisiert. ~25 Anweisungen.
+    *** dsx/dsy GIBT ES ERST AB ps_3_0 *** -- deshalb sind
+    NormalKarte/OrmKarte im Schluessel jetzt HART auf die
+    ps_3_0-Familie (Modus 5/14/15) beschraenkt: ein gesetztes Bit in
+    Modus 10..13 haette jeden Shader unassemblierbar gemacht und
+    ueber den Rueckfall bis VERWORFEN getrieben.
+
+571. GGX + ORM-KARTEN (Punkt 2)
+--------------------------------------------------------------------------------
+    a) Punktlichtglanz in Modus 5 ist jetzt GGX statt Blinn-Phong:
+       D = a2/(pi*d^2), d = (N.H)^2*(a2-1)+1, a2 = Rauheit^4.
+       Vorspann einmal je Bildpunkt (r10.x = a2/pi, r10.y = a2-1),
+       je Licht 9 Anweisungen, kein pow mehr (F11 gegenstandslos).
+       Geometrieterm bewusst weggelassen (Optik: D*F*NL genuegt).
+       Konstante c1 = (1/pi, 1, 0, Vorgaberauheit 0.7) -- c1 ist
+       frei, Lichtkonstanten belegen c8..c29, Kamera c0.
+    b) ORM-Karten: mod_docu\texturen\orm\<hash>_orm.png, 113 Stueck,
+       Werkzeug mod_docu\tools\orm_karten.py. *** REINE HEURISTIK:
+       R=1 (kein AO), G=Rauheit aus Helligkeit (dunkel=rau,
+       0.35..0.9), B=0 (Metall bewusst aus -- Metall ohne
+       Spiegelumgebung waere schwarz). *** Der Shader liest nur G.
+    c) *** BINDUNG AUF s8/s9 STATT 3/4 (F32-Vorbeugung). *** Das
+       D3D8-Spiel kann nur Stufen 0..7 ansprechen; die alte Bindung
+       auf Stufe 4 lag im Kollisionsbereich der Engine (der
+       Schluesselaufbau wehrt "Stufe4Aktiv" seit jeher ab). Auf 8/9
+       ist eine Kollision prinzipiell unmoeglich. Umzug komplett:
+       SetTexture, dcl_2d, texld, Aufraeumpfad.
+
+    SCHLUESSEL: +1 Byte (OrmKarte), static_assert 35 -> 36.
+
+================================================================================
+573-575. MODUS-16-PROBE, EFFEKT-AUSSCHLUSS, GLATTE KARTEN
+================================================================================
+
+    573  Modus 16 (gestoerte Normale als Farbe) bewies: *** DIE
+         TBN-STOERUNG KOMMT AN *** -- texturfolgende Struktur auf
+         allen 3D-Meshes. Terrain bleibt aussen vor (eigener Pfad,
+         nicht unsere Shader). Das "fehlende Relief" war zum Teil
+         Fehldeutung: die fleckige Wand im ReliefTest WAR die
+         Reliefantwort, las sich aber als Rauschen.
+
+    574  *** DER "PLANKTON"-FEHLER VON GESTERN IST GELOEST: es war
+         NIE das Plankton, sondern die additiv gemischten
+         EFFEKT-SPRITES (Muendungsfeuer, Lichtkegel). *** Sichtbar in
+         Modus 16: das Muendungsfeuer leuchtete violett -- es lief
+         durch unsere Beleuchtung. Selbstleuchtende Effekte duerfen
+         weder Glanz noch Relief bekommen. Erkennung: Dest = ONE
+         (additive Mischung). Neues Schluesselbit "Effekt"
+         (static_assert 36 -> 37); Glanz-, Fresnel- und Kartenpfade
+         sind dafuer stillgelegt, Diffus und Texturkette unveraendert.
+
+    575  Normalkarten neu erzeugt: Hoehenfeld doppelt kastengefiltert
+         plus grobe 8px-Ebene, halb/halb gemischt -- Formen statt
+         Koernung. Werkzeug mod_docu\tools\normalkarten.py.
+
+================================================================================
+576. UNTERWASSER-SPIEGELUNG (CUBEMAP) -- GEBAUT, NICHT GETESTET
+================================================================================
+
+    Der Baustein, der in 554/563 als PFLICHT fuer PBR markiert war:
+    ohne Spiegelumgebung ist Metall physikalisch schwarz.
+
+    a) *** PROZEDURALER WUERFEL, KEINE DATEI. *** AqBaueUmgebung()
+       erzeugt beim Start einen 32x32x6-Wuerfel (A8R8G8B8, MANAGED):
+       reiner Vertikalverlauf, helle Wasseroberflaeche oben (95/165/175),
+       Horizont (18/55/70), dunkler Grund (6/14/20). AquaNox selbst
+       nutzt keine einzige Wuerfeltextur -- diese ist die erste.
+       Dauerhaft auf s10 (D3D8-Spiel kann Stufen ab 8 nicht anfassen),
+       Wiederbindung bei jedem SetTexture(0) als Zustandsblock-Schutz.
+
+    b) *** GEMEINSAMER SCHLUSSBLOCK: Fresnel wird jetzt IMMER
+       gerechnet *** (frueher nur bei Punktlichtern) -- die Spiegelung
+       ist gerade der Anteil, der OHNE Lichtquelle sichtbar bleibt.
+       R = 2(N.V)N - V, Wuerfelzugriff, Gewicht F * (1 - Rauheit^2):
+       glatte Flaechen spiegeln, raue nicht.
+
+    c) *** r14.x RETTET DIE RAUHEIT UEBER DIE TEXTURKETTE ***
+       (BLENDTEXTUREALPHA schreibt das ganze r10 -- ohne Rettung laese
+       der Spiegelblock Farbmuell als Rauheit).
+
+    d) Kein Schluesselfeld: die Umgebung ist prozesskonstant
+       (AQUANOX_UMGEBUNG=0 schaltet ab, Vorgabe an). Effekte (574)
+       sind ausgenommen.
+
+    Offline verifiziert (Block assembliert). Erwartung im Spiel:
+    Ruempfe und Waende werden bei STREIFENDEM Blick sichtbar heller/
+    blaeulicher (Fresnel-Spiegelung der Wasseroberflaeche), frontal
+    kaum. Danach kann der Metallkanal der ORM-Karten aktiviert werden.

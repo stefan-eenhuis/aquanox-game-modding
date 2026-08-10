@@ -1,0 +1,546 @@
+================================================================================
+ DAS PFLANZENPROBLEM IM vs_3_0-ZWEIG
+ Stand 10.08.2026, zurueckgestellt. Alles, was dazu bekannt ist.
+================================================================================
+
+ Diese Datei ist bewusst eigenstaendig: sie soll ohne den Chatverlauf und
+ ohne die 565 Abschnitte des Handoffs benutzbar sein. Wer sie liest --
+ Mensch oder anderes Modell -- soll sofort weiterarbeiten koennen.
+
+ *** WICHTIGSTE REGEL FUER DEN NAECHSTEN ANLAUF, aus sieben Fehlschlaegen
+ gelernt: ERST MESSEN, DANN BAUEN. Jedes Mal, wenn zuerst gemessen wurde,
+ lag die Antwort nach EINEM Lauf vor. Jedes Mal, wenn zuerst gebaut wurde,
+ kostete es einen Testlauf des Nutzers und brachte nichts. ***
+
+
+================================================================================
+1. DAS SYMPTOM
+================================================================================
+
+ Bodenpflanzen (Vegetation auf dem Meeresgrund) verschwinden und kommen
+ wieder. Nur im vs_3_0-Zweig; im ps_2_0-Stand tritt es NICHT auf.
+
+ *** DIE BEOBACHTUNGEN DES NUTZERS, WOERTLICH. Sie waren durchweg
+ praeziser als die Vermutungen des Assistenten und haben mehrfach ganze
+ Erklaerungszweige ausgeschlossen: ***
+
+   "Sind sie nicht im Sichtbereich und man dreht sich wieder zu den
+    Pflanzen hin, fehlen sie, aber erschienen dann ziemlich schnell
+    wieder, die gleichen Pflanzen verschwinden dann auch wieder wenn man
+    weg schaut und wenn man wieder hin schaut, werden sie wieder
+    dargestellt, also das klappt reproduzierbar"
+
+   "Es ist aber kein LOD Problem, weil wenn der Blick darauf gerichtet
+    bleibt und man ganz weit rueckwaerts faehrt, bleiben die Pflanzen auf
+    dem Boden trotzdem erhalten."
+   -> *** SCHLIESST ENTFERNUNG/LOD ALS URSACHE AUS. ***
+
+   "reicht oft 'nur hinschauen' nicht aus, man muss sich auch noch etwas
+    annaehern"                                     (fruehere Fassung)
+
+   "Es tritt bei Naehe nicht mehr auf, aber bei etwas weiterer Entfernung
+    schon noch"                                    (nach F17a..c)
+
+   "Besonders auffaellig, sie sind beim Hinschauen oft da und verschwinden
+    dann und bleiben verschwunden."                (nach F21)
+
+   "Es laesst sich uebrigens nur durch wegschauen + hinschauen loesen.
+    Bewegung oder Annaeherung aendert nichts mehr, das Verhalten hat sich
+    im Vergleich zu frueheren Tests also geaendert"   (nach F23)
+
+   "Ich konnte keinen Fall erzeugen, in dem gar keine Pflanzen da sind.
+    Eigentlich waren noch wenigstens 10% der Pflanzen da."
+   -> *** SEHR WICHTIG: es sind NICHT alle betroffen. Waere es ein
+      reiner Shaderfehler, muessten alle Pflanzen desselben Typs gleich
+      betroffen sein. Ein Rest bleibt immer stehen -- verschiedene
+      Pflanzen nehmen also verschiedene Wege durch den Code. ***
+
+ *** DAS VERHALTEN HAT SICH IM LAUF DER AENDERUNGEN VERSCHOBEN. *** Das
+ ist selbst ein Befund: die Eingriffe haben etwas veraendert, nur nicht
+ das Richtige. Wer neu misst, darf die frueheren Beschreibungen nicht
+ mehr als aktuell voraussetzen.
+
+
+================================================================================
+2. WAS GESICHERT IST
+================================================================================
+
+ 2.1 vs_3_0 LAEUFT GRUNDSAETZLICH
+     - F12 ueberwunden: vs_3_0 + ps_3_0 zusammen ist gueltig.
+       *** ps_3_0 verlangt vs_3_0 UND UMGEKEHRT. *** Mit Fixed Function
+       oder ps_1_x ist vs_3_0 unzulaessig -- dann bleibt das Bild
+       schwarz, schon im Intro, mit Ton. Ohne Fehlermeldung.
+     - 456 von 456 Vertexshadern assemblieren nach der Uebersetzung
+       (Pruefskript scratchpad\pruefe_vs3.py).
+     - 315 Objektshader werden umgestellt; Terrain, Wasser, HUD, Filme
+       bleiben bei vs_1_1 (Kopplung an AqLicht).
+     - Glanz UND Fresnel laufen, 0 Rueckfaelle. In ps_2_0 fielen ALLE
+       zurueck -- Fresnel kam dort nie im Bild an.
+     - 512 statt 64 Anweisungen. Die Schranke fuer PBR ist weg.
+
+ 2.2 GEMESSENE ZAHLEN (aus d3d8.log, Modus 5 + AQUANOX_VS3=1)
+     Bei rund 200.000 vs_3_0-Zeichenaufrufen:
+        OHNE Pixelshader          0   <- *** NIE ***
+        Notbehelf         ~1.800.000   <- rund 9x je Zeichenaufruf
+        A Schluessel nicht baubar ~3.200  (0,2 %)
+        B Erzeugung gescheitert ~193.000  (~100 % der Zeichenaufrufe)
+        C nicht zustaendig    ~1.650.000  (89 %)
+
+     *** DIE ZAHLEN SIND MIT VORSICHT ZU GENIESSEN, siehe Abschnitt 5. ***
+
+ 2.3 WAS AUSGESCHLOSSEN IST
+     - *** Objekte gehen NIE ohne Pixelshader durch *** ("OHNE
+       Pixelshader = 0", ueber alle Messlaeufe hinweg konstant).
+       Die vier Absicherungen aus F17 greifen also lueckenlos -- und
+       waren von Anfang an die Loesung fuer ein Problem, das es nicht
+       gab.
+     - CreatePixelShader schlaegt NIE fehl (eigens protokolliert, 0
+       Treffer).
+     - Der Generator gibt NIE auf: keine einzige "AUFGEGEBEN"-Zeile,
+       weder wegen unbekannter Operation noch wegen unbekannten
+       Arguments.
+     - AqSchattenGueltig ist NIE die blockierende Bedingung
+       ("kein Schatten = 0").
+     - LOD/Entfernung ist nicht die Ursache (Beobachtung des Nutzers,
+       Abschnitt 1).
+
+
+================================================================================
+3. ALLE ANSAETZE UND WARUM SIE SCHEITERTEN
+================================================================================
+
+ F17a  Schluessel nicht baubar -> Not-Pixelshader binden.
+       Gedanke: ein vs_3_0 ohne Pixelshader ist ungueltig, das Objekt
+       verschwindet. Ergebnis: half etwas ("bei Naehe nicht mehr").
+       *** RUECKBLICKEND: Das Problem "Objekt ohne Pixelshader" gab es
+       nie -- die spaetere Messung ergab konstant 0. ***
+
+ F17b  Dasselbe, wenn die Shader-Erzeugung scheitert.
+ F17c  Dasselbe im Zweig "nicht zustaendig".
+ F17d  Dasselbe, wenn AqSchattenGueltig false ist.
+       -> Alle drei ohne durchschlagende Wirkung.
+
+ F19   Absicherung von AqVSLicht auf ein neues Merkmal IstVS3 umgehaengt.
+       Ergebnis: *** VERSCHLECHTERT *** ("jetzt auch bei mittlerer
+       Distanz").
+       *** ACHTUNG, DIESE BEWERTUNG WAR FALSCH: bei jenem Test lief
+       bereits eine veraltete DLL (siehe 3.1). Die Rueckname war
+       vermutlich der Fehler, nicht die Aenderung. ***
+
+ F21   Alpha im Notbehelf mitmultiplizieren (mul r0 statt mul r0.xyz).
+       Ergebnis: wirkungslos, aber das Fehlerbild aenderte sich
+       ("bleiben verschwunden" statt "kommen wieder").
+
+ F22   Statt des primitiven Notbehelfs den NACHBAU (Modus 2) binden.
+       Ergebnis: *** GRIFF NIE (C-Nachbau = 0). *** Der Code wurde nie
+       erreicht. Erst danach fiel auf, dass die Bedingung eine
+       zusaetzliche Klausel enthielt, die nie erfuellt war.
+
+ F23   *** DER EINE ECHTE FEHLER, DER GEFUNDEN UND BEHOBEN WURDE. ***
+       Die Bedingung prueft AqVS3 -- den GLOBALEN SCHALTER, der immer an
+       ist -- statt AqVS3Aktiv, das Merkmal des konkreten Shaders.
+       Folge: *** 2,1 MILLIONEN Objekte (Terrain, Wasser, Partikel)
+       bekamen den primitiven Ersatzshader, obwohl keines davon ein
+       umgestellter Objektshader war *** (gemessen: "kein VS3Aktiv" und
+       "kein VSLicht" jeweils 100 %).
+       Behoben. Erklaert vermutlich auch, warum vorher subtil vieles
+       anders aussah, ohne dass es auffiel.
+
+ F24   CreatePixelShader-Fehlschlag protokollieren.
+       Ergebnis: 0 Fehlschlaege. Damit ausgeschlossen.
+
+ F25   Protokollieren, WARUM AqBaueQuelltext aufgibt (unbekannte
+       Operation / unbekanntes Argument -- AqArgName kennt nur DIFFUSE,
+       CURRENT, TEXTURE; nicht TFACTOR, SPECULAR, COMPLEMENT,
+       ALPHAREPLICATE).
+       Ergebnis: 0 Treffer. Der Generator gibt nie auf.
+
+ 3.1 *** EIN GANZER TESTLAUF WAR WERTLOS, WEIL DIE DLL NICHT AKTUELL WAR. ***
+     Der Nutzer startete versehentlich AquaNox_Spielen.cmd (stille
+     Fassung) statt AquaNox_VS3Test.cmd. Die Startskripte spielen ihre
+     DLL inzwischen selbst ein und PRUEFEN das auch (fc /b gegen
+     d3d8_mit_log.dll, Abbruch mit Meldung).
+     *** LEHRE: vor jeder Deutung eines Testergebnisses pruefen, ob die
+     erwartete DLL ueberhaupt lief. Ein "unveraendert" kann bedeuten,
+     dass sich tatsaechlich nichts geaendert hat. ***
+
+
+================================================================================
+4. DIE HEISSESTE SPUR
+================================================================================
+
+ *** AqHolePS LIEFERT nullptr, OBWOHL WEDER DER GENERATOR AUFGIBT NOCH
+ CreatePixelShader FEHLSCHLAEGT. *** Beides ist eigens gemessen (2.3).
+
+ Der Cache speichert nullptr dauerhaft. Im Quelltext steht woertlich:
+
+     const auto Fund = AqCache.find(k);
+     if (Fund != AqCache.end())
+         return Fund->second;   // auch nullptr ist ein gueltiges Ergebnis
+
+ *** DAS PASST GENAU ZUM BEOBACHTETEN VERHALTEN: *** ist ein Schluessel
+ einmal fehlgeschlagen, bleibt er fuer immer fehlgeschlagen. Ein
+ Blickwechsel erzeugt einen ANDEREN Zustand -> anderen Schluessel ->
+ anderen Cache-Eintrag -> das Objekt erscheint wieder. Bewegung allein
+ aendert den Schluessel nicht, deshalb hilft sie nicht.
+
+ Und es erklaert die 10 Prozent: das sind die Pflanzen, deren Schluessel
+ beim ersten Mal geklappt hat.
+
+ *** DER ERSTE SCHRITT, UND NUR DIESER: *** einen sauberen Zaehler
+ unmittelbar VOR "return Fund->second" setzen, der zaehlt, wie oft ein
+ nullptr AUS DEM CACHE kommt -- getrennt von der Zahl, wie oft ein
+ nullptr NEU entsteht. Diese zwei Zahlen trennen
+     "einmal gescheitert und fuer immer gemerkt"
+ von
+     "scheitert jedes Mal neu".
+ *** NICHTS ANDERES BAUEN, BEVOR DIESE ZAHLEN VORLIEGEN. ***
+
+ Ist es der Cache: nullptr gar nicht erst speichern, oder mit einem
+ Verfallsdatum versehen.
+ Ist es kein Cache-Effekt: dann entsteht der nullptr in der Schleife von
+ AqHolePS, und die muss Zeile fuer Zeile durchgegangen werden -- dort
+ gibt es mehrere "break"-Wege, die PS auf nullptr belassen.
+
+
+================================================================================
+5. *** WARUM DEN BISHERIGEN ZAHLEN NICHT ZU TRAUEN IST ***
+================================================================================
+
+ Drei Werte aus DEMSELBEN Lauf widersprechen einander:
+
+     keine einzige "AUFGEGEBEN"-Zeile   -> der Generator bricht nie ab
+     kein VS3Aktiv = 0                  -> das Flag ist immer gesetzt
+     B Erzeugung = 192.758              -> haengt an derselben Bedingung
+                                           und zaehlt trotzdem
+
+ Das kann nicht gleichzeitig stimmen. Die Zaehler wurden ueber mehrere
+ automatisierte Textersetzungen eingebaut und sitzen nachweislich nicht
+ dort, wo sie sitzen sollten.
+
+ *** DIE ZAEHLER NICHT REPARIEREN, SONDERN NEU SETZEN -- von Hand,
+ einzeln, jeweils mit Blick auf den umgebenden Code. Eine Messung, deren
+ Zuordnung man nicht kennt, ist schaedlicher als gar keine: sie sieht aus
+ wie Evidenz. ***
+
+ Betroffene Zaehler: AqWegA, AqWegB, AqWegC, AqWegC2, AqFlagGesamt,
+ AqFlagKeinSchatten, AqFlagKeinVS3Aktiv, AqFlagKeinLicht,
+ AqZaehlOhnePS, AqZaehlNotPS, AqZaehlVS3Draw.
+
+
+================================================================================
+6. DATEIEN UND STAENDE
+================================================================================
+
+ ZUM SPIELEN (funktioniert, kein Pflanzenproblem):
+   AquaNox_GlanzHemi.cmd     ps_2_0, Modus 12, Hemisphaerenglanz, still
+   d3d8_still.dll            167.936 B
+
+ ZUM WEITERARBEITEN:
+   AquaNox_VS3Test.cmd       vs_3_0 + ps_3_0 (Modus 5), mit Protokoll
+   d3d8_mit_log.dll          193.024 B, alle Zaehler und Messungen
+
+ *** BEIDE STARTEN PER "-s" DIREKT INS LEVEL: ***
+     Aqua.exe -s map\inst_asylum\script\inst_asylum
+ Der Schalter ist seit 2001 eingebaut und in
+ toolkit\aqtk\modell\level.py:654 dokumentiert -- samt der Warnung, dass
+ er 41 Handoff-Fassungen lang uebersehen wurde, weil die Schaltersuche
+ mindestens zwei Zeichen hinter dem Minus verlangte.
+ Trenner ist ein LEERZEICHEN; ein leeres -s bringt die Exe zum Absturz.
+
+ QUELLTEXT-SICHERUNGEN in mod_docu\hook\:
+   d3d8to9_device_s561_vs30.cpp        erste vs_3_0-Uebersetzung
+   d3d8to9_device_s561_vs30_F14F15.cpp mit dcl-Bereinigung und Swizzle
+   d3d8to9_device_s562_F17.cpp         die vier Absicherungen
+   d3d8to9_device_s565_F19.cpp         IstVS3-Merkmal
+   d3d8to9_device_s566_F22.cpp         Nachbau statt Notbehelf
+
+ PRUEFSKRIPTE (scratchpad):
+   pruefe_vs3.py     alle 456 Disassemblate durch die Uebersetzung
+   pruefe_ps3.py     die erzeugten ps_3_0-Shader
+   puffer.py         alle sprintf_s gegen ihre Puffergroesse
+   Aufrufe stehen in den Dateikoepfen.
+
+
+================================================================================
+7. SCHALTER UND MODI
+================================================================================
+
+   AQUANOX_PP=4    ps_2_0, Beleuchtung pro Bildpunkt, ohne Glanz
+   AQUANOX_PP=5    ps_3_0, Glanz + Fresnel + Hemisphaerenglanz
+   AQUANOX_PP=10   ps_2_0, Glanz nur aus Punktlichtern
+   AQUANOX_PP=11   wie 10, absichtlich uebertrieben (Sichtbarkeitsprobe)
+   AQUANOX_PP=12   ps_2_0, Hemisphaerenglanz  <- der Spielstand
+   AQUANOX_PP=13   wie 12 plus Fresnel (faellt in ps_2_0 immer zurueck)
+   AQUANOX_VS3=1   Vertexshader auf vs_3_0 umstellen
+
+   Trennversuche aus der F12-Suche, weiterhin nuetzlich:
+   AQUANOX_PP=6    ps_3_0, Rechnung identisch zu Modus 4
+   AQUANOX_PP=7    wie 6, Alpha hart auf 1
+   AQUANOX_PP=8    reines Weiss
+   AQUANOX_PP=9    Knallrot
+   *** Modus 9 war der Beweis fuer F12: gibt der Shader Knallrot aus und
+   das Fehlerbild bleibt unveraendert, dann laeuft er dort nicht. ***
+
+
+================================================================================
+8. DIE ARBEITSWEISE, DIE FUNKTIONIERT HAT
+================================================================================
+
+ *** BEI EINEM FEHLER NACH EINER UMSTELLUNG: DIE UMSTELLUNG HALBIEREN,
+ NICHT DIE SYMPTOME DEUTEN. *** Modus 6 (identische Rechnung, nur andere
+ Shaderversion) hat die F12-Frage in EINEM Lauf beantwortet, nachdem vier
+ gedeutete Hypothesen -- NaN, Mischmodus, Alpha, Nebel -- allesamt falsch
+ waren.
+
+ *** ABSICHTLICH UEBERTREIBEN, UM SICHTBARKEIT ZU PRUEFEN. *** Modus 11
+ (vierfacher Glanz) hat gezeigt, dass ein Effekt nicht bloss zu schwach
+ war, sondern gar nicht ankam -- er wurde nach der Rechnung
+ wegmultipliziert (F13).
+
+ *** AM ERGEBNIS PRUEFEN, NICHT AN DER MELDUNG. *** Die drei teuersten
+ Fehler des Projekts melden alle Erfolg und tun nichts:
+   F9   sprintf_s uebersetzt sauber und toetet den Prozess (0xC0000409)
+   F12  Assembler und CreatePixelShader melden Erfolg, Bild falsch
+   F13  Rechnung korrekt, Ergebnis direkt danach wegmultipliziert
+ Dazu: ein Bau mit /p:DefineConstants meldet Erfolg und setzt die
+ Definition nicht (C#-Option, bei C++ wirkungslos), und eine Logmeldung
+ nannte den ANGEFORDERTEN statt des GEBAUTEN Modus.
+
+
+================================================================================
+ NACHTRAG 10.08.2026: DAS PFLANZENPROBLEM BLOCKIERT AUCH PBR
+================================================================================
+
+ *** DIE BEIDEN BAUSTELLEN SIND EINE. *** Was hier als "Pflanzenproblem"
+ beschrieben ist, verhindert zugleich jede PBR-Wirkung.
+
+ Gemessen im Modus 14 (Normalenkarte direkt als Bildfarbe):
+
+     Shader mit s4-Lesebefehl:            2
+     Normalenkarten geladen:            113
+     Normalenkarten gebunden:     1.377.451
+     Notbehelf-Einsaetze:         6.002.378
+     davon "nicht zustaendig":    5.318.379
+
+ Der Shader enthaelt den Lesebefehl, die Karten werden geladen und
+ gebunden -- und trotzdem aendert sich am Bild NICHTS. Der Grund:
+ *** fast alles, was man sieht, wird vom Notbehelf gezeichnet, und der
+ ist ein fester, primitiver Shader ohne Normalenkarte. ***
+
+ Modus 14 war als Beweisprobe gedacht (Karte als Bildfarbe, muss
+ violett aussehen). Das Bild blieb unveraendert -- genau deshalb war
+ die Probe richtig: sie hat in EINEM Lauf gezeigt, dass Feinabstimmung
+ an der Staerke vergeudet gewesen waere.
+
+ *** FOLGE FUER DIE PLANUNG: Ohne Loesung des Notbehelf-Problems ist
+ PBR nicht erreichbar. Keine Normalenkarte, kein GGX, keine
+ Metallizitaet kann im Bild ankommen, solange 89 Prozent der Objekte
+ in den Zweig "nicht zustaendig" fallen. ***
+
+ Die Textur-Infrastruktur steht dagegen vollstaendig und ist von
+ diesem Problem unabhaengig:
+   - Hash ueber die Pixeldaten beim Hochladen (UnlockRect), DXT-fest
+   - 225 Texturen je Szene als PNG ausgegeben
+   - 113 Normalenkarten daraus erzeugt (mod_docu\tools\normalkarten.py)
+   - Zuordnung ueber den Hash trifft: 113 von 113 geladen
+   - Samplerstufe 4 belegt, Merkmal im Shaderschluessel
+ *** Sie wird sofort nutzbar, sobald der Notbehelf nicht mehr der
+ Hauptpfad ist. ***
+
+================================================================================
+ NACHTRAG 10.08.2026 (2): DER ZAEHLER-VERDACHT IST BESTAETIGT -- F26
+================================================================================
+
+ Abschnitt 5 ("den Zahlen ist nicht zu trauen") hatte recht, und der
+ Mechanismus ist gefunden. An ZWEI Stellen in AqVorZeichnen stand:
+
+     if (Bedingung)
+         Gewuenscht = AqHoleNotPS();
+         ++AqZaehlNotPS;      <- lief IMMER
+         ++AqWegC;            <- lief IMMER
+
+ *** EIN if OHNE KLAMMERN, an das eine automatische Textersetzung
+ Zaehlzeilen angehaengt hatte. Nur die erste Zeile war bedingt; die
+ Zaehler liefen bei JEDEM Zeichenaufruf der Szene. ***
+
+ FOLGEN FUER DIE FRUEHEREN SCHLUESSE:
+   - "B Erzeugung = ~100%" war eine Fiktion: B zaehlte jeden
+     zustaendigen Zeichenaufruf, nicht die nullptr-Faelle.
+   - "C nicht zustaendig = 89%" war eine Fiktion: C zaehlte jeden
+     nicht zustaendigen Zeichenaufruf der ganzen Szene.
+   - *** "Der Notbehelf zeichnet den Groessteil der Szene" (564, 566)
+     IST DAMIT UNBELEGT. Wie oft er wirklich gebunden wird, ist
+     unbekannt -- moeglicherweise fast nie. ***
+   - Die Cache-nullptr-Theorie (Abschnitt 4) bleibt plausibel, stuetzt
+     sich aber ebenfalls auf die erlogenen Zahlen. Sie ist jetzt
+     MESSBAR: AqPSCacheNull gegen AqPSNeuNull.
+
+ AUSSERDEM GEFUNDEN: F27. Die Modus-14-Probe ("Normalenkarte als
+ Bildfarbe") schrieb nach r2 -- und der Hemisphaerenblock direkt
+ darunter beginnt mit "mov r2, c9". Die Probe wurde kommentarlos
+ ueberschrieben. *** Der Schluss "die Normalenkarte kommt im Shader
+ nicht an" war deshalb NICHT belegt. *** Die Probe steht jetzt als
+ letzte Anweisung vor mov oC0 und zeigt die rohe Karte.
+
+ NEUE MESSUNG (Stand s567, von Hand gesetzt, alle geklammert):
+   AqNotA/B/C/D     Notbehelf WIRKLICH gebunden, je Weg
+   AqNachbauC       Nachbau (Modus 2) im Zweig C gebunden
+   AqOhnePartner    vs_3_0 gezeichnet ohne jeden Pixelshader
+   AqPSCacheNull    nullptr kam aus dem Cache
+   AqPSNeuNull      nullptr neu in den Cache (je Schluessel eine
+                    NULLKEY-Zeile mit allen Merkmalen im Protokoll)
+ Ausgabe alle 4000 vs_3_0-Zeichenaufrufe als "AquaNox-M567"-Zeile.
+
+================================================================================
+ NACHTRAG 10.08.2026 (3): *** DIE URSACHE IST GEFUNDEN -- F28 ***
+================================================================================
+
+ Die ehrlichen Zaehler (M567) und die Ablehnungs-Diagnose haben das
+ Problem in zwei Laeufen eingekreist:
+
+   M567:  NotA=3594  NotB=0  NotC=0  NotD=0  OhnePartner=0
+          CacheNull=0  NeuNull=0
+   -> Der EINZIGE aktive Weg in den Notbehelf ist A: der
+      Schluesselaufbau lehnt ab. Cache-Theorie widerlegt.
+
+   ABGELEHNT (genau EINE einzigartige Kette):
+      TexturFehlt (Stufe 1)
+      S0 MODULATEALPHA_ADDCOLOR (Diffus, Textur)      Tex=1
+      S1 MODULATE2X (Current, TEXTUR)                 Tex=0  <- FEHLT
+      S2 BLENDTEXTUREALPHA (Textur, Current)          Tex=1
+
+ *** DIE PFLANZEN-KETTE VERLANGT AUF STUFE 1 EINE TEXTUR, DIE NICHT
+ GEBUNDEN IST. *** Fixed Function liefert dann implizit Weiss -- die
+ seit langem bekannte "4 von 19 Ketten"-Ausnahme. Der Schluesselaufbau
+ lehnte solche Ketten bewusst ab:
+   - in ps_2_0 harmlos: Fixed Function uebernahm, Objekt korrekt.
+     *** Darum verschwinden die Pflanzen in ps_2_0 NIE. ***
+   - mit vs_3_0 toedlich: kein Fixed Function mehr moeglich, Objekt
+     faellt in den primitiven Notbehelf, dessen Alphakette den
+     Alphatest reisst -> unsichtbar.
+   - Wegschauen/Hinschauen aendert den Stufenzustand -> Kette wird
+     wieder baubar -> echter Shader -> sichtbar. Exakt das gemeldete
+     Verhalten.
+
+ DIE BEHEBUNG (F28): nicht mehr ablehnen, sondern das implizite Weiss
+ nachbilden -- "mov r6, c31.w" (1,1,1,1) statt texld. MODULATE2X mit
+ Weiss = Verdopplung, BLENDTEXTUREALPHA mit Alpha 1 = erstes Argument.
+ Die Kette assembliert (von Hand geprueft). Abgelehnt wird nur noch
+ Tex=2 (Wuerfel/Volumen -- kommt gemessen nicht vor).
+
+ WICHTIG FUERS VERSTAENDNIS: F17a..d, F19, F21, F22 waren allesamt
+ Umwege. Der Notbehelf haette nie gebraucht werden duerfen -- die
+ richtige Loesung war, die Kette baubar zu machen. Der Notbehelf
+ bleibt als letzte Sicherung im Code, sollte aber nach F28 praktisch
+ nie mehr feuern (NotA muss gegen 0 gehen).
+
+================================================================================
+ NACHTRAG 10.08.2026 (4): *** vs_3_0 IST ENTLASTET -- DER TAETER IST
+ DER NEUE TEXTURCODE (568) ***
+================================================================================
+
+ DIE GEGENPROBE (neue DLL, Modus 12, OHNE vs_3_0): die Pflanzen
+ verschwinden AUCH DORT. Damit ist die Grundannahme dieser ganzen
+ Datei -- "nur im vs_3_0-Zweig" -- WIDERLEGT. Sie beruhte auf einem
+ Verwechsler: alle "gut"-Laeufe nutzten die ALTE stille DLL (ohne
+ Texturcode), alle "schlecht"-Laeufe die neue MIT Texturcode UND
+ vs_3_0 zugleich. Die Variablen waren nie getrennt worden.
+
+ WEITERE BEFUNDE DIESES DURCHGANGS:
+   - Modus 9 (Knallrot) mit vs_3_0: Gebaeude sind NUR rot, wenn ein
+     Projektil sie beleuchtet. *** Die Engine WECHSELT die
+     Vertexshader dynamisch je Lichtsituation *** (456 Creates auf 76
+     Shader). Die Pflanzen wurden dabei NIE rot: sie laufen gar nicht
+     durch unsere Pixelshader.
+   - Alle Zaehler ueber alle Laeufe null: NotA..D, OhnePartner,
+     CacheNull, NeuNull, VS3Fehl, FremdPS, Failed-to-reassemble,
+     ValidateDevice. Saemtliche Bindungs- und Uebersetzungstheorien
+     sind damit MESSBAR ausgeschlossen.
+   - F28 (implizites Weiss) bleibt richtig und noetig: NotA fiel von
+     3594 auf 0.
+
+ VERBLEIBENDE KANDIDATEN im neuen Texturcode, per AQUANOX_NK trennbar:
+   (a) das BINDEN der Normalenkarte auf Stufe 4 bei jedem
+       SetTexture(0). *** Stufe 4 kann der Engine gehoeren -- der
+       Schluesselaufbau wehrt "Stufe4Aktiv" seit jeher ab. ***
+   (b) das LADEN (D3DXCreateTextureFromFileA mitten im Frame,
+       113 Dateien, Plattenzugriff im Renderpfad).
+   (c) falls beides nicht: die Hash-Haken in LockRect/UnlockRect.
+
+ PROBEN: AquaNox_ProbeNK0.cmd (alles aus) -> danach ggf.
+ AquaNox_ProbeNK1.cmd (nur laden). Zwei Laeufe trennen (a)/(b)/(c).
+
+ VORGEMERKTE LOESUNG, falls (a): die Normalenkarte auf STUFE 8..15
+ binden statt 4 -- das D3D8-Spiel kann nur Stufen 0..7 ansprechen,
+ dort kann es nie kollidieren. ps_2_0/ps_3_0 lesen s8 problemlos.
+
+================================================================================
+ AUFLOESUNG 10.08.2026: *** DIE URSACHE WAR DIE PFLANZEN-WEITSICHT --
+ NICHT DER WRAPPER (F31) ***
+================================================================================
+
+ BEWIESEN DURCH ZWEI LAEUFE:
+   1. Alte Basislinien-DLL (GlanzHemi, Modus 12, kein Texturcode, kein
+      vs_3_0): Pflanzen verschwinden TROTZDEM.
+      -> Die Grundannahme dieser gesamten Datei ("im ps_2_0-Stand tritt
+         es nicht auf") war FALSCH. Sie wurde nie isoliert geprueft,
+         nur behauptet.
+   2. Dieselbe DLL, aber die 12 losen Pflanzen-OSDs der Weitsicht
+      zurueckgenommen (MaxDistance wieder 80/150/200): *** STABIL. ***
+
+ DIE URSACHE: Die Weitsicht Stufe 2 (Handoff 551) hob MaxDistance der
+ Pflanzen auf 1200 -- die 36- bis 225-fache Flaeche je Art. Der
+ Sprite-Pool der Engine (NumOfSprites; in den Pflanzen-OSDs NICHT
+ gesetzt, es gilt ein Exe-interner Vorgabewert) wuchs nicht mit. Bei
+ Ueberlauf wirft die Verwaltung Instanzen AUCH DIREKT VOR DER KAMERA
+ raus; ein Blickwechsel fuellt den Pool mit anderer Teilmenge neu:
+   - "verschwinden und wieder erscheinen", reproduzierbar  -> Pool-Neufuellung
+   - "wenigstens 10% bleiben immer"                        -> Poolanteil
+   - unabhaengig von Modus, DLL, Shaderprofil              -> Datenebene
+
+ WARUM EIN GANZER TAG IM FALSCHEN STOCKWERK GESUCHT WURDE:
+   Die Pflanzen fielen ERSTMALS auf, als zufaellig gleichzeitig der
+   vs_3_0-Umbau lief. "Neu aufgefallen" wurde mit "neu verursacht"
+   verwechselt, und die Basislinie nie geprueft. *** LEHRE: Bei einem
+   "seit Aenderung X kaputt"-Befund IMMER ZUERST die Basislinie ohne X
+   testen -- eine einzige Beobachtung haette den Tag gespart. ***
+
+ WAS DIE JAGD TROTZDEM EINGEBRACHT HAT (echte Funde):
+   F26  Zaehler an klammerlosen ifs -- alle Messungen waren Fiktion
+   F28/F30  Ketten mit fehlender Textur: FF schneidet ab; unter vs_3_0
+        wird jetzt abgeschnitten statt Notbehelf, in ps_2_0 gilt FF
+   F29  IstVS3 wurde in #ifndef gesetzt -- stille Fassung waere kaputt
+   F31  (dieses) -- dazu: Engine wechselt Vertexshader dynamisch je
+        Lichtsituation; Semantik-Versatz 15/16; ehrliche M567-Zaehler
+   Und: die PBR-Kette ist END-ZU-END BEWIESEN (Modus 14 violett).
+
+ STAND DER PFLANZEN-OSDs: die 12 losen Dateien liegen in
+ mod_docu\weitsicht\osd_zurueckgestellt (verschoben, nicht geloescht).
+ ACHTUNG: weitsicht.py --zurueck erwartet sie am alten Ort;
+ angelegt.txt fuehrt sie noch. Wer die Pflanzen-Weitsicht erneut will:
+   - moderates MaxDistance suchen (400? 600?) statt 1200, ODER
+   - den NumOfSprites-Vorgabewert in der Exe finden und den Pool
+     mitwachsen lassen (Ghidra; Schluessel "NumOfSprites" bei
+     0x61420c ist belegt). Vorher Ghidra-Fallen (527) lesen.
+
+================================================================================
+ SCHLUSSSTAND 10.08.2026: MODERATE PFLANZEN-WEITSICHT BESTAETIGT
+================================================================================
+
+ Stefan: "Dein billiger Weg hat funktioniert, wird jetzt spaeter
+ ausgeblendet." -- Stabil UND sichtbar weiter als das Original.
+
+ EINGESPIELTE WERTE (lose OSDs im Spielordner):
+   Steine, Gras, plant1/2      300   (Original 80/150)
+   Korallen 01/04, plant5      400   (Original 200)
+   fungus_02                   430   (= Original)
+   coral_03, fungus_01, plant4 512   (= Original)
+ Die 1200er-Fassungen liegen in mod_docu\weitsicht\osd_zurueckgestellt.
+ Wer hoeher will: schrittweise tasten ODER den NumOfSprites-Vorgabewert
+ in der Exe heben (Schluessel bei 0x61420c; Ghidra-Fallen 527 lesen!).
+
+ DER SPIELSTAND: AquaNox_Spielen.cmd = vs_3_0 + ps_3_0, Glanz +
+ Fresnel + Normalenkarten, stille DLL (172.032 B, MIT F29-Fix -- die
+ alte stille Fassung haette IstVS3 nie gesetzt).
+ Diagnose: AquaNox_VS3Test.cmd (Protokollfassung, 199.680 B).

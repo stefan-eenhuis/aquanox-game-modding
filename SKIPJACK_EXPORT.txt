@@ -1,0 +1,87 @@
+SKIPJACK-EXPORT ALS GLB (glTF 2.0 binaer)
+=========================================
+Stand: 11.08.2026. Auftrag: Spielerschiff "Skipjack" aus AquaNox 1 als
+eine einzige .glb mit eingebetteten Texturen und UVs.
+
+ERGEBNIS
+    mod_docu\export\skipjack.glb   443.816 B
+    766 Dreiecke, 1.187 Vertices, 4 Primitives (je Textur eines),
+    4 Materialien, 4 eingebettete PNGs je 512x512 RGB.
+    Verifikation: glb_check.py -> BESTANDEN (Header, Chunk-Laengen,
+    Accessoren gegen BIN-Groesse, min/max nachgerechnet, Indizes
+    innerhalb der Vertexzahl, PNG-Signaturen).
+
+QUELLDATEIEN (alle unter dat\pak\extracted, nur gelesen)
+    vfx\msh\pla_skipjack.msb        55.582 B   das Mesh (Spielervariante)
+        9 Bloecke, 1.187 Vertices, 766 Dreiecke,
+        BBox X -5,35..5,37  Y -3,79..3,52  Z -2,55..2,76 (Spielsystem)
+    vfx\tex\pla_skipjack_0.dds ..._1 ..._2 ..._3
+        je 174.904 B, DDS 512x512 RGBA -- vier ATLAS-TEILE (keine
+        LOD-Stufen: jeder Mesh-Block verweist auf genau einen davon).
+        Alphakanal in allen vieren durchgehend 255 -> als RGB
+        eingebettet, alphaMode OPAQUE.
+    vfx\osd\pla\pla_skipjack~.osd   Fahrzeugdefinition (nod_player,
+        Masse 4700, Kollision pla_skipjack*.col) -- fuer den Export
+        nicht gebraucht, nur zur Bestaetigung der Spielervariante.
+
+NICHT GENOMMENE FASSUNGEN
+    pla_skipjack_sw.msb       geometrisch BYTE-GLEICH gross, gleiche
+                              Vertex-/Dreieckszahlen, nur andere
+                              Texturnamen (pla_skipjack_sw_0..3) --
+                              die "sw"-Menuevariante aus Aqua.exe.
+    pla_skipjack_turret.msb   Geschuetzturm,  24 V / 10 T  -- eigenes
+    pla_skipjack_turretgun.msb Kanone,        28 V / 14 T  -- Objekt,
+                              nicht Teil des Rumpf-Meshes; auf Wunsch
+                              mit demselben Werkzeug exportierbar.
+
+FORMATBEFUNDE (aus dem Bestand, nichts neu analysiert)
+    .msb-Leser: mod_docu\toolkit\aqtk\parser\msb.py (fertig vorhanden).
+    Format: mod_docu\aquanox_binaerformate.txt Abschn. 1 / msb_write.py.
+    DDS liest Pillow direkt (belegt in aqtk\parser\textur.py).
+    Texturaufloesung: Namen ohne Endung -> vfx\tex\<name>.dds.
+
+KONVERTER
+    mod_docu\tools\glb_export.py   (neu, generisch fuer jedes .msb)
+    mod_docu\tools\glb_check.py    (neu, prueft jede .glb nach)
+    Aufruf:
+        python mod_docu\tools\glb_export.py ^
+            dat\pak\extracted\vfx\msh\pla_skipjack.msb ^
+            mod_docu\export\skipjack.glb
+        python mod_docu\tools\glb_check.py mod_docu\export\skipjack.glb
+
+ENTSCHEIDUNGEN (dokumentierte Wahl)
+    Koordinaten: Spiel ist Z-oben (Handoff v180 "DER WEG AUS BLENDER";
+        3ds-Max-Herkunft der .msh). Umrechnung nach glTF (+Y oben,
+        rechtshaendig) als reine Drehung -90 Grad um X:
+        (x,y,z) -> (x,z,-y). Determinante +1, keine Spiegelung.
+        Front des Schiffs zeigt danach nach -Z. Beleg am Modell:
+        Turmkanone laeuft auf +Y (vorn), kleinste Ausdehnung auf Z.
+    Wicklung: GEMESSEN 0,0 % der Original-Dreiecke CCW zur
+        gespeicherten Normale -> Original ist durchgehend CW
+        (DirectX-ueblich); alle Indizes wurden zu CCW gedreht
+        (glTF-Vorderseite). Der Messwert 0,0 % ist erfreulich
+        eindeutig -- keine gemischte Wicklung.
+    UV: DirectX und glTF haben beide den Texturursprung oben links ->
+        UVs unveraendert uebernommen, PNGs unveraendert eingebettet.
+        (Option --flip-v vorhanden, war nicht noetig.)
+    Material: metallicFactor 0, roughnessFactor 0.9 -- neutrale
+        Setzung, die Engine von 2001 kennt kein PBR.
+
+WAS NICHT EXPORTIERT WURDE
+    - Turret und Turretgun (eigene .msb, siehe oben).
+    - Kollisionsgeometrie (.col) -- nicht Teil des Auftrags.
+    - Vertexfarben: das .msb-Feld ist beim Skipjack konstant
+      0xFFFFFFFF und traegt nichts.
+    - Zweiter Texturslot: in allen 9 Bloecken leer.
+    - Animationen: das Format kennt keine.
+    - Glaettungsgruppen (hi-Byte des Dreiecks-Flagworts): glTF kennt
+      das Konzept nicht; die gespeicherten Vertexnormalen tragen die
+      Glaettung bereits.
+
+VERIFIKATION (glb_check.py, gelaufen am Ergebnis)
+    Magic/Version/Gesamtlaenge ok, 2 Chunks, JSON 4.548 B parsebar,
+    BIN 439.240 B == buffers[0].byteLength, 20 bufferViews im BIN,
+    16 Accessoren passen, POSITION-min/max aus BIN nachgerechnet und
+    deckungsgleich, Indizes je Primitive < Vertexzahl, Dreiecke
+    259+243+149+115 = 766, 4 PNGs mit gueltiger Signatur 512x512.
+    ERGEBNIS: BESTANDEN.

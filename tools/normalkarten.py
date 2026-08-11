@@ -51,7 +51,13 @@ def normalkarte(pfad, staerke=STAERKE):
     grob = fein
     for _ in range(3):
         grob = kasten(grob)          # ~8 Pixel Reichweite
-    h = 0.5 * fein + 0.5 * grob
+    # *** BANDPASS STATT TIEFPASS (600). *** Die alte Mischung
+    # (fein+grob) machte aus breiten Helligkeitsflecken -- also aus
+    # SCHMUTZ und EINGEBACKENEM LICHT -- grosse Buckel: im Spiel
+    # las sich das als dunkle Fleckenmuster, nicht als Relief.
+    # fein MINUS grob behaelt nur die Strukturkanten (Fugen, Platten,
+    # Nieten) und wirft die Flecken weg.
+    h = fein - grob
 
     # *** RANDBEHANDLUNG PER WRAP. *** Texturen kacheln; mit
     # abgeschnittenen Raendern entstuende an jeder Kachelgrenze eine
@@ -69,17 +75,34 @@ def normalkarte(pfad, staerke=STAERKE):
 
 
 def istFarbig(pfad):
+    # Seit 594 nur noch der Normalkarten-Ausschluss: die alte
+    # Farbigkeitsschwelle (Kanaldifferenz >= 6) uebersprang gerade die
+    # GRAUEN Wand-/Panel-Texturen -- die haeufigsten Flaechen des
+    # Spiels hatten deshalb gar keine Reliefkarte ("komplett flach").
     a = np.asarray(Image.open(pfad).convert("RGB").resize((64, 64)), dtype=np.float32)
     r, g, b = a[..., 0].mean(), a[..., 1].mean(), a[..., 2].mean()
     if b > 150 and b > r + 25 and b > g + 25 and abs(r - g) < 30 and 90 < r < 190:
         return False   # ist schon eine Normalenkarte
-    d = float(np.abs(a[..., 0] - a[..., 1]).mean() + np.abs(a[..., 1] - a[..., 2]).mean())
-    return d >= 6
+    return True
+
+
+def lightmapHashes():
+    """Dumps, die Level-Lightmaps sind (591) -- keine Karten dafuer."""
+    liste = os.path.join(TEX, "lightmap_hashes.txt")
+    if not os.path.isfile(liste):
+        return set()
+    aus = set()
+    for zeile in open(liste, encoding="utf-8"):
+        if zeile.strip() and not zeile.startswith("#"):
+            aus.add(zeile.split("\t")[0].strip())
+    return aus
 
 
 alle = "--alle" in sys.argv
+_lm = lightmapHashes()
 quellen = sorted(glob.glob(os.path.join(TEX, "*.png")))
-quellen = [q for q in quellen if istFarbig(q)]
+quellen = [q for q in quellen if istFarbig(q)
+           and os.path.basename(q).replace(".png", "") not in _lm]
 
 if not alle:
     quellen = sorted(quellen, key=os.path.getsize, reverse=True)[:3]

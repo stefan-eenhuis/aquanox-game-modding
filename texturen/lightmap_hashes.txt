@@ -1,0 +1,8 @@
+# Dumps, die Level-Lightmaps sind (591); MAD-Schwelle 5.0
+130741ef49bd4202_256x256	1.11	dat\pak\extracted\map\1h1\ltex\lightmap1.dds
+33c8648e56002c7b_256x256	1.15	dat\pak\extracted\map\1h1\ltex\lightmap0.dds
+63152e1169a5b8e9_256x256	1.08	dat\pak\extracted\map\1h1\ltex\lightmap6.dds
+b7f96564ce3b7f44_256x256	1.12	dat\pak\extracted\map\1h1\ltex\lightmap3.dds
+c381b78b0b87c383_256x256	1.13	dat\pak\extracted\map\1h1\ltex\lightmap2.dds
+cbb988aa94cb4f72_256x256	1.08	dat\pak\extracted\map\1h1\ltex\lightmap5.dds
+f820317df505c512_256x256	1.07	dat\pak\extracted\map\1h1\ltex\lightmap4.dds

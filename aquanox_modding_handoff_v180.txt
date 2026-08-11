@@ -46384,3 +46384,894 @@ unveraendert gut?).
 Offen danach: stille Fassung auf Option-B-Stand heben
 (AquaNox_Spielen.cmd traegt noch den 174080-B-Stand OHNE Option B),
 Metallkanal, NumOfSprites, Terrain-Relief, Staerken-Feinschliff.
+
+=====================================================================
+583. OPTION B ABGESCHLOSSEN -- STILLE FASSUNG GEHOBEN (11.08.2026)
+=====================================================================
+
+Stefans Test des CULL_NONE-Ausschlusses (582): Ladebildschirm wieder
+normal, HUD und Ferne in Ordnung. Damit sind ALLE Option-B-
+Regressionen beseitigt; die Ausschlusskette des Prelit-Pfads lautet
+endgueltig:
+  Tiefentest AN (AqZAn)                       -> HUD/Overlays raus
+  kein SRCALPHA-Blending                       -> Nebelschleier raus
+  Cull-Modus != NONE (AqCull)                  -> Vollbild-Quads raus
+  transformierender VS (m4x4/dp4 oPos)         -> Bildschirm-Quads
+  v1 UND v2 im Vertexstrom                     -> Stromfilter
+  ps_3_0-Familie + Zweitfassung vorhanden      -> Familienregel
+
+VOR dem Heben der stillen Fassung lief ein Zwei-Agenten-Audit:
+
+a) NOLOG-Audit (F29-Fallenklasse): alle 74 D3D8TO9NOLOG-Klammern
+   in device/base/main/hpp vollstaendig gelesen. KEIN kritischer
+   Befund. AqWurdeVS3 (2085), ++AqVS3Fehlgeschlagen (2093) und die
+   Gelbproben-Weiche kn.Modus=(AqModus==18?18:19) (3330) stehen
+   alle AUSSERHALB der Klammern. LOG ist ein ofstream, kein Makro
+   -- keine Nebenwirkungen in Argumenten moeglich.
+   Randbefunde (unschaedlich, aber wissenswert):
+   - AQUANOX_TEXDUMP schreibt in der STILLEN Fassung keine PNGs
+     (D3DXSaveTextureToFileA liegt in der Klammer) -- Texturdump
+     braucht immer die laute Fassung. Planmaessig.
+   - Die Zaehler AqNotA/AqNotB/AqNotD/AqOhnePartner/AqFremdPS
+     werden in KEINER Fassung mehr inkrementiert (verwaiste
+     Messpunkte aus der Notbehelf-Aera; F17a-d wurden ersatzlos
+     entfernt). Bei Gelegenheit aufraeumen.
+b) Skript-Inventur (29 Skripte): AquaNox_Spielen.cmd war das
+   einzige Startskript mit DLL-Kopie OHNE fc-Binaerpruefung --
+   nachgeruestet (copy + fc /b + Abbruch bei Abweichung), Kopf-
+   kommentar auf Option-B-Stand gebracht.
+
+Bau der stillen Fassung: D3D8TO9NOLOG in die Release-Definitionen,
+Rebuild, Kontrolle am Ergebnis: 178.688 B, Redirecting-Zaehler 0.
+Eingespielt als d3d8_still.dll (fc: identisch). vcxproj danach
+zurueckgesetzt und laut neu gebaut; der Neubau unterscheidet sich
+vom eingespielten Teststand d3d8_mit_log.dll nur in 6 Bytes, alle
+drei PE-Zeitstempel -- Quelle und DLLs sind konsistent.
+
+DLL-Bestand im Spielordner (11.08.2026):
+  d3d8_still.dll    178.688 B  = Option B komplett, still (NEU)
+  d3d8_mit_log.dll  206.848 B  = derselbe Stand, laut (00:03)
+  Quelle: mod_docu\hook\d3d8to9_device_s582.cpp
+
+Damit traegt AquaNox_Spielen.cmd jetzt den vollen Stand:
+vs_3_0-Doppelfassung, TBN-Relief, GGX+ORM, Cubemap-Spiegelung,
+Prelit-Pfad Modus 19 auf allen vorbeleuchteten Waenden, alle
+sechs Ausschluesse. Offen (Reihenfolge nach Geschmack):
+Metallkanal in orm_karten.py, NumOfSprites in der Exe (Ghidra,
+vorher Fallen aus 527 lesen), Terrain-Relief, Staerken-Feinschliff,
+Zaehler-Aufraeumen.
+
+=====================================================================
+584. METALLKANAL: ORM-B-KANAL AKTIV, SPIEGELUNG IN EIGENFARBE
+     (11.08.2026)
+=====================================================================
+
+Nach Stefans Freigabe ("Metallkanal aktivieren, machen") umgesetzt:
+
+a) HEURISTIK (orm_karten.py): B-Kanal = Metall aus Entsaettigung
+   mal Helligkeit, ^1.5, Deckel 0.9. NEU: Karten fuer ALLE Nicht-
+   Normalkarten (224 statt 113) -- die alte Farbigkeitsschwelle
+   (Kanaldifferenz >= 6) schloss gerade die grauen, entsaettigten
+   Texturen aus, also die Metallkandidaten. Metallflaechen werden
+   zudem in G geglaettet (rough *= 1 - 0.35*metall), sonst frisst
+   (1 - Rauheit^2) den Spiegelanteil gleich wieder.
+
+b) SHADER (Generator, nur ps_3_0-Familie, nur k.OrmKarte):
+   - GGX-Vorspann: "mov r14.y, r10.z" -- Metall wird wie die
+     Rauheit (r14.x) ueber die Texturkette gerettet.
+   - Vor der Kaskade: r17 = Weiss, bei Stufe-0-texld r17 = roher
+     Texel -- die Kaskade selbst mischt ab Stufe 0 das Licht ein,
+     fuer die Toenung braucht es das REINE Albedo.
+   - Schlussblock-Metallzweig zwischen Kappung und Misch-lrp:
+       mul  r17.xyz, r13, r17          Wuerfel * Albedo
+       lrp  r18.xyz, r14.y, r17, r13   Toenung nur im Metallanteil
+       mov  r13.xyz, r18               (F10: lrp-Ziel != Quelle 1/3)
+       add  r17.w, c1.y, -r14.x        1 - Rauheit^2
+       mul  r17.w, r17.w, r14.y        * Metall
+       mul  r17.w, r17.w, c2.z         * Staerke (AQUANOX_METALL)
+       min  r17.w, r17.w, c3.x         Obergrenze 0.85 (def c3)
+       max  r14.w, r14.w, r17.w        Metall UEBERSTIMMT Dielektrikum
+     Bedeutung: Metall spiegelt bei JEDEM Blickwinkel (nicht nur
+     streifend wie Fresnel) und in seiner EIGENFARBE.
+   - Modus-20-Probe: Metallwert als Graustufe (weiss=1, schwarz=0,
+     normal=keine ORM-Karte), Prelit-Weiche laesst 20 wie 18 durch.
+   - def c3 (0.85,0,0,0): frei, nichts schreibt zur Laufzeit c3.
+
+c) REGLER: AQUANOX_METALL -> c2.z (AqRelief[2], Vorgabe 1.0).
+   NEBENBEFUND: AQUANOX_SPIEGEL stand seit 577 nur im KOMMENTAR --
+   geparst wurde die Variable nie. Jetzt nachgeruestet (c2.y).
+
+d) NEU: AquaNox_MetallProbe.cmd (PP=20, VS3=1, Log-DLL, Asylum).
+
+Offline-Verifikation: repraesentativer ps_3_0-Rumpf mit ALLEN neuen
+Zeilen assembliert fehlerfrei (D3DXAssembleShader, Harnisch nach
+shader_zyklus4.py). Binaerkontrolle der DLL: def c3, r14.y-Rettung,
+Metallzweig, AQUANOX_METALL/SPIEGEL alle enthalten.
+
+=====================================================================
+584b. GEGENPRUEFUNG (3 Agenten): ZWEI ECHTE TREFFER, BEIDE BEHOBEN
+=====================================================================
+
+Drei unabhaengige Pruefagenten (Registerfluss, Prelit-Pfad,
+Heuristik am Ergebnis). Kernurteil: Umbau strukturell sauber --
+keine Registerkollision (r14.y/r17/r18 nirgends dazwischen
+angefasst), Familientrennung doppelt dicht, Cache-Trennung ueber
+das Modus-Byte, c2.z kommt in beiden Pfaden an. Aber:
+
+FEHLER 1 (NEU, waere eine F27-Falle im ersten Testlauf geworden):
+  Prelit-Waende in Modus 20 OHNE ORM-Karte rendern SCHWARZ statt
+  normal: kn.Modus=20 umging den "mov r2, v0"-Zweig (prueft nur
+  ==19) -> r2 = c31.x ~ 0 -> MODULATE-Ketten liefern Schwarz --
+  und Schwarz ist in der Metallprobe nicht von "Metall = 0" zu
+  unterscheiden. Gleiche Mechanik traf Modus 18 bei
+  AQUANOX_UMGEBUNG=0. FIX: r2-Weiche und t7-Multiplikation
+  behandeln 18/20 im Prelit-Zuschnitt (Lichter=0, Hemi=0) wie 19;
+  an der t7-Stelle braucht es k.Hemi==0 EXPLIZIT (kein else dort).
+
+FEHLER 2 (VORBESTEHEND seit dem gemeinsamen Schlussblock 576):
+  Doppelte Glanzaddition in den Modi >= 14 im LICHT-Pfad: der
+  ps_2_0-Altblock "if (k.Modus >= 10) add_sat r3,r3,r9" addierte
+  r9 ZUSAETZLICH zum Fresnel-gewichteten Add des Schlussblocks.
+  FIX: ">= 10 && < 14". Modus 5 war nie betroffen (5 < 10); die
+  NormalLaut/Probe-Laeufe 14..17 zeigten bisher etwas zu viel
+  Glanz.
+
+HEURISTIK-BEFUND (kritisch, behoben): Saettigung+Helligkeit koennen
+  Fels nicht von Metall trennen -- die Extremwerte waren INVERTIERT
+  (Geroell 0.65, echtes Maschinenteil 0.23), dazu 9 rein weisse
+  Hilfstexturen auf 0.90. ZWEI Korrekturen statt Schwellendreherei:
+  (1) einfarbige Quellen (Kanal-Std < 1/255) -> Metall 0;
+  (2) LOKALKONTRAST trennt: Geroell flirrt (mittl. |luma-glatt|
+      0.077..0.082), bearbeitete Flaechen liegen unter 0.035 --
+      Rampe 0.035..0.06 -> Faktor 1..0, JE TEXTUR (eine Textur ist
+      EIN Material). Nachgemessen: beide Felskarten 0.000,
+      Maschinenteil 0.230 erhalten, Weisstexturen 0.000.
+
+Randnotizen der Pruefung (offen, unschaedlich):
+  - GGX-Vorspann laeuft auch fuer Effekt-Shader der Familie (5 tote
+    Anweisungen, Ergebnisse ungelesen) -- Budgetkosmetik.
+  - Proben 14/15/16/17 zeigen Prelit-Waende als Modus 19, nicht als
+    Probe (Weiche reicht nur 18/20 durch) -- beim Interpretieren
+    der Kartenproben wissen!
+  - Altbestand seit 571: VOLUMETEXTURE/CUBETEXTURE-Bind auf Stufe 0
+    liesse AqOrmAktiv stehen (praktisch: Spiel erzeugt 0 davon).
+  - Zaehler AqNotA/B/D usw. weiter verwaist (583).
+
+Stand: Quelle d3d8to9_device_s584b.cpp, DLL 208.384 B vom 11.08.
+01:22 als d3d8_mit_log.dll eingespielt, 224 ORM-Karten neu. Stille
+Fassung ABSICHTLICH noch auf 583-Stand (erst nach Stefans Test
+heben). Skipjack-GLB-Export als Nebenauftrag gestartet (Agent lief
+auf Sitzungslimit, Neustart nach 01:10 geplant).
+
+584c. METALLPROBE IM SPIEL BESTAETIGT (11.08.2026, Screenshot)
+  Modus 20 in Asylum: Schiffe/Wracks WEISS (Metall erkannt),
+  Gebaeudewaende SCHWARZ (Karte da, Metall 0 -- kein Chrom auf
+  Beton), HUD/Minikarte/Effekte unberuehrt, keine schwarzen
+  Fehlflaechen (584b-Fix wirkt). Stefan: "das angestrebte Ziel
+  wurde erreicht". Wirkungstest im Normalmodus (VS3Test) laeuft.
+
+=====================================================================
+585. PIXELIGE SPIEGELUNG: POINT-FILTER AUF DEN KARTENSTUFEN
+     (11.08.2026)
+=====================================================================
+
+Stefans Wirkungstest (Metall im Normalmodus, NA-Geschuetz): Effekt
+gut, "besonders in Bewegung", aber EXTREM PIXELIG -- grobe Kacheln
+in der Spiegelflaeche.
+
+Ursache: Fuer die Samplerstufen 8..10 hat NIE jemand einen Filter
+gesetzt. Das Spiel stellt nur die Stufen um, die es als D3D8-Titel
+kennt (0..7); die D3D9-Vorgabe fuer alles andere ist POINT. Der
+32x32-Wuerfel (576, EINE Mip-Stufe, weicher Verlauf) wurde also
+unfiltert vergroessert -- seine 32er-Texel SIND die Kacheln. Auch
+Normal- und ORM-Karte (s8/s9) kamen unfiltert an; aufgefallen ist
+es erst jetzt, weil die Metallspiegelung den Wuerfel erstmals
+grossflaechig frontal zeigt (Fresnel zeigte ihn nur streifend).
+
+Abhilfe: AqSetzeKartenfilter() -- MAG/MIN/MIP LINEAR fuer s8..s10,
+ADDRESS U/V/W CLAMP nur fuer s10 (Kantennaehte des Wuerfels);
+s8/s9 bleiben WRAP, ihre UVs kacheln mit der Grundtextur. Aufrufe:
+nach dem Umgebungsaufbau im Init (unabhaengig vom Wuerfel, wegen
+s8/s9) und nach jedem erfolgreichen Reset (der setzt saemtliche
+Samplerzustaende auf die Vorgabe zurueck -- gleiche Falle wie
+547.7/F bei den Texturstufen).
+
+Stand: Quelle d3d8to9_device_s585.cpp, DLL als d3d8_mit_log.dll
+eingespielt. Test steht aus. Falls die Flaeche danach zwar weich,
+aber farblich zu eintoenig wirkt, waere der naechste Hebel die
+Wuerfelaufloesung (32 -> 64/128) oder mehr Farbstuetzen im Verlauf.
+
+=====================================================================
+586. NEBENAUFTRAG: SKIPJACK ALS GLB EXPORTIERT (11.08.2026)
+=====================================================================
+
+Stefans Wunsch: Spieler-Schiff als GLB/FBX mit Textur und UVs in
+EINER Datei. Ergebnis (Export-Agent, Details in der Falldatei
+mod_docu\SKIPJACK_EXPORT.txt):
+
+  mod_docu\export\skipjack.glb -- 443.816 B, Pruefung BESTANDEN
+  766 Dreiecke, 1187 Vertices, 4 Primitives/Materialien,
+  4 eingebettete PNGs 512x512 (aus DDS; Alpha ueberall 255).
+
+Quellen (nur gelesen): vfx\msh\pla_skipjack.msb (9 Bloecke,
+Spielervariante per vfx\osd\pla\pla_skipjack~.osd bestaetigt),
+vfx\tex\pla_skipjack_0..3.dds. Gelesen mit dem VORHANDENEN Leser
+aqtk\parser\msb.py (Bestandsregel eingehalten, nichts neu
+analysiert).
+
+NEUE WERKZEUGE: mod_docu\tools\glb_export.py (generisch fuer jedes
+.msb!) und glb_check.py (liest das GLB zurueck und rechnet Accessor-
+gegen BIN-Groessen, min/max, Indizes, PNG-Signaturen).
+
+Entscheidungen: Z-oben -> Y-oben als reine Drehung -90 Grad um X
+(Determinante +1); Wicklung CW -> CCW gedreht (gemessen 0 % CCW im
+Original); UVs unveraendert. NICHT exportiert: Turret-MSBs (mit
+demselben Werkzeug moeglich), _sw-Menuevariante, Kollision,
+Vertexfarben (konstant weiss). Animationen/zweite UV-Lage gibt es
+im Format nicht.
+
+=====================================================================
+587. METALLKANAL BESTAETIGT -- STILLE FASSUNG AUF 585 GEHOBEN
+     (11.08.2026)
+=====================================================================
+
+Stefans Tests: Metallprobe (584c) korrekt klassifiziert; Wirkung
+"sieht ganz gut aus, besonders in Bewegung"; nach dem Filterfix
+(585): "Ja, das hat funktioniert, sehr gut!" -- die Kachelung war
+die POINT-Vorgabe auf s8..s10.
+
+Stille Fassung neu gebaut: 180.224 B, Redirecting 0, Metallzweig
+per Binaerkontrolle drin; eingespielt als d3d8_still.dll (fc
+identisch). vcxproj zurueckgesetzt, laute Fassung nachgebaut
+(208.384 B) -- identisch mit der eingespielten d3d8_mit_log.dll
+bis auf PE-Zeitstempel.
+
+DLL-Bestand (11.08.2026):
+  d3d8_still.dll    180.224 B  Vollstand still: PBR + Prelit +
+                               Metall + Kartenfilter (AquaNox_
+                               Spielen.cmd)
+  d3d8_mit_log.dll  208.384 B  derselbe Stand, laut
+  Quelle: mod_docu\hook\d3d8to9_device_s585.cpp
+
+Regler im Spielbetrieb (alle ohne Neubau, in jedem Skript setzbar):
+  AQUANOX_RELIEF (c2.x, Vorgabe 3), AQUANOX_SPIEGEL (c2.y, 5 --
+  seit 584 erstmals wirklich geparst!), AQUANOX_METALL (c2.z, 1).
+
+Naechste Kandidaten: Wuerfelaufloesung/Farbstuetzen falls die
+Spiegelflaechen zu eintoenig wirken; NumOfSprites (Ghidra, Fallen
+527); Terrain-Relief; Zaehler-Aufraeumen (583); weitere GLB-
+Exporte mit glb_export.py (586).
+
+=====================================================================
+588. ERSTE MANUELLE MATERIALVORGABE: gen_parabolic (11.08.2026)
+=====================================================================
+
+Stefans Wissen: "gen_parabo_3 -- der Parabolspiegel ist aus Metall,
+der Sockel nicht." Untersuchung (Agent):
+
+- gen_parabo_3 ist KEIN eigenes Objekt, sondern eine Lightmap-
+  Level-Instanz von vfx\msh\gen_parabolic.msb (map\*\lmsh\
+  gen_parabo_* / gen_parabolic_* / des_parabolic_* teilen Mesh und
+  Textur vollstaendig; die des-OSD ist nur ein anderer Wrapper).
+- EINE Textur fuer alles: gen_parabolic_0.dds (512er, opak) ->
+  Dump-Hash 583813ab6be30325_512x512 (Bildvergleich MAD 0.106,
+  zweitbester Treffer 50.6 -- eindeutig).
+- Blockbefund: 0 Feedhorn, 1 Stuetzbeine, 2 Schuessel-AUSSENSEITE,
+  3 Sockelturm, 4 SPIEGELFLAECHE (Innenseite), 5 Lagerboecke.
+  Innen/aussen ueber die WICKLUNG getrennt -- die gespeicherten
+  Vertexnormalen von Block 2 sind falsch orientiert, nicht darauf
+  verlassen! UV-Inseln disjunkt (Overlay geprueft).
+
+NEUER MECHANISMUS (mod_docu\tools\orm_override.py): Vorgabetabelle
+je Karte -- metall/rauheit ganzflaechig ODER als UV-MASKE aus msb-
+Bloecken (Dreiecke werden in Kartengroesse gerastert, kachelnde UVs
+je Dreieck auf ihre Kachel geschoben). orm_karten.py --alle ruft
+die Vorgaben automatisch NACH der Erzeugung auf: Neuerzeugung
+ueberschreibt Handarbeit nie wieder.
+
+Eintraege: Block 4 Metall 1.0/Rauheit 0.15; Block 2 1.0/0.35;
+Block 3 Metall 0.0. Nachgemessen am Ergebnis (B/G je Insel):
+Spiegel 1.000/0.149, aussen 1.000/0.349, Sockel 0.000/0.415;
+Beine 0.29, Feedhorn 0.12, Boecke 0.07 (Heuristik, unangetastet).
+Die alte Heuristik hatte ausgerechnet die SOCKELPLATTE als Metall
+markiert -- genau andersherum als Stefans Vorgabe.
+
+KEIN DLL-Neubau noetig (reine Kartendaten); wirkt in stiller und
+lauter Fassung. Muster fuer kuenftige Vorgaben: Agent liefert
+Hash + Blockzuordnung, ein Tabelleneintrag, nachmessen.
+
+=====================================================================
+589. WARUM DIE ANTENNE NICHT MARKIERT WURDE: TFACTOR + BLEND-LOCH
+     (11.08.2026)
+=====================================================================
+
+Stefans Metallprobe zeigte die Parabolantenne SCHWARZ, obwohl die
+ORM-Karte korrekt war (588) und nachweislich geladen wurde.
+
+Diagnoseweg (statt Deutung): AqHash0-Schatten (Hash der Stufe-0-
+Textur) + gezieltes Zeichenweg-Log bei 583813ab. Befund aus zwei
+Laeufen:
+
+  Zug 1 (Hauptgeometrie, Stufen-3-Kette, Blend AN mit ONE:ZERO
+  = faktisch deckend): SchluesselOk=0 -- ABGELEHNT. Grund:
+  Die Kette mischt mit D3DTA_TFACTOR (0x3), und AqArgName kannte
+  nur DIFFUSE/CURRENT/TEXTURE -- exakt die dokumentierte
+  F25-Luecke. VIER der sechs Ablehnungen der Sitzung sind
+  TFACTOR-Faelle (SELECTARG1(TFACTOR), ADD(CURRENT,TFACTOR),
+  MODULATEALPHA_ADDCOLOR(TFACTOR,TEXTURE), Alpha-MODULATE mit
+  TFACTOR).
+  Zug 2 (Ueberlagerung, 1 Stufe, Src=DESTCOLOR/Dest=SRCCOLOR =
+  Multiplikation): wurde uebernommen -- in einen ABDUNKELUNGSZUG
+  gehoert aber keine Spiegelung; in der Probe multiplizierte er
+  sein Ergebnis auf den FF-Zug darunter.
+
+FIX 589 (beide Familien):
+  a) D3DTA_TFACTOR -> c4. AqArgName kennt 0x3; Whitelist erlaubt
+     Argumente bis 3 (SPECULAR 4 bleibt draussen). c4 wird neben
+     c2 hochgeladen (ARGB->RGBA aus dem AqTFactor-Schatten);
+     D3DRS_TEXTUREFACTOR setzt bei Wertaenderung AqKonstSchmutzig.
+     Offline assembliert (ps_2_0 und ps_3_0; c4 zweimal in einer
+     Anweisung = EIN Konstantenregister, erlaubt).
+     Einschraenkung: Modi 2/3 laden c4 nicht (Uploads erst ab
+     Modus 4) -- reine Diagnosemodi, dort egal.
+  b) Prelit nur noch fuer DECKENDE Zuege: Blending aus ODER
+     ONE:ZERO. Ersetzt den engeren SRCALPHA-Ausschluss (581).
+     Multiplikations- und sonstige Ueberlagerungen fallen auf
+     echtes FF zurueck.
+
+Erwartung: Der Hauptzug der Antenne wird jetzt uebernommen (mit
+TFACTOR-Mischung im Nachbau), die Metallmaske aus 588 greift, der
+Ueberlagerungszug bleibt original. Stand: DLL 210.432 B als
+d3d8_mit_log.dll (02:23), Quelle d3d8to9_device_s589.cpp. Die
+PARABO-Diagnosezeilen bleiben vorerst drin (Ausbau nach Erfolg).
+
+=====================================================================
+590. FARBCODE-VERFAHREN ENTLARVT DIE ANTENNE: DIE SCHUESSEL NUTZT
+     EINEN KLEINTEILE-ATLAS, NICHT gen_parabolic_0 (11.08.2026)
+=====================================================================
+
+Nach 589 baute der Schluessel, die Karte war gebunden -- die
+Schuessel blieb trotzdem ohne Metall. Eskalationskette der
+Bildschirm-Experimente (jeweils EIN Testlauf Stefans):
+
+a) ROHDATEN-PROBE (589b): Modus 20 zeigt den rohen ORM-Texel
+   (r19-Rettung direkt nach dem texld). R ist auf JEDER Karte 1.0
+   -- Schwarz haette "Sampler leer" bedeutet. Ergebnis: Schuessel
+   GELB koernig -> Karte kommt an, aber B=0 an den Abtastpunkten.
+b) UV-RAMPE auf der parabolic-Karte (G=v, B=u): mehrdeutig, weil
+   die fragliche Inselregion unten links auf der Rampe genauso
+   gelb aussieht wie die alte Heuristik. LEHRE: Rampen so waehlen,
+   dass die Hypothesenregionen UNTERSCHEIDBARE Farben bekommen.
+c) QUADRANTEN-KARTE (rot/gelb/magenta/weiss) auf parabolic: KEINE
+   der Farben erschien auf der Schuessel -> sie sampelt diese
+   Karte NICHT. Editor-Gegenprobe (Stefans Leveleditor): die
+   Objekte SIND gen_parabo_2/3.
+d) QUADRANTEN auf dem Verdachtskandidaten 54c7d8de (runde
+   Maschinenscheibe): ebenfalls nicht die Schuessel.
+e) ALLE-AUF-EINMAL: alle 46 uebernommenen Karten (PRELIT-ZUG-
+   Protokoll, 589b) mit eindeutigen Flachfarben kodiert
+   (G=(i%7)/6, B=(i/7)/6, R=1; Rueckrechnung ueber g/r und b/r,
+   weil die multiplikative Lightmap-Ueberlagerung alle Kanaele
+   gleich skaliert). ERGEBNIS in einem einzigen Screenshot:
+     Bodenplatte der Antenne = Code 28 = 583813ab = gen_parabolic
+     Schuessel = Code ~3 (G~0.5, B~0) = 63152e1169a5b8e9
+     (Nachbar 4 = b7f96564 nicht ganz ausgeschlossen)
+   Beide Kandidaten sind KLEINTEILE-ATLANTEN (256er). Die lmsh-
+   Instanzen (gen_parabo_*) sind reine LIGHTMAP-EMPFAENGER
+   (textur=lightmapN, textur2 LEER) -- das sichtbare Objekt wird
+   separat gezeichnet, und seine Schuessel haengt an einem Atlas,
+   nicht an gen_parabolic_0. Die 588-Maske war also fuers falsche
+   Ziel gebaut (fuer das Basisobjekt stimmt sie weiterhin).
+
+Agent laeuft: Atlas-Hash -> DDS-Name -> referenzierende Meshes ->
+Schuessel-Mesh + UV-Inseln -> orm_override-Eintrag. Karten danach
+per orm_karten.py --alle wiederhergestellt (Vorgaben automatisch).
+
+WERKZEUG-NOTIZ: Das Farbcode-Verfahren (e) ist das Mittel der Wahl,
+um "welche Textur sampelt dieses Pixel wirklich" OHNE Debugger zu
+beantworten -- eine Runde, ein Screenshot, eindeutig.
+
+=====================================================================
+591. DIE AUFLOESUNG: STUFE 0 IST BEI DIESEN ZUEGEN DIE LIGHTMAP --
+     KARTENQUELLE JETZT WAEHLBAR (11.08.2026)
+=====================================================================
+
+Agent-Befund zu den "Atlanten" aus 590: Es sind die LEVEL-LIGHTMAPS
+selbst (map\1h1\ltex\lightmap3/6.dds, MAD ~1.1). Die Schuessel der
+Parabolantennen wird lightmap-zuerst gezeichnet (Lightmap deckend
+auf Stufe 0, Objekttextur multipliziert darauf); die Bodenplatte
+andersherum (Textur zuerst -- daher ihr 583813ab im Farbcodetest).
+Unsere Karten hingen stur an der Stufe-0-Textur: die Schuessel
+bekam die ORM-Karte ihrer LIGHTMAP (koernige Struktur im Rohtexel-
+Bild = eingebackene Schatten als "Rauheit").
+
+FIX (zweiteilig):
+a) LIGHTMAP-AUSSCHLUSS: tools\lightmap_hashes.py vergleicht alle
+   Dumps gegen alle map\*\ltex\*.dds (209 Stueck) und schreibt
+   texturen\lightmap_hashes.txt (7 Treffer, alle 1H1, MAD ~1.1);
+   orm_karten.py und normalkarten.py ueberspringen diese Hashes,
+   14 veraltete Karten geloescht. Lightmaps haben ab jetzt NIE
+   Material-Karten.
+b) KARTENQUELLE WAEHLBAR (Wrapper): AqStufe1Tex-Schatten (Stage-1-
+   Bindungen), AqWaehleKartenquelle() vor JEDEM Schluesselbau:
+   hat Stufe 0 keine Karten, Stufe 1 aber schon (= lightmap-zuerst-
+   Zug), werden s8/s9 von der Stufe-1-Textur gebunden und mit t1
+   abgetastet. Neues Schluesselfeld KartenStufe (static_assert
+   37 -> 38); Generator sampelt s8/s9, die TBN-dUV (dsx/dsy) und
+   die Metall-Albedo-Rettung (r17) mit t<KartenStufe>. Fallen
+   umschifft: AqBaueSchluessel ist const (Auswahl+Bindung deshalb
+   im Aufrufer); beim Aufspalten der TBN-Zeichenkette haette ein
+   verwaistes Literal die halbe TBN-Mathematik stumm verschluckt
+   (sofort repariert); AqDefaults setzt die neuen Schatten zurueck
+   (Reset-Falle 547.7/F).
+
+ERWARTUNG: Die Schuessel zieht jetzt Karten+Maske der STUFE-1-
+Textur gen_parabolic_0 (588) -- in der Rohtexel-Probe MAGENTA
+(R=1, G=0.15, B=1). DLL 211.456 B als d3d8_mit_log.dll, Quelle
+s591. Karten regeneriert (224 -> 217 + Vorgaben).
+
+591b. KARTENSTUFE BESTAETIGT (Screenshot): Schuessel MAGENTA --
+  Maske kommt ueber die Stufe-1-Textur an. Nebenwirkung mit
+  Tragweite: ALLE lightmap-zuerst-Zuege (Stationswaende, Plattform,
+  Kuppeln) sampeln jetzt erstmals ihre ECHTEN Texturkarten -- die
+  Heuristik haelt die grauen Panel-Texturen fuer Metall (pink in
+  der Rohtexel-Probe). Vorher war das unsichtbar, weil diese Zuege
+  die (B=0-)Lightmap-Karten bekamen. Offen: Sieht das im
+  Normalmodus nach Stahlstation aus (plausibel!) oder nach Chrom
+  (dann Heuristik daempfen oder AQUANOX_METALL runter)? Die
+  Bodenplatte der Antenne zeigt PINK statt des erwarteten
+  Sockel-Gelbs -- Inselzuordnung Platte/Schuessel ggf. nachziehen,
+  NACH der Normalmodus-Beurteilung. Sonnenstrahl-Kaustiken =
+  additiver Effektpass, korrekt unangetastet.
+
+592. AQUANOX_METALL = HELLIGKEIT STATT GEWICHT (11.08.2026)
+  Stefans Befund im Normalmodus: "kein Metall-Glanz auf der
+  Schuessel". Ursache doppelt: (1) Das Metallgewicht sass laengst
+  an der 0.85er-Kappe -- der Regler c2.z bewirkte dort NICHTS
+  mehr; (2) der Unterwasser-Wuerfel ist dunkel (Mitte ~0.2, Boden
+  ~0.05) -- Metall ohne helle Umgebung wird DUNKLER, nicht
+  glaenzender (genau die Falle aus dem orm_karten-Kopfkommentar).
+  Umbau: c2.z multipliziert jetzt cube*albedo VOR der
+  Metallanteil-lrp (nur der Metallpfad wird heller, Dielektrikum
+  unberuehrt; F10-Falle beim lrp-Ziel umschifft, Anweisungszahl
+  gleich). Gewicht = min(Metall*(1-Rauheit^2), 0.85), fest.
+  NEU: AquaNox_MetallKrass.cmd (AQUANOX_METALL=8, Normalmodus) --
+  Uebertreibungsprobe nach dem Muster von Modus 11.
+
+592b. ANTENNEN-THEMA AUF STEFANS WUNSCH GESCHLOSSEN (Budget).
+  Stand bleibt: Teststand d3d8_mit_log.dll = s592 (TFACTOR,
+  Deckend-Gate, KartenStufe, Metall-Helligkeitsregler, Diagnose
+  PARABO/PRELIT-ZUG noch drin, Modus 20 = Rohtexel-Ansicht).
+  AquaNox_Spielen.cmd bleibt bewusst auf dem BESTAETIGTEN
+  585-Stand (still). Offen, falls je wieder aufgegriffen:
+  Bodenplatten-Insel, Heuristik der Stationspaneele,
+  Wuerfel-Helligkeit, Diagnose-Ausbau, stille Fassung heben.
+
+593. WANDLICHT: RELIEF-ANTWORT AUF PRELIT-FLAECHEN (11.08.2026)
+  Stefans Punkt: "kein Relief sichtbar -- das betrifft ja fast
+  alle Flaechen". Stimmt: Prelit-Licht ist eingebacken, die
+  Normalenkarte hatte keinen Lichtterm, auf den sie wirken konnte
+  (nur Spiegelung/Fresnel). Neu in Modus 19 bei NormalKarte:
+    Faktor = max(0, 1 + c2.w * ((N_gestoert . V) - (N . V)))
+    r2 *= Faktor
+  Blickabhaengige "Taucherlampe" NUR fuer die Stoerung: flache
+  Kartenstellen -> Faktor exakt 1, Bild bitgenau wie bisher
+  (Lightmaps und Kaustik-Zusatzpaesse unangetastet). Ungestoerte
+  Normale wird vor der TBN-Stoerung nach r20 gerettet (nur Modus
+  19); r19.w als Zwischenwert (kollisionsfrei zur r19.xyz-Probe,
+  die nur in Modus 20 existiert). Regler AQUANOX_WANDLICHT ->
+  c2.w (AqRelief[3], Vorgabe 2.0; 0 = aus). 6 Anweisungen.
+  DLL 212.480 B? -> Binaerkontrolle ok, als d3d8_mit_log.dll
+  eingespielt, Quelle s593.
+
+594. "KOMPLETT FLACH": DIE HAEUFIGSTEN WAENDE HATTEN NIE EINE
+  RELIEFKARTE (11.08.2026). Nur 106/217 Texturen hatten Normal-
+  karten -- die Farbigkeitsschwelle in normalkarten.py (Kanal-
+  differenz >= 6) uebersprang die GRAUEN Panel-/Wandtexturen,
+  dieselbe Luecke wie beim Metall (584). Filter auf reinen
+  Normalkarten-Ausschluss reduziert (+ Lightmap-Liste 591),
+  Karten regeneriert. Krass-Skripte auf Stefans Wunsch geloescht
+  (die Leopardenflecken waren Relief 20x + Metall 8x, kein Rest-
+  zustand). Wandlicht (593)-Beurteilung bei Normstaerken offen.
+
+594b. WANDLICHT SASS AUF r2 -- WIRKUNGSLOS (11.08.2026). Gitter-
+  Probe blieb unsichtbar, obwohl PRELIT-ZUG fuer alle vier
+  Kandidaten Nk=1 zeigte. Ursache: Die Wand-Ketten referenzieren
+  DIFFUSE gar nicht (Farbe = TFACTOR*Textur*Lightmap) -- die
+  Modulation auf r2 erreichte das Bild nie. Wandlicht steht jetzt
+  am ENDE der Texturkette auf r3 (gleiche 6 Anweisungen, r20/r19.w
+  bleiben ueber die Kette hinweg unberuehrt). DLL eingespielt,
+  Quelle s594b. Gitterkarten auf den vier Stations-Texturen noch
+  aktiv (Nachweis ausstehend).
+
+594c. WANDLICHT AUF OPT-IN ZURUECKGENOMMEN (11.08.2026). Nach dem
+  r3-Fix (594b) wirkt es -- aber die Heuristikkarten machen aus
+  Albedo-Flecken Buckel ("Kaustik-Doppelung"), und Stefans Bunker
+  FLACKERT zwischen uebernommenem und Original-Zug, sobald das
+  Wandlicht die Zuege sichtbar unterscheidet (Kette haengt am
+  animierten TFACTOR; Ursache des Pfadwechsels je Frame noch
+  UNGEKLAERT -- Diagnosekandidat: Zustandsblock-Anwendungen bzw.
+  wechselnde Ketten je Frame). Vorgabe AqRelief[3] = 0; Gitter-
+  karten zurueckgebaut (217 Heuristikkarten aktiv). Damit ist das
+  Bild wieder der bestaetigte Stand; Relief wirkt im Licht-Pfad
+  (Waffe/Schiffe/Beschuss). Wiederaufnahme: AQUANOX_WANDLICHT=1
+  setzen und ZUERST das Flackern diagnostizieren (ein Lauf, Log).
+  Quelle s594c, DLL eingespielt.
+
+595. FLACKER-DIAGNOSE + GITTER-NACHWEIS IN EINEM LAUF (11.08.2026)
+  Codebefund: ApplyStateBlock legt AqSchattenGueltig dauerhaft
+  still (bis Reset/AqDefaults) -- ein PER-FRAME-Flackern kann so
+  nicht entstehen. Gegenthese: Die animierten Original-Kaustiken
+  (eigener Zug) laufen UEBER dem statischen Wandlicht-Muster --
+  zwei Muster wirken wie Umschalten. Diagnose 595 (nur laut):
+  Frame-Zaehler in Present; je Zeichenaufruf der vier Stations-
+  hashes eine Zeile F<frame> P/L/F Blend TFactor (Deckel 400);
+  ApplyStateBlock-Zeitpunkte. Gitterkarten wieder auf den vier
+  Texturen, AquaNox_GitterTest.cmd (WANDLICHT=2 nur dort).
+  Quelle s595, DLL eingespielt.
+
+596. DER SCHLUSSSTEIN: DIE PRELIT-SHADER HABEN KEINE KAMERA --
+     JETZT AUS DER WVP-MATRIX ERRECHNET (11.08.2026)
+=====================================================================
+
+Kette der Befunde (595): Zeichenwege stabil, keine Zustandsbloecke,
+TFACTOR konstant -- und trotz Gitter auf ALLEN 217 Karten kein
+Raster im Bild: die "Wellen" am Boden sind die ANIMIERTE ORIGINAL-
+KAUSTIK des Spiels (Stefans "Flackern" = ihre Hellphasen ueber
+unserem statischen Bild), und unser Relief-/Spiegelbeitrag auf
+Prelit-Flaechen war in Wahrheit NULL.
+
+Ursache (an den Shader-Dumps der Exe belegt): Die rep_*prelit_vs*
+kennen KEIN vs c2 -- ps c0 ("Kamera im Objektraum") war fuer alle
+Prelit-Zuege der veraltete Wert des letzten LICHT-Objekts im
+falschen Objektraum. Fresnel, Cubemap, Metall und Wandlicht auf
+Waenden waren damit seit 576 stumm (nie aufgefallen, weil subtil
+und nie einzeln geprueft -- die Bestaetigungen kamen alle von
+LICHT-Pfad-Objekten wie Fenstern, Waffe, Schiffen).
+
+FIX: vs c0..c3 (WVP, m4x4 oPos) mitschreiben (AqMatrixVS, setzt
+Konst- und Matrix-Schmutzig); im Prelit-Upload Kamera errechnen:
+  M * C = (0,0,1,0)  =>  C_i = Kofaktor(2,i)/det, homogen geteilt
+(der Augpunkt ist der einzige Punkt mit Bild auf w=0; Massstab
+kuerzt sich). Cramer entlang Zeile 2, doubles, Rueckfall auf die
+alte Kamera bei det~0 oder w~0 (orthografisch). Formel numerisch
+gegen numpy verifiziert (exakt). KEIN Shader-Umbau -- reine
+Konstantenkorrektur; wirkt auf Fresnel+Spiegel+Metall+Wandlicht
+aller Prelit-Flaechen gleichzeitig. Quelle s596.
+
+597. 596 GRIFF INS LEERE: DIE MATRIX LIEGT JE SHADER WOANDERS
+  (11.08.2026). Volltext-Disassemblat der Prelit-Objektshader:
+    m4x4 oPos, v0, c3   <- Matrix in c3..c6, NICHT c0..c3!
+    mov oD0.xyz, c0     <- c0 ist deren FARBE (Konstante je Objekt)
+    dp4 oT0.x/y, v0, c10/c11  <- Basis-UVs werden aus der POSITION
+                                 projiziert (darum nur 1 UV im lmsh)
+    dp3 oD0.w, v1, c12  <- v1 IST die Normale (gut fuer unser oT5)
+  596 hatte c0..c3 als Matrix angenommen -> Kamera weiter Muell.
+  FIX 597: MatrixReg je Shader am Quelltext erkannt ("m4x4 oPos,
+  v0, cN", VertexShaderInfo::MatrixReg, -1 ohne Matrix), vs c0..c7
+  als AqVSK geschattet, Prelit-Kamera aus AqVSK[MatrixReg..+3].
+  Loesch-/FVF-/Reset-Zweige setzen MatrixReg -1 (Edit-Tool mit
+  replace_all -- die PowerShell-Ersetzung scheiterte erneut an
+  CRLF, bekannte Falle). Quelle s597, DLL eingespielt. Gitter-
+  karten + GitterTest weiter aktiv.
+
+597b. KORREKTUR ZU 597: Der erste 597-Eintrag entstand VOR einem
+  gescheiterten Build (SourceCode ausserhalb des Gueltigkeits-
+  bereichs; obendrein wurde dabei die VORHERIGE DLL eingespielt --
+  Lehre: Einspielen und Handoff NIE in denselben Befehl wie den
+  Build haengen, erst Ergebnis pruefen). Behoben ueber den
+  AqWurdeVS3-Stil: Member AqMatrixRegErkannt wird im Quelltext-
+  Zweig gesetzt (-1 im FVF-Zweig) und nach der Merkmalskopie in
+  ShaderInfo->MatrixReg uebernommen. Jetzt sauber gebaut und
+  wirklich eingespielt.
+
+598. AUCH DAS GROBE GITTER (128er, gegen Mip-Ausloeschung) BLIEB
+  UNSICHTBAR -> MODUS 21: WANDLICHT-FAKTORPROBE (11.08.2026).
+  Waende zeigen R=N'.V, G=N.V, B=0.5+Delta*c2.w. Lesarten im
+  Skriptkopf/Quelltext. Weiche/r2-Zweig/r20-Rettung um 21
+  erweitert; AquaNox_WandlichtProbe.cmd (PP=21, WANDLICHT=2).
+  Quelle s598, DLL eingespielt, Gitterkarten aktiv.
+
+599. DER STILLE ASSEMBLIERFEHLER: X5584 SEIT 593 (11.08.2026)
+  Das Log des Modus-21-Laufs enthielt die Antwort auf ALLES:
+  "error X5584: 2 different constant registers read by instruction"
+  -- die Wandlicht-Zeile "mad r20.w, r20.w, c2.w, c1.y" liest c2
+  UND c1 in einer Anweisung. JEDER Shader mit Wandlicht scheiterte
+  seit 593 STILL beim Assemblieren -> Rueckfall-Kaskade -> FF.
+  Deshalb: nie ein Gitter, nie eine Probe, keine Wirkung der
+  Kamera-Fixes 596/597 im Bild; der "Marmor" war die Spielkaustik.
+  Die Regel stand laengst im Quelltext (Fresnel-lrp, 576) -- und
+  GENAU die eine Aenderung, die nicht offline assembliert wurde,
+  brach sie. Zweitfehler: AqWaehleKartenquelle wertete eine nur
+  GEBUNDENE, aber in der Kette abgeschaltete Stufe 1 als Karten-
+  quelle -> texld t1 ohne dcl v3 -> X5984, gleiche stille Kaskade.
+  FIXES: mad -> mul+add (Wandlicht UND Modus-21-Probe);
+  Kartenquelle nur bei AqTSS[1][COLOROP] != DISABLE. Diesmal
+  offline assembliert (voller Rumpf mit beiden Bloecken: OK).
+  LEHRE VERSCHAERFT: JEDE neue Shaderzeile laeuft VOR dem
+  Einspielen durch D3DXAssembleShader -- keine Ausnahme, auch
+  nicht fuer "triviale" mads. Quelle s599.
+
+599b. WANDLICHT BESTAETIGT (Screenshots): Modus-21-Probe zeigt alle
+  drei Kettenglieder lebendig (R!=G = Stoerung kommt an, Muster =
+  Faktor); GitterTest zeigt die Wellen als Helligkeit auf Steg und
+  Waenden. DAS RELIEF AUF PRELIT-FLAECHEN FUNKTIONIERT ERSTMALS --
+  Kette: Karten (594) + Kartenquelle (591) + Kamera aus Matrix
+  (596/597) + X5584-Fix (599). Echte Heuristikkarten wieder aktiv
+  (der Heuristik-Look war nie zu sehen, alle frueheren Urteile
+  betrafen den stillen Ausfall!). Offen: Stefans Geschmacksurteil
+  bei WANDLICHT=2, dann Vorgabe festlegen, Diagnosen ausbauen,
+  stille Fassung heben.
+
+600. WANDLICHT GEZAEHMT: KLEMMUNG + BANDPASS-KARTEN (11.08.2026)
+  Stefans Urteil zum ersten ECHTEN Wandlicht-Bild: dunkle Flecken-
+  muster, kein wahrgenommenes Relief, "Flackern" gegen die
+  pulsende Kaustik. Zwei Ursachen, zwei Fixes:
+  a) Faktor-Klemmung 0.5..2.0 (max c31.y / min c31.z, je EIN
+     Konstantenregister, offline assembliert): keine Schwarz-
+     flecken mehr.
+  b) normalkarten.py: BANDPASS (fein - grob) statt Tiefpass-
+     Mischung -- breite Helligkeitsflecken (Schmutz, eingebackenes
+     Licht) fliegen raus, nur Strukturkanten (Fugen, Platten,
+     Nieten) werden Relief. 217 Karten neu.
+  Quelle s600, DLL eingespielt. Geschmackstest ausstehend.
+
+601. TAGESABSCHLUSS: WANDLICHT VORGABE 1, STILLE FASSUNG GEHOBEN
+     (11.08.2026)
+=====================================================================
+
+Stefans Deutung des 600er-Bilds bestaetigt die Technik: das
+Wirbelmuster IST die Relief-Antwort (koernige Steintexturen lesen
+sich ueber Helligkeit-zu-Hoehe als Kaustik-Wirbel); unter direktem
+Licht (Beschuss) verhaelt es sich wie echtes Relief. Ab hier
+Geschmackssache.
+
+FESTGELEGT: AQUANOX_WANDLICHT Vorgabe 1 (dezent; 0 = aus, 2+ =
+kraeftig -- zur Laufzeit ohne Neubau). Stille Fassung auf den
+GESAMTSTAND gehoben: 182.784 B, Redirecting 0, Wandlicht-Zweig
+binaer verifiziert. Enthaelt gegenueber dem 585er-Spielstand:
+TFACTOR (589), Deckend-Gate (589), Kartenquelle Stufe 0/1 (591),
+Lightmap-Ausschluss (591), Metall-Helligkeitsregler (592),
+Wandlicht komplett (593/594b/599/600), Prelit-Kamera aus der
+WVP-Matrix (596/597), Klemmung + Bandpass-Karten (600).
+Laute Fassung identischer Stand (mit Diagnosen PARABO/595/
+PRELIT-ZUG und Probemodi 14-21).
+
+DIE VIER BAUSTEINE DES RELIEF-DURCHBRUCHS (Rueckblick 593-600):
+  1. Karten auch fuer graue Texturen (594)
+  2. Kartenquelle bei lightmap-zuerst-Zuegen (591/599)
+  3. Prelit-Kamera aus der Matrix errechnet (596/597)
+  4. X5584: ein Konstantenregister je Anweisung (599) -- der
+     stille Assemblierfehler, der alles verdeckte
+Jeder war notwendig; sichtbar wurde das Ergebnis erst mit allen.
+
+Offen (nach Geschmack/Budget): Kartenqualitaet weiter verfeinern
+oder handgemachte Karten fuer Schluesselobjekte (Pipeline steht),
+Diagnose-Ausbau in der lauten Fassung, NumOfSprites (Ghidra,
+Fallen 527), Terrain-Relief-Kapitel, Wuerfel-Helligkeit.
+
+602. STEFANS EINSPRUCH IST BERECHTIGT: DER VEREINBARTE GITTER-
+  NACHWEIS WURDE NIE ERBRACHT (11.08.2026). 599b/601 erklaerten
+  weiche Flecken zum Erfolg -- das war voreilig. Jetzt gezielt:
+  Modus 16 (gestoerte Normale ALS FARBE, ohne jede Lichtrechnung)
+  durch die Prelit-Weiche gelassen; ALLE Normalkarten mit hartem
+  Linien-Gitter (Periode 64, Linien 8 px, Amplitude 0.9).
+  Nachweisregel: Waende in AquaNox_NormalProbe16.cmd muessen ein
+  farbiges RASTER zeigen (violett-flaechig mit orange/tuerkisen
+  Linien) -- oder es gibt einen praezisen naechsten Befund.
+  Quelle s602, DLL eingespielt.
+
+603. STEFANS ZWEI BEFUNDE UEBERFUEHREN DIE FORMEL (11.08.2026):
+  Gitter sichtbar von fern, VERSCHWINDET bei Annaeherung, wirkt
+  nie wie Relief. Ursache: Blicklicht -- die Stoerung liegt
+  tangential, (N'-N).V geht gegen 0, sobald man senkrecht auf die
+  Flaeche schaut (Annaeherung!), und Blickbeleuchtung kennt keine
+  Schattenflanke. FIX: FESTES SCHRAEGLICHT c3.yzw = (1,1,1)/sqrt(3)
+  als def-Konstante; Faktor = 1 + c2.w*((N'-N).L), Klemmung
+  0.5..2.0 bleibt. Praegelicht: helle UND dunkle Rillenflanken,
+  entfernungs- und blickunabhaengig, kein Flackern. Offline
+  assembliert (c3.yzww-Swizzle ok). Gitterkarten weiter aktiv.
+  Quelle s603, DLL eingespielt.
+
+604. WARUM DAS RELIEF BEI ANNAEHERUNG VERSCHWAND -- IN JEDEM MODUS
+  SEIT 570 (11.08.2026). Stefans Befund "verschwindet weiterhin
+  bei Annaeherung" trotz festem Schraeglicht (603) entlarvte den
+  Kern: Die TBN-Tangenten entstehen aus BILDSCHIRM-Ableitungen
+  (dsx/dsy von Ort und UV). Bei Nahsicht (Vergroesserung) sind
+  beide je Pixel winzig; |T|^2 ~ (|dP|*|dUV|)^2 faellt unter die
+  1e-6-Schutzschwelle der invmax-Normierung ("max r5.w, c31.x")
+  -> r5.w wird von der Klemme statt vom Betrag bestimmt -> die
+  normierten Tangenten kollabieren -> Stoerung ~0. Aus der Ferne
+  sind die Ableitungen gross -> Relief da. DAS GALT SEIT 570 FUER
+  ALLE TBN-NUTZER (auch Licht-Pfad-Relief war nahbetrachtet
+  immer tot!). FIX: T und B vor der Betragsbildung mit c1.z =
+  16384 skalieren (gleicher Faktor auf beide kuerzt sich in der
+  invmax-Normierung exakt heraus; Nahsicht-Betraege liegen damit
+  wieder weit ueber der Schwelle). Offline assembliert. Quelle
+  s604, DLL eingespielt. Gitterkarten aktiv, Test ausstehend.
+
+605. GRUNDSATZWECHSEL: VOLLE N-PUNKT-L-SCHATTIERUNG (12.08.2026)
+  Stefans Urteil zu den V-Rillen ("komplett flach") ist prinzipiell
+  richtig: Die Delta-Formel (593-604) betonte nur KANTEN und liess
+  die Flaechenorientierung unangetastet -- so entsteht nie ein
+  3D-Eindruck. Neu: Faktor = 0.5 + c2.w * max(N'.L, 0), Klemme bis
+  2.0, festes Schraeglicht c3.yzw. Bewusster Preis: Wandhelligkeit
+  haengt jetzt von der Ausrichtung ab (Abweichung vom eingebackenen
+  Originallicht) -- das ist die eigentliche Prelit-Modernisierung.
+  Offline assembliert; V-Rillen-Testkarten aktiv. Quelle s605.
+
+606. PBR-DEMO AUF STEFANS ANSAGE (12.08.2026): "Nimm eine PBR-
+  Textur, egal was, ich will den Effekt sehen." Kernerkenntnis:
+  Ohne passende ALBEDO liest kein Auge ein Material -- die kam
+  bisher immer vom Spiel. NEU: Albedo-Ersetzung im Wrapper
+  (AQUANOX_ERSATZ=1, texturen\ersatz\<hash>.png statt Spieltextur
+  auf Stufe 0; AqErsatz/AqErsatzGesucht an Direct3DTexture8).
+  tools\pbr_demo.py erzeugt aus EINEM Hoehenfeld (Stahlplatten,
+  Fasen, Nieten, Kratzer) kohaerent Albedo+Normal+ORM fuer alle
+  Nicht-Lightmap-Dumps. AquaNox_PBRDemo.cmd: ERSATZ=1, WANDLICHT=2,
+  METALL=2, RELIEF=5. Zurueck: beide Generatoren --alle, ersatz\
+  loeschen, ERSATZ aus. Quelle s606.
+
+606b. PBR-DEMO-HAVARIE UND KORREKTUR (12.08.2026): Der erste Wurf
+  ersetzte ALLE 218 Texturen -- auch HUD, Ladebildschirm, Terrain,
+  Pflanzen: Bild komplett zerlegt (Schaden auf AquaNox_PBRDemo.cmd
+  begrenzt, nur dort ist AQUANOX_ERSATZ=1). Korrektur: Whitelist
+  texturen\welt_hashes.txt = die 46 Prelit-uebernommenen Hashes aus
+  dem PRELIT-ZUG-Protokoll; pbr_demo.py bedient nur noch diese.
+  Echte Karten regeneriert (217+217, Vorgaben angewandt), Ersatz-
+  ordner geleert und neu befuellt. LEHRE: Ersetzungslisten IMMER
+  aus dem gemessenen Zeichenweg ableiten, nie "alle Dumps".
+
+607. DER LETZTE BAUSTEIN, VON STEFANS SCREENSHOT BEWIESEN: DIE
+  UV-SKALIERUNG DER LEVELGEOMETRIE (12.08.2026). Im PBR-Demo-Bild
+  zeigt das TRUEMMERSTUECK die Stahlplatten gestochen scharf,
+  Waende/Berge sind EINFARBIG: die projizierten UVs strecken eine
+  Kachel ueber dutzende Meter -- jedes Texturdetail (Heuristik,
+  Gitter, PBR) war auf diesen Flaechen prinzipiell unsichtbar.
+  Engine-DATEN-Grenze, kein Shaderfehler. FIX: UV-Kachelung im
+  Nachbau: AQUANOX_KACHEL -> c5.x (Upload neben c4), prozess-
+  konstant (kein Schluesselfeld); r21 = t<KartenStufe> * c5.x;
+  Objekttextur-, s8-, s9-Abtastung nutzen r21 (nur ps_3_0-Familie;
+  Lightmap-Stufe bleibt ungekachelt!). Offline assembliert.
+  PBRDemo.cmd: KACHEL=16. Quelle s607.
+
+607b. POSITIONS-UVS STATT LEVEL-UVS (12.08.2026): 16x Kachelung
+  war auf Bergen weiterhin EINE Riesenplatte -- die Projektions-
+  Stauchung ist beliebig gross, Raten zwecklos. Demo-UVs jetzt aus
+  der Objektraum-Position (t6): r21 = skew(pos) * c5.x, absolute
+  Plattengroesse in Welteinheiten (KACHEL=0.125 = 8er-Kacheln),
+  auf jeder Flaeche gleich. KachelAn-Gate akzeptiert Werte < 1.
+  WICHTIG fuer die Bewertung: Flaechen, deren Basiskette GAR KEINE
+  Textur hat (Terrain: SELECTARG1(TFACTOR)-Flachfarbe!), bleiben
+  grau -- die Demo an GEBAEUDEN und STEG beurteilen. Quelle s607b.
+
+608. SITZUNGSENDE PBR-DEMO: STAND, VERDACHT, NAECHSTE SCHRITTE
+     (12.08.2026)
+=====================================================================
+
+Die Demo blieb am Bunker VOLLTON GRAU -- auch mit Positions-UVs
+(607b). HAUPTVERDACHT (aus 590/591 ableitbar, UNGEPRUEFT): Der
+Bunker zeichnet LIGHTMAP-ZUERST -- seine Objekttextur liegt auf
+STUFE 1, die Albedo-Ersetzung (606) greift aber NUR auf Stufe 0.
+Die Demo hat die sichtbare Textur also vermutlich nie ersetzt.
+Zweitverdacht: die Basis-Kette der grauen Flaechen hat GAR KEINE
+Textur (SELECTARG1/MODULATEALPHA_ADDCOLOR mit TFACTOR + F28-Weiss)
+-- dann zeigt sie zwangslaeufig Flachfarbe.
+
+NAECHSTE SCHRITTE (beide klein, fuer frische Sitzung):
+ a) Ersetzung auch fuer Stufe 1 (drei Zeilen im SetTexture-Zweig,
+    Gate AqErsatzAn; danach PBRDemo erneut).
+ b) Falls weiter grau: Farbprobe auf frac(r21) legen (zeigt, ob
+    die Positions-UVs ueberhaupt variieren) und die Kette des
+    Bunkers per PRELIT-ZUG + Schluesseldump exakt ausdrucken.
+
+AUFGERAEUMT: Karten regeneriert (Heuristik + Vorgaben; die Demo
+hatte 39 davon ueberschrieben). Ersatz-Dateien bleiben liegen,
+wirken aber NUR mit AQUANOX_ERSATZ=1 (allein PBRDemo.cmd).
+SPIELSTAND SICHER: AquaNox_Spielen.cmd = stille Fassung s601
+(unveraendert, bestaetigt). Laute d3d8_mit_log.dll = s607b mit
+allen Demo-/Probe-Schaltern (Vorgaben harmlos; Wandlicht seit 605
+= N'.L-Schattierung, Vorgabe 1 -- falls VS3Test-Waende dadurch
+zu richtungsabhaengig wirken: AQUANOX_WANDLICHT=0).
+
+BILANZ DER RELIEF-KAMPAGNE (588-608): 6 echte, dokumentierte
+Funde (TFACTOR-Luecke, Kartenquelle, Prelit-Kamera, X5584,
+Nahsicht-Kollaps der TBN-Ableitungen, UV-Stauchung der Level-
+geometrie) -- und Stefans hartnaeckiges Urteil "ich sehe nichts"
+war JEDES MAL der Ausloeser. Das vereinbarte Ziel (Gitter ALS
+RELIEF, nah wie fern) ist erreicht bis auf die Demo-Albedo;
+"sieht aus wie moderne PBR-Oberflaeche" steht noch aus und haengt
+jetzt an a)/b).
+
+609. SCHRITT a) AUS 608 UMGESETZT (12.08.2026): Albedo-Ersetzung
+  greift jetzt auch auf STUFE 1 (Gate Stage <= 1) -- dort liegt
+  die Objekttextur der lightmap-zuerst-Zuege (Bunker). Lightmaps
+  bleiben sicher (keine Ersatzdateien fuer ihre Hashes). Kein
+  Shader-Umbau. Quelle s609, DLL eingespielt. Test: PBRDemo,
+  Bunker/Steg; bei weiter Grau folgt Schritt b) aus 608
+  (frac(r21)-Farbprobe + Kettendump).
+
+609b. DER VOLLTON-GRAU-TAETER: DIE SPIEGELUNG SELBST (12.08.2026).
+  Demo lief mit Metall 1.0 ueberall + doppelter Spiegelhelligkeit:
+  der Metallzweig ersetzt bis 85% der Farbe durch den 32px-Wuerfel
+  -- der ist STRUKTURLOS blaugrau => jede Flaeche wird Vollton-
+  grau, unabhaengig von Albedo/UVs. Alle Demo-Runden seit 606
+  waren dadurch maskiert. Stufe-1-Ersetzung funktioniert nach-
+  weislich (Hintergrund-Rauschen: der Wasserschleier traegt jetzt
+  faelschlich Platten -- Wasserschleier-Hashes gehoeren aus der
+  welt_hashes-Liste entfernt, TODO). KORREKTUR (nur Daten):
+  pbr_demo-ORM Metall 0.35 statt 1.0; PBRDemo.cmd METALL=0.5;
+  39 Kartensaetze regeneriert (608-Cleanup hatte die Platten-
+  karten entfernt -- Albedo und Relief waren zuletzt inkohaerent).
+  LANGFRIST-LEHRE: ueberzeugendes PBR-Metall braucht einen
+  Umgebungswuerfel MIT STRUKTUR (Kapitel Wuerfelqualitaet).
+
+610. DIE LETZTE SCHICHT DES DEMO-RAETSELS (12.08.2026, Sitzungs-
+  ende). Stefans Befund "Original-Textur mit Gitter + Rauschen"
+  zeigt: Die uebernommene BASIS zeichnet inzwischen unsere Platten
+  (Reliefgitter-Schatten sichtbar!), aber der NICHT uebernommene
+  Multiplikations-Zusatzpass (nicht-deckend -> FF, Textur nicht in
+  der Ersetzungsliste) malt die Original-Detailtextur darueber und
+  maskiert die Demo-Albedo. Schichtenmodell des Bunkers damit
+  vollstaendig: [Basis: uebernommen, ersetzt] x [Detail-Multiply:
+  FF, original] + [Kaustik-Additiv: FF, animiert].
+  NAECHSTE SITZUNG (Wahl): (1) Multiply-Pass-Texturen in die
+  Ersetzungsliste aufnehmen (Hashes via Diagnose der NICHT-
+  uebernommenen Zuege ermitteln -- neues Log noetig, FF-Zuege
+  tauchen in PRELIT-ZUG nicht auf) ODER (2) Demo-Schalter, der
+  die Multiply-Ueberlagerungen unterdrueckt (nur ERSATZ-Modus)
+  -- dann steht die Platten-Demo frei. Rauschen: Platten-Korn +
+  Mip-Flimmern unter Positions-UVs; fuer die Demo Korn aus
+  pbr_demo.py nehmen (Rauschzeile 0.03 -> 0) und/oder KACHEL
+  kleiner. Wasserschleier-Hashes aus welt_hashes.txt entfernen
+  (609b-TODO). Spielstand weiter sicher: Spielen.cmd = s601.
+
+611. WEG 2 AUS 610 UMGESETZT (12.08.2026): Im ERSATZ-Modus werden
+  die ueberdeckenden Original-Zusatzpaesse neutralisiert -- der
+  Fremd-Zweig bindet je Mischformel einen konstantfarbigen ps_2_0:
+    DESTCOLOR/ZERO und ZERO/SRCCOLOR -> WEISS  (d*1 = d)
+    DESTCOLOR/SRCCOLOR              -> HALBGRAU (2*d*0.5 = d)
+    ONE/ONE                          -> SCHWARZ (d+0 = d)
+  (AqHoleFlachPS, Freigabe in AqGibFrei; nur wenn das Spiel keinen
+  eigenen PS gebunden hat; ausserhalb der Demo voellig inaktiv.)
+  Kaustik und Muendungsfeuer fehlen in der Demo BEWUSST. Platten-
+  Korn aus pbr_demo.py entfernt (rauschte unter Positions-UVs).
+  Quelle s611, DLL eingespielt, Kartensaetze regeneriert.
+
+612. DER ARCHITEKTUR-KERNBEFUND DER GESAMTEN PBR-KAMPAGNE
+     (12.08.2026, Sitzungsende)
+=====================================================================
+
+Mit neutralisierten Zusatzpaessen (611) ist FAST ALLES Vollton-
+grau. Beweis: Der uebernommene BASIS-Zug der Statics enthaelt
+KEINE Textur -- er ist Flachfarbe (TFACTOR) + Lightmap. Die
+gesamte sichtbare OBERFLAECHENTEXTUR lebt im Multiplikations-
+DETAILPASS (nicht-deckend, von der Prelit-Uebernahme seit 589
+bewusst ausgeschlossen, Textur nicht in der Ersetzungsliste).
+
+Damit ist die PBR-Kampagne neu auszurichten: NICHT der Basis-Zug,
+sondern der DETAILPASS ist der Traeger des Materials. Fuer echtes
+PBR auf Statics muss ER uebernommen werden: eigener ps auf den
+Multiply-Zuegen (Blend Src=DESTCOLOR bzw. DESTCOLOR/SRCCOLOR),
+der statt der Original-Detailtextur unsere Material-Antwort als
+Multiplikator liefert (Relief/Metall dort einrechnen; Neutralwert
+beachten: 0.5 bei 2x-Modulation). Die vorhandenen Bausteine
+(Karten, Kartenquelle, Kamera, Schraeglicht, Kachelung, Ersatz)
+sind alle wiederverwendbar -- nur der Ansatzpunkt wandert.
+
+STAND DER DATEIEN: DLL laut = s611 (alle Demo-Schalter nur unter
+AQUANOX_ERSATZ; Probemodi 14-21; Diagnosen PARABO/595). Spielen =
+stille s601, unveraendert bestaetigt. Kartensaetze: Heuristik fuer
+alle, Platten fuer die 39 Welt-Hashes (wirken nur via Demo).
+ACHT dokumentierte Funde 588-612. Naechste Sitzung beginnt mit:
+"Handoff 612 -- Detailpass uebernehmen".
+
+613. KAPITEL DETAILPASS, SCHRITT 1: INVENTUR (12.08.2026). Neues
+  Log DETAIL-ZUG (nur laut, dedupliziert): jeder nicht uebernommene
+  Multiplikations-/Additiv-Zug mit Hash0, Src/Dest, Z, VSLicht,
+  VS3-Verfuegbarkeit (Zweitfassung existiert?), Texturtypen,
+  Coord1. Die Liste beantwortet: WELCHE Texturen tragen die
+  Statics-Optik, haben ihre Vertexshader schon Zweitfassungen
+  (Voraussetzung fuer ps_3_0-Uebernahme), und wie viele Zugklassen
+  gibt es? Messlauf: normales VS3Test-Spielen (KEIN Demo-Modus
+  noetig). Quelle s613, DLL eingespielt.

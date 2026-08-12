@@ -47275,3 +47275,565 @@ ACHT dokumentierte Funde 588-612. Naechste Sitzung beginnt mit:
   (Voraussetzung fuer ps_3_0-Uebernahme), und wie viele Zugklassen
   gibt es? Messlauf: normales VS3Test-Spielen (KEIN Demo-Modus
   noetig). Quelle s613, DLL eingespielt.
+
+614. DETAILPASS-UEBERNAHME GEBAUT (12.08.2026). Neuer Pfad Detail
+  (Gate: DESTCOLOR/SRCCOLOR, Z an, kein Licht-Shader, Zweitfassung
+  da, AQUANOX_DETAIL=1, Vorgabe AUS) -- baugleich Prelit, Modus 23:
+  Kette nachgebaut (r2 = v0), Wandlicht-Faktor multipliziert
+  (Faktor 1 = Original), KEIN Schlussblock (Fresnel/Spiegel/Metall
+  in einem 2x-Multiplikator ausgeschlossen). Generator-Gates: 23 in
+  r2-Weiche, t7-Skip, r20-Rettung, Wandlicht; Schlussblock explizit
+  != 23. Konstanten-Upload wie Prelit (inkl. Matrix-Kamera, c4/c5).
+  AquaNox_DetailTest.cmd: DETAIL=1 + WANDLICHT=2, KEIN Ersatz --
+  Originaltexturen mit Relief-Praegung. Quelle s614.
+
+615. DETAILPASS WIRKT -- FEINSCHLIFF (12.08.2026): Stefans Test
+  zeigt erstmals deutliches Relief auf den Statics (Screenshot:
+  Bunkerwand plastisch strukturiert). Restpunkt "verpixelt":
+  nicht die Sampler (585 aktiv), sondern Texel-Detail im Bandpass
+  der Heuristikkarten, das unterm Wandlicht je Texel flimmert.
+  Fix: dritter Kastenfilter im Fein-Zweig (kleinste Struktur
+  ~6 px), Karten regeneriert. Kein DLL-Neubau.
+
+616. SAETTIGUNGSFEHLER DER 605er-FORMEL BEHOBEN (12.08.2026):
+  0.5 + s*N'.L hob die EBENE Flaeche an die Klemmgrenze -- helle
+  Flanken sattelten ab, nur dunkle wirkten ("flaches Gitter aus
+  dunklen Linien"). Zurueck zur DELTA-Praegung gegen das feste
+  Licht (603er-Form): Faktor = clamp(1 + c2.w*((N'-N).L), 0.5, 2)
+  -- Flaeche exakt 1 (Original), Flanken symmetrisch hell/dunkel.
+  ERSTMALS vereint: Delta-Form (603, zeigte beide Flanken) +
+  Nahsicht-Fix (604) + richtiger Zug (614). Offline assembliert.
+  Quelle s616, DLL eingespielt. V-Rillen-Karten aktiv.
+
+617. RILLENBREITE = UV-DICHTE (12.08.2026): Stefans Vergleich
+  (Terrain besser als Bunker) bestaetigt: Wo die Texturdichte
+  stimmt, wirkt die Praegung; die UV-Streckung der Statics macht
+  Flanken zu Baendern. DetailTest nutzt jetzt AQUANOX_KACHEL=0.5
+  (Weltpositions-UVs, 607b): Rillenabstand fest ~2 Welteinheiten,
+  Flanken ~25 cm, auf jeder Flaeche gleich. Fernverlust durch
+  Mips bleibt prinzipbedingt (Abhilfe: groessere Periode).
+
+618. WELTPOSITIONS-UVS SCHEITERN IM LEVEL AN FP32 (12.08.2026):
+  Positionen ~3000 Einheiten * Kachelfaktor = UV ~1500; float32
+  verliert dort die Abtast-Nachkommastellen -> Rauschen, Mip-
+  Flackern, Dunkelverfaelschung im 2x-Multiplikator. Die Demo
+  hatte nahe des Ursprungs funktioniert. SAUBERE Loesung (neues
+  Kapitel): Anker je Objekt abziehen (Objektraum-Ursprung) oder
+  frc bereits im VERTEXshader auf kleine Werte -- nicht im ps.
+  KACHEL aus DetailTest entfernt; Heuristikkarten wiederhergestellt.
+
+SCHLUSSBILD DER RELIEF-KAMPAGNE (588-618):
+  BEWIESEN: Die komplette Kette funktioniert -- Detailpass-
+  Uebernahme (614) + Delta-Praegung (616) zeigen echtes Relief,
+  WO DIE TEXTURDICHTE STIMMT (Terrain, Stefans Urteil "wirkt
+  besser"). Die Statics scheitern an ihrer UV-Streckung; Welt-
+  UVs scheitern an fp32-Magnituden. NAECHSTES KAPITEL, sauber
+  umrissen: dichte UVs fuer Statics (Anker-Loesung im VS ODER
+  Level-UV-Reparatur offline in den lmsh-Daten). Alle Werkzeuge,
+  Schalter und 10 dokumentierte Funde liegen bereit.
+
+619. FENSTERPROBE NEGATIV (12.08.2026, letzter Test der Sitzung):
+  Auch mit korrekter Prelit-Kamera und SPIEGEL=12 keine blick-
+  abhaengige Spiegelung auf Fenstern. Zwei Verdachte fuer die
+  naechste Sitzung: (a) Fensterscheiben sind BLEND-Zuege
+  (SRCALPHA) -- die laufen konstruktiv NIE durch unsere Pfade
+  (581/589-Ausschluesse), unser Spiegel kann dort gar nicht
+  wirken; Uebernahme braeuchte eine eigene Fensterzug-Klasse.
+  (b) Der 577er-"Fenstereffekt" kam vom LICHT-Pfad -- pruefen,
+  ob der nach den Umbauten 589-616 noch identisch arbeitet.
+  Auf Stefans Wunsch nicht weiter verfolgt (Budget).
+
+620. LETZTER HEBEL DER SITZUNG: texldl GEGEN DAS MIP-RAUSCHEN
+  (12.08.2026). Diagnose zu 618 verfeinert: nicht die UV-Werte
+  verlieren die Praezision (0.18mm Aufloesung bei uv~1500), sondern
+  die dsx/dsy fuer die MIP-WAHL entstehen durch Ausloeschung als
+  Muell -> Mip-Springen = Rauschen. Fix: alle Kachel-Abtastungen
+  (Albedo, s8, s9) auf texldl mit fester Stufe 0 (r21.w = c31.x).
+  Fernaliasing statt Rauschen -- fuer die Demo richtig. PBRDemo:
+  KACHEL=0.25 (4m-Platten). Offline assembliert. Quelle s620.
+
+620b. DAS LETZTE GRAU WAR EIN SKRIPTFEHLER (12.08.2026): PBRDemo
+  setzte ERSATZ=1 (Neutralisierer AN) aber DETAIL=1 FEHLTE -- die
+  Texturpaesse wurden neutralisiert statt uebernommen: nackte
+  texturlose Basis = Vollton-Grau, hausgemacht. texldl-Fix (620)
+  wirkt nachweislich (Rauschen weg). DETAIL=1 ergaenzt.
+
+621. DIE EHRLICHE WURZEL DES EWIGEN GRAUS -- GEMESSEN (12.08.2026):
+  Distanzsimulation (Blockmittel) des Demo-Materials v1: Kontrast
+  nah 19.4, bei Flugdistanz 5.6 -- UNTER der Wahrnehmungsschwelle
+  (~8). Das Material war fuer Nahsicht entworfen; AquaNox
+  betrachtet Gebaeude aus 20-100 m. ALLE Pipeline-Fixes waren
+  real, aber das Endbild MUSSTE grau bleiben. METHODENFEHLER DES
+  TAGES: Materialien muessen OFFLINE distanzvalidiert werden,
+  BEVOR ein Testlauf stattfindet. Material v2 (scratchpad\
+  material_v2.py -> ersatz/normal/orm der 39 Welt-Hashes):
+  2m-Platten, 16cm-Fugen, wechselnde Plattentoene, gelbe
+  Warnstreifen -- gemessener Distanzkontrast 32.2 (6x ueber der
+  Schwelle). Erst ab jetzt kann ein PBRDemo-Lauf ueberhaupt etwas
+  zeigen. PBRDemo.cmd unveraendert (ERSATZ+DETAIL+KACHEL 0.25).
+
+622. DURCHBRUCH IN SICHT (12.08.2026): Mit Material v2 + DETAIL=1
+  zeigt die Demo erstmals DAS MATERIAL SELBST -- als riesige
+  gelbe/graue Felder mit geraden Plattengrenzen: wir stehen IN
+  einer Platte. Die t6-Positionen der Detail-Meshes sind objekt-
+  lokal (klein), nicht Weltkoordinaten ~3000 -- Skalenannahme um
+  ~Faktor 50-100 daneben. KACHEL 0.25 -> 16 (reine Skriptzahl).
+  Alle Kettenglieder nachweislich aktiv; es fehlt nur noch die
+  richtige Skala.
+
+623. VORBEREITUNG KAPITEL TERRAIN-RELIEF (12.08.2026, auf Stefans
+     Wunsch; aus vorhandenem Wissen, ohne Erkundungslauf)
+=====================================================================
+
+AUSGANGSLAGE (alles bereits gemessen/gebaut):
+ - Terrain wird seit dem TFACTOR-Fix (589) von unseren Pfaden
+   uebernommen; seine Textur-Detailpaesse seit 614 (Modus 23).
+ - Stefans Beobachtung (617): Relief wirkt auf Terrain BESSER als
+   auf Gebaeuden -- die Terrain-UV-Dichte ist offenbar gesund.
+   Das groesste Statics-Hindernis (UV-Streckung) entfaellt hier!
+ - Wandlicht (616, Delta-Praegung) und Kartenpipeline greifen auf
+   Terrain bereits; Karten existieren fuer alle gedumpten
+   Terraintexturen.
+ - Engine-CVar ren_terrain_bumpmap existiert (Handoff-Altbestand)
+   -- Wirkung ungeklaert.
+
+OFFENE FRAGEN (Reihenfolge fuer die naechste Sitzung):
+ 1. INVENTUR: Welche Hashes sind Terraintexturen, welche Zuege
+    zeichnen Terrain (PRELIT-ZUG/DETAIL-ZUG-Log eines Laufs nach
+    Hashes der grossen 512er/1024er filtern; Terrain hat KEINE
+    Lightmap-Stufe -- Unterscheidungsmerkmal zu Gebaeuden)?
+ 2. Was schaltet ren_terrain_bumpmap im Original (Exe-Verweise;
+    Fallen aus 527 beachten)? Evtl. existiert ein ungenutzter
+    Engine-Pfad mit echten Terrain-Bumpmaps.
+ 3. KARTENQUALITAET: Terraintexturen sind organisch -- die
+    Bandpass-Heuristik (600/615) passt hier besser als bei
+    Panels; Staerke separat abstimmbar machen (eigener Regler
+    AQUANOX_TERRAINRELIEF oder Vorgabe je Hash-Liste)?
+ 4. FERNVERHALTEN: Mips loeschen feine Praegung -- fuer Terrain
+    akzeptabel (nah = sichtbar, fern = ruhig); ggf. groessere
+    Strukturperiode in den Terrain-Karten.
+ 5. ABGRENZUNG: Terrain-Basiszug ist TFACTOR-Flachfarbe (612) --
+    die Optik lebt auch hier in den Detailpaessen; Modus 23 ist
+    der Traeger, KEIN neuer Pfad noetig.
+EINSTIEGSSATZ NAECHSTE SITZUNG: "Handoff 623 -- Terrain-Relief,
+Schritt 1 Inventur" (ein Spiellauf mit vorhandenem Logging genuegt).
+
+624. DER KOENIGSFEHLER: DER MODUS-23-ZWEIG WURDE NIE EINGEFUEGT
+  (12.08.2026). Stefans Nullbefund (KACHEL 0.25 -> 16 ohne jede
+  Aenderung) fuehrte zum Grep: "if (Detail" existierte nicht. Die
+  Weiche war gebaut (Detail-Bool, Fremd-Ausschluss), der eigent-
+  liche Uebernahmeblock fehlte -- eine Unterbrechung mitten im
+  Einbau (594-Aera), nie bemerkt: Detail-Zuege fielen in den
+  LICHT-Pfad durch (Modus 5 mit Stale-Hemisphaere = die gelb/
+  grauen Demo-Flaechen; DetailTest-Effekte 615-617 kamen ebenfalls
+  aus diesem Durchfaller). Generator-Seite fuer 23 war komplett
+  (Weiche, r2, t7, r20, Wandlicht, Schlussblock-Ausschluss).
+  Block jetzt eingefuegt (Spiegel des Prelit-Zweigs inkl. aller
+  Konstanten c0/c2/c4/c5/c8-29 + Matrix-Kamera). KACHEL zurueck
+  auf 0.25 (die 16 beruhte auf der Fehlinterpretation). LEHRE:
+  nach jeder Unterbrechung mitten im Mehrschritt-Einbau die
+  Vollstaendigkeit GREPPEN, nicht erinnern. Quelle s624.
+
+625. TERRAIN-INVENTUR SCHRITT 1 ERLEDIGT -- OFFLINE (12.08.2026):
+  map\1h1\terrain per MAD-Abgleich den Dumps zugeordnet:
+    material_0.dds -> dad3ebbdb4fafa8a_256  (MAD 0.27)
+    material_1.dds -> 8a24b13143401faa_256  (MAD 0.32)
+    material_3.dds -> 3cbdae80574f3592_512  (MAD 0.21; = die
+      "Fels"-Textur aus der Metall-Heuristik-Pruefung 584b!)
+    lightmap.dds   -> 2b0c58ecb45b1a03_2048 (MAD 0.88; das alte
+      2048er-Raetsel geloest: TERRAIN-Lightmap -- gehoert in die
+      lightmap_hashes-Ausschlussliste, TODO naechste Sitzung!)
+  Detail-TGAs (coral/fungus/grass/stone, 64er) sind NICHT gedumpt
+  (nie Stufe-0-gebunden -- vermutlich Pflanzen-Sprites). ->
+  texturen\terrain_hashes.txt. Schritt 2 laut 623: Terrain-Zuege
+  dieser Hashes im Log ansehen, ren_terrain_bumpmap klaeren,
+  eigener Staerkeregler.
+
+626. SITZUNGSSCHLUSS PBR-DEMO (12.08.2026): Modus 23 LAEUFT
+  nachweislich (Log: 2 Shader erzeugt mit Src=9/Dest=3, 0
+  VERWORFEN, 0 DETAIL-ZUG-Durchfaller) -- und das Bild ist
+  UNVERAENDERT gelb/grau. ZWINGENDE FOLGERUNG: Die dominanten
+  Flaechen stammen aus einem DRITTEN, nie identifizierten Zug
+  (weder Prelit-Basis nach unserer Lesart noch 2x-Detail).
+  NAECHSTER SCHRITT (eine Runde, bewaehrte Methode 590): Farbcode-
+  Probe -- alle uebernommenen Pfade je eine Kennfarbe (Prelit rot,
+  Detail gruen, Licht blau, FF unveraendert), EIN Screenshot sagt,
+  wer die gelben Flaechen malt. Erst DANACH weiterbauen.
+  Budget erschoepft -- Uebergabepunkt. Spielstand unveraendert
+  sicher (Spielen.cmd = s601; alle Demo-Schalter nur im
+  PBRDemo-Skript). Einstieg: "Handoff 626 -- Pfad-Kennfarben".
+
+627. PFAD-KENNFARBEN GEBAUT (12.08.2026; Stefan hat Max-Budget --
+  Fortsetzung freigegeben). AQUANOX_KENNFARBEN=1 (prozesskonstant):
+  Prelit(19) ROT, Detail(23) GRUEN, Licht-Familie BLAU, FF
+  unveraendert; zusaetzlich FREMD-ZUG-Log jeder nicht uebernommenen
+  Signatur. AquaNox_Kennfarben.cmd = PBRDemo-Zustand + Kennfarben.
+  EIN Screenshot + Log beantworten, wer die gelb/grauen Flaechen
+  malt. Quelle s627, DLL eingespielt.
+
+628. KENNFARBEN VOLLSTAENDIG (12.08.2026): Runde 627 ergab ROT=
+  Kulisse, BLAU=Schiffe/Tuerme, gelb/grau UNGETOENT -- aber die
+  Top-Fremdzuege entpuppten sich als Ladebild/HUD. Blinder Fleck:
+  die 611er-NEUTRALISIERER (flache Weiss/Grau-PS) tragen keine
+  Kennfarbe und tauchen in keinem Log auf -- sie sind der neue
+  Hauptverdaechtige fuer die gelb/grauen Flaechen. FIX: vierter
+  FlachPS MAGENTA, im Kennfarben-Modus binden die Neutralisierer
+  IHN; FREMD-ZUG-Log um die Gate-Felder VS3/Cull/Fam3/Deckend
+  erweitert (klaert, WARUM ein Zug fremd ist -- Verdacht fuer
+  Terrain: keine Zweitfassung, Stromfilter braucht v1+v2, die
+  Terrain-VS nutzen nur v3). Quelle s628, DLL eingespielt.
+
+629. KENNFARBEN v2 -- DIE LANDKARTE (12.08.2026): TERRAIN=GRUEN
+  (laeuft durch Modus 23!), STATION=SCHWARZ (ihre BASIS liefert
+  nichts -- eigenes Folgeproblem), Kulisse rot, Schiffe blau,
+  KEIN Magenta (Neutralisierer unschuldig). Aufloesung des
+  Demo-Graus am Terrain: Die Positions-Kachelung (607b) ist fuer
+  Terrain UNSINN -- dessen VS sind Bildschirmraum-Konstrukte
+  (rep_terrainprelit_*: oPos aus v3, KEIN m4x4), unser oT6=v0 ist
+  dort keine Position -> r21 quasi konstant -> Flachfarbe. Terrain
+  braucht die Kachelung auch nicht (UV-Dichte gesund, 617).
+  KACHEL aus PBRDemo entfernt: Material laeuft ueber die normalen
+  UVs. Offen danach: die SCHWARZE Stationsbasis (Kennfarben-Run
+  zeigt: dest=0 unter dem Multiplikator).
+
+630. KENNFARBEN STUFE 2: MODUS-23-ROHTEXEL (12.08.2026). Terrain
+  laeuft beweisbar durch Modus 23 (629), bleibt aber auch OHNE
+  Kachelung flach -- und seine Materialtexturen stehen gar nicht
+  in der Ersatzliste (nie prelit-genommen -> nie in welt_hashes;
+  Ersatzliste erweitern ist der naechste Baustein). KENNFARBEN=2:
+  der Detail-Zug zeigt sein rohes Stufen-Texel; Chains ohne
+  Texturbezug fallen als VERWORFEN auf FF (harmlos, erkennbar).
+  Quelle s630, DLL eingespielt, Kennfarben.cmd auf Stufe 2.
+
+631. KETTENDRUCK FUER MODUS 23 (12.08.2026): Rohtexel-Probe (630)
+  zeigte WEISS auf dem Terrain -- die Detail-Kette referenziert
+  ihre Textur offenbar nie (F28-Weissersatz oder TFACTOR-only).
+  Jeder Modus-23-Schluesselbau druckt jetzt die komplette Kette
+  (KETTE-23: COp/Args/Tex je Stufe). Quelle s631, DLL eingespielt.
+
+632. KETTE B ENTLARVT DIE RICHTUNG (12.08.2026): Terrain-Detail =
+  SELECTARG2(TEXTURE), Stufen 1, Textur GEBUNDEN und DIREKT
+  ausgegeben -- die Kette ist voellig korrekt; WEISS liefert die
+  gebundene TEXTUR SELBST. Station-Detail (Kette A) = MODULATE-
+  ALPHA_ADDCOLOR(TFACTOR, tex0) dann MODULATE2X(tex1) -- auch
+  korrekt. Naechste Messung: Hash0 im KETTE-23-Druck (welche
+  Textur haengt am Terrain-Detail?). Quelle s632.
+
+633. DAS "WEISSE TEXEL" WAR EIN SKRIPT-GEIST (12.08.2026): Die
+  Original-material_3 ist kontrastreich (Std 51); Kennfarben.cmd
+  trug aber noch KACHEL=0.25 aus seiner Klon-Vorlage -- die
+  Rohtexel-Probe mass ihr eigenes Ein-Texel-Kachelartefakt.
+  KACHEL aus Kennfarben.cmd entfernt. ZWEITER FUND: Terrain- und
+  Stations-Detailhashes (3cbdae80, 0b64fc55, dad3ebbd, 8a24b131)
+  fehlten in welt_hashes -> nie ersetzt. Nachgetragen, Material v2
+  fuer sie erzeugt. LEHRE (Skript-Hygiene): geklonte Testskripte
+  erben Schalter -- vor jedem Diagnose-Lauf die gesetzten
+  Variablen im Skript AUSDRUCKEN (steht jetzt im Kopf beider
+  Skripte als Pflicht). Quelle unveraendert s632.
+
+634. KRONZEUGEN-BEOBACHTUNG (12.08.2026, Stefan): Nach einem AMD-
+  Treiberabsturz (Radeon 6800 XT) zeigte AquaNox_PBRDemo.cmd die
+  METALLISCHE OBERFLAECHE MIT FUGEN -- das Zielbild existiert und
+  die Pipeline kann es produzieren! Nach Treiber-Neuinstallation
+  wieder Vollton-grau (nicht double-checked). Deutung: Zustands-/
+  Reihenfolgeproblem (Geraete-Reset-Pfad nach Crash vs. Frisch-
+  start) oder Treiber-Shadercache -- KEINE Logikluecke. Verdaechtige
+  Unterschiede des Reset-Pfads: AqDefaults+AqSetzeKartenfilter
+  laufen ERNEUT, Schatten frisch, Spiel bindet alles neu. Moegliche
+  Probe: im Spiel Alt-Tab/Aufloesungswechsel erzwingen (loest Reset
+  aus) und schauen, ob das Material erscheint.
+
+635. ERSATZ-LADER BEOBACHTBAR GEMACHT (12.08.2026): Rohtexel-Probe
+  war fuer die Terrain-Kette (SELECTARG2) konstruktionsbedingt ein
+  No-Op (gibt aus, was die Kette ohnehin ausgibt) -- "sieht aus
+  wie sonst" war dort erwartbar. Karten der Platten (Normal/ORM)
+  laden nachweislich; ob die ALBEDO-Ersetzung greift, war die
+  letzte unbeobachtete Stelle -> Ladezeile "ERSATZ geladen/FEHLT
+  (hr, Pfad)" ergaenzt. Stefans Grafiktreiber-Verdacht bleibt als
+  Hypothese im Raum (634); erst die Bindung beweisen, dann ueber
+  Treiber reden. Quelle s635.
+
+636. LETZTE UNBEKANNTE: DIE UV-KOORDINATEN DES DETAILZUGS
+  (12.08.2026). Ersatz laedt bewiesen (42 Treffer inkl. Terrain
+  3cbdae80 + Station 0b64fc55) -- Multiplikator trotzdem flach.
+  Mathematisch bleibt nur UV-Degeneration (ein Texel fuer die
+  Flaeche macht jedes Material unsichtbar). Kennfarben Stufe 3:
+  Modus 23 malt frac(UV) als Rot/Gruen-Verlauf. Einfarbig =
+  degeneriert (dann: Zweitfassungs-Uebersetzung der Terrain-VS
+  pruefen); Verlauf = UVs gesund (dann liegt es hinter dem
+  Multiplikator: Basis/Ueberdeckung). Offline assembliert.
+  Quelle s636, Kennfarben.cmd auf Stufe 3.
+
+637. UV-PROBE POSITIV (12.08.2026, Stefan bestaetigt): Terrain
+  zeigt dichtes frac(UV)-Rautenmuster (dutzende Wiederholungen je
+  Huegel), Waende animierte Wirbel-UVs (Kaustik-Schicht). ALLE
+  Kettenglieder damit einzeln bewiesen: Zug, Kette, Ersatz-
+  Bindung, UVs. Der Vollton-Grau-Rest aus Flugdistanz ist die
+  MIP-MITTELUNG einer dicht gekachelten NAHSICHT-Kornschicht --
+  Engine-Design (Fernoptik = Basis+Lightmap). Distanzvalidierung
+  (621) hatte die falsche Skala (1 Wiederholung statt ~50).
+  ERWARTUNG: Material in NAHSICHT sichtbar (Stefans Treibercrash-
+  Sichtung 634 war vermutlich ein Nahmoment). Naechster Test:
+  PBRDemo dicht am Boden.
+
+638/639. KORREKTUR + STUFE 4 (12.08.2026): Der Detail-Zweig
+  existierte DOPPELT -- der echte 614er-Block lief die ganze Zeit;
+  der 624er-"Koenigsfehler" beruhte auf einem fehlerhaften Grep
+  (Muster "if (Detail)" statt "if (Detail &&") und fuegte nur ein
+  totes Duplikat ein. KONSEQUENZ: Auch c5/KACHEL kamen in Modus 23
+  immer an; die 622er-Deutung (Skala) und 624er-Deutung (Durch-
+  faller) sind hinfaellig. Duplikat mit if(false) stillgelegt
+  (Ausbau beim Aufraeumen). LEHRE: Grep-Muster fuer Existenz-
+  pruefungen IMMER als Praefix formulieren. NEU Stufe 4: Detail-
+  Zweig erzwingt ONE/ZERO (deckend) + rohes Texel -- unser Ausgang
+  nackt, die Basis kann nichts verschlucken. Quelle s639.
+
+640. DER MILCHSCHLEIER-VERDACHT (12.08.2026): Seit 606 liegt in
+  ALLEN Demo-Screenshots eine milchgraue Suppe ueber der Szene --
+  das 609b-TODO (Wasserschleier-Hashes aus der Ersatzliste) wurde
+  nie umgesetzt: der bildschirmfuellende SRCALPHA-Schleier traegt
+  die HELLE Plattentextur statt seines zarten Nebels und waescht
+  jede Flaeche zu Einheitsgrau. Erklaert auch 634 (Treibercrash:
+  einmalig fehlgeschlagener Ersatz-Load -> Original-Schleier ->
+  Platten sichtbar). FIX: Ersatz-Whitelist auf 5 Zielhashes
+  eingedampft (Terrain 3cbdae80/dad3ebbd/8a24b131, Station
+  0b64fc55, Parabol 583813ab); alle uebrigen Ersatzdateien
+  geloescht; Heuristikkarten regeneriert (Plattenkarten nur noch
+  fuer die 5). Kennfarben.cmd zurueck auf 0 (= PBRDemo-Zustand).
+
+641. ***** DURCHBRUCH (12.08.2026): DIE PLATTEN SIND IM SPIEL *****
+  Stefans Screenshot: Steg und Bunkerwand tragen das Stahlplatten-
+  Material -- Fugen, Nieten, Praegelicht, Kaustik darueber; Szene
+  wieder dunkel-klar. Der MILCHSCHLEIER (640) war die letzte
+  Maske: der bildschirmfuellende Nebelpass trug seit 606 unsere
+  helle Ersatztextur und wusch ALLES zu Einheitsgrau -- jede
+  korrekte Ausgabe darunter unsichtbar. Die 5er-Whitelist loeste
+  es. FUNKTIONIEREND BEWIESEN: Detailpass-Uebernahme (Modus 23) +
+  Albedo-Ersetzung + Bandpass-/Plattenkarten + Delta-Praegelicht +
+  Kartenquelle + Prelit-Kamera. Wichtigste Lehren der Kampagne
+  stehen in 599 (Offline-Assemblierung), 621 (Distanzvalidierung),
+  633 (Skript-Hygiene), 639 (Grep-Praefix), 640 (TODOs abarbeiten).
+  AB HIER: Gestaltung statt Fehlersuche.
+
+642. NAHSICHT-QUALITAET (12.08.2026): Stefans Befund nach dem
+  Durchbruch: nah wirken die Platten flach, auch Projektillicht
+  modelliert nicht. ZWEI Ursachen: (a) Der 32er-Wuerfel war
+  strukturlos -- ohne Struktur keine wandernden Glanzlichter auf
+  ebenen Flaechen. NEU: 128er-Wuerfel mit Wasserflecken, Licht-
+  schaechten, Sonnenscheibe+Halo. (b) ARCHITEKTURLUECKE NOTIERT:
+  Dynamisches Licht trifft die texturlose BASIS (keine Karten);
+  die Detailschicht (mit Karten) nullt Lichter bewusst. Kommendes
+  Kapitel: Lichtantwort in die Detailschicht holen (Konstanten-
+  Schatten tragen die Werte des unmittelbar vorangehenden Basis-
+  Zugs -- machbar). Dazu: Plattennormalen steiler (ST 6),
+  PBRDemo WANDLICHT=3, METALL=1.2. Quelle s642.
+
+=====================================================================
+643 -- PARALLAX-MAPPING: DIE ANTWORT AUF "NAH KOMPLETT FLACH"
+=====================================================================
+Stefan bestaetigt nach 642 (Strukturwuerfel 128, ST=6, WANDLICHT=3):
+weiterhin "komplett flach" in Nahsicht. Der Befund ist PRINZIPIELL
+korrekt: Normal-Mapping liefert Schattierung, aber KEINE Parallaxe --
+Fugen und Nieten verschieben sich beim Blickwechsel nicht gegen-
+einander, und genau daran erkennt die Wahrnehmung "aufgemalt".
+ps_3_0 kann einfaches Parallax-(Offset-)Mapping; alle Zutaten waren
+schon da. Eingebaut (Quelle s643):
+
+1) HOEHE IM R-KANAL DER ORM-KARTE (pbr_demo.py): R war konstant 1
+   (Occlusion, nie ausgewertet). Jetzt R = Hoehenfeld 0..1. Die
+   Heuristik-Karten (orm_karten.py) haben weiter R=1 -> Parallax
+   wirkt dort einfach nicht (h-0.5 -> konstanter Versatz).
+
+2) SCHALTER AQUANOX_PARALLAX (Staerke, z. B. 0.04; Vorgabe 0 = aus)
+   -> AqKachel[1] -> c5.y. c5 wird an allen drei Konstantenstellen
+   bedingungslos hochgeladen, kein neues Schluesselfeld noetig
+   (AqParallaxAn ist prozesskonstant wie AqKachelAn). Schliesst
+   sich mit KACHEL aus (beide besetzen r21).
+
+3) DER BLOCK (im Generator VOR dem NormalKarte-Block, Gate
+   Modus 5/14+ und OrmKarte): Blick lokal vorberechnet (r7, der
+   r7-Block spaeter rechnet dasselbe nochmal -- harmlos), Tangenten
+   T/B wie im TBN-Block inkl. 604-Vorskalierung c1.z, dann
+     h = ORM.R(t_K) - 0.5           (texld r21, tK, s9)
+     uv' = tK + (V.T, V.B) * h * c5.y   -> r21.xy
+   OHNE Division durch V.z (Offset-Mapping): flacher bei Streif-
+   blick, dafuer keine Ausreisser. r1-r9 sind an der Stelle frei
+   (der TBN-Block ueberschreibt sie danach selbst), r0 ist dort
+   noch die UNGESTOERTE Normale.
+
+4) ROUTING: alle drei Kartenlesestellen nehmen r21, wenn Parallax
+   an -- Normalenkarte (texld r11, r21, s8), ORM (texld r10, r21,
+   s9) und die SICHTBARE Textur der Kartenstufe (texld r6, r21,
+   sK). Anders als Kachel mit texld statt texldl: die Verschiebung
+   ist glatt, die Ableitungen taugen fuer die normale Mip-Wahl.
+
+5) *** LATENTER BESTANDSFEHLER ENTDECKT (seit 607): *** Die r21-
+   Definition stand im Blickvektor-Block -- NACH der Lesestelle
+   texld r11, r21 im NormalKarte-Block. Der Kachel-Pfad las dort
+   ein UNDEFINIERTES Register (mit-erklaert womoeglich das nie
+   geklaerte Kachel-Rauschen 618). Definition jetzt VOR dem
+   NormalKarte-Block; im alten Block steht ein Verweis.
+
+6) BEINAHE-FEHLER, als Warnung: der erste Wurf legte den Block in
+   den r7-Block -- dort haette "dsy r2" die PRELIT-FARBE (mov r2,
+   v0, Modus 19/23) zerstoert und r0 waere schon GESTOERT gewesen.
+   Registerdisziplin: vor dem NormalKarte-Block ist der einzige
+   sichere Ort fuer r21-Erzeuger.
+
+Regel 599 eingehalten: Block vorab offline assembliert (Scratchpad
+pruef_parallax.py, exakte Ziel-Syntax nach t->v-Tausch, hr=0).
+Build OK, FC: Keine Unterschiede, DLL 222720 B. PBRDemo.cmd traegt
+jetzt AQUANOX_PARALLAX=0.04 (Kennfarben.cmd bewusst NICHT -- die
+Proben sollen unverschoben messen).
+
+ERWARTUNG im Test: Beim seitlichen Vorbeigleiten an Steg/Bunker
+verschieben sich Fugen/Nieten fuehlbar gegen die Plattenmitte --
+der "aufgemalt"-Eindruck weicht. Zu stark (Schwimmen, Wirbel an
+steilen Blickwinkeln) -> PARALLAX auf 0.02; Null-Wirkung pruefen
+mit PARALLAX=0.15 (muss deutlich schwimmen, sonst Kette defekt).
+Die Projektillicht-Luecke (642) bleibt das naechste Kapitel.
+
+=====================================================================
+644 -- PARALLAX VERSTAERKT (KISSENPROFIL, STREIFBLICK) + KAUSTIK-AUS
+=====================================================================
+Stefan zu 643: "flach wie ein Aufkleber", und der Wunsch, die
+Kaustik fuer auswertbare Screenshots abschalten zu koennen.
+
+DIAGNOSE ZUERST -- die Kette ist NICHT defekt: der komplette
+Modus-23-Shader steht im d3d8.log (Prozess von 13:54) und traegt
+den Parallax-Block MIT allen drei r21-Lesestellen (texld r11/r10/r6,
+r21). Ein Workflow-Agent hat den Shader unabhaengig aus dem
+Generator-Quelltext rekonstruiert und offline assembliert: hr=0,
+keine Registerkonflikte (maskengenau geprueft), X5584 sauber, r0
+vor dem Parallax-Block initialisiert (Z.4578ff). Der 643-Effekt
+war schlicht ZU SCHWACH, aus zwei Gruenden:
+  a) KASTENPROFIL: Hoehe war praktisch binaer (Platte 1, Fuge 0,
+     6px-Rampe). Offset-Parallax verschiebt dann die Platte als
+     GANZES; Wirkung nur in den schmalen Fugen.
+  b) Keine Streifblick-Verstaerkung: ohne /V.N ist der Effekt
+     genau bei flachem Blick (Stefans Stegperspektive!) relativ
+     am schwaechsten.
+
+MASSNAHMEN (Quelle s644, DLL 223232 B):
+1) Shader: Division durch max(V.N, 0.5) ergaenzt (dp3/max/rcp auf
+   r21.z, r0 = ungestoerte Normale) -- Verstaerkung bis 2x bei
+   Streifblick, geklemmt gegen Silhouetten-Ausreisser. Offline
+   assembliert (599: pruef_parallax.py erweitert, hr=0).
+2) Material (pbr_demo.py): KISSENPROFIL statt Flachdach --
+   fase 6->20, hoehe = rampe * (0.55 + 0.45*sqrt(sin(pi x/P) *
+   sin(pi y/P))), STAERKE 2.5->4.0. Kontinuierliche Hoehe ueber
+   die GANZE Platte; sie "atmet" beim Vorbeiflug. 5 Saetze
+   regeneriert.
+3) Demo-Skript: AQUANOX_PARALLAX=0.08 (bewusst kraeftig -- der
+   Effekt SOLL erst einmal sichtbar sein, feinregeln danach).
+
+KAUSTIK-SCHALTER (Stefans Wunsch): AQUANOX_KAUSTIK=0 unterdrueckt
+die Kaustik-Zuege komplett. Inventur per Workflow-Agent:
+  - Quelle: vfx\tex\caustic\caus001..032_l6.tga (32 Frames 64x64;
+    caustic.tse NumT=32).
+  - Direkter MAD-Abgleich gegen die Dumps SCHEITERT (bester MAD
+    41.8, auch verschiebungsinvariant nur NCC 0.37) -- die Engine
+    transformiert die Frames beim Laden. Zuordnung stattdessen
+    per Clusterung: EXAKT 32 der 60 64x64-Dumps bilden einen
+    sauber getrennten Cluster (intra-MAD max 59, nach aussen min
+    91), visuell Kaustik-Stil, 32 = NumT. Starke Indizienkette,
+    kein Pixelbeweis -- der Spieltest ist die Probe.
+  - mod_docu\texturen\kaustik_hashes.txt (32 Hashes).
+Wrapper: AqKaustikAus + AqKaustikHashes (hpp), Lader im env-Parse
+(fopen/fgets/_strtoui64, Logzeile "AquaNox-KAUSTIK"), Skip-Funktion
+AqKaustikZug() in ALLEN VIER Draw-Hooks VOR AqVorZeichnen (kein
+Zustand angefasst). Kriterium: Hash an Stufe 0 UND Blend aktiv --
+bewusst NICHT auf Dest=ONE verengt, der exakte Blendmodus ist im
+Protokoll nicht belegt. Demo-Skript setzt KAUSTIK=0.
+
+NEBENFUNDE:
+- Aufraeumliste Modus 23 (Workflow-Beweis): ~16 tote Anweisungen
+  je Pixel (GGX-Vorspann r10/r14 samt totem texld, r17-Albedo-
+  Rettung, r9-Glanzakkumulator, doppelter r7-Block) plus doppelte
+  TBN-Rechnung des Parallax-Blocks (~23 Anweisungen). Kandidaten
+  fuers Aufraeumkapitel, kein Fehler.
+- Kaustik-Frames bekommen HEURISTIK-Normal/ORM-Karten geladen
+  (Log: NORMALKARTE/ORM geladen fuer caus-Hashes) -- sinnfreies
+  Relief auf animierten Lichtnetzen, Aufraeumkandidat (Ausschluss
+  wie Lightmaps).
+- DISKREPANZ: pbr_demo.py lag auf ALTEM Stand (P=128, STAERKE 2.5,
+  keine Warnstreifen) -- nicht auf dem in 621/642 beschriebenen
+  "Material v2" (P=256, FUGE=20, Streifen, ST=6). Wo v2 geblieben
+  ist, ist unklar (moeglicherweise nie gespeichert); das heutige
+  Kissen-Material ersetzt beides.
+- MERKE fuer alle kommenden Tests: Parallaxe ist auf STANDBILDERN
+  prinzipiell unsichtbar -- Beurteilung NUR in Bewegung.
+
+=====================================================================
+645 -- BESTAETIGT: PARALLAX-DURCHBRUCH ("beeindruckend")
+=====================================================================
+Stefans Urteil zu 644, woertlich: "Das war der Durchbruch - jetzt
+sieht man die Vertiefungen und auch das Licht der abgefeuerten
+Geschosse verhaelt sich raeumlich und plastisch. Ich habe nichts zu
+kritisieren, es sieht beeindruckend aus."
+
+Damit ist das Nahsicht-Kapitel (642-644) ABGESCHLOSSEN. Den
+Ausschlag gaben ZUSAMMEN: Kissenprofil (kontinuierliche Hoehe ->
+die ganze Platte traegt Parallaxe), Streifblick-Division
+/max(V.N, 0.5) und PARALLAX=0.08; die Kaustik-Abschaltung machte
+das Ergebnis erst sauber beurteilbar. Screenshot zeigt deutlich
+gewoelbte Platten auf Steg UND Terrain, Projektil-Feuerball
+integriert sich plastisch.
+
+WICHTIGE ERKENNTNIS zum PROJEKTILLICHT: Die in 642 notierte
+Architekturluecke (dynamisches Licht trifft nur die texturlose
+Basis; die Detailschicht nullt Lichter) ist PRAKTISCH ENTSCHAERFT,
+ohne dass wir sie direkt angingen: Das Projektillicht hellt die
+BASIS auf, und der Multiplikationspass (2*d*s) moduliert diese
+Helligkeit mit der kartengepraegten Detailtextur -- Woelbung und
+Prägung formen das dynamische Licht also indirekt mit. Mit genug
+Struktur in der Detailschicht wirkt das Ergebnis raeumlich (Stefans
+Befund). Das geplante Kapitel "Lichtantwort in die Detailschicht"
+ist damit KEIN AKUTES BEDUERFNIS mehr -- zurueckgestuft zu
+"nice to have".
+
+STAND DER REGLERKETTE (bestaetigt): PP=5, VS3=1, ERSATZ=1,
+DETAIL=1, WANDLICHT=3, METALL=1.2, RELIEF=5, PARALLAX=0.08,
+KAUSTIK=0 (Demo). DLL 223232 B (s644), Material: Kissenprofil
+P=128/fase=20/ST=4 auf den 5 Weltflaechen-Hashes.
+
+OFFENE LISTE (Prioritaet nach dem Durchbruch):
+1. Stille Fassung auf den Endstand heben (Spielstand traegt noch
+   s601!) -- alle neuen Faehigkeiten sind env-gesteuert und ohne
+   Schalter inaktiv, das Risiko ist klein.
+2. Aufraeumen mit eigenem Regressionstest: 639-Duplikat, ~16 tote
+   Modus-23-Anweisungen (644-Beweisliste), Heuristik-Karten auf
+   Kaustik-Frames, Diagnosezeilen, verwaiste Zaehler (583).
+3. Gestaltung: echte Materialien je Flaechentyp statt Einheits-
+   Demo-Platte (welt_hashes erweitern, Terrain eigenes Material).
+4. Terrain-Relief Schritt 2 (623/625), Fenster-Spiegelung (619),
+   schwarze Stationsbasis (629), NumOfSprites (Ghidra, Fallen 527).
+
+---------------------------------------------------------------------
+645b -- STILLE FASSUNG AUF DEN ENDSTAND GEHOBEN (war s601!)
+---------------------------------------------------------------------
+d3d8_still.dll = 190464 B, NOLOG-Build des 644er-Endstands
+(getrennte Verzeichnisse bin/obj\ReleaseStill, Schalter per
+$env:CL=/DD3D8TO9NOLOG -- die lauten Objektdateien bleiben so
+unberuehrt). AquaNox_Spielen.cmd setzt nur PP=5/VS3=1: alle neuen
+Faehigkeiten (ERSATZ/DETAIL/PARALLAX/KAUSTIK) schlafen dort, der
+Spielstand bekommt aber alle seit s601 bewiesenen Fixes (u. a.
+X5584-Wandlicht 599, TBN-Nahsicht 604, Milchschleier-Whitelist 640,
+r21-Reihenfolge 643). d3d8_mit_log.dll = 223232 B, vom SELBEN
+Quellstand neu gebaut und eingespielt (Konsistenz). Quelle: s645.
+
+FUND dabei: die neue KAUSTIK-Logzeile brach den NOLOG-Build
+(C2065: LOG nicht deklariert) -- JEDE LOG-Nutzung braucht den
+#ifndef-D3D8TO9NOLOG-Rahmen. Regel fuer alle kuenftigen Logzeilen;
+der stille Build ist der Pruefstein und sollte bei jedem groesseren
+Stand einmal mitlaufen.
+
+ANMERKUNG zum Spielen-Modus: Die normal/orm-Kartensaetze der 5
+Welt-Hashes tragen weiterhin das DEMO-Kissenmaterial (pbr_demo.py
+ueberschreibt sie) -- beim Spielen ohne ERSATZ mischt sich also
+Platten-Praegung auf die ORIGINALTEXTUR dieser 5 Flaechen. Das war
+schon seit 606 so (Status quo) und faellt kaum auf; der saubere
+Rueckbau (normalkarten.py --alle + orm_karten.py --alle) ist
+dokumentiert, wuerde aber die DEMO zerstoeren -- NICHT ausfuehren,
+solange die Demo-Kampagne laeuft. Endgueltige Loesung kommt mit der
+Gestaltungsphase (eigene Materialien je Flaeche).

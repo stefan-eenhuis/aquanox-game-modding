@@ -47,7 +47,11 @@ def normalkarte(pfad, staerke=STAERKE):
                     s = s + np.roll(np.roll(x, dy, 0), dx, 1)
         return s / 9.0
 
-    fein = kasten(kasten(h))
+    # Dreifacher Kasten (615): zweifach liess Detail bis auf
+    # Texelebene durch -- unter dem Wandlicht wurde jedes Texel ein
+    # Helligkeitspunkt ("verpixelt", Detailpass-Test). Kleinste
+    # Strukturen jetzt ~6 px.
+    fein = kasten(kasten(kasten(h)))
     grob = fein
     for _ in range(3):
         grob = kasten(grob)          # ~8 Pixel Reichweite

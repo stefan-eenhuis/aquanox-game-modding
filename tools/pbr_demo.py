@@ -17,13 +17,20 @@ S = 512
 rng = np.random.RandomState(7)
 y, x = np.mgrid[0:S, 0:S].astype(np.float32)
 
-# ---- Hoehenfeld: Platten 128er Raster, 6-px-Fase, Nieten, Kratzer ----
+# ---- Hoehenfeld: Platten 128er Raster, breite Fase, Kissen, Nieten ----
 P = 128
 xm = x % P
 ym = y % P
-fase = 6.0
+fase = 20.0
 h = np.minimum(np.minimum(xm, P - 1 - xm), np.minimum(ym, P - 1 - ym))
-hoehe = np.clip(h / fase, 0.0, 1.0)          # 0 in der Fuge, 1 auf der Platte
+rampe = np.clip(h / fase, 0.0, 1.0)          # 0 in der Fuge, 1 auf der Platte
+# 644: KISSENPROFIL statt Flachdach. Offset-Parallax braucht einen
+# KONTINUIERLICHEN Hoehenverlauf -- beim Kastenprofil (643) verschiebt
+# sich die Platte als Ganzes und die Wirkung haengt allein an den
+# schmalen Fugen ("Aufkleber"-Befund). Die Woelbung laesst die ganze
+# Flaeche beim Vorbeiflug atmen.
+woelb = np.sin(np.pi * xm / P) * np.sin(np.pi * ym / P)
+hoehe = rampe * (0.55 + 0.45 * np.sqrt(np.clip(woelb, 0.0, 1.0)))
 
 # Nieten: Kuppen nahe den Plattenecken
 for ny_ in (16, P - 16):
@@ -47,7 +54,7 @@ hoehe -= kratzer * 0.15
 hoehe += (rng.rand(S, S).astype(np.float32) - 0.5) * 0.0   # 611: Korn raus, rauschte unter Positions-UVs
 
 # ---- Normalen aus dem Hoehenfeld (zentraler Differenzenquotient) ----
-STAERKE = 2.5
+STAERKE = 4.0    # 644: kraeftiger, passend zum weicheren Hoehenfeld
 dx = (np.roll(hoehe, -1, 1) - np.roll(hoehe, 1, 1)) * STAERKE
 dy = (np.roll(hoehe, -1, 0) - np.roll(hoehe, 1, 0)) * STAERKE
 nz = np.ones_like(hoehe)
@@ -67,7 +74,8 @@ albedo[kratzer > 0.5] = np.clip(albedo[kratzer > 0.5] + 0.18, 0, 1)
 
 # ---- ORM: Metall 1, Rauheit strukturiert ----
 rough = np.clip(0.45 - 0.25 * hoehe + kratzer * 0.2, 0.15, 0.8)
-orm = np.stack([np.ones_like(rough), rough, np.full_like(rough, 0.35)], -1)
+# 643: R-Kanal = HOEHE (fuer Parallax); Occlusion war eh ungenutzt.
+orm = np.stack([hoehe.clip(0, 1), rough, np.full_like(rough, 0.35)], -1)
 
 bAlbedo = Image.fromarray((albedo * 255 + 0.5).astype(np.uint8), "RGB")
 bNormal = Image.fromarray((normal * 255 + 0.5).astype(np.uint8), "RGB")

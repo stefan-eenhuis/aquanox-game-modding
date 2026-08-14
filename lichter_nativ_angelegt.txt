@@ -1,0 +1,36 @@
+# Native Stab-Lichter (Handoff 658b), angelegt 2026-08-12, korrigiert 2026-08-13
+# STUFE 2 (663e/663h, 2026-08-13): Gepatchte Kopien aus dat\pak\extracted\
+# vfx\osd\gen\ + Halo-Blinken (Stufe 1/663c)
+# + nod_fx_spawn-Taktgeber "sig_takt" (child1, addtype worldcopy) mit
+# nod_fx_light-Vorlagen-Kind "sig_licht" ([life] time=0.5, delay 1.0).
+# SCHWEBUNGS-FIX (666, 2026-08-14): Halo-Intervalle 0.5/0.5 -> 0.2/0.2
+# (Minen-Warnblinker-Muster); Licht-Spawner unveraendert 663h. Zwei
+# Uhren (Halo=Render, Spawner=Sim) liefen als Schwebung auseinander;
+# stark getrennte Perioden (0.4 s vs 1.0 s) statt Halo-Spawn-Template
+# (Vorstudie: 0/348 Bestands-Slots spawnen Halos, nod_halo kennt kein
+# [life] -- Ewig-Sprite-Leck droht). Rueckbau:
+#   python mod_docu\tools\lichter_nativ_zurueck.py
+# ECHTE SYNCHRONITAET (666b, 2026-08-14): Original-halo_sig ENTFERNT;
+# der sig_takt-Spawner (unveraendert worldcopy, delay 1.0, count 2 Mrd,
+# lifetime 1e9) traegt jetzt ZWEI Vorlagen im selben Takt:
+#   child0 "sig_licht" nod_fx_light [life] 0.5 (wie 663h, feldgleich)
+#   child1 "sig_glow"  nod_particleemitter [osd] lifetime 0.5, glow02,
+#     rot (1/0/0), Additive, alpha 0.5, size 8, pps 10, par-lifetime
+#     0.2, parvelocity (0,0) -- stehender Glow, stirbt mit dem Licht.
+# EIN Spawn-Ereignis, EINE Uhr -> Schwebung strukturell unmoeglich.
+# Groessen 3641/3669/3644 B. Quelle: scratchpad\patch_nativlicht.py
+# Rueckfall auf 666-Stand (Halo 0.2/0.2 + Licht-Spawner):
+#   Kopien aus scratchpad\nativlicht_666\ nach vfx\osd\gen\
+#   (Skriptfassung dazu: scratchpad\patch_nativlicht_666.py)
+# Rueckfall auf bestaetigte Stufe 1: Kopien aus scratchpad\nativlicht_stufe1
+C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\vfx\osd\gen\gen_pole~.osd
+C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\vfx\osd\gen\gen_pole1~.osd
+C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\vfx\osd\gen\gen_pole2~.osd
+# GEBAEUDE (652-Kandidaten, angelegt 2026-08-13): STATISCHES
+# nod_fx_light (662c-Methode, KEIN Spawner, KEIN Halo-Blinken) an
+# den Halo-Positionen der GELADENEN Unterordner-OSDs.
+# atl_dock3: 2x rot 1/0.12/0.08 range [60,260] (halo_sig_01/_02);
+# gen_kai2:  1x orange 1/0.5/0.08 range [40,120] (halo_pri).
+# Quelle: scratchpad\patch_nativlicht_gebaeude.py
+C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\vfx\osd\atl\atl_dock3~.osd
+C:\Program Files (x86)\GOG Galaxy\Games\AquaNox\vfx\osd\gen\gen_kai2~.osd

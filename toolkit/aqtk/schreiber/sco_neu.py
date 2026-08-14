@@ -58,6 +58,26 @@ def quelltext(neulinge, verzeichnis=None):
     verzeichnis: der Node_Find-Pfad, unter den sie gehaengt werden.
     Ohne Angabe wird /Scenario_Static/Object genommen -- der Pfad,
     unter dem in 1h1 101 der 210 BindEasy-Aufrufe haengen.
+
+    Jeder Neuling darf zusaetzlich mitbringen:
+        klasse        die Knotenklasse (Vorgabe "nod_generic")
+        radius        nur nod_waypoint: WayPoint_SetRadius(node, r)
+        zusatzzeilen  weitere Lua-Zeilen ans Ende des Blocks;
+                      "{var}" darin wird durch die Variable ersetzt
+
+    *** WEGPUNKTE FOLGEN DEM ORIGINALMUSTER (1h1.lua:2286-2304): ***
+
+        node297 = Node_CreateNode("nod_waypoint", "nav_waypoint_01")
+        Node_AddSon(node207, node297)
+        Body_SetPosition(node297, MAT_Vector3(...))
+        WayPoint_SetRadius(node297, 350)
+        Node_ParseIniFile(node297, "osd/nav/nav_waypoint_01.osd")
+        Node_EnterSimulation(node297)
+
+    Also: Lage per Body_SetPosition (NICHT Body_SetCS -- das kommt
+    bei keinem Original-Wegpunkt vor), dann Radius, dann OSD, und
+    als Abschluss Node_EnterSimulation. Das nachfolgende
+    Game_LoadProgress_Advance ist Ladebalken-Kosmetik und entfaellt.
     """
     v = verzeichnis or "/Scenario_Static/Object"
     z = ["-- vom AquaNox-Toolkit angehaengt",
@@ -67,15 +87,31 @@ def quelltext(neulinge, verzeichnis=None):
         p = n.get("position") or [0, 0, 0]
         d = n.get("drehung") or [0, 0, 0]
         name = str(n.get("name") or f"neu{i}").replace('"', "")
-        z.append(f'{var} = Node_CreateNode("nod_generic", "{name}")')
+        klasse = str(n.get("klasse") or "nod_generic").replace('"', "")
+        wegpunkt = (klasse == "nod_waypoint")
+        z.append(f'{var} = Node_CreateNode("{klasse}", "{name}")')
         z.append(f"Node_AddSon(_verz, {var})")
-        z.append(
-            f"Body_SetCS({var}, MAT_Vector3({p[0]:.5f}, {p[1]:.5f}, "
-            f"{p[2]:.5f}), MAT_Vector3({d[0]:.5f}, {d[1]:.5f}, "
-            f"{d[2]:.5f}))")
+        if wegpunkt:
+            z.append(
+                f"Body_SetPosition({var}, MAT_Vector3({p[0]:.5f}, "
+                f"{p[1]:.5f}, {p[2]:.5f}))")
+            r = n.get("radius")
+            z.append(f"WayPoint_SetRadius({var}, "
+                     f"{float(r) if r is not None else 350:.0f})")
+        else:
+            z.append(
+                f"Body_SetCS({var}, MAT_Vector3({p[0]:.5f}, {p[1]:.5f}, "
+                f"{p[2]:.5f}), MAT_Vector3({d[0]:.5f}, {d[1]:.5f}, "
+                f"{d[2]:.5f}))")
         if n.get("osd"):
             osd = str(n["osd"]).replace("\\", "/").replace('"', "")
             z.append(f'Node_ParseIniFile({var}, "{osd}")')
+        if wegpunkt:
+            # Der Abschluss aus dem Originalmuster -- ohne ihn kommt
+            # der Knoten nicht in die Simulation.
+            z.append(f"Node_EnterSimulation({var})")
+        for zeile in (n.get("zusatzzeilen") or []):
+            z.append(str(zeile).replace("{var}", var))
     return "\n".join(z)
 
 

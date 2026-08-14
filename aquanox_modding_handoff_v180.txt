@@ -1,4 +1,4 @@
-???VERSION: v132  (*** Der Levelstart braucht keine DLL: -s ***)
+﻿???VERSION: v132  (*** Der Levelstart braucht keine DLL: -s ***)
 DELTA 132: *** Aqua.exe -s map\1n1\script\sp_1n1 startet die Mission
            direkt. *** Der Schalter ist seit 2001 eingebaut; unsere
            Schaltersuche hat ihn uebersehen, weil ihr Muster hinter
@@ -47837,3 +47837,2613 @@ Rueckbau (normalkarten.py --alle + orm_karten.py --alle) ist
 dokumentiert, wuerde aber die DEMO zerstoeren -- NICHT ausfuehren,
 solange die Demo-Kampagne laeuft. Endgueltige Loesung kommt mit der
 Gestaltungsphase (eigene Materialien je Flaeche).
+
+=====================================================================
+646 -- REGRESSIONSTEST STILLE FASSUNG BESTANDEN; KAUSTIK-KARTEN
+       BLEIBEN (Teil des gemochten Looks)
+=====================================================================
+Stefan zu 645b: "AquaNox_Spielen.cmd sieht aus wie immer, alle
+Texturen flach, Beleuchtung huebsch und deine dynamische Kaustik
+ist drin." -> Der Endstand traegt den Spielmodus fehlerfrei.
+
+ERKENNTNIS daraus: Die "dynamische Kaustik", die Stefan MAG, ist
+sehr wahrscheinlich unsere Behandlung der Kaustik-Zuege -- die
+caus-Frames bekommen Heuristik-Normal/ORM-Karten geladen, und wenn
+die additiven Zuege durch den Prelit-Pfad (19) laufen, WIRKEN die
+Karten dort. Der 644er-Aufraeumkandidat "Heuristik-Karten auf
+Kaustik-Frames ausschliessen" ist damit GESTRICHEN: er wuerde
+womoeglich genau den Look entfernen, den Stefan lobt. Erst messen,
+dann aufraeumen -- und Geschmacksurteile schlagen Hygiene.
+
+KURSNOTIZ: Das grosse Shader-Aufraeumen (16 tote Modus-23-
+Anweisungen, doppelte TBN-Rechnung) wird VERSCHOBEN -- unsichtbarer
+Nutzen auf einer 6800 XT, aber Regressionsrisiko in einen frisch
+bestaetigten Stand. Jetzt nur das beweisbar folgenlose Quelltext-
+Aufraeumen (639-Duplikat), dann GESTALTUNG: Materialzuordnung je
+Flaechentyp (Terrain Fels/Sediment, Station Stahl, Parabol Metall).
+
+---------------------------------------------------------------------
+646b -- DUPLIKAT-AUSBAU BEWIESEN FOLGENLOS
+---------------------------------------------------------------------
+Der 639er-if(false)-Block (Zeilen 3929-4021) ist ausgebaut; beide
+Fassungen neu gebaut: Laut 223232 B, Still 190464 B -- BYTEGLEICHE
+Groessen wie vor dem Ausbau, der Compiler hatte den toten Block
+laengst eliminiert. Beide eingespielt, FC sauber. Quelle: s646
+(Wortlaut des Blocks bleibt in s645 nachlesbar).
+
+=====================================================================
+647 -- GESTALTUNG SCHRITT 1: MATERIAL JE FLAECHENTYP
+=====================================================================
+pbr_demo.py ist jetzt eine MATERIALBIBLIOTHEK (vier Materialien,
+jedes aus EINEM Hoehenfeld -> Albedo/Normal/ORM kohaerent, R=Hoehe
+fuer Parallax):
+  stahl    -- die bestaetigten 644er-Kissenplatten (unveraendert)
+  fels     -- ridged-fBm-Basalt: Grate hell abgerieben, Senken
+              dunkler mit Gruenstich (Bewuchs); Rauheit 0.5-0.9
+  sediment -- Stroemungsrippel (sin mit fBm-Phase) + Korn; nach
+              621-Messung grossskalige Flecken ergaenzt (Streuung
+              war 0.009 -> jetzt 0.020)
+  metall   -- Parabolspiegel: gebuerstet (kumulierte Zufallssumme),
+              flache Hoehe, 128er-Panelfugen, Metall 0.9, Rauheit
+              0.15-0.5
+Bausteine: KACHELBARES Value-Noise (periodisches Gitter, smooth-
+step-bilinear) + fBm; NumPy-2.0-Falle: ndarray.ptp() entfernt ->
+np.ptp(). ZUORDNUNG je Hash (625er-Inventur): Terrain material_0/3
+= fels, material_1 = sediment, Station-Detail = stahl, Parabol =
+metall.
+
+FERN-KENNZAHLEN (621, Streuung des 16x16-Albedos, Schwelle ~0.02):
+stahl 0.034, fels 0.027, sediment 0.020, metall 0.012 -- metall
+BEWUSST darunter: ein glatter Spiegel lebt von der Wuerfel-
+Spiegelung, nicht von Albedo-Struktur.
+
+Kein DLL-Neubau noetig (nur Karten geaendert). Die Demo zeigt
+jetzt: Steg/Bunker Stahlplatten, Terrain Fels + Sedimentbaender,
+Parabolschuessel blankes Metall.
+
+=====================================================================
+648 -- MATERIALIEN BESTAETIGT ("technisch funktioniert es")
+       + FEINSCHLIFF + ZWEI NEBENBEFUNDE AN DEN FENSTERN
+=====================================================================
+Stefan zu 647: Zuordnung funktioniert; Wuensche: (a) Parabol-
+schuessel -- UV-Skalierung mancher Elemente faellt auf, (b)
+Sediment ~Faktor 1.3 dichter. Beides umgesetzt (nur Karten, kein
+DLL-Bau):
+  - sediment: Rippel 24->31 Perioden, fBm-Grundfrequenzen 5/10
+    (ganzzahlig wegen Kachelbarkeit); Fern-Streuung fiel dadurch
+    auf 0.017 -> Fleckenanteil 0.22->0.26 hebt sie zurueck auf
+    0.020 (621-Schwelle). Lehre: dichtere Muster mitteln staerker
+    -- nach JEDER Frequenzaenderung die Fernmessung wiederholen.
+  - metall: Panelfugen 128->64er-Raster und deutlich schwaecher
+    (Tiefe 0.25->0.10, Albedo x0.75 statt x0.5) -- das grobe
+    Raster hatte die UV-Streckung der Schuessel-Elemente betont.
+    Grundsatz: Eine globale Textur kann elementweise UV-Streckung
+    nicht beheben, nur unauffaellig machen. Echte Loesung waere
+    Geometrie-/UV-Reparatur im .msb (nicht geplant).
+    Fern-Streuung 0.003 = bewusste Spiegel-Ausnahme.
+
+NEBENBEFUNDE (beide an den ELT-Dock-Fenstern, von Stefan gemeldet):
+1. "Gruenes Licht ... sehe ich jetzt leuchten" -- vermutlich ein
+   ORIGINAL-Fensterlicht (additiver/emissiver Pass), das durch die
+   dunklere, klarere Szene seit 641 erst auffaellt. Stefan nannte
+   es "Wandlicht" -- unser Wandlicht (593/616) ist aber nur ein
+   Praegefaktor auf der Texturfarbe und LEUCHTET nicht. Kein
+   Handlungsbedarf, solange es gefaellt; bei Stoerung waere es ein
+   Kaustik-aehnlicher Hash-Fall (Skip-Liste erweitern).
+2. "Auch die Fenster selbst spiegeln, wenn auch nicht ganz
+   realistisch/optimal" -- FORTSCHRITT gegenueber 619 ("in den
+   Fenstern spiegelt sich nichts"): Irgendein Stand zwischen 620
+   und 647 hat die Blend-Zuege offenbar doch in einen Spiegelpfad
+   gebracht (Kandidaten: Umgebungswuerfel v2 aus 642 macht die
+   Spiegelung erst SICHTBAR; die Zuege liefen evtl. schon immer).
+   Fenster-Feinschliff bleibt eigenes Kapitel (619), jetzt mit
+   besserer Ausgangslage.
+
+---------------------------------------------------------------------
+648b -- SEDIMENT: RICHTUNG KORRIGIERT (1.3x GROESSER, nicht dichter)
+---------------------------------------------------------------------
+Missverstaendnis in 648: Stefans "Faktor 1,3 hoeher skaliert"
+meinte GROESSERE Strukturen (weniger kleinteilig -- die Kachelung
+fiel auf), ich hatte verdichtet. Korrigiert: 647er-Basis geteilt
+durch 1.3 -- Rippel 24->18 Perioden, fBm-Grundfrequenzen 3/6.
+Fern-Streuung steigt dabei auf 0.024 (groessere Strukturen
+ueberleben die Verkleinerung besser -- die 648er-Fleckenerhoehung
+0.26 bleibt trotzdem drin). LEHRE fuer Material-Wuensche:
+"hoeher/groesser skalieren" IMMER als Wiederholungszahl rueck-
+fragen bzw. aus dem Kontext ableiten ("man sieht die Kachelung" =
+groesser gewuenscht); Frequenzaenderung + Fernmessung gehoeren
+zusammen.
+
+---------------------------------------------------------------------
+649 -- WELTPOSITION EINER STABSPITZE BESTIMMT (gen_stab1_4, inst_asylum)
+---------------------------------------------------------------------
+Aufgabe: Spitze des Editor-Objekts "gen_stab_1_4" in inst_asylum.
+Der Editorname entspricht dem Skriptknoten gen_stab1_4 (kein
+Unterstrich vor der 1; im Skript gibt es nur gen_stab1/2/3_x).
+
+Kette wie in 415 dokumentiert, alles aus dem echten .sco gelesen
+(map\inst_asylum\script\inst_asylum.sco, aqtk sco+szene):
+  gen_stab1_4 = node23, proto main/1:1025
+  Position (2993.551472, 1874.826320, 507.515688)
+  Rotation (-46.605739, 0, 0) Grad = nur Heading um Z
+  OSD osd/gen/gen_pole.osd -> Mesh vfx\msh\gen_pole.msb
+  (Lightcache-Ordner 1h1, wie in 415)
+
+Mesh gen_pole.msb (aqtk msb, Eckpunkte = Trailer-BBox, deckungsgleich):
+  x -2.292..2.314   y -2.292..2.314   z -10.551..208.960
+  Stab ist 219,5 lang und 4,6 dick -> Laengsachse Z (Hochachse, 416).
+  Ursprung liegt NAHE DEM FUSS: 10,55 ragen unter z=0 (steckt im
+  Boden), 208,96 stehen darueber.
+
+QUERBELEG in der OSD selbst: Kindknoten nod_halo "halo_sig"
+(rotes Leuchtsprite glow02) traegt translation (0, 0, 208.960007)
+-- exakt das BBox-Maximum. Das Signallicht sitzt auf der Spitze;
+damit sind Hochachse und Spitzenhoehe doppelt belegt.
+
+ERGEBNIS (Welt): Spitze = Position + Rz(-46.6)*Spitze_lokal
+  mit Rotation:  (2993.636, 1874.820, 716.476)
+  ohne Rotation: (2993.614, 1874.883, 716.476)
+  vereinfacht pos+(0,0,208.96): (2993.551, 1874.826, 716.476)
+Die drei Varianten unterscheiden sich nur um <0.1, weil die
+Drehung reines Heading ist und die Spitze auf der Stabachse liegt
+(Mittel der 9 Eckpunkte bei z_max: lokal 0.06/0.06/208.96).
+Kein Skalierungsfaktor: die OSD enthaelt keinen Mesh-scale
+(scale [8,8] dort gehoert zum Halo-SPRITE, nicht zum Mesh).
+
+WERKZEUG-FALLE (osd_tool.py): lies() findet Feldnamen per Regex
+[a-z][a-z0-9_]{2,30} -- MINDESTENS 3 ZEICHEN. Der Mesh-Eintrag
+heisst aber "m0" und faellt durch; wer den Meshnamen aus einer OSD
+braucht, greift ihn direkt aus den Rohbytes ([A-Za-z0-9_]+\.msh).
+Gleiches Risiko bei allen kurzen Namen (m0, l0, in, out ist ok ab
+3). Reproduzierbar: scratchpad\stab_position.py (Sitzung 2026-08-12).
+
+=====================================================================
+649b -- EIGENE LICHTQUELLEN (AQUANOX_LICHTER) + ANTI-KACHEL
+=====================================================================
+Stefans Wunsch: das rote Signallicht an der Spitze von gen_stab_1_4
+soll die Umgebung WIRKLICH anstrahlen, mit Optionen pulsierend/
+blinkend. Dazu parallel sein Sediment-Befund: Texturkachelung in
+der Ferne stark sichtbar. Beides umgesetzt (Quelle s649, Laut
+225792 B, Still 193024 B, beide eingespielt, FC sauber; neue
+Shaderbloecke vorab offline assembliert -- 599, Scratchpad
+pruef_licht_antikachel.py, hr=0).
+
+1) LICHT-SYSTEM (Wrapper-eigene Punktlichter):
+   - mod_docu\lichter.txt: je Zeile "x y z  r g b  intensitaet
+     radius  modus  periode_ms"; # = Kommentar; bis 8 Zeilen
+     geladen. modus 0=fest, 1=pulsierend (sinus 0.55+-0.45),
+     2=blinkend (50% an/aus). Aktiv mit AQUANOX_LICHTER=1.
+   - VERSION 1: EIN aktiver Shader-Slot (erste Zeile; c6 =
+     Weltposition + 1/R^2, c7 = Farbe*Intensitaet). Mehrslot =
+     Ausbaustufe; die Datei laedt schon bis 8.
+   - Puls/Blinken rechnet die CPU je Frame (AqLichtTick in
+     Present, setzt AqKonstSchmutzig) -- der Shader bleibt frei
+     von Zeitkonstanten, jede kuenftige Kurve kostet nur C++.
+   - Shaderblock NUR Modus 19 (Prelit-Basis der Statics): dort ist
+     Objektraum = Weltraum (607b), die Weltposition stimmt ohne
+     Matrixarbeit. Falloff (1-d^2/R^2)^2, N.L auf der GESTOERTEN
+     Normale (Relief antwortet!), additiv auf r2 VOR der Kette --
+     der Detailpass formt das Licht mit (645er-Mechanik), genau
+     wie beim Projektillicht. Bewegte Objekte (Schiffe) bekommen
+     das Licht bewusst NICHT (falscher Raum).
+   - c6/c7 waren frei (belegt: c0 Kamera, c1 GGX, c2 Regler, c3
+     def, c4 TFACTOR, c5 Kachel/Parallax/Antikachel, c8+ Lichter);
+     Upload an beiden Konstantenstellen neben c4/c5.
+   - lichter.txt Startbelegung: Stabspitze (2993.64, 1874.82,
+     716.48; Levelanalyse 649), rot (1.0, 0.12, 0.08), Intensitaet
+     1.5, Radius 150, PULSIEREND 1500 ms. Werte sind reine Daten --
+     Stefan kann ohne Neubau justieren (Neustart genuegt).
+2) ANTI-KACHEL (AQUANOX_ANTIKACHEL=<Staerke>, Demo 0.5):
+   - Modus-23-Block: dieselbe Textur zusaetzlich mit Welt-UVs in
+     ~30x groesserer Skala abgetastet (Schraegsummen wie 607b,
+     c5.z=0.0061 fest, krumm gegen Achsen-Alias); Faktor = 1 +
+     Staerke*(Luma_gross - Luma_eigen). Erwartungswert 0 ->
+     GESAMTHELLIGKEIT BLEIBT, materialneutral -- zentriert gegen
+     die Eigen-Luma statt gegen 0.5, sonst wuerde jedes Material
+     mit Mittel != 0.5 heller/dunkler. fp32 unkritisch (UV ~20;
+     618er-Problem begann bei ~1500). Bricht das Wiederholungs-
+     raster; Stefans Mehrschicht-Idee als naechste Ausbaustufe
+     notiert (Materialvarianten-Blend ueber Welt-Rauschen).
+3) HANDOFF-HYGIENE: Der Levelanalyse-Agent hatte eine v181-Kopie
+   angelegt -- Abschnitt zurueck in die v180-Reihe geholt, v181
+   geloescht. Die Reihe bleibt EINE Datei mit Append.
+PBRDemo.cmd traegt jetzt zusaetzlich ANTIKACHEL=0.5 + LICHTER=1.
+
+=====================================================================
+650 -- SCHIFFS-REGRESSION: DIAGNOSE + KAUSTIK-GATE VERSCHAERFT;
+       LICHT-RADIUS WAR ZU KLEIN
+=====================================================================
+Stefans Doppelbefund zu 649b: (1) kein dynamisches Licht am Stab,
+nur der Original-Sprite; (2) NACHTRAG: Schiffe (Spieler+Gegner)
+sind im Demo-Modus groesstenteils unsichtbar, nur Details bleiben
+-- schon beim vorigen Test, erst jetzt gemeldet.
+
+ZU (1), LICHT -- EIGENER RECHENFEHLER in der Startbelegung: Radius
+150 bei 209 Einheiten Abstand Spitze->Boden = am Boden exakt null;
+und der Stab SELBST bekommt konstruktionsbedingt kein Licht (kein
+W=I-Static; gedrehte Instanz). Das Log bestaetigt die Kette im
+uebrigen: Datei geladen, 3 Modus-19-Shader tragen den Lichtblock.
+lichter.txt: Radius 150 -> 500 (Falloff am Boden 0.68). LEHRE:
+Licht-Startwerte IMMER gegen die Levelgeometrie durchrechnen
+(Abstand Quelle -> naechste beleuchtbare Statics-Flaeche < R).
+
+ZU (2), SCHIFFE -- Workflow-Doppeldiagnose:
+a) SHADERDIFF (s642-Generator vs s649-Generator, Schiffs-
+   Schluessel Modus 5): NUR die gewollten Parallax-Bloecke
+   unterscheiden sich; Licht/Anti-Kachel korrekt NICHT in Modus 5;
+   ALPHA-PFAD IDENTISCH (r3.w = v0.w); s649-Shader assembliert
+   (hr=0). DER PS-GENERATOR IST ENTLASTET.
+b) LOG-FORENSIK: Schiffs-BASIS laeuft ueber die Hemi-Koepfe
+   (Modus 5, Hemi=1, Lichter=0) mit ALPHATEST=1 und SRCALPHA/
+   INVSRCALPHA-BLEND -- Schiffe sind also GEBLENDETE Zuege!
+   Alle Fehlerzaehler 0; nur EIN Mechanismus im 649er-Stand kann
+   Zuege lautlos verschlucken: der Kaustik-Draw-Skip (644), dessen
+   Gate ich in 644 auf "irgendein Blend" GELOCKERT hatte. Bei
+   einer Hash-Kollision (die 32er-Liste ist Cluster-Indiz, kein
+   Pixelbeweis) frisst er ganze Schiffszuege -- exakt das Bild
+   "Basis weg, Details da, keine Fehler". Stichprobe von 3 der 32
+   Dump-PNGs: sehen echt nach Kaustik aus -- die Kollision ist
+   NICHT bewiesen, aber das Risiko war real und unnoetig.
+MASSNAHMEN (Quelle s650, beide Fassungen eingespielt, FC sauber):
+   - Gate verschaerft auf ADDITIV (Dest=ONE, wie Kaustik laut
+     612): SRCALPHA-Zuege (Schiffe!) koennen NIE mehr getroffen
+     werden, egal was in der Hash-Liste steht.
+   - Jeder Skip-Treffer wird protokolliert ("AquaNox-KAUSTIK-
+     SKIP: <hash>", einmal je Hash; AqTexGesehen mit ^0xCA57-
+     Salz als Einmal-Merker) -- diese Fehlerklasse ist nie wieder
+     unsichtbar. AqKaustikZug nicht mehr const (Log-Merker).
+   - AquaNox_Kennfarben.cmd auf den EXAKTEN Demo-Schalterstand
+     gebracht (war veraltet: WANDLICHT=2/METALL=0.5, ohne
+     PARALLAX etc. -- die 633er-Falle) + KENNFARBEN=1. Zweck:
+     Falls Schiffe weiterhin fehlen, benennt EIN Blick ihre
+     Farbe den schluckenden Pfad (ROT Prelit / GRUEN Detail /
+     BLAU Licht / MAGENTA Neutralisierer / unsichtbar = Zug
+     verworfen).
+OFFEN: Ob der verschaerfte Skip die Schiffe zurueckbringt,
+entscheidet Stefans Test. Falls NICHT, ist der Kaustik-Skip
+unschuldig und der Kennfarben-Test uebernimmt; Verdaechtige dann:
+Neutralisierer (611) oder Detail-Uebernehmer auf Schiffs-Paessen.
+NEBENBEFUND aus dem Diff (notiert): der "AqModus >= 4"-Konstanten-
+pfad laedt c5 nicht hoch -- Parallax-Staerke kommt nur ueber den
+Prelit/Detail-Pfad; zeichnet ein Modus-5-Objekt vor dem ersten
+Prelit-Zug, ist c5 noch 0 (Parallax-No-Op, ein Frame). Harmlos,
+Aufraeumkandidat.
+
+=====================================================================
+651 -- SCHIFFE ZURUECK (650 bestaetigt); STABLICHT: DIE 594b-FALLE,
+       WIEDERHOLT -- BLOCK ANS KETTENENDE VERLEGT
+=====================================================================
+Stefan: "Die Schiffe sind wieder vollstaendig sichtbar." -> Das
+verschaerfte Kaustik-Gate (650) WAR der Fix; die 644er-Lockerung
+auf "irgendein Blend" hatte die SRCALPHA-blendenden Schiffs-Basis-
+Zuege verschluckt. Kapitel geschlossen; das KAUSTIK-SKIP-Logging
+(650) zeigt kuenftig jeden Treffer.
+
+STABLICHT weiter unsichtbar (Screenshot: nur Original-Sprite).
+URSACHE GEFUNDEN, und sie ist beschaemend lehrreich: Der 649er-
+Lichtblock addierte auf r2 (DIFFUSE) VOR der Texturkette -- EXAKT
+die dokumentierte 594b-FALLE: die Statics-Basis-Ketten lesen
+DIFFUSE nicht (Farbe = TFACTOR x Textur x Lightmap), r2 erreicht
+das Bild nie. Der warnende Kommentar samt Loesung stand WOERTLICH
+NEBEN der Einfuegestelle (Wandlicht-Historie 594b). LEHRE
+(verschaerft): Vor jeder Shader-Einfuegung die Nachbar-Kommentare
+der Stelle LESEN -- sie sind die kondensierte Fehlerhistorie.
+
+FIX (Quelle s651, beide Fassungen eingespielt, FC sauber, 599-
+Probe hr=0): Block ans KETTENENDE auf r3, NACH dem Wandlicht
+(der Praegefaktor soll den Schein nicht mitmodulieren), rein
+additiv: r3 += c7 * N.L * Falloff. c6/c7-Uploads verifiziert in
+BEIDEN Bindungspfaden (PS19 Z.3877ff, PS23 Z.3979ff). Der
+Detailpass formt den Schein weiter mit (645) -- multiplikative
+Wirkung kommt also indirekt dazu.
+
+=====================================================================
+652 -- ALLE STAB-SIGNALLICHTER IN INST_ASYLUM: FERTIGE LICHTLISTE
+=====================================================================
+Aufgabe: 649 (eine Stabspitze) auf ALLE Staebe des Levels
+ausgeweitet. Reproduzierbar: scratchpad\stab_alle.py (Erweiterung
+von stab_position.py, Sitzung 2026-08-12; m0-Falle aus 649 beruecks.).
+
+BEFUND: 11 Stab-Instanzen in drei Familien, je Familie eine OSD:
+  gen_stab1_N -> osd/gen/gen_pole.osd  -> gen_pole.msb   (3 St.)
+  gen_stab2_N -> osd/gen/gen_pole1.osd -> gen_pole1.msb  (5 St.)
+  gen_stab3_N -> osd/gen/gen_pole2.osd -> gen_pole2.msb  (3 St.)
+Nummern haben LUECKEN (kein 1_1/1_3/2_1/2_3/2_5/3_1/3_3 im Level).
+ALLE drei OSDs tragen denselben Halo-Kindknoten halo_sig:
+Textur vfx\tex\fx\glow02, Farbe (1,0,0) = ROT, scale [8,8] --
+KEIN andersfarbiger Stabtyp. Halo-Translation == BBox-z_max
+(Diff <= 0.01), der 649er-Querbeleg gilt fuer alle drei Typen:
+  gen_pole   z -10.551..208.960, Halo (0,0,208.96)   Hoehe 219.5
+  gen_pole1  z -10.551..140.040, Halo (0,0,140.05)   Hoehe 150.6
+  gen_pole2  z -10.551.. 70.001, Halo (0,0, 70.01)   Hoehe  80.6
+(Alle Fuesse stecken gleich tief im Boden: z_min -10.551.)
+
+RECHENWEG: Spitze = Position + Rz(h)*Rx(p)*Ry(r)*Halo-Translation.
+Die Halo-Translation liegt AUF der Stabachse -> bei reinem Heading
+ist die Spitze exakt pos+(0,0,z_halo). Nur gen_stab2_7/2_8 haben
+pitch/roll (0.07/2.5 Grad), dort wandert die Spitze ~2..6 seitlich.
+649 nutzte das Eckpunktmittel (0.06/0.06/208.96) statt der Halo-
+Translation; Unterschied < 0.1 -- beide Anker gelten.
+
+ERGEBNIS, lichter.txt-Zeilen (rot, Intensitaet 1.5, Radius 500,
+pulsierend 1500 ms wie 649b/650), sortiert nach Instanzname:
+  2561.22 2020.62 550.59  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab1_2
+  2993.55 1874.83 716.48  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab1_4
+  3027.94 2444.17 675.05  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab1_5
+  2920.57 1916.74 621.01  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab2_2
+  3021.27 1492.07 449.65  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab2_4
+  1633.54 2392.97 491.44  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab2_6
+  1810.94 2217.85 570.16  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab2_7
+  2136.09 2252.84 493.37  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab2_8
+  3153.85 2102.57 553.83  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab3_2
+  422.50 1524.08 326.04   1.0 0.12 0.08  1.5  500  1  1500   # gen_stab3_4
+  2990.83 1482.19 382.17  1.0 0.12 0.08  1.5  500  1  1500   # gen_stab3_5
+
+VOLLSTAENDIGKEITS-SWEEP (alle 39 OSDs des Levels): 13 tragen
+nod_halo-Kinder. Ausser den Staeben: Schiffe (pla_skipjack,
+tz_bomber/fregatte/scout* -- Cockpit/Triebwerk/Waffen-Halos;
+bewegte Objekte, bekommen laut 649b bewusst kein Statics-Licht)
+und Gebaeude: atl_dock3 (2x halo_sig ROT nahe BBox-Spitze 210.2,
+plausibel), gen_kai2 (halo_pri ORANGE 1/0.5/0 bei z 92.99) sowie
+gen_elfnote: dessen Halo-Translationen (31.63/6.52/209.39) liegen
+WEIT ausserhalb der eigenen Mesh-BBox (gen_fin_basis z_max 26.5)
+und sind BYTEGLEICH mit atl_dock3.osd -- Kopierrest der Autoren.
+LEHRE: Gebaeude-Halos vor Uebernahme IMMER gegen die BBox pruefen.
+
+GRENZE (649b): lichter.txt laedt bis 8 Zeilen, Version 1 speist
+EINEN aktiven Shader-Slot. Die 11er-Liste braucht die Mehrslot-
+Ausbaustufe; bis dahin Teilmenge waehlen (z.B. die Staebe um die
+Startposition: gen_stab1_4, 2_2, 3_2, 1_5).
+
+---------------------------------------------------------------------
+652b -- MEHRSLOT-LICHTER: BIS 16 GLEICHZEITIG, ALLE 11 STAEBE AKTIV
+---------------------------------------------------------------------
+Stefans Wunsch "an allen Staeben" brauchte den Mehrslot-Ausbau
+(Version 1 hatte einen Slot). Umgesetzt (Quelle s652, Laut/Still
+eingespielt, FC sauber, 599-Probe mit 2 Lichtern hr=0):
+- KONSTANTENBEREICH GEWECHSELT: c6/c7 raus, Lichter liegen jetzt
+  in c200..c231 (je Licht 2 Register: Pos+1/R^2, Farbe*Intens).
+  Grund: kollisionsfrei fuer bis zu 16 Lichter -- Engine-PS enden
+  bei c8, AqKonst bei c29, defs c30/31; ps_3_0 hat 224 Konstanten.
+  Upload NUR im PS19-Bindungspfad (der 23er liest keine Lichter);
+  der c8-29-Trick (Engine-Bereich mitnutzen) wurde VERWORFEN, weil
+  der 19er-Pfad AqKonstSchmutzig verbraucht und der naechste
+  Licht-Zug dann veraltete Engine-Lichter saehe.
+- GENERATOR: je geladenem Licht ein entrollter 14-Anweisungen-
+  Block (AqLichterZahl ist prozesskonstant, kein Schluesselfeld);
+  11 Lichter = 154 Zusatzanweisungen im 19er-Shader -- fuer eine
+  RX 6800 XT irrelevant.
+- AqLichtTick: alle Lichter je Frame, Phasenversatz i*357 ms
+  (sonst Discoanlage); Datei-Limit 8 -> 16.
+- lichter.txt: alle 11 Stab-Spitzen aus der 652er-Levelanalyse
+  (drei Familien gen_pole/pole1/pole2 mit 219/150/80 Hoehe, alle
+  Halos rot; gen_stab2_7/2_8 mit echter Neigung durchgerechnet).
+AUSBAU-KANDIDATEN aus dem 652er-Sweep (nicht umgesetzt): atl_dock3
+traegt 2 rote halo_sig nahe der BBox-Spitze (plausibel), gen_kai2
+ein ORANGES halo_pri (1/0.5/0) -- beide koennten eigene Lichter
+bekommen; gen_elfnote-Halos sind Kopierreste (ausserhalb der BBox),
+NICHT uebernehmen.
+
+=====================================================================
+653 -- LICHTER AUCH IM DETAILPASS: DIE 19er-ABDECKUNG WAR DAS LOCH
+=====================================================================
+Stefan prueft mehrere Masten: nirgends dynamisches Licht (Waffe/
+Schiff/Mast selbst sind KONSTRUKTIV ausgeschlossen -- bewegte
+Objekte, falscher Raum; aber auch Boden/Kisten blieben dunkel).
+
+LOG-DIAGNOSE (Lauf 16:32): lichter.txt laedt (11), die Mehrslot-
+Schleife emittiert alle 11 Bloecke je Shader (c200/c210/c220 je
+3x). ABER: Die Modus-19-Shader mit Lichtbloecken gehoeren zu den
+STATIONSWAENDEN (alle PRELIT-ZUG-Hashes = Wandtexturen; b85b39f0,
+ecafb9c8, b6768440...). Das TERRAIN und die Kisten um die Masten
+laufen NIE durch den Prelit-19-Pfad -- deshalb war nur an einem
+stationsnahen Stab ueberhaupt etwas zu erahnen. Die 19er-Bloecke
+funktionieren vermutlich laengst; sie treffen nur kaum Flaeche.
+(Nebenanomalie notiert: 2 von 5 19er-Koepfen ohne Lichtbloecke --
+vermutlich Erzeugungen aus Menue/Ladekontext; nicht weiter
+verfolgt, da die Abdeckung ohnehin das Kernproblem ist.)
+
+FIX (Quelle s653, beide Fassungen eingespielt, FC sauber): Der
+Lichtblock laeuft jetzt AUCH IN MODUS 23 -- der Detailpass traegt
+die sichtbare Textur ALLER Weltflaechen (KETTE-23: Terrain
+material_0/3, Station-Detail). Wirkung dort: der additive r3-
+Anteil geht durch das 2*src*dest-Blend -> Licht wird mit der
+Basisfarbe multipliziert (rot-getoente Aufhellung; N.L und
+Falloff bleiben). Auf Flaechen mit BEIDEN Paessen wirkt es
+doppelt -- mild, weil der 23er-Anteil basisgedaempft ist; bei
+Bedarf Intensitaet senken. c200-Upload im PS23-Pfad wieder rein
+(652 hatte ihn entfernt). lichter.txt: Intensitaet 1.5 -> 2.0
+(Multiplikationsdaempfung ausgleichen). Registerpruefung 23er:
+r22/r23 frei, r3.w unangetastet (AlphaTest sicher), Anti-Kachel
+nutzt r24/r25, Wandlicht r19/r20 -- kein Konflikt. 599-Probe
+deckt den Block bereits ab (hr=0, identische Zeilen).
+
+=====================================================================
+654 -- LICHT SICHTBAR, ABER "ZUFAELLIG" VERSTREUT: OBJEKTRAUM-
+       TRANSFORMATION UEBER DIE WELT-KAMERA
+=====================================================================
+Stefan zu 653: rotes Pulslicht IST jetzt sichtbar (die Kette
+funktioniert end-zu-end!), aber "nicht unbedingt bei den Licht-
+masten, wirkt zufaellig, vielleicht spotartig". Seine Fragen:
+Lichtquellen sind WEDER Level-Skript noch Mesh -- sie leben in
+mod_docu\lichter.txt und werden vom Wrapper eingespeist.
+
+DIAGNOSE "zufaellig": klassisches KOORDINATENRAUM-Problem. Der
+Lichtblock nimmt Objektraum = Weltraum an (607b galt fuer die
+Kachel-SKALA, die translationsinvariant ist -- kein Beweis fuer
+die URSPRUENGE!). Statics/Terrain-Sektoren mit lokalen
+Urspruengen zeigen den Schein dort, wo ihre LOKALEN Koordinaten
+zufaellig in Lichtnaehe liegen -- exakt das gemeldete Bild. Die
+Prelit-Kamera-Maschinerie (596/597) existiert ja genau wegen
+dieser Objektraeume.
+
+LOESUNG (Quelle s654, beide Fassungen eingespielt, FC sauber):
+1) SetTransform-Hook: bei D3DTS_VIEW wird die WELT-Kameraposition
+   extrahiert (Auge = -t * R^T; die Engine setzt VIEW fuer ihre
+   Fixed-Function-Zuege). Einmalige Logzeile AquaNox-WELTKAMERA
+   zur Plausibilitaetspruefung (muss im Levelbereich ~2-3k liegen).
+2) AqLichtUpload() je Zug (beide Bindungspfade): Licht_obj =
+   Licht_welt + (PrelitKamera - WeltKamera). Exakt fuer alle NUR
+   VERSCHOBENEN Zuege; W=I degeneriert zur Identitaet; ROTIERTE
+   Objekte bekaemen einen falsch gedrehten Versatz (in Kauf
+   genommen -- Statics rotieren selten; die Masten selbst sind
+   ohnehin ausgeschlossen). Ohne VIEW-Matrix: Fallback = rohe
+   Weltposition (653-Verhalten).
+"Spotartig" ist dagegen ERWARTET: N.L formt auf ebenem Boden
+unter dem Licht einen weichen runden Fleck.
+
+OFFEN/GESTARTET: Stefans grosser Editor-Auftrag (Player Start,
+Navigationspunkte, Lichtquellen mit Eigenschaften im Toolkit) --
+Bestandserkundung laeuft als Agent, Umsetzung folgt nach dem
+Architektur-Bericht.
+
+=====================================================================
+655 -- LICHTER LEVELGEBUNDEN (Stefans Einwand) + EDITOR-KAPITEL
+       GESTARTET
+=====================================================================
+Stefans Einwand zur lichter.txt: "Eine separate Textdatei ohne
+Bezug zum konkreten Level halte ich fuer falsch" -- BERECHTIGT
+(andere Karte = 11 Geisterlichter an sinnlosen Positionen).
+PRAEZISIERUNG zur Technik: "per Skript wie Meshes" geht fuer
+WRAPPER-Lichter nicht -- die Engine kennt sie nicht. NOTIERT als
+Forschungskapitel: echte Engine-Lichtknoten per Levelskript
+(szene-Parser kennt eine Art "licht"; native Lichter beleuchteten
+auch SCHIFFE -- Koenigsloesung, aber unerforscht: Dauerbetrieb?
+Farbe/Radius per Skript? Ghidra-Kapitel).
+
+UMSETZUNG (Quelle s655, beide Fassungen eingespielt, FC sauber):
+- mod_docu\lichter\<karte>.txt ist die neue Struktur; die 11
+  Stab-Lichter liegen jetzt in mod_docu\lichter\inst_asylum.txt.
+- Wrapper: Kartenname aus GetCommandLineA() ("-s map\...\<karte>",
+  letzter Pfadteil); existiert mod_docu\lichter\<karte>.txt, wird
+  sie geladen, sonst Rueckfall mod_docu\lichter.txt (leer/fehlt =
+  keine Lichter). Logzeile nennt die geladene Datei.
+- GRENZE dokumentiert: gilt fuer den STARTLEVEL; Levelwechsel im
+  Prozess brauchen spaeter eine Erkennung (Kandidat: karten-
+  spezifischer Lightmap-Hash beim Texturladen).
+
+EDITOR-KAPITEL (laeuft): Architektur-Bericht liegt vor (Toolkit
+aqtk = PySide6 + three.js in mod_docu\toolkit, KANN schreiben --
+vier Schreiber; Wegpunkte heute unsichtbar wegen Body_SetPosition-
+Luecke im szene-Parser; Player Start bereits verschiebbar).
+Umsetzungs-Workflow laeuft (Player-Start-Knopf, Wegpunkte
+sichtbar+editierbar, Lichtquellen-Panel); nach Abschluss wird der
+Lichter-Pfad im Toolkit auf mod_docu\lichter\<karte>.txt
+umgestellt (655er-Struktur). Toolkit-Sicherung:
+mod_docu\toolkit_sicherung_s654.
+
+=====================================================================
+656 -- LICHTER IM LEVELORDNER: .SCO-ANHANG SCHEIDET AUS (GEMESSEN),
+       LOSE NEBENDATEI map\<karte>\script\<karte>_lichter.txt GEHT
+=====================================================================
+Forschungsauftrag zu Stefans 655er-Einwand (Lichter ORDENTLICH im
+Level ablegen, nicht in mod_docu). Reine Analyse, nichts am
+Spielbestand geaendert; Messskript scratchpad\sco_trailing.py
+(Sitzung 2026-08-12). Fallen aus 527 vorab gelesen; alle Kernbe-
+funde am DISASSEMBLAT (disasm.py, Kontrollfluss), nicht am
+Dekompilat.
+
+1) TRAILING BYTES IN DER .SCO: NEIN. Der Lua-4.0-Loader der Exe
+   LEHNT Bytes nach dem Hauptchunk AB -- der Block wuerde das
+   Levelskript zerstoeren, nicht ignoriert werden.
+   BEWEISKETTE (dreifach):
+   a) Exe, Disassemblat: FUN_005e34f0 (0x005e34f0, 642 B) ist
+      luaU_undump. Nach LoadChunk (call 0x5e3890 bei 0x5e3723)
+      folgt UNBEDINGT ein inliniertes zgetc (0x5e372d..0x5e374c);
+      nur Ergebnis -1 (EOZ) ueberspringt den Fehler
+      (cmp eax,-1 / je 0x5e3769). Jedes andere Byte:
+      push 0x660500 ("`%.99s' apparently contains more than one
+      chunk", einziger Verweis im ganzen Code) und
+      call 0x5d5fd0 = luaO_verror -> lua_error -> longjmp.
+      Aufrufer von 0x5e34f0: 0x5d5627 (dofile-Kern) und 0x5d5826
+      (IN lua_dobuffer 0x5d5790) -- beide Ladewege treffen den
+      Check.
+   b) Ladepfad: FUN_00493c70 (laedt .sco, vgl. Abschnitt 5 / 
+      glue.sco) holt die Groesse ueber 0x521d00 (mov esi,eax),
+      liest die GANZE Datei (0x521d50, Lesezahl == Groesse sonst
+      Abbruch) und uebergibt lua_dobuffer die VOLLE DATEIGROESSE
+      (push ebx Name / esi Groesse / edi Puffer / ecx L,
+      call 0x5d5790). Angehaengte Bytes landen also sicher im
+      EOF-Check. lua_dobuffer erkennt Bytecode an *buf==0x1b.
+   c) Statisch: 217 .sco geprueft (dat\pak\extracted + lose map\
+      + mod\): 0 mit Bytes nach dem Chunk-Ende, 0 Parse-Fehler.
+      Kein Gegenbeispiel im Bestand.
+   FOLGE eines Anhangs: [SCRIPTERROR] script "%s" could not be
+   loaded (0x612578) -- Karte ohne Missionsskript. NICHT TUN.
+   (Gangbar WAERE ein ungenutzter kstr im Konstantenpool -- die
+   Engine laedt Konstanten, ohne sie zu nutzen; lua4dis.save ist
+   byte-treu. Aber: .sco-Umbau + Lua-Parser im Wrapper. Nur falls
+   "eine Datei" je Pflicht wird.)
+
+2) LOSE NEBENDATEI: JA, GEFAHRLOS. Aqua.exe enthaelt KEINERLEI
+   Verzeichnis-Enumeration: FindFirstFile/FindNextFile/FindClose/
+   _findfirst/_findnext kommen im ganzen Binary nicht vor (Byte-
+   suche ueber die komplette Exe inkl. Importe). Die Engine
+   oeffnet ausschliesslich KONKRET ANGEFRAGTE Pfade (fopen-vor-
+   PAK, 483) und baut Skriptpfade aus dem Kartennamen --
+   <karte>_lichter.txt wird NIE angefragt, die Datei ist fuer die
+   Engine unsichtbar. Keine Kollision mit der Lose-Datei-Mechanik
+   der Weitsicht (die wirkt je Einzelanfrage; angelegt.txt-Liste
+   bleibt unberuehrt, --zurueck loescht nur gelistete Dateien).
+
+3) EMPFEHLUNG (Ablage + Format):
+       map\<karte>\script\<karte>_lichter.txt
+   (Ordner existieren seit der Weitsicht fuer alle 43 Karten
+   lose, z.B. map\inst_asylum\script\.) Format = bewaehrtes
+   649b/655-Zeilenformat, davor eine Magic-Kommentarzeile:
+       # AQLICHT 2
+       x y z  r g b  intensitaet  radius  modus  periode_ms  # name
+   Magic als Kommentar: alte Parser lesen die Datei unveraendert,
+   der Wrapper akzeptiert kuenftig NUR Dateien mit dieser ersten
+   Zeile (Schutz gegen Fremd-txt). Wrapper-Aenderung minimal:
+   Pfadbau map\<karte>\script\<karte>_lichter.txt aus dem schon
+   vorhandenen GetCommandLineA-Kartennamen (655), Rueckfall auf
+   mod_docu\lichter\<karte>.txt, dann mod_docu\lichter.txt.
+
+4) RISIKEN (unveraendert bzw. neu benannt):
+   - Levelwechsel im Prozess (Kampagne): Kartenname stammt aus
+     der Kommandozeile -> gilt nur fuer den STARTLEVEL (655er-
+     Grenze, besteht fort). Geisterlichter im Folgelevel moeglich.
+     Kandidat bleibt die Erkennung ueber kartenspezifische
+     Lightmap-Hashes beim Texturladen.
+   - Vergessene lose Datei ist durch kein PAK abschaltbar (483);
+     _lichter.txt zusaetzlich in der Mod-Liste fuehren.
+   - Savegames: unkritisch, da KEINE Spieldatei veraendert wird;
+     Missionsskripte werden je Levelstart neu geladen.
+   - dat\pak\extracted ist Vergleichsabzug, NICHT Ladepfad --
+     dort niemals ablegen (483).
+
+=====================================================================
+657 -- NATIVE LEVELSKRIPT-API FUER DYNAMISCHE PUNKTLICHTER: EXISTIERT
+       (Strings + Registry + OSDs + Dekompilate; Ziel: Stab-Lichter
+       nativ im Level statt im d3d8-Wrapper, vgl. 649b-653)
+=====================================================================
+(Wiederhergestellt aus dem Agentenbericht; der Fork-Merge hatte die
+Rohfassung verloren -- Inhalte vollstaendig, Nummern angepasst.)
+
+ANTWORT: JA, vollstaendig vorhanden -- aber im gesamten Original-
+bestand NIE per Skript benutzt (bestaetigt 139b). In-Game-Beweis
+eines per Skript erzeugten Lichts steht aus (65 D).
+
+1) SECHS LIGHT_-KOMMANDOS (Exe-Strings 0x217204..0x2172bc,
+   Signaturen aquanox1_message_ids.json):
+     Light_Switch  (node, int8)                      id 12000
+     Light_SetCone (node, vec3, vec3, float, float)  id 12001
+     Light_SetR1   (node, float)                     id 12002
+     Light_SetR2   (node, float)                     id 12003
+     Light_SetMode (node, string)                    id 12004
+     Light_SetColor(node, vec3, vec3)                id 12005
+   OFFEN: Mode-Wertebereich; warum SetColor ZWEI Vektoren nimmt
+   (Handler ab Fabrik 0x4be200 disassemblieren).
+
+2) KLASSEN: NOD_FX_Light (base NOD_Body, 808 B, factory 0x4a74a0)
+   <- NEHMEN; NOD_Light (860 B, 0x4993c0) = Legacy ("Legacy class
+   use NOD_FX_Light instead"). Beide per Node_CreateNode erzeugbar.
+   NOD_FX_Light-Feld "Life" (0x214254): NICHT setzen = dauerhaft.
+
+3) DER OSD-LICHTBLOCK IST EIN ECHTES DYNAMISCHES LICHT (gemessen an
+   pla_toiler~.osd Offset 2643ff, bul_plasma1_p~.osd Offset 1247;
+   COD_Light-Parser-Strings 0x20d5fc..0x20d67c):
+     namecla "nod_light"  nameson "light_player"
+     translation/rotation, type omni|omnifast|cone, rgb [floats],
+     range [r1,r2] (-> SetR1/SetR2), apertureangle, intensity
+   NOD_Light::ParseIniFile validiert "type". Diese Lichter speisen
+   die Vier-Punktlicht-Bloecke der Objekt-Vertexshader ("wrong
+   number of light") -- OBERGRENZE VIER LICHTER JE OBJEKT (139e).
+
+4) NUTZUNG IM BESTAND: nod_light-Bloecke in 11 Boots-OSDs (je
+   light_player/world/self, alle "omnifast"), 28 fx_explosion-OSDs,
+   ~24 Projektil-OSDs (bul_*, "omni"). In den 43 Missions-
+   Dekompilaten: KEIN einziger Licht-Aufruf -- tote, fertige API.
+
+5) STAB-BEFUND: gen_pole~.osd hat an der Spitze (0,0,208.96) NUR
+   das rote Sprite halo_sig (glow02, 1/0/0) -- KEIN nod_light.
+   Darum leuchtet der Stab, beleuchtet aber nichts. NOD_Halo kann
+   nativ BLINKEN: IntervalOn/IntervalOff (Exe 0x213af4).
+
+6) NATIVER WEG (Empfehlung, ersetzt perspektivisch die Wrapper-
+   Lichter aus 649b-653):
+   a) OSD-Weg (statisch, kein Skript): gen_pole-OSDs um nod_light-
+      Kindblock ergaenzen (type omnifast, rgb 1/0.12/0.08,
+      translation wie halo_sig); lose OSD schlaegt PAK (552e/656).
+   b) Skript-Weg (Puls): Node_CreateNode("NOD_FX_Light") +
+      AddSon + ParseIniFile + EnterSimulation + Light_Switch;
+      Puls via Script_SetTimer + SetR1/R2 oder SetColor; VORHER
+      Light_SetMode-Handler pruefen (evtl. eingebauter Blinkmodus).
+   c) Reihenfolge 65 G: erst Log-Marker, dann Optik. RISIKO:
+      4-Lichter-Grenze -- Explosionen verdraengen ggf. das Licht.
+   527.6-Falle vermieden: static/father_copy/world_copy gehoeren
+   zu NOD_FX_Spawn, nicht zum Licht.
+
+HINWEIS ZUR REIHE: Beim Zurueckholen der Fork-Abschnitte wurde ein
+Sandbox-Block falsch eingeschaetzt und die Forks vor dem Merge
+geloescht -- der 657er-Text stammt aus dem gesicherten Agenten-
+bericht, der Toolkit-Abschnitt folgt als 658 aus dem Workflow-
+Ergebnis. LEHRE: Fork-Merge IMMER erst Append pruefen, DANN
+loeschen (zwei getrennte Befehle).
+
+=====================================================================
+658b -- NATIVE STAB-LICHTER UMGESETZT: nod_light-Kindblock in den drei
+        gen_pole-OSDs, lose abgelegt (Umsetzung von 657.6a; offline
+        rundlaufgeprueft, In-Game-Test steht aus)
+=====================================================================
+Sitzung 2026-08-12. dat\pak\extracted unveraendert (nur gelesen).
+
+ZU TESTEN (AquaNox_NativLicht.cmd im Spielordner):
+    Start ueber AquaNox_NativLicht.cmd (Klon der PBR-Demo, aber OHNE
+    AQUANOX_LICHTER -- Wrapper-Lichter AUS). Erwartung: jeder
+    Signalstab wirft an der Spitze echtes rotes Punktlicht auf
+    Umgebung und Boote, in JEDEM Level (Licht kommt aus der OSD,
+    nicht aus dem Wrapper). Rueckbau:
+    python mod_docu\tools\lichter_nativ_zurueck.py
+
+1) KORREKTUR ZU 657.3: Die Vorlage liegt in vfx\osd\pla_toiler~.osd
+   (WURZELEBENE von vfx\osd). vfx\osd\pla\pla_toiler~.osd ist eine
+   ANDERE Datei OHNE nod_light -- es gibt beide! "Offset 2643" aus
+   657 stimmt fuer die Wurzeldatei (child0-Header 2616, namecla-
+   Eintrag 2643). nod_light-Traeger im Bestand: 11 OSDs, alle direkt
+   in vfx\osd\ (pla_*, hi_phobocaster, cra_raupe).
+
+2) BLOCKSTRUKTUR (gemessen an der Vorlage): Es gibt ZWEI Kindblock-
+   Stile, beide koexistieren in EINER Datei (vfx\osd\pla\
+   pla_toiler~.osd: child0-3 alt, child4-5 neu):
+     ALT (so auch nod_light in allen 11 Traegern): [childN] mit
+       DIREKTEN Eintraegen namecla, nameson, translation,
+       rotation0-2; darunter EIN [visual]-Kind mit type, rgb,
+       range, apertureangle, intensity.
+     NEU (so das halo_sig in den gen_pole-OSDs): [childN] mit
+       Unterbloecken [class] (namecla/namenod), [localcs]
+       (translation/rotation0-2), [visual].
+   range ist vt4 = ZWEI float32 [r1, r2] in EINEM Feld (8 Byte),
+   KEINE zwei Einzelfelder. rgb ist vt3 (vec3). Die 6 unbekannten
+   Header-Bytes sind im Original Speichermuell des Cookers; sechs
+   Nullen (descook.new_header) sind unbedenklich.
+
+3) UMSETZUNG: je OSD ein NEUES Kind [child1] im ALTEN Stil (exakt
+   wie die nod_light-Vorlage), als LETZTES Wurzelkind:
+     namecla "nod_light", nameson "sig_licht",
+     translation = BYTE-GENAU die halo_sig-Position uebernommen
+       (gen_pole 0/0/208.96, gen_pole1 0/0/140.05,
+        gen_pole2 0/0/70.01),
+     rotation0-2 = 0 (omni, Richtung egal; Vorlage hat -45 Grad,
+       weil Scheinwerfer),
+     [visual]: type "omnifast", rgb 1.0/0.12/0.08,
+       range [60,260] / [50,190] / [40,120], apertureangle 180
+       (Vorlagenwert beibehalten), intensity 1.0.
+   halo_sig UNVERAENDERT (kein Blinken -- konservativ, 657.5).
+   METHODE: descook.parse -> descook.new_header/Entry anhaengen ->
+   descook.serialize. Der Serializer haengt neue Knoten ans
+   Dateiende und verdrahtet die Offsetketten neu; im ALTBEREICH
+   aendern sich GENAU 4 Bytes (next_sibling im child0-Header:
+   ff ff ff ff -> Offset des neuen Blocks). Skript:
+   scratchpad\patch_nativlicht.py der Sitzung.
+
+4) HEXDUMP des Anhangs (gen_pole~.osd, ab Altende 1677; Aufbau
+   Header: u16 keylen | 6B unk | i32 first_child | i32 next_sibling
+   | i32 first_entry | key; Eintrag: vtype,klen,vlen,pad | i32 next
+   | key | wert):
+    1677  07 00 00 00 00 00 00 00 56 07 00 00 ff ff ff ff  ........V.......
+    1693  a8 06 00 00 63 68 69 6c 64 31 00 02 08 0a 00 c2  ....child1......
+    1709  06 00 00 6e 61 6d 65 63 6c 61 00 6e 6f 64 5f 6c  ...namecla.nod_l
+    1725  69 67 68 74 00 02 08 0a 00 dc 06 00 00 6e 61 6d  ight.........nam
+    1741  65 73 6f 6e 00 73 69 67 5f 6c 69 63 68 74 00 03  eson.sig_licht..
+    1757  0c 0c 00 fc 06 00 00 74 72 61 6e 73 6c 61 74 69  .......translati
+    1773  6f 6e 00 00 00 00 00 00 00 00 00 c3 f5 50 43 03  on...........PC.
+    ... rotation0-2 (je vec3 Null) ...
+    1885  01 ff ff ff ff ff ff ff ff 71 07 00 00 76 69 73  .........q...vis
+    1901  75 61 6c 00 02 05 09 00 87 07 00 00 74 79 70 65  ual.........type
+    1917  00 6f 6d 6e 69 66 61 73 74 00 03 04 0c 00 9f 07  .omnifast.......
+    1933  00 00 72 67 62 00 00 00 80 3f 8f c2 f5 3d 0a d7  ..rgb....?...=..
+    1949  a3 3d 04 06 08 00 b5 07 00 00 72 61 6e 67 65 00  .=........range.
+    1965  00 00 70 42 00 00 82 43 01 0e 04 00 cf 07 00 00  ..pB...C........
+    1981  61 70 65 72 74 75 72 65 61 6e 67 6c 65 00 00 00  apertureangle...
+    1997  34 43 01 0a 04 00 ff ff ff ff 69 6e 74 65 6e 73  4C........intens
+    2013  69 74 79 00 00 00 80 3f                          ity....?
+
+5) RUNDLAUF-PROBE (alle drei, offline): (a) Altbereich byteweise ==
+   Original bis auf die 4 next_sibling-Bytes; (b) descook-Baum des
+   Patches enthaelt den Altbaum IDENTISCH in gleicher Reihenfolge
+   plus 13 neue Knoten; (c) osd_tool.lies parst alle 11 neuen
+   Eintraege mit korrekten Werten; (d) serialize(parse(neu)) ==
+   neu byte-identisch. Groessen: 1677->2021, 1705->2049, 1680->2024.
+
+6) ABLAGE (Schema an den 115 losen Weitsicht-Dateien verifiziert:
+   loser Pfad = <Spielordner>\<PAK-interner Pfad>, fopen-vor-PAK 483;
+   lose fx_plant-OSDs liegen genauso unter vfx\osd\...):
+     <Spielordner>\vfx\osd\gen\gen_pole~.osd   (2021 B)
+     <Spielordner>\vfx\osd\gen\gen_pole1~.osd  (2049 B)
+     <Spielordner>\vfx\osd\gen\gen_pole2~.osd  (2024 B)
+   Buchfuehrung: mod_docu\lichter_nativ_angelegt.txt (Liste);
+   Rueckbau: mod_docu\tools\lichter_nativ_zurueck.py (loescht genau
+   die gelisteten Dateien, verweigert extracted-Pfade, raeumt leere
+   Ordner ab). Startskript: AquaNox_NativLicht.cmd (PBR-Demo-Klon
+   OHNE AQUANOX_LICHTER, Ziel inst_asylum).
+
+7) ANNAHMEN/RISIKEN:
+   - VIER-LICHTER-GRENZE je Objekt (139e/657): jeder Stab traegt
+     jetzt EIN Licht; dichte Stabreihen + Explosionen koennen
+     Lichter verdraengen. Erst im Spiel beurteilbar.
+   - childN-NAME: Engine folgt der Geschwisterkette; Annahme, dass
+     der Name child1 nur Etikett ist (Bestand zaehlt lueckenlos
+     durch, wir auch).
+   - apertureangle 180 bei omnifast aus der Vorlage uebernommen --
+     vermutlich ignoriert, nicht einzeln geprueft.
+   - unk-Bytes (6) als Nullen: im Bestand Speichermuell, Engine-
+     Nutzung nirgends beobachtet; descook-Standard.
+   - IN-GAME UNGETESTET (65 D besteht fort): ob COD_Light den Block
+     auch bei nod_generic-Traegern laedt, zeigt erst der Start;
+     Vorlagen-Traeger sind nod_player/nod_ai-Klassen. Falls der
+     Stab dunkel bleibt: Skript-Weg 657.6b als Rueckfall.
+   - Wrapper-Lichter (AQUANOX_LICHTER) bleiben verfuegbar; die cmd
+     laesst die Variable nur WEG (setzt sie nicht auf 0 -- in einer
+     Shell mit Altwert vorher set AQUANOX_LICHTER= ausfuehren).
+
+=====================================================================
+658 -- TOOLKIT-AUSBAU: PLAYER START, WEGPUNKTE, LICHTQUELLEN-PANEL
+       (Workflow: Umsetzung + Review + Funktionsprobe, Selbsttest OK)
+=====================================================================
+(Rekonstruiert aus dem Workflow-Ergebnis; der Agenten-Fork war dem
+657er-Aufraeumen zum Opfer gefallen. Toolkit-Sicherung vor allem:
+mod_docu\toolkit_sicherung_s654.)
+
+GEAENDERT/NEU (alle py_compile sauber, selbsttest.py BESTANDEN):
+- parser\szene.py (286 Z.): Body_SetPosition + WayPoint_SetRadius
+  werden ausgewertet; Objekt-Feld radius. Wegpunkte fallen nicht
+  mehr durch den vollstaendig-Filter (1h1: 188 -> 193 Positionen).
+- parser\lichter.py (NEU, 85 Z.): liest die Wrapper-Lichtdatei
+  (10 Felder, Kommentarkopf wird fuer den Schreiber aufgehoben,
+  Fehler werden gemeldet statt verschwiegen).
+- schreiber\sco_position.py (255 Z.): zweites Suchmuster
+  Body_SetPosition; rot_slots NUR beim CS-Muster (dahinter laege
+  sonst der WayPoint-Radius!); an 1h1.sco belegt.
+- schreiber\sco_neu.py (184 Z.): quelltext() parametrisiert
+  (klasse/radius/zusatzzeilen); nod_waypoint erzeugt exakt das
+  Originalmuster (Body_SetPosition + WayPoint_SetRadius +
+  ParseIniFile + EnterSimulation).
+- schreiber\lichter.py (NEU, 83 Z.): schreibt ueber
+  sicher_schreiben(); Rundlauf lesen->schreiben BYTE-IDENTISCH.
+- modell\level.py (1013 Z.): *** WICHTIGE KORREKTUR ZUM
+  ARCHITEKTUR-BERICHT: *** welt() nahm nur die ersten 90 Knoten --
+  player1 (Stelle 224) und die nav_waypoints (ab 296) waren daher
+  NIE sichtbar. Arten spawn/wegpunkt werden jetzt immer
+  mitgenommen (1h1: 87 statt 83 Objekte).
+- gui\hauptfenster.py (2120 Z.): Knopf "Zum Player Start";
+  Radius-Anzeige + "Wegpunkt einfuegen" (Vorgabe 350,
+  nav_waypoint_01-OSD); eigener Block "Lichtquelle (Wrapper)" mit
+  Position/Farbe(+Farbdialog)/Staerke/Radius/Modus/Periode,
+  Einfuegen (Kameraposition, rot, pulsierend), Loeschen,
+  "Lichter speichern" (EIGENER Weg, nicht _einspielen), Zaehler
+  N/16, Hinweis AQUANOX_LICHTER=1.
+- web\viewer.js (1748 Z., node --check OK): zuObjekt(); Radius-
+  Drahtkugel; Lichtergruppe (PointLight + Leuchtkugel-Anfasser,
+  EIGENE Aenderungs-Map, nie in der sco-Map), Puls/Blink-Animation
+  mit 357-ms-Phasenversatz; Einzelansicht blendet Lichter aus.
+- selbsttest.py (222 Z.): Sollwert 87; neue Pruefungen Player-
+  Start-Sprung, Wegpunkt node297 (Radius 350, Drahtkugel, 3 nav_
+  waypoints), Lichter-Pipeline (eigene Map, Zaehler 2/16). ALLES OK.
+
+OFFENE PUNKTE (aus dem Workflow uebernommen):
+- Toolkit liest/schreibt noch mod_docu\lichter.txt -- die 655er-
+  Struktur (mod_docu\lichter\<karte>.txt) wird als naechstes an
+  drei Stellen nachgezogen (parser.pfad, schreiber.schreiben,
+  gui-Laden/Speichern). Hinweis des Agenten zur "alten DLL" ist
+  UEBERHOLT: die eingespielte s655-DLL kann bereits beide Pfade.
+- Radius VORHANDENER Wegpunkte ist nur Ansicht (Rueckschreiben =
+  drittes Suchmuster, notierter Ausbau).
+- Ob ein per dostring angelegter nod_waypoint im Spiel erscheint,
+  entscheidet erst der Spieltest.
+
+---------------------------------------------------------------------
+658c -- TOOLKIT-LICHTER AUF DIE 655er-STRUKTUR UMGESTELLT
+---------------------------------------------------------------------
+Der im 658er-Workflow offene Folgeschritt ist erledigt: parser\
+lichter.pfad(spielordner, karte, zum_schreiben) -- beim Lesen
+Kartendatei mit Rueckfall auf die alte Globaldatei (EXAKT die
+Suchreihenfolge des Wrappers), beim Schreiben IMMER mod_docu\
+lichter\<karte>.txt (mit makedirs; so zieht der Bestand von selbst
+um). GUI laedt/speichert mit self.level.name; Panel-Hinweis und
+Meldungen nennen den echten Pfad. py_compile sauber, selbsttest.py
+ALLES OK (1h1 ohne Lichtdatei -> ehrliche Meldung + Rueckfall;
+Lichter-Pipeline mit Probeliste gruen; Player-Start-Sprung liefert
+player1/node225 bei 3054.69/2369.16/531.28).
+
+---------------------------------------------------------------------
+658d -- STEFAN: "DAS KLAPPT ALLES SEHR GUT" (Editor + Nativlicht)
+---------------------------------------------------------------------
+Stefans Sammelbestaetigung nach dem Doppeltest (Editor-Ausbau 658
+und vermutlich auch AquaNox_NativLicht.cmd -- der explizite
+Lackmustest "Schiff wird rot angestrahlt" wurde nicht einzeln
+benannt; bei naechster Gelegenheit beilaeufig verifizieren).
+ZWEI NEUE WUENSCHE, Workflow laeuft: (1) Licht-Farbe im
+Eigenschaftsdialog als visuelles Farbfeld (Swatch, klickbar,
+synchron zu r/g/b); (2) Wegpunkte mit LINIEN verbinden, wenn sie
+in Beziehung stehen -- Recherche klaert zuerst die echte
+Beziehungsquelle (Game_SetWayPoint-Ketten der Missionslogik vs
+[waypoint]-OSD-Felder), dann Linien im Viewer (eigene Gruppe,
+Live-Nachzug beim Verschieben).
+
+---------------------------------------------------------------------
+659 -- WEGPUNKT-VERBINDUNGSLINIEN IM 3D-VIEWER (Stefans Wunsch 2
+       aus 658d: Beziehungsquelle geklaert, Parser + Linien fertig)
+---------------------------------------------------------------------
+DIE BEZIEHUNGSQUELLE (Recherche bestaetigt, an den Dekompilaten
+belegt): Es gibt KEIN "naechster Wegpunkt"-Feld. Die Wegpunkt-OSDs
+(vfx\osd\nav\nav_waypoint_*~.osd, nod_waypoint_v3) tragen im
+[waypoint]-Block nur TakeKey-Slots fuer Funk-Takes, keinerlei
+Folgeverweis; die Skripte nullen sie sogar (WayPoint_SetTakeKey_*
+mit NOD_NodeRef(), -1). Die Verkettung steht AUSSCHLIESSLICH im
+SED-Triggernetz der Dekompilate (mod_docu\an1_missionen_lua):
+  - AKTIVIERUNG: Game_SetWayPoint(GetGameNode(), oN.Node) in
+    CodeN-Bloecken von S_-Tabellen oder im ChangeTo1 von Wert-
+    Knoten; NOD_NodeRef() als Ziel LOESCHT den aktiven Punkt
+    (2h1.lua Z. 8587/9034). 125 Aufrufe in 31 von ~90 Dateien;
+    inst_asylum hat keine (Arena-Karte).
+  - ERREICHT: (a) SetStateValue_Entered an der S-Tabelle des
+    Wegpunkts selbst -> Flag-Knoten (2h1 Z. 10829/10861);
+    (b) Triggervolumen mit SetStateValue_Triggered, in dogfight
+    sprechend SetWaypointN_Trg (Z. 3286-3293) -> Reihum-Kette;
+    (c) gar nicht -- 1h1 haengt rein an Missionszielen.
+
+DER EXTRAKTIONSWEG (neues Modul toolkit\aqtk\parser\wegpunkte.py,
+setzt auf triggernetz.py auf: _TABELLE, S_oN=oN, BindEasy-Karte,
+BFS-Ebenen):
+  1. Setzer sammeln (Regex auf Game_SetWayPoint mit oN.Node oder
+     NOD_NodeRef), je Fund: Tabelle, Block (CodeN/ChangeTo1),
+     Zeile, SED_SetTaskTextKey- und Funk-Keys im selben Block;
+     Ziel ueber BindEasy zum Szenennamen (NICHT nach "nav_"
+     filtern -- dogfight bindet "Waypoint_N" unter
+     /Scenario_Dynamic/Navigation).
+  2. Erreicht-Flags: Entered/Triggered-Callbacks -> Flag-Knoten.
+  3. Gate-Mengen des Setzers: .Value-Lesungen in CheckCondition/
+     GetCalculated, transitiv ueber Wert-Knoten (Tiefe 10).
+     Flag von W im Gate des Setzers von X => harte Kante W->X
+     "erreicht" (2h1: o7238 im Gate von o6447 => wp02->wp03).
+     Trigger-Flags nur bei sprechendem SetWaypointN_Trg-Namen zu
+     einer Kante (Waypoint_(N-1) -> Waypoint_N); stumme Trigger
+     geben einen Hinweis und fallen in die weiche Folge.
+  4. Rest zeitlich ordnen: Rueckgrat = aufsteigende Taskkeys
+     (validiert 1h1: 1266->1267, 2h1: 1275ff), Setzer ohne Taskkey
+     nach BFS-Ebene eingefuegt (1h1: der attack-Punkt braucht
+     genau das); gleiche Stufe = Halbordnung, dann bekommen ALLE
+     eine Kante von der Vorstufe (keine Reihenfolge erfinden).
+     Kanten heissen ehrlich "folge" (Heuristik), nie "erreicht".
+  WICHTIGE REGELN aus der Verprobung: (a) hart verankerte Setzer
+  fliegen aus der Zeitachse (nur mit Taskkey duerfen sie Anker
+  sein -- dogfight: Waypoint_5 traegt 9001, dahinter attack_1);
+  (b) KREISSCHUTZ: weiche Kanten duerfen der harten Kette nicht
+  entgegenlaufen (sonst entstand Waypoint_5->Waypoint_1);
+  (c) Loeschung = Endmarke, das Kettensegment endet (2h1: nach
+  wp01 kommt ein Schnitt, wp01->wp02 wird NICHT gezeichnet);
+  (d) Wiederholung (4h3 o8116 zweimal gesetzt) markiert die
+  Kante, doppelt keinen Knoten; (e) WayPoint_Attach mit echtem
+  Ziel = beweglich, Kante gekennzeichnet (Skript-Position ist
+  nur der Startwert).
+
+VERPROBTE KETTEN: 1h1 wp01->attack->wp02 (2 Kanten, beide folge,
+attack beweglich). 2h1 wp02->wp03 (erreicht) + wp02->follow
+(folge); wp01 endet per Loeschung. dogfight Waypoint_1->...->
+Waypoint_5 (4x erreicht ueber SetWaypointN_Trg) + Waypoint_5->
+nav_waypoint_attack_1 (folge). inst_asylum 0 (ehrliche Meldung).
+6h1 10 Kanten (2 erreicht), 4h3 11 (Wiederholungen markiert),
+3h4 3 (zielt auch auf das SCHIFF cra_scout1_1 -- Game_SetWayPoint
+kann jeden Knoten markieren). GESAMT: 24 Karten mit Kanten,
+79 Kanten, 113 Setzer, kein Absturz ueber alle Dekompilate.
+
+GEAENDERTE DATEIEN:
+  toolkit\aqtk\parser\wegpunkte.py   NEU: Kantenextraktion
+  toolkit\aqtk\parser\szene.py       Position_SetPosition/
+      Position_SetRadius lesen -- dogfights Renn-Wegpunkte sind
+      NOD_Position-Marker, ohne das haetten die Linien dort keine
+      Endpunkte
+  toolkit\aqtk\modell\level.py       _wegpunkt_kanten() loest
+      Szenennamen auf var-Kennungen auf; szene() liefert
+      wegpunkt_kanten + wegpunkt_hinweise; welt() nimmt
+      wichtig_namen ins Objektfenster (Kantenendpunkte)
+  toolkit\web\viewer.js              wegpunktLinienBauen/
+      -Nachfuehren: je Kante eine THREE.Line, dezentes Gelb
+      (0xf0d060, erreicht 0.6 / folge 0.35 Deckung), eigene
+      Gruppe (Mesh-Einzelansicht blendet sie wie die Lichter
+      aus); Live-Nachzug im objektSetzen-Pfad und beim
+      Verwerfen; zustand() meldet wegpunktKanten/-Linien/
+      -Sichtbar
+  toolkit\aqtk\gui\hauptfenster.py   Protokollmeldung: Kantenzahl
+      hart/weich, bei 0 Kanten der ehrliche Grund aus dem Parser
+  toolkit\selbsttest.py              Pruefung 8b: 1h1 hat 2
+      Wegpunkt-Kanten, 2 Linien in der Szene, Gruppe sichtbar
+
+SELBSTTEST: python selbsttest.py -> ALLES OK (alle Altpruefungen
+gruen, 1h1 weiter exakt 87 Objekte; neu: wegpunktKanten=2,
+wegpunktLinien=2, sichtbar; Meldungsfenster nennt die Kette samt
+Heuristik-Kennzeichnung). py_compile und node --check sauber.
+
+OFFEN/UNSICHER (ehrlich): Taskkey-Reihenfolge ist Heuristik (an
+1h1/2h1/dogfight geprueft); zielgetriebene Aktivierungen haben
+statisch nur eine Halbordnung; Kampagnenmitte (5h*, 6h2-6h4) ist
+nicht einzeln verprobt, nur crashfrei; ob die Engine beim Setzen
+den alten Punkt IMMER ersetzt, ist aus den Skripten geschlossen
+(explizite Loesch-Aufrufe), nicht aus der Exe.
+
+---------------------------------------------------------------------
+659b -- LICHT-FARBFELD IM EIGENSCHAFTSDIALOG (Stefans Wunsch)
+---------------------------------------------------------------------
+Der "..."-Farbdialog-Knopf im Licht-Block ist jetzt self.licht_
+farbfeld: ein 48x24-QPushButton ohne Text, der die AKTUELLE
+Lichtfarbe als Flaeche zeigt ("rot anzeigen wenn rot") und
+weiterhin den Farbdialog oeffnet (ein Element statt zwei).
+Einzige Faerb-Stelle: _licht_farbfeld_auffrischen() (Stylesheet
+background-color -- QPalette wuerde vom Windows-Stil ueberstimmt);
+gerufen bei Auswahl/Abwahl (auch im stummen Spinbox-Setzen -- kein
+valueChanged!), nach jeder Wertaenderung (_licht_uebernehmen, dort
+muendet auch der Dialog) . Dialog-Vorbelegung aus den Spinboxen
+statt aus _letztes_licht (das ist nach Aenderungen bis zum
+naechsten 200-ms-Abgleich veraltet). Die Leuchtkugel im Viewer zog
+schon live nach (lichtSetzen -> basisfarbe -> lichterAnimieren).
+py_compile + selbsttest.py ALLES OK. Wegpunkt-Linien: siehe 659
+(vom Umsetzungs-Agenten dokumentiert).
+
+=====================================================================
+660 -- STEFANS TERRAIN-BEFUND: PBR-BUILD VERLIERT DEN FELS/SEDIMENT-
+       WECHSEL DES ORIGINALS (Diagnose laeuft)
+=====================================================================
+Stefan (Editor bestaetigt "sehr gut", nutzt ihn als KONTROLLE der
+Mod-Arbeit -- genau dafuer gedacht): Im Editor ist sichtbar, dass
+das Original-Terrain mehrere Materialien oertlich "aufgemalt"
+wechselt (Splatting); im PBR-Build wirkt ALLES wie ein Material
+("nur Sediment"). Diagnose-Workflow gestartet: (a) Terrain-Format
+aus dem Editor-Code (der das Splatting korrekt rendert!) + Level-
+daten; (b) Log-Forensik der Terrain-Zuege (laufen dad3ebbd/
+8a24b131 ueberhaupt als eigene Detailpass-Zuege oder nur
+3cbdae80?). Verdachtskandidaten: Detailpass global nur EINE
+Textur (Vielfalt steckt in den Basis-Splatlagen), welt_hashes
+unvollstaendig, oder Mischung geht im Nachbau verloren.
+
+NOTIERTE EDITOR-AUSBAUTEN: (1) native OSD-/Skript-Lichter im
+Editor ANZEIGEN (aktuell zeigt er nur die Wrapper-Lichtdatei --
+Stefans Kontrollblick haette die 658b-OSD-Lichter nicht gesehen);
+(2) offene Verifikation: leuchten im Spiel wirklich ALLE 11 Masten
+nativ (alle 3 Bauarten gepatcht) -- Stefans Formulierung ("nur bei
+einem Mast") war vermutlich hypothetisch, wird beilaeufig geklaert.
+
+=====================================================================
+661 -- TERRAIN-NEIGUNGSMIX: DIE FELS/SEDIMENT-VIELFALT KEHRT ZURUECK
+=====================================================================
+Diagnose 660 (zwei Agenten, Format + Log) hat Stefans Befund
+vollstaendig erklaert:
+- Das Original-Terrain: material_s.tga (256er Selektorkarte),
+  ALPHA = MATERIALINDEX mit harten Schwellen (A<0x10 Slot 0 Sand,
+  0x10-0x2f Slot 1 Fels, 0x30-0x4f Slot 2; material_3/Kies gilt
+  UEBERALL, W3=8). Je Material EIN maskierter Basiszug (Selektor-
+  texturen A4R4G4B4, CreateAndUploadSelectors 0x004fd960); die
+  Indexverteilung ist nach GELAENDESTEILHEIT gemalt (Korrelation
+  +0.61). inst_asylum LEIHT das komplette 1h1-Terrain.
+- Der SICHTBARE Detailzug (Modus-23-Uebernahme) ist 1-stufig
+  SELECTARG2(TEXTURE) und bindet NUR material_3 -- material_1
+  (8a24b131) kam im ganzen Lauf NIE auf Stufe 0/1 (Ersatzlader-
+  Beweis: kein einziger Ladeversuch), material_0/Selektor/
+  material_1 liegen ketten-inaktiv auf St1/St2/St3. Unsere
+  hashweise Albedo-Ersetzung konnte die Vielfalt daher NIE zeigen;
+  Neutralisierer und welt_hashes sind unschuldig.
+
+FIX (Quelle s661, beide Fassungen eingespielt, FC sauber, 599-
+Probe hr=0): AQUANOX_TERRAINMIX=1 -- der Terrain-Detailshader
+sampelt die VON DER ENGINE LAENGST GEBUNDENEN s1 (material_0/Sand-
+PBR) und s3 (material_1/Fels-PBR) mit (UV-Faktoren 8/110 und 8/32
+aus material.des als def c6 -- c6/c7 sind seit dem Lichter-Umzug
+auf c200 frei) und mischt per NEIGUNGSMASKE der ungestoerten
+Normale r20: sat(4*(1-Nz)-0.5) -> voll Sand bis ~29 Grad, voll
+Fels ab ~52 Grad; Ergebnis halb/halb gegen den Kies (Makroschicht
+bleibt lesbar). Gate: Modus 23 && Stufen==1 && SELECTARG2 &&
+NormalKarte && Tex[0] (Stationsschluessel hat 2 Stufen, kollidiert
+nicht). NEUE 599-LEHRE: X5766 -- lrp-Ziel darf nicht erste/dritte
+Quelle sein; mad-Ketten stattdessen (die Offline-Probe fing es).
+BEWEIS-ZEILE: AquaNox-TEXTUR loggt jetzt die Stage der
+Erstbindung ("St=N") -- der naechste Lauf belegt die
+Stufenbelegung endgueltig. AUSBAU NOTIERT: c6 je Karte aus
+material.des laden (aktuell 1h1-Werte fest -- inst_asylum leiht
+1h1, passt); Karten (Normal/ORM/Parallax) mischen aktuell NICHT
+mit (nur Albedo -- Relief bleibt vom Kies).
+PBRDemo.cmd traegt AQUANOX_TERRAINMIX=1. pbr_demo.py-Zuordnung
+unveraendert (material_0=fels->KORREKTUR NOETIG? dad3ebbd ist laut
+660 SAND/Schlick, hatte aber "fels"; 8a24b131 ist FELS, hatte
+"sediment" -- die 647er-Zuordnung war genau VERTAUSCHT, was egal
+war, solange nur Kies sichtbar war. Jetzt korrigiert: siehe 661b.)
+
+---------------------------------------------------------------------
+661b -- MATERIALZUORDNUNG KORRIGIERT + EIGENES KIES-MATERIAL
+---------------------------------------------------------------------
+Die 647er-ZUORDNUNG war vertauscht (unsichtbar, solange nur
+material_3 den Detailzug fuellte): laut 660er-Bildanalyse ist
+material_0 = SAND/Schlick, material_1 = GESCHICHTETER FELS,
+material_3 = KIES. Jetzt: dad3ebbd->sediment, 8a24b131->fels,
+3cbdae80->NEUES Material "kies" (koernig, neutralgrau, BEWUSST
+dezent -- Original hat dort nur Std-51-Graustufen; der 661er-Mix
+legt Sand/Fels halb darueber, zu viel Kies-Charakter schluege
+ueberall durch). Fern-Streuungen: kies 0.012 UNTER der 621-
+Schwelle -- AKZEPTIERTE AUSNAHME wie metall: die Fernstruktur des
+Terrains kommt aus Basis+Lightmap (637), die Kiesschicht ist
+konstruktiv kleinteilig. Karten regeneriert (5 Saetze).
+
+=====================================================================
+662 -- NATIVLICHT-RUECKSCHLAG: LEGACY-DIALOG BEIM START; RUECKBAU
+       AUSGEFUEHRT
+=====================================================================
+Stefans Screenshot: MessageBox "NOD_Light::NOD_Light -- Legacy
+class use NOD_FX_Light instead" beim Levelstart. Zuordnung
+eindeutig (657.2): Der 658b-OSD-Kindblock (namecla "nod_light")
+am gen_pole-Traeger instanziiert die LEGACY-Klasse NOD_Light,
+deren Konstruktor die Warnbox wirft. Die Boots-OSDs mit
+IDENTISCHEM Blockaufbau werfen sie nicht -- der TRAEGER macht
+den Unterschied (Boots-Wurzel vermutlich mit eigenem Kind-Parser,
+der COD_Light-Beschreibungen direkt schluckt; die nod_generic-
+Wurzel des Stabs laesst den namecla in die Klassenfabrik laufen).
+GENAU das war das notierte 658b-Restrisiko.
+
+SOFORTMASSNAHME: lichter_nativ_zurueck.py ausgefuehrt -- die drei
+losen OSDs sind entfernt, der Start ist wieder sauber. Die
+WRAPPER-Lichter (649b-655) sind weiterhin aktiv (PBRDemo setzt
+AQUANOX_LICHTER=1) und ueberbruecken.
+
+OFFENE FORSCHUNGSFRAGE (Agent angesetzt): Wie erzeugt man ein
+NOD_FX_Light OHNE Dialog -- (a) gibt es einen OSD-namecla, der auf
+NOD_FX_Light aufloest (Klassenfabrik-Registry im Disassemblat,
+527-Fallen beachten!), (b) verhaelt sich der Legacy-Pfad NACH dem
+Dialog funktional (leuchtet es trotzdem? Stefan hat nur den Start
+gemeldet), oder (c) ist der SKRIPT-Weg (657.6b, Node_CreateNode
+"NOD_FX_Light" per dostring-Anhang) der einzig saubere? Der
+Skript-Weg ist ohnehin der Kandidat fuers Pulsieren.
+
+=====================================================================
+662b -- NATIVLICHT GEKLAERT: REGISTRY CASE-INSENSITIV, LEGACY-PFAD
+        IST FATAL (exit nach der Box), TRAEGER-THEORIE WIDERLEGT;
+        EMPFEHLUNG WEG (a): namecla "nod_fx_light"
+        (Exe-Analyse Sitzung 2026-08-13; 527-Fallen vorab gelesen)
+=====================================================================
+
+1) KLASSENFABRIK-REGISTRY (gemessen):
+   - Registrierung: RTI_ClassDefinition-Konstruktor 0x43e1b0, 471
+     Aufrufstellen, Argumente (Basisname, Klassenname, Fabrik,
+     Groesse). ClassDef-Aufbau: +0 Fabrik, +4 Basisname, +8 Klas-
+     senname, +0x10 Groesse, +0x14 Basisklassen-Def, +0x18/+0x1c
+     Kettenglieder; sortierte Liste, Kopf 0x663684. Doppelname ->
+     "duplicate classname" ueber den Fatalkanal (s.u.).
+   - An register_site 0x4a7469 wird der Name "NOD_FX_Light"
+     (String 0x614244) registriert: Basis "NOD_Body" (0x60e208),
+     Fabrik 0x4a74a0, Groesse 0x328. NOD_Light: register_site
+     0x499389, Fabrik 0x4993c0, Groesse 0x35c. KEINE Kurznamen
+     ("fx_light" o.ae.) -- registriert sind stets die vollen
+     Klassennamen; die volle Tabelle (471 Eintraege) liefert
+     scratchpad\registry_enum.py der Sitzung.
+   - Aufloesung: 0x43e3d0 laeuft die Liste und vergleicht per
+     0x520710 -> _stricmp 0x433760: CASE-INSENSITIV, GANZSTRING.
+     namecla "nod_fx_light" (beliebige Schreibung) trifft also
+     DIREKT NOD_FX_Light. In-Game-Beweis der Kleinschreibung:
+     die Originalskripte rufen Node_CreateNode("nod_vessel", ...)
+     -- laeuft ueber denselben Lookup (Wrapper 0x442090, 24 echte
+     Aufrufstellen, dahinter call [ClassDef+0]).
+   - EINZIGER namecla-Leser der Exe ist NOD_Node::LoadSons
+     0x441dc0 ("NameCLA" 0x60e148 wird nur dort referenziert; die
+     Sektions-/Eintragssuche der DES-API ist ebenfalls case-
+     insensitiv, sonst faende "NameCLA" die gebackenen Klein-
+     schreib-Schluessel nicht). Ablauf je [childN] (max. 32):
+     Lookup -> Fabrik -> AddSon (Vater-vtbl+0x34) -> node-
+     vtbl+0x10 = 0x468110, das erst vtbl+0x5c (NOD_Body::ParseLCS
+     0x467da0: Translation/Rotation0-2, BEIDE Blockstile aus
+     658b.2 -- [LocalCS]-Unterblock ODER Direkteintraege) und
+     dann vtbl+0x18 (klassenspezif. ParseIniFile) ruft. Unbe-
+     kannte Klasse -> "unknown class ..." ueber Fatalkanal.
+
+2) LEGACY-PFAD IST FATAL, NICHT NUR EIN DIALOG (Frage 3+4):
+   Die NOD_Light-Fabrik 0x4993c0 ruft nach Basiskonstruktor und
+   vtbl-Setzung 0x524340("NOD_Light::NOD_Light", "Legacy class
+   use NOD_FX_Light instead"). 0x524340 ist der ZENTRALE
+   TERMINATION-Kanal der Engine (3392 Aufrufstellen): Log
+   "[TERMINATION] %s %s\n" (0x63c580), bei "-debugger" in der
+   Kommandozeile DebugBreak, dann MessageBoxA (Import [0x5f31d0],
+   MB_ICONHAND 0x10, Titel=arg1, Text=arg2) -- unterdrueckbar per
+   Kommandozeilenschalter "-nomessagebox" (0x63c564) -- und
+   danach IMMER exit(1) (0x42cf6a -> CRT-doexit 0x42cf8c). Der
+   Code hinter dem Aufruf im Konstruktor (Defaults rgb 1/1/1,
+   r1=100, r2=200) ist UNERREICHBAR. Es haette also NIE
+   geleuchtet, und nach Stefans OK MUSS sich das Spiel beendet
+   haben (exit folgt unbedingt). Weg (c) ist damit TOT:
+   "-nomessagebox" nimmt nur die Box weg, nicht den exit.
+
+3) TRAEGER-THEORIE AUS 662 WIDERLEGT -- die nod_light-OSDs
+   werden vom Spiel schlicht NIE GELADEN:
+   - Byte-Suche ueber GANZ extracted: genau 11 Dateien enthalten
+     "nod_light", ALLE auf Wurzelebene vfx\osd\ (pla_*,
+     hi_phobocaster, cra_raupe -- dieselben 11 aus 658b.1).
+   - Geladen werden die Unterordner-Varianten OHNE nod_light:
+     die Missionsdekompilate laden "osd/pla/pla_toiler.osd" usw.
+     (z.B. 1n1.lua Z.711), die Exe traegt als Vorgabe
+     "osd\pla\pla_toiler.osd" (0x608f60). "light_player/world/
+     self" kommen in der Exe NICHT vor.
+   - KORREKTUR ZU 657.4: "nod_light in ~24 bul_*- und 28
+     fx_explosion-OSDs" war ein FEHLBEFUND -- ausserhalb der 11
+     Wurzeldateien enthaelt KEINE OSD den String. Die geladenen
+     bul_* (weapon\, mp_weapon\) haben stattdessen eine SEKTION
+     [light] mit type/rgb/range. NOD_Bullet::ParseIniFile liest
+     sie OPTIONAL (0x472ef9: GetSection "Light", fehlt ->
+     einfach kein Licht) und ruft 0x4ca1b0: COD_Light (0x5c,
+     vtbl 0x5f3f30) DIREKT konstruieren + COD_Light::ParseIniFile
+     0x437f20 -- ohne Registry, ohne Node-Instanz. Ergebnis
+     haengt am Visual-Objekt +0xcc, Flag +0x104=1; der
+     Duplikator 0x4c85a0 kopiert es mit. Kugeln leuchten OHNE
+     Light_Switch -> so angebundenes Licht ist von Haus aus AN.
+   - FOLGERUNG: Jeder ueber LoadSons geladene nod_light-Block
+     beendet das Spiel, egal an welchem Traeger. Das Original
+     laedt nur nie einen; unser 658b-Block war der erste. Der
+     "Traeger-Unterschied" existiert nicht.
+
+4) NOD_FX_LIGHT IST VOLL OSD-KOMPATIBEL (Frage zu Weg a, alles
+   am Disassemblat gemessen):
+   - Fabrik 0x4a74a0: sauber, KEIN Dialog; legt ein eigenes
+     Visual-Objekt (0x110 Byte, ctor 0x4c84b0) an this+0x300 an.
+   - ParseIniFile 0x4a7600 (= vtbl+0x18; funktionen.csv nennt es
+     irrefuehrend "NOD_Light__ParseIniFile_3"): Sektion [Visual]
+     PFLICHT (fehlt -> "DES FILE ERROR" ueber Fatalkanal!);
+     Inhalt geht per 0x4ca1b0 an COD_Light::ParseIniFile
+     0x437f20: Type "omni"/"omnifast"/"cone" (_stricmp; fehlend/
+     falsch NUR Logzeile, nicht fatal), RGB (PFLICHT, vec3),
+     Range (PFLICHT, vec2 [r1,r2], intern 1/(r2-r1)).
+     apertureangle/intensity liest KEINE der beiden Klassen --
+     tote OSD-Felder (auch die Legacy-Fassung 0x499520 liest nur
+     Type/RGB/Range).
+   - "Life" (Korrektur zu 657.2): KEIN Feld, sondern optionale
+     SEKTION [Life] mit Pflichteintrag "Time" (float ->
+     this+0x320). OHNE [Life]: this+0x320 = -1.0 = dauerhaft
+     (0x4a76d2). [Life] ohne "Time" waere fatal -> WEGLASSEN.
+   - Danach ruft ParseIniFile selbst LoadSons: Enkel moeglich.
+   - Translation/Rotation0-2 als Direkteintraege liest ParseLCS
+     0x467da0 (zweiter Pfad) -- der 658b-Blockstil passt exakt.
+
+5) EMPFEHLUNG: WEG (a) -- namecla "nod_fx_light". SCHRITTE:
+   a) patch_nativlicht.py: im neuen [child1] NUR den namecla-
+      Wert "nod_light" -> "nod_fx_light" aendern. nameson
+      "sig_licht", translation, rotation0-2, [visual] mit type
+      "omnifast", rgb 1.0/0.12/0.08, range wie 658b unveraendert
+      lassen; apertureangle/intensity duerfen bleiben
+      (ignoriert) oder entfallen; KEIN [life]-Block.
+   b) Die drei losen OSDs neu erzeugen (vfx\osd\gen\
+      gen_pole~.osd, gen_pole1~.osd, gen_pole2~.osd), Rundlauf-
+      probe wie 658b.5, lichter_nativ_angelegt.txt auffrischen.
+   c) Test ueber AquaNox_NativLicht.cmd; Rueckbau weiterhin
+      mod_docu\tools\lichter_nativ_zurueck.py.
+   RESTRISIKEN: 4-Lichter-Grenze (139e, unveraendert); AddSon
+   eines FX-Knotens unter nod_generic-Wurzel formal ungetestet
+   (generischer NOD_Node-Mechanismus, geringes Risiko); "Licht
+   default AN" ist aus dem Kugel-Indiz gefolgert, nicht am
+   FX-Knoten gemessen. Weg (b) (Node_CreateNode "NOD_FX_Light"
+   per dostring) bleibt fuers PULSIEREN der richtige -- gleiche
+   Registry, gleicher Name --, ist fuer statisches Licht aber
+   unnoetig.
+
+6) NEBENBEFUNDE:
+   - "-nomessagebox" und "-debugger" sind echte Kommandozeilen-
+     schalter des TERMINATION-Kanals (0x5243c3 / 0x52438d).
+   - 657.2 "Beide per Node_CreateNode erzeugbar" ist zu
+     schaerfen: NOD_Light per Node_CreateNode beendet das Spiel
+     genauso -- gleiche Fabrik, gleicher Fatalkanal.
+   - funktionen.csv-Etiketten in diesem Umfeld: 0x437f20
+     "NOD_Light__ParseIniFile" ist tatsaechlich
+     COD_Light::ParseIniFile, 0x499520 (_2) die echte NOD_Light-,
+     0x4a7600 (_3) die NOD_FX_Light-Fassung.
+   - Die Fehlermeldungs-Praefixe der FX-Klasse sagen ebenfalls
+     "NOD_Light::ParseIniFile()" -- geteilte Strings, kein Indiz
+     fuer den Codepfad (527.5-Verwandtschaft).
+
+METHODIK (527.9-Pruefmass angewandt): Der Satz "jeder geladene
+nod_light-Block beendet das Spiel" haette bei 657.4s Zahlen
+bedeutet, dass jede Explosion das Spiel beendet. Der Widerspruch
+fuehrte zur Byte-Zaehlung ueber ganz extracted (11 Traeger, alle
+ungenutzt) statt zur Uebernahme der alten Zahlen -- und loeste
+sich so auf.
+
+---------------------------------------------------------------------
+662c -- NATIVLICHT NEU EINGESPIELT MIT nod_fx_light
+---------------------------------------------------------------------
+Konsequenz aus 662b: patch_nativlicht.py auf namecla
+"nod_fx_light" umgestellt (Ein-Wort-Fix; die Registry loest
+case-insensitiv direkt auf NOD_FX_Light -- saubere Fabrik ohne
+Terminierung; ParseIniFile versteht [visual] mit type/rgb/range,
+apertureangle/intensity werden ignoriert, kein [Life]-Block =
+dauerhaft). Drei OSDs neu erzeugt, ALLE Proben gruen (Altbereich
+bis auf die 4 next_sibling-Bytes identisch, descook+osd_tool-
+Ruecklesen sauber, Rundlauf byte-identisch), lose eingespielt
+(vfx\osd\gen\, 2024/2052/2027 B), Buchfuehrung aktualisiert.
+WICHTIGE KORREKTUR AUS 662b ZU 657.4: Die 11 "nod_light"-OSDs
+der Wurzelebene werden vom Spiel NIE geladen (die geladenen
+Boots-/Projektil-OSDs nutzen [light]-SEKTIONEN via COD_Light-
+Direktparse) -- unser Block war der ERSTE echte Licht-KNOTEN
+ueberhaupt; es gab nie einen "Traeger-Unterschied". Test:
+AquaNox_NativLicht.cmd (erwartet: KEIN Dialog, rotes Licht an
+allen Staeben, Schiff wird angestrahlt).
+
+=====================================================================
+663 -- NATIVLICHT BESTAETIGT: ECHTES ENGINE-LICHT AN DEN STAEBEN
+=====================================================================
+Stefans Screenshot nach 662c: Spiel startet ohne Dialog, Umgebung
+UND Bunker werden vom Stablicht satt rot angestrahlt -- das
+nod_fx_light im OSD ist ein voll funktionsfaehiges dynamisches
+Engine-Licht. Das NATIVE Lichtkapitel traegt. (Der Screenshot
+zeigt nebenbei den 661er-Terrainmix: sandige Becken, dunklere
+Haenge -- formales Terrain-Urteil steht noch aus.)
+
+REST-BEFUND: Spielerschiff und Ego-Waffe zeigen KEINE rote
+Beleuchtung. Kandidaten (Analyse bei Bedarf): (a) 4-Lichter-
+Auswahl je Objekt -- Eigenlichter/Projektile verdraengen das
+Stablicht; (b) Ego-/Cockpit-Modelle laufen in einem eigenen Pass
+mit fester Beleuchtung; (c) Reichweite. Kosmetik, kein Blocker --
+als Forschungsnotiz eingereiht.
+
+KONSOLIDIERUNG: Die 11 Stab-Zeilen sind aus mod_docu\lichter\
+inst_asylum.txt ENTFERNT (sonst Doppel-Beleuchtung: nativ +
+Wrapper). Die Datei bleibt als Traeger fuer ZUSATZ-Lichter aus dem
+Editor-Panel; AQUANOX_LICHTER=1 bleibt deshalb im Demo-Skript.
+Arbeitsteilung ab jetzt: NATIV = Objekt-/Levellichter (echtes
+Licht, trifft auch Schiffe), WRAPPER = frei platzierbare Zusatz-
+lichter + alles mit Puls/Blinken, bis das native Pulsieren steht
+(657.6b: Skript-Weg via dostring; Light_SetMode-Handler 0x4be0c0
+vorher disassemblieren -- evtl. eingebauter Blinkmodus).
+
+=====================================================================
+663b -- LICHT-BLINKEN NATIV GEKLAERT: KEIN EINGEBAUTER MODUS (die
+        Licht-Message-API ist 5/6 tot), ABER ZWEI FERTIGE OSD-BAU-
+        STEINE: NOD_Halo-Intervalle (Sprite) + NOD_FX_Spawn-Takt
+        (echtes Licht). OSD-ONLY-BAUPLAN, KEIN SKRIPT NOETIG.
+        (Exe-Analyse Sitzung 2026-08-13; 527-Fallen vorab gelesen)
+=====================================================================
+
+NAECHSTER SCHRITT (noch NICHTS zu testen -- dies ist die Forschung;
+die Umsetzung folgt als eigener Patch nach dem Bauplan in Punkt 5):
+patch_nativlicht.py um den Spawner-Block erweitern, Rundlaufprobe
+wie 658b.5, dann AquaNox_NativLicht.cmd.
+
+1) LIGHT_SETMODE IST EIN STUB -- ES GIBT KEINEN BLINKMODUS.
+   Der Message-Handler von NOD_FX_Light ist vtbl 0x5f6efc Slot 11
+   (+0x2c) = 0x4a7850: `add eax,-12001; cmp eax,4`, Sprungtabelle
+   0x4a79e8 (Faelle 12001..12005). Am Disassemblat gemessen:
+     12001 Light_SetCone : IMPLEMENTIERT. Entpackt (0x4bdc40)
+           vec3 Position, vec3 Richtung, 2 float Winkel (Grad ->
+           rad ueber *[0x5f409c]), schreibt in den Body-Block
+           +0x58ff und stellt das COD_Light (this+0x300 -> +0xcc)
+           per 0x499b10 neu an.
+     12002 Light_SetR1  : Float entpackt (0x4ba6e0) -> VERWORFEN.
+     12003 Light_SetR2  : dito VERWORFEN.
+     12004 Light_SetMode: String entpackt (0x4be190 -> 0x4ce030,
+           32-Byte-Puffer), KEIN einziger Vergleich, Puffer wird
+           zerstoert (0x43e570) -> VERWORFEN.
+     12005 Light_SetColor: zwei vec3 entpackt (0x4c2c00) ->
+           VERWORFEN.
+     12000 Light_Switch : faellt in den default -> NOD_Body-
+           Handler 0x4675f0, der nur IDs 1000..1045 kennt
+           (`add eax,-1000; cmp eax,0x2d`) -> tut NICHTS.
+   Legacy-NOD_Light-Handler 0x499950 (Basis 12000, Tabelle
+   0x499af0): 12000 entpackt das int8 (0x4bec90) und verwirft es;
+   12002-12005 gleiche Stubs; nur 12001 implementiert (Ziel ist
+   dort das EINGEBETTETE COD_Light bei this+0x320).
+   MODE-STRINGS: blink/puls/flicker/strobe/flacker kommen in der
+   ganzen Exe NICHT vor (einziger Treffer "Blink" ist
+   GUI_TextData_Input::Blink(), Text-Cursor). Es gibt nichts, was
+   der SetMode-String je erreichen koennte.
+   527-ABSICHERUNG: Der dritte 12000-Immediate-Treffer 0x53b1fc
+   war der rel32 eines call (e8 e0 2e 00 00 -> 0x53e0e0), KEIN
+   Vergleichswert -- es gibt keinen dritten Dispatcher. Die
+   Parameterzahlen wurden an den Unpack-Helfern gezaehlt (527.2).
+   ALS SATZ (527.9): "Die Licht-Message-API ist zu 5/6 nie fertig
+   gebaut worden" -- konsistent mit 139b (kein einziger Licht-
+   Aufruf in allen 43 Missionsdekompilaten; wozu fertigbauen, was
+   niemand ruft). Damit ist auch der SKRIPT-Weg fuers Schalten
+   tot: ein vorhandenes Licht laesst sich per Message weder
+   schalten noch faerben noch dimmen -- nur der Kegel (SetCone)
+   liesse sich bewegen.
+
+2) NOD_FX_LIGHT-OSD-FELDER: VOLLSTAENDIG, KEIN MODE/INTERVAL.
+   ParseIniFile 0x4a7600 (nachgemessen, bestaetigt 662b.4):
+     [visual]  PFLICHT (fehlt -> DES FILE ERROR -> exit), Inhalt
+               via 0x4ca1b0 -> COD_Light::ParseIniFile 0x437f20:
+                 type  omni|omnifast|cone (case-insensitiv;
+                       fehlend/falsch nur LOGZEILE 0x522300,
+                       nicht fatal). NEBENBEFUND: alle drei
+                       Zweige speichern DENSELBEN Wert 0 nach
+                       visual+0x38 -- der Typ wird validiert,
+                       aber nicht unterschieden.
+                 rgb   vec3 PFLICHT (fatal), range vec2 [r1,r2]
+                       PFLICHT (fatal; intern 1/(r2-r1)).
+                 apertureangle/intensity liest NIEMAND (tot).
+     [life]    optional; Pflichteintrag time (float SEKUNDEN,
+               -> this+0x320); [life] weglassen = -1 = ewig.
+     danach LoadSons (Enkel moeglich). SONST NICHTS -- kein Mode-,
+     Intervall- oder Blinkfeld an keiner der beiden Klassen.
+   LIFE-MECHANIK (der Baustein, der das Blinken moeglich macht):
+     EnterSimulation = vtbl Slot 9 (0x4a77a0): setzt Flag 2 und
+     this+0x324 = Spielzeit [0x66d0e0] (Sekunden, 20-Hz-Sim,
+     dt fest 0,05 s -- Abschnitt zu 0x66d0e0).
+     HeartBeat = Slot 8 (0x4a76f0): meldet das Licht jedes Frame
+     an (0x4caec0) und entfernt den Knoten SELBST (0x442220),
+     sobald life > -0.1 (double 0x5f6fb0) UND start+life < jetzt.
+     Ein nod_fx_light mit [life] time=T ist also ein Licht, das
+     T Sekunden nach dem Anhaengen von allein wieder ausgeht.
+
+3) NOD_HALO BLINKT NATIV -- FELDER EXAKT VERMESSEN.
+   Klasse registriert 0x499b50 ("NOD_Halo", Basis NOD_Body,
+   Fabrik 0x499ba0, 0x348 B). ParseIniFile 0x49a120 liest ALLES
+   aus der [visual]-Sektion des Halo-Kindes:
+     texture (String, Pflicht), scale (vec2, Pflicht),
+     color (vec3, Pflicht), opacity (float, Pflicht; wird mit
+     color zu Bytes +0x32c..0x32f vorverrechnet),
+     bsrad (float, optional),
+     intervalon  (float SEKUNDEN -> +0x338, optional) und
+     intervaloff (float SEKUNDEN -> +0x33c). *** intervalon
+     OHNE intervaloff = DES FILE ERROR = SPIELENDE (0x524340;
+     derselbe Fatalkanal wie 662b) -- immer BEIDE schreiben. ***
+     Ohne intervalon: beide -1.0 = dauernd an.
+   SICHTBARKEITSLOGIK (0x499da0, gemessen): sichtbar solange
+     fmod(jetzt - t0, intervalon + intervaloff) <= intervalon,
+   t0 = EnterSimulation-Zeit (+0x334, gesetzt in 0x49a540);
+   intervalon <= 0.0 -> immer an. Granularitaet = Sim-Tick 0,05 s.
+   BESTAND: 56 Original-OSDs nutzen genau das (Boote, Minen,
+   Turbinen). Muster des_mine01~.osd: nod_halo-Kinder mit
+   glow02, color 1/0/0, "intervalon=0.2, intervaloff=0.2" bzw.
+   0.3 -- die roten Warnblinker der Minen. Unser halo_sig braucht
+   also nur zwei zusaetzliche Float-Eintraege in seinem [visual].
+
+4) DER NATIVE TAKTGEBER FUERS ECHTE LICHT: NOD_FX_SPAWN.
+   (Registriert 0x46ade0: Fabrik 0x46ae30, 0x364 B, Basis
+   NOD_Body, vtbl 0x5f4d00 -- Slot 8 HeartBeat 0x46bc10, Slot 9
+   EnterSimulation 0x46bd90: DIESELBEN Traversal-Slots, ueber die
+   das 663-Stablicht nachweislich laeuft.)
+   STRUKTUR -- am Parser 0x46b0a0 disassembliert UND an
+   fx_exp_dying4~.osd byteweise bestaetigt (Stack-Handles nicht
+   aus dem Dekompilat geraten, sondern an der echten Datei
+   gegengeprueft -- 527.1):
+     [childN]  namecla nod_fx_spawn (+nameson/translation/
+               rotation0-2 wie ueblich, ParseLCS)
+       [osd]   lifetime float s PFLICHT: Spawner entfernt SICH
+               nach Ablauf (lifetime + Startzeit(+0x354, aus
+               EnterSimulation) < jetzt -> 0x442220). KEIN
+               -1-Sonderfall wie beim Licht -- gross waehlen.
+         [rigidbody]  frictiont vec3, frictionr vec3 PFLICHT
+                      (wirken nur auf bewegte Spawns).
+         [spawnK]     EIN Block PRO KIND K (Slotfeld 0x50 B/Kind
+                      an +0x35c, Anzahl = Sohnzahl +0x360):
+           addtype    PFLICHT: this|father|world|fathercopy|
+                      worldcopy (0..4 -> Slot+0x48).
+           [interval] PFLICHT: type='linear' (der EINZIGE --
+                      alles andere fatal), initialdelay float s
+                      OPTIONAL (Default 0), delay float s
+                      PFLICHT, count int PFLICHT.
+           [mode]     PFLICHT: type='static' ODER 'cone'
+                      (+conemin/max, rollmin/max in Grad,
+                      velocitymin/max, velocityrot, lift --
+                      nur fuer geschleuderte Spawns).
+   WICHTIG: Nach dem Parsen haengt der Spawner ALLE Soehne AB
+   (Schleife 0x46ba6b ueber vtbl+0x38) -- die Kinder sind reine
+   VORLAGEN in den Slots und leuchten nicht von selbst.
+   HEARTBEAT (0x46bc10, gemessen): je Slot: erster Beat armiert
+   +0x44 = jetzt + initialdelay; faellig wenn (letzteSpawnzeit +
+   delay) <= jetzt; dann letzte=jetzt, count--; solange count>0
+   wird die Vorlage DUPLIZIERT (vtbl+0xc; NOD_FX_Light::
+   Duplicate 0x4a7a00 kopiert LCS-Block, [life]-Zeit UND das
+   COD_Light per 0x4c85a0) und gespawnt; bei count==0 wird die
+   VORLAGE SELBST gespawnt und der Slot stirbt (+0x4c=0).
+   SPAWN (0x46be00, mode static): addtype this -> AddSon am
+   SPAWNER (Vorlagen-Translation relativ zum Spawner bleibt);
+   father -> AddSon am Vater; world -> Weltwurzel; fathercopy/
+   worldcopy -> Spawner-WELTMATRIX (+0x180/+0x1b4, framedoppelt)
+   in den Knoten kopiert, dann AddSon an Vater/Welt. IMMER folgt
+   EnterSimulation -> die Licht-Lebensuhr startet beim Spawn.
+   DIESER MECHANISMUS TRAEGT JEDE EXPLOSION DES SPIELS (57 OSDs
+   fx_exp_*: worldcopy, count=1, delay=0) -- wir benutzen ihn
+   unveraendert, nur mit grossem count. Dauer-Allokationslast:
+   1 Knoten/Sekunde/Stab -- Explosionen erzeugen ein Vielfaches.
+
+5) BAUPLAN "STAB-LICHTER BLINKEN NATIV" (OSD-only, empfohlen):
+   Je gen_pole~/gen_pole1~/gen_pole2~.osd (lose, 662c-Stand):
+   a) halo_sig: im [visual] zwei Eintraege ergaenzen:
+        intervalon = 0.5, intervaloff = 0.5   (float)
+   b) [child1] sig_licht ERSETZEN durch den Taktgeber (alter
+      Kindstil wie 658b, Position wie gehabt):
+        [child1] namecla='nod_fx_spawn', nameson='sig_takt',
+                 translation=(0,0,208.96 bzw. 140.05/70.01),
+                 rotation0-2=0
+          [osd] lifetime=1e9        (31,7 Jahre; 1e9+t bleibt in
+                                     float32 stabil groesser t)
+            [rigidbody] frictiont=(10,10,10), frictionr=(10,10,10)
+            [spawn0] addtype='this'
+              [interval] type='linear', initialdelay=0,
+                         delay=1.0, count=2000000000
+              [mode] type='static'
+          [child0] namecla='nod_fx_light', nameson='sig_licht',
+                   translation=(0,0,0), rotation0-2=0
+            [visual] type='omnifast', rgb=(1.0,0.12,0.08),
+                     range=[60,260]/[50,190]/[40,120] wie 662c
+            [life] time=0.5
+   TAKTRECHNUNG: erster Spawn bei t0+delay (kongruent t0 modulo
+   delay, weil initialdelay=0) -> Licht AN in den Fenstern
+   [k*delay, k*delay+time]; Halo AN in [m*(on+off), +on] ab
+   seinem t0. Mit intervalon=time und intervaloff=delay-time
+   liegen beide Fenster deckungsgleich (beide Anker Levelstart;
+   Restversatz max. 1 Sim-Tick = 0,05 s). Allgemein:
+     AN-Dauer  = [life] time      = halo intervalon
+     Periode   = [interval] delay = intervalon + intervaloff.
+   Schnelles Warnblinken wie die Minen: 0.2/0.2.
+   GRENZE: Die Engine kann nur HART AN/AUS. Weiches Pulsieren
+   (Sinus-Schwellen) gibt es nativ NICHT -- SetR1/R2/SetColor
+   sind Stubs (Punkt 1), und kein Parser kennt eine Rampe. Wer
+   weich pulsieren will, bleibt beim Wrapper (649b-655).
+   RISIKEN: 4-Lichter-Grenze je Objekt unveraendert (139e);
+   Pflichtfelder beachten -- [osd] ohne lifetime, [interval]
+   ohne delay/count, [spawnK] fehlend bei K Kindern, intervalon
+   ohne intervaloff: alles DES FILE ERROR = Spielende. Darum vor
+   dem Einspielen Rundlaufprobe wie 658b.5. addtype='this' ist
+   im Bestand seltener als worldcopy/father (Spawn-Zweig 0x46bec0
+   ist trivial: AddSon+EnterSimulation, Risiko gering); Rueckfall
+   waere addtype='father' mit translation der Vorlage = Stab-
+   spitze statt 0.
+
+6) SKRIPT-WEG (nur fuers Protokoll, NICHT noetig): Light_Switch
+   erwartet auf dem Draht (node, int8), aber BEIDE Handler
+   verwerfen das Byte -- die Message ist wirkungslos (Punkt 1).
+   Ein dostring-Blinker muesste deshalb je Takt einen Knoten
+   ERZEUGEN und wieder ENTFERNEN (Node_CreateNode('nod_fx_light')
+   + ParseIniFile + AddSon + EnterSimulation, spaeter
+   Node_RemoveNode) -- exakt das, was NOD_FX_Spawn nativ, in C
+   und pro Frame billiger tut. Die Timer-Mechanik dafuer gaebe
+   es: glue.lua Z.193 definiert SetTimer(thread, sekunden) ->
+   Script_SetTimer(thread.__UniqueID, delay); Nutzung z.B.
+   dock.lua Z.92 "L2 = SetTimer(L0.Thread, 3)" (Timer-Handle,
+   feuert nach 3 s in den Thread). Empfehlung bleibt: OSD-Weg.
+
+METHODIK: Alle Kernaussagen am Disassemblat gemessen (527.1:
+Basisregister geprueft, keine Dekompilat-Parameter uebernommen);
+eine 527-Falle konkret gefangen (0x53b1fc, rel32 statt
+Immediate); FX_Spawn- und Halo-Deutung an 57 bzw. 56 Original-
+OSDs gegengeprueft (527.9: ein Mass, das die Deutung haette
+brechen koennen -- die Explosions-OSDs haetten jede falsche
+Feld- oder Pflichtdeutung sofort widerlegt).
+
+---------------------------------------------------------------------
+663c -- HALO-BLINKEN NATIV EINGESPIELT (Stufe 1 von 2)
+---------------------------------------------------------------------
+Konsequenz aus 663b, ZWEISTUFIG wegen der 662er-Lehre (ungetestete
+Engine-Pfade koennen fatal sein -- ein neuer Mechanismus je Test):
+STUFE 1 (jetzt): halo_sig in allen drei gen_pole-OSDs blinkt
+nativ -- intervalon=0.5/intervaloff=0.5 (Sekunden) im [visual];
+IMMER BEIDE Felder (intervalon allein = Fatalkanal!). Das ECHTE
+Licht bleibt vorerst statisch. Muster identisch zu 56 Original-
+OSDs (des_mine01-Warnblinker 0.2/0.2) -- risikoarm. patch_
+nativlicht.py erweitert; Proben umgestellt auf BAUM-Vergleich
+(die Halo-Felder verschieben die Byte-Lage des Altbereichs) --
+alle gruen, Rundlauf byte-identisch; 2071/2099/2074 B eingespielt.
+STUFE 2 (nach Stefans Blink-Bestaetigung): das Licht selbst per
+NOD_FX_SPAWN-Taktgeber blinken lassen (663b.4/5: Vorlagen-Kind
+nod_fx_light mit [life] time=0.5, spawn-delay 1.0, count max --
+Licht-Respawn = AN-Fenster; deckungsgleich zum Halo bis auf
+1 Sim-Tick 0.05 s). Weiches PULSIEREN bleibt Wrapper-Domaene
+(663b: Light_Switch/SetR1/SetR2/SetMode/SetColor sind STUBS --
+nur SetCone ist implementiert; die Skript-Licht-API ist 5/6 tot).
+
+---------------------------------------------------------------------
+663d -- STUFE 1 BESTAETIGT: HALO BLINKT NATIV
+---------------------------------------------------------------------
+Stefan woertlich: alle Punkte bestaetigt -- Halo blinkt im
+Sekundentakt (0.5/0.5), Lichtschein konstant, kein Dialog. Die
+bestaetigten Stufe-1-OSDs sind gesichert (Scratchpad
+nativlicht_stufe1) -- bei Stufe-2-Problemen kommt dieser Stand
+per Kopie zurueck, ohne Voll-Rueckbau. Stufe 2 (Licht-Blinken
+via NOD_FX_SPAWN-Taktgeber nach 663b-Spezifikation) ist als
+Agent angesetzt.
+
+---------------------------------------------------------------------
+663e -- STUFE 2 EINGESPIELT: ECHTES LICHT BLINKT PER NOD_FX_SPAWN
+---------------------------------------------------------------------
+Umsetzung des 663b.5-Bauplans nach 663d-Freigabe. Sitzung 2026-08-13;
+dat\pak\extracted unveraendert (nur gelesen).
+
+ZU TESTEN (AquaNox_NativLicht.cmd, Ziel inst_asylum):
+    Erwartung: KEIN Dialog beim Start; Halo UND roter Lichtschein
+    der Staebe blinken gemeinsam im Sekundentakt (0,5 s an / 0,5 s
+    aus); Umgebung/Boote werden nur in den AN-Fenstern angestrahlt.
+    Ein Phasenversatz Halo vs. Licht bis ~1 s ist MOEGLICH (s.
+    Risiken) -- bitte mitmelden, ob die Fenster deckungsgleich sind.
+    RUECKFALL bei Problemen (Stufe 1, bestaetigt): die drei OSDs aus
+    scratchpad\nativlicht_stufe1\ nach vfx\osd\gen\ zurueckkopieren;
+    Voll-Rueckbau weiterhin mod_docu\tools\lichter_nativ_zurueck.py.
+
+1) STRUKTUR-VERIFIKATION AM BESTAND (Pflicht vor dem Bau): Vorlage
+   vfx\osd\fx_explosion\fx_exp_dying4~.osd per descook gedumpt und
+   ALLE 91 nod_fx_spawn-Knoten / 348 Spawn-Slots in extracted
+   ausgezaehlt (scratchpad\spawn_bestand.py). Befunde, die 663b.4
+   PRAEZISIEREN:
+   - [rigidbody] und [spawnK] sind KINDER des [osd]-Blocks (nicht
+     Geschwister); die Vorlagen-Kinder [childN] folgen als
+     Geschwister NACH [osd].
+   - [mode] type='static' traegt im Bestand IMMER zusaetzlich
+     translation/rotation0-2 als LEERE vt3-Eintraege (vlen=0) --
+     alle 348 Slots, feldgenau uebernommen.
+   - interval-Feldsets im Bestand: (type,delay,count) und
+     (type,initialdelay,delay,count) -- initialdelay optional,
+     wir schreiben es explizit mit 0.
+   - vtypes: lifetime/initialdelay/delay vt1(float), count
+     vt0(int32), addtype/type vt2(String), frictiont/r vt3.
+   - DAUERLAEUFER im Bestand: nur old_marax*/old_crocell~ --
+     lifetime=999, delay=6/24, count=99 (Ambient-Blubberer). Der
+     Bestand kennt also KEIN 1e9; 999 s waeren aber nur 16,6 min,
+     danach entfernte sich der Spawner (kein -1-Sonderfall,
+     663b.4). Daher lifetime=1e9 nach 663b.5 (float32-exakt
+     darstellbar, 1e9+t bleibt stets > t). count=2000000000
+     (int32-sicher; Bestandsmax 99).
+
+2) EINGEBAUT (patch_nativlicht.py, neue Fassung; Stufe-1-Halo
+   UNVERAENDERT intervalon/off 0.5/0.5): je gen_pole~/1~/2~ statt
+   des direkten sig_licht-Kindes jetzt als child1:
+     namecla='nod_fx_spawn', nameson='sig_takt', translation =
+     Halo-Position byte-genau (0/0/208.96 bzw. 140.05/70.01),
+     rotation0-2 = 0
+       [osd] lifetime=1e9
+         [rigidbody] frictiont=(10,10,10), frictionr=(10,10,10)
+         [spawn0] addtype='this'
+           [interval] type='linear', initialdelay=0, delay=1.0,
+                      count=2000000000
+           [mode] type='static', translation/rotation0-2 leer (vt3)
+       [child0] namecla='nod_fx_light', nameson='sig_licht',
+                translation=(0,0,0), rotation0-2=0  (ALTER Blockstil
+                wie 658b -- in-game bewiesen 663)
+         [visual] type='omnifast', rgb=(1,0.12,0.08),
+                  range=[60,260]/[50,190]/[40,120],
+                  apertureangle=180, intensity=1 (beide ignoriert)
+         [life] time=0.5
+   Takt: Respawn im 1-s-Takt, Licht lebt 0,5 s -> AN-Fenster
+   [k*1.0, k*1.0+0.5] == Halo-Fenster (663b.5-Taktrechnung).
+
+3) PROBEN (alle drei OSDs GRUEN, dann eingespielt nach
+   vfx\osd\gen\, 2728/2756/2731 B; Buchfuehrung lichter_nativ_
+   angelegt.txt auf Stufe 2 vermerkt):
+   a) Original-Rundlauf byte-identisch (Vorbedingung).
+   b) BAUM-Probe: neuer Baum ohne die 2 Halo-Intervalle und ohne
+      die 40 Spawn-Knoten == Altbaum EXAKT (Namen, vtypes, Werte).
+   c) Spawn-Teilbaum VOLLSTAENDIG gegen frisch gebauten Soll-Baum
+      verglichen (40 Knoten, aus der geschriebenen Datei geparst);
+      vtypes zusaetzlich gegen die fx_exp_dying4-Vorlage gemessen.
+   d) osd_tool-Ruecklesen: alle neuen Eintraege mit Sollwerten
+      (delay 1.0, count 2000000000, time 0.5, addtype this, ...).
+   e) Rundlauf der gepatchten Dateien byte-identisch.
+
+4) RISIKEN / OFFEN:
+   - DER eine neue Mechanismus dieses Tests: nod_fx_spawn an einem
+     STATISCHEN nod_generic-Traeger (Bestand: nur Projektile,
+     Explosionen, old_*-Ambients -- alles bewegte/kurzlebige
+     Traeger). addtype='this' ist im Bestand gar nicht belegt
+     (91 Knoten nutzen father/fathercopy/worldcopy); der Codepfad
+     0x46bec0 ist trivial (AddSon+EnterSimulation, 663b.5), aber
+     ungetestet. Rueckfall: addtype='father' mit translation der
+     VORLAGE = Stabspitze statt (0,0,0).
+   - Phasenversatz: Halo-Anker t0 = EnterSimulation des Halos,
+     erster Licht-Spawn bei t0+delay des SPAWNERS -- beide Anker
+     Levelstart, Restversatz theoretisch <= 1 Sim-Tick (0,05 s);
+     ob der Traeger die Kinder im selben Tick anmeldet, zeigt
+     erst das Spiel (schlimmstenfalls konstanter Versatz < 1 s,
+     Blinken selbst bleibt korrekt).
+   - Performance/Allokation: 1 Knoten pro Sekunde und Stab (Spawn
+     dupliziert die Vorlage, Licht entfernt sich nach 0,5 s
+     selbst); Explosionen erzeugen ein Vielfaches -- unkritisch
+     erwartet, aber Dauerlast erstmals permanent. count=2 Mrd
+     dekrementiert je Spawn; bei count==0 wuerde die VORLAGE
+     selbst gespawnt (663b.4) -- nach 63 Jahren, irrelevant.
+   - lifetime=1e9 liegt WEIT ueber Bestandsmax 999 (Punkt 1);
+     Vergleich lifetime+start<jetzt ist in float32 gutartig.
+   - 4-Lichter-Grenze je Objekt unveraendert (139e): in den AN-
+     Fenstern zaehlt das Stablicht wie bisher mit.
+   Werkzeuge der Sitzung: scratchpad\patch_nativlicht.py (Stufe 2),
+   patch_nativlicht_stufe1.py (gesicherte Stufe-1-Fassung),
+   spawn_bestand.py (Bestandsaufnahme), nativlicht_stufe1\ (OSD-
+   Rueckfallkopien, TABU).
+
+---------------------------------------------------------------------
+663f -- STUFE 2 GESCHEITERT (Licht blinkt nicht); STUFE 1
+        WIEDERHERGESTELLT; HEARTBEAT-THESE
+---------------------------------------------------------------------
+Stefans Befund: Am Mast blinkt (das Halo), das DYNAMISCHE Licht
+auf dem Terrain blinkt NICHT (leuchtet konstant weiter).
+
+KONSISTENTE ERKLAERUNG (These, Diagnose-Agent angesetzt): Der
+statische nod_generic-Traeger bekommt KEINE Simulations-Ticks --
+(a) das Halo blinkt trotzdem, weil NOD_Halo sein Intervall beim
+RENDERN prueft (fmod-Formel 663b.3, kein HeartBeat noetig);
+(b) das Stufe-1-Licht leuchtete, weil die Lichtregistrierung
+passiv ist; (c) am Spawner ist alles Zeitgesteuerte tot: der
+Spawn-Takt feuert nie, die [life]-Uhr laeuft nie ab, und das
+offenbar NICHT abgehaengte Vorlagen-Kind leuchtet dauerhaft --
+exakt das beobachtete Bild (konstantes Licht).
+
+MASSNAHME: Stufe-1-OSDs zurueckkopiert (2071/2099/2074 B) -- der
+bestaetigte Stand (konstantes Licht + blinkendes Halo), KEIN
+neuer Test noetig. Stufe-2-Artefakte bleiben im Scratchpad.
+
+STUFE-3-KANDIDAT (wird erforscht): Der Skript-Weg mit
+Node_EnterSimulation -- nicht fuer Light_-Kommandos (Stubs!),
+sondern fuer die SPAWNER-Konstruktion: dostring-Anhang erzeugt je
+Stab-Spitze einen FREISTEHENDEN nod_fx_spawn (Node_CreateNode +
+Body_SetPosition auf die bekannten 11 Spitzen-Koordinaten aus 652
++ ParseIniFile auf ein Mini-OSD + Node_EnterSimulation) --
+EnterSimulation sollte den Knoten in die Simulationsliste
+einhaengen und den Takt starten. Zu klaeren vorher: (1) Wo haengt
+NOD_FX_Spawn seine Vorlagen-Kinder ab (ParseIniFile vs
+EnterSimulation)? (2) Wer verteilt HeartBeats (Simulationsliste),
+und kommen LoadSons-Kinder eines Statics je hinein? (3) Bestaetigt
+das die Konstant-Licht-Beobachtung?
+
+
+---------------------------------------------------------------------
+663g -- HEARTBEAT-VERTEILUNG GEMESSEN: 663f-THESE WIDERLEGT.
+        STATICS TICKEN. DER FEHLER IST addtype='this' -- DER
+        SPAWNER LEITET KEINE TICKS AN SEINE SOEHNE WEITER.
+        FIX = EIN WORT: addtype='worldcopy'. KEIN SKRIPT NOETIG.
+        (Exe-Analyse Sitzung 2026-08-13; 527-Fallen vorab gelesen;
+        alles am Disassemblat, nichts aus dem Dekompilat)
+=====================================================================
+
+NAECHSTER SCHRITT (noch NICHTS zu testen -- dies ist die Forschung;
+die Umsetzung folgt als eigener Patch): patch_nativlicht.py Stufe 2'
+= exakt der 663e-Stand mit EINEM geaenderten Feld: [spawn0]
+addtype='worldcopy' statt 'this'. Danach Rundlaufprobe wie 663e.3
+und Test wie 663e. Der Test unterscheidet sauber drei Hypothesen:
+blinkt = Diagnose richtig; dauerhaft dunkel = Traversierung doch
+unterbrochen (663f lebt wieder auf); konstant hell = Ablauf-Check
+auch an der Weltwurzel tot (sehr unwahrscheinlich, Explosionen
+belegen taeglich das Gegenteil).
+
+1) HEARTBEAT-VERTEILUNG: KEINE SIMULATIONSLISTE. REINE SZENEGRAPH-
+   TRAVERSIERUNG MIT FLAG-2-TOR AN JEDEM KNOTEN.
+   - Kickoff je Frame: Aqua_State_*::HeartBeat ruft 0x4144c0
+     (SinglePlayer 0x4248c0 bei 0x424a59; weitere Aufrufer
+     0x420cae, 0x421d19, 0x423ff8). 0x4144c0: root = [0x6676c0];
+     wenn != 0 -> jmp [root_vtbl+0x20] -- HeartBeat der WURZEL.
+   - Die Wurzel "/" ist ein nod_game namens "root": erzeugt im
+     Weltaufbau FUN_00413320 (0x413332 Fabrik 0x442090 mit
+     "nod_game"/"root", 0x41333a Setter 0x4414c0 -> [0x6676c0]).
+   - Von dort NUR Rekursion: jede HeartBeat-Implementierung ruft
+     die HeartBeats ihrer SOEHNE (Slotfeld +0x50, Anzahl +0x56,
+     call [vtbl+0x20]). Klassenweise gemessen:
+       NOD_Game::HeartBeat 0x454ff0: tickt Soehne; uebersprungen
+         nur bei Pause/Menue-Kombination (Flag2 UND this+0x254
+         UND [0x661984]+0x28==0 UND +0x520==0 UND this+0x270==0).
+       NOD_Scenario::HeartBeat 0x493e30 (vtbl 0x5f6270, Fabrik
+         0x493d90, 0x58 B): tickt Soehne UNBEDINGT -- kein Tor.
+       NOD_Directory::HeartBeat = Basisimpl. 0x4a9480 (vtbl
+         0x5f7178, Fabrik 0x4a93e0): NUR wenn EIGENES Flag 2
+         (this+0xc & 2) gesetzt ist, sonst return ohne Soehne.
+       NOD_Generic::HeartBeat 0x49d220 (vtbl 0x5f6998): ohne
+         Flag 2 sofort return (0x49d226 je 0x49d35b) -- auch die
+         Soehne bekommen dann NICHTS; mit Flag 2: Maschinen-
+         Container (+0x3c0/+0x434) und Soehne-Loop 0x49d2dd.
+       NOD_FX_Light::HeartBeat 0x4a76f0: Flag-2-Tor, COD-Meldung
+         0x4caec0, [life]-Ablauf -> GC 0x442220, Soehne-Loop.
+       NOD_FX_Spawn::HeartBeat 0x46bc10: Flag-2-Tor, Slots --
+         *** UND KEINE SOHN-SCHLEIFE. *** Im ganzen Rumpf
+         (0x46bc10..0x46bd8b, 109 Anweisungen, einziger ret)
+         existiert KEIN call [vtbl+0x20]. Der Spawner ist die
+         einzige vermessene Knotenklasse, die Ticks NICHT an
+         ihre Soehne weiterreicht. (Querprobe: der globale Scan
+         aller call-[reg+0x20]-Stellen der Exe hat zwischen
+         0x46bc10 und 0x46bd90 keinen Treffer.)
+   - EnterSimulation (Slot 9, +0x24) ist der EINZIGE Flag-2-
+     Setzer: Basis 0x4a94b0 rekursiert erst ueber ALLE Soehne
+     (GetSon 0x441a50, call [vtbl+0x24]) und setzt dann Flag 2;
+     NOD_Generic 0x49d360 dito plus COD-Anmeldung (0x4ca2c0,
+     Abschluss 0x4cc340); NOD_FX_Spawn 0x46bd90 dito plus
+     Startzeit +0x354; NOD_FX_Light 0x4a77a0 (kein Soehne-Loop
+     noetig -- Flag 2, Startzeit +0x324, COD 0x4ca2c0).
+     EnterSimulation haengt NIRGENDS etwas in eine Liste ein --
+     "in der Simulation" heisst: Flag 2 gesetzt UND ueber eine
+     Kette weiterleitender Knoten von [0x6676c0] erreichbar.
+
+2) 663f-KERNTHESE WIDERLEGT: DIE STATISCHEN TRAEGER TICKEN.
+   Das Mass, das die These bricht (527.9): JEDES Originalskript
+   ruft nach Node_ParseIniFile ein Node_EnterSimulation auf jeden
+   statischen Traeger -- inst_asylum.lua allein 124 mal, darunter
+   ALLE 11 gen_stab-Knoten (an1_missionen_lua und an1_mp_skripte
+   identisch, Zeilen 118-128 ff.). Der Skriptbefehl ist im Code
+   verifiziert: Message 5002 -> NOD_Node-Dispatcher 0x4414e0
+   (Basis 5000, Sprungtabelle 0x441888, 14 Faelle) -> Fall
+   0x4417d3: call [vtbl+0x24] direkt am Zielknoten. Da ParseIni-
+   File VOR EnterSimulation laeuft, existieren die LoadSons-
+   Kinder (Halo, Spawner) beim Rekursionslauf bereits und
+   bekommen Flag 2. Kette im Spiel: root(nod_game, tickt) ->
+   Scenario_Static(unbedingt) -> Directory "Object"(Flag 2 per
+   Skript Z.72) -> gen_stab-Traeger(Flag 2 per Skript) ->
+   Spawner(Flag 2 per Rekursion). ALLE Tore offen -- der Spawner
+   TICKTE im Stufe-2-Test und hat jede Sekunde gespawnt.
+   (LoadSons 0x441dc0 gemessen: Sektionen "Child%d", Keys
+   NameCLA/NameOSD/NameNOD/NameSON, Fabrik 0x442090, AddSon via
+   [vtbl+0x34], dann Kind-Parse: ohne NameOSD [vtbl+0x10] =
+   0x468110 = ParseLCS([vtbl+0x5c]) + ParseIniFile([vtbl+0x18]);
+   mit NameOSD [vtbl+0x14] = 0x441cd0. NOD_Generic::ParseIniFile
+   0x49c920 ruft LoadSons bei 0x49cfc2; der Nachlauf 0x49d470
+   ist nur Material-/Sohnkosmetik, KEIN Abhaengen.)
+
+3) VORLAGEN-ABHAENGEN: UNBEDINGT, AM ENDE VON ParseIniFile.
+   NOD_FX_Spawn::ParseIniFile 0x46b0a0 fuellt erst die Slots
+   ([slot+0x4c] = GetSon(k) bei 0x46ba47-0x46ba58), dann folgt
+   die Schleife 0x46ba6b-0x46ba89: solange Sohnzahl (+0x56) > 0:
+   SubSon(GetSon(0)) via [vtbl+0x38] (0x442c10 -> 0x442190:
+   echtes Entfernen -- Arrayshift, Zaehler--, Vater=0). Einziger
+   ret der Funktion bei 0x46ba93, alle 25 Fehlerpfade sind
+   Fatalkanal 0x524340. Die Vorlage WAR im Test also abgehaengt;
+   der 663f-Eindruck "Vorlage nicht abgehaengt" war falsch
+   gedeutet -- was leuchtete, waren die KOPIEN (Punkt 4).
+
+4) DIE WAHRE URSACHE DES KONSTANTEN LICHTS: addtype='this'.
+   Spawn-Zweig 'this' 0x46bec0: this->AddSon(Kopie) + Kopie->
+   EnterSimulation. Die Kopie haengt damit unter dem SPAWNER --
+   und der leitet als einzige Klasse KEINE Ticks weiter (Punkt
+   1). Der [life]-Ablauf-Check sitzt aber im HeartBeat der Kopie
+   (0x4a7746-0x4a7778: life > -0.1 UND start+life < jetzt ->
+   GC 0x442220). Folge: *** jede gespawnte Licht-Kopie brennt
+   EWIG, jede Sekunde kommt eine neue dazu *** (count dekremen-
+   tiert, Knoten akkumulieren -- Dauerleck). Sichtbar wird das
+   als KONSTANTES Licht (die Kopien liegen deckungsgleich an der
+   Spitze; die 4-Lichter-Grenze 139e deckelt die Wirkung), das
+   Halo blinkt daneben korrekt (Renderweg 663b.3). Exakt Stefans
+   Befund. ALS SATZ (527.9): "Ein Kind mit [life] unter addtype
+   'this' kann nie verschwinden, weil sein Ablauf-Check in
+   seinem eigenen HeartBeat sitzt und sein Vater der einzige
+   Knoten im Graphen ist, der keine Ticks weiterreicht." --
+   Konsistenzmass: 0 von 348 Bestandsslots benutzen 'this'
+   (663e.1); jeder [life]-Spawn des Bestands haengt via father/
+   fathercopy/worldcopy unter tickenden Knoten. Das 663e-Risiko
+   "addtype='this' ist im Bestand gar nicht belegt" war der
+   Fingerzeig.
+   NEBENBEFUND (Praezisierung zu 663b.2): Sichtbarkeit eines
+   Lichts haengt NICHT am Frame-HeartBeat -- die Kopien leuchten
+   mit einmaliger EnterSimulation-Anmeldung (0x4ca2c0) dauerhaft;
+   die HeartBeat-Meldung 0x4caec0 aktualisiert Position/Zustand
+   (bewegte Lichter). Der genaue Renderer-Sammelweg wurde nicht
+   zu Ende verfolgt -- fuer die Diagnose nicht noetig.
+
+5) DER FIX (Stufe 2', OSD-only, EIN WORT): [spawn0]
+   addtype='worldcopy' statt 'this'. Zweig 0x46bfda gemessen:
+   kopiert die frameaktuelle WELTMATRIX des Spawners (+0x12c via
+   0x5001f0/0x500130) in den LCS-Block der Kopie (+0xfc, Position
+   +0xf0/f4/f8), dann AddSon an die WELTWURZEL [[0x66323c]+0xd0]
+   + EnterSimulation. Die Weltwurzel tickt nachweislich -- alle
+   57 Explosions-OSDs benutzen exakt diesen Zweig und ihre
+   [life]-Lichter erloeschen in jeder Spielminute. Die Kopie
+   erscheint an der Stabspitze (Spawner sitzt dort, Vorlagen-
+   Translation (0,0,0) wird ueberschrieben -- nichts weiter
+   anzupassen), lebt 0,5 s, laeuft ab, GC raeumt sie weg ->
+   Blinken; Taktrechnung wie 663b.5 unveraendert.
+   Alternative (gleichwertig): addtype='father' (0x46bedd:
+   AddSon am Traeger -- der tickt); dann muesste aber die
+   VORLAGEN-Translation auf die Spitze (663b.5-Rueckfall).
+   worldcopy ist der explosionsbewaehrte Weg -- nehmen.
+
+6) SKRIPT-WEG (Stufe 3) -- VERIFIZIERT, ABER NUR NOCH RESERVE.
+   Alle Bausteine sind im Code belegt (Message-IDs -> Dispatcher
+   0x4414e0): 5005 Node_CreateNode -> Fabrik 0x442090 (Klassen-
+   name case-tolerant: Originale schreiben "nod_generic" UND
+   "NOD_Scenario"); 5004 Node_AddSon -> [vtbl+0x34]; 5001
+   Node_ParseIniFile -> [vtbl+0x1c] = 0x441bb0: haengt "vfx\"
+   vor den Pfad (String 0x60e08c), oeffnet die DES-Datei und
+   reicht das DATEI-Handle an [vtbl+0x18]; 5002
+   Node_EnterSimulation -> [vtbl+0x24]; 1000 Body_SetPosition ->
+   NOD_Body-Handler. Daraus folgt fuer die 663f-Skizze:
+   a) *** Node_AddSon ist PFLICHT und fehlte in der Skizze. ***
+      EnterSimulation setzt nur Flag 2 -- ohne Baumanbindung
+      erreicht die Traversierung den Knoten NIE (Punkt 1).
+      Original-Reihenfolge: CreateNode -> AddSon -> Body_SetCS
+      -> ParseIniFile -> EnterSimulation (74 Missionen).
+   b) Pfadwurzel: Skriptpfad "osd/gen/sig_blink.osd" -> Engine
+      oeffnet vfx\osd\gen\sig_blink~.osd (vfx-Praefix gemessen,
+      Tilde-Aufloesung wie Bestand 481). Mini-OSD-Struktur =
+      Top-Level [osd]{lifetime,[rigidbody],[spawnK]} + [childN]
+      Vorlagen -- identisch zum [childN]-Innenformat, denn
+      0x441bb0 fuettert [vtbl+0x18] mit dem Dateihandle.
+   c) Auch hier gilt Punkt 4: addtype='worldcopy' (oder
+      'father' -- Vater waere dann das AddSon-Ziel, das tickt).
+   RESERVE-BAUPLAN (nur falls Stufe 2' wider Erwarten dunkel
+   bleibt; erst 2 Test-Staebe, nicht alle 11) -- Anhang an
+   inst_asylum als __InitLayout-Wrapper, weil Top-Level-Code
+   VOR dem Engine-Aufruf von __InitLayout laeuft und node7 erst
+   danach existiert:
+       __IL_alt = __InitLayout
+       __InitLayout = function()
+         __IL_alt()
+         n = Node_CreateNode("nod_fx_spawn", "sig_takt_s1")
+         Node_AddSon(node7, n)
+         Body_SetCS(n, MAT_Vector3(3153.847648, 2102.565322,
+                    553.828454), MAT_Vector3(0, 0, 0))
+         Node_ParseIniFile(n, "osd/gen/sig_blink.osd")
+         Node_EnterSimulation(n)
+         n = Node_CreateNode("nod_fx_spawn", "sig_takt_s2")
+         Node_AddSon(node7, n)
+         Body_SetCS(n, MAT_Vector3(422.501765, 1524.08401,
+                    326.042623), MAT_Vector3(0, 0, 0))
+         Node_ParseIniFile(n, "osd/gen/sig_blink.osd")
+         Node_EnterSimulation(n)
+       end
+   (Spitzen = Fusspunkt + 70.01 fuer die pole2-Staebe gen_stab3_2
+   und gen_stab3_4, beide Rotation 0 -- Fusspunkte aus
+   inst_asylum.lua Z.121/131; uebrige 9 Spitzen nach 652.)
+
+7) ANTWORTEN AUF DIE 663f-RESTFRAGEN:
+   (4a) Node_EnterSimulation auf die gen_stab-Instanz per Skript
+        ist UNNOETIG -- das Original tut es laengst (Punkt 2),
+        und ja: die Rekursion erfasst LoadSons-Kinder.
+   (4b) Einen OSD-Weg, Simulation zu erzwingen, gibt es nicht
+        und er wird nicht gebraucht: kein Parser setzt Flag 2;
+        einziger Setzer ist EnterSimulation (Punkt 1).
+
+METHODIK: Alle Kernaussagen am Disassemblat (capstone/disasm.py,
+Funktionsgrenzen aus funktionen.csv -- 527.3); vtable-Slots als
+Rohbytes gelesen, Basisregister an jeder Schluesselstelle geprueft
+(527.1); die 663b-Behauptung "0x4caec0 = 14 HeartBeat-Verteiler-
+Aufrufe" als 527-Falle erkannt und verworfen (die [+0x20]-Calls
+dort gehen an ein ANDERES Objekt [[0x66323c]+0xe4] -- gleicher
+Slotversatz, andere Klasse); zwei Masse angewandt, die die eigene
+These haetten brechen koennen (124 EnterSimulation-Aufrufe im
+Testlevel gegen die Statics-These; 0/348 'this'-Slots im Bestand
+fuer die Kopien-These). WIDERRUFEN wird damit die 663f-Erklaerung
+(a)-(c); BESTAETIGT bleiben 663b.3 (Halo-Renderweg), 663b.4
+(Spawner-Struktur, Abhaengen -- jetzt adressgenau 0x46ba6b-89)
+und der 663e-Befund, dass 'this' der eine ungetestete Mechanismus
+war. Er war es.
+
+---------------------------------------------------------------------
+663h -- STUFE 2 KORRIGIERT EINGESPIELT: addtype worldcopy
+---------------------------------------------------------------------
+Konsequenz aus 663g (These 663f WIDERLEGT -- die Staebe ticken
+laengst, alle 11 Traeger bekommen im Original-Skript
+Node_EnterSimulation; das Vorlagen-Abhaengen sass am Ende von
+ParseIniFile; der Fehler war addtype "this": Kopien haengen am
+Spawner, dessen HeartBeat als einzige vermessene Klasse NICHT an
+Soehne weiterleitet -> [life]-Uhr tickt nie -> jede Sekunde ein
+EWIG-Licht = Konstantschein): patch_nativlicht.py auf addtype
+"worldcopy" umgestellt (Ein-Wort-Fix; Kopie erbt die Spawner-
+WELTmatrix, haengt an der tickenden Weltwurzel, EnterSimulation
+inklusive -- der Zweig aller 57 Explosions-OSDs). Alle Proben
+gruen (Baum wertgleich, 40 Spawn-Knoten, vtypes == Vorlage,
+Rundlauf byte-identisch), eingespielt 2733/2761/2736 B.
+ERWARTUNG: Halo UND Licht blinken im Sekundentakt. RESTPUNKT
+Aufmerksamkeit: 'worldcopy'-Kopien entstehen jede Sekunde je Stab
+(11/s im Level) und STERBEN nach 0.5 s sauber ([life] tickt an
+der Weltwurzel) -- Allokationslast wie eine Dauerexplosion,
+beobachten. 663g praezisiert ausserdem 663b: Licht-Sichtbarkeit
+haengt nicht am Frame-HeartBeat; und die 14 vermeintlichen
+HeartBeat-Verteiler in 0x4caec0 waren eine 527-Falle.
+
+=====================================================================
+664 -- NATIVES BLINKEN BESTAETIGT ("Sieht super aus")
+=====================================================================
+Stefan zu 663h: Rotes Licht blinkt auf Terrain UND Bunker, Halo
+synchron, kein Dialog. Damit ist das NATIVE LICHTKAPITEL komplett:
+statisch (662c) + blinkend (663h) rein aus dem Level-Bestand
+(OSD-Bloecke, lose Dateien); weiches Pulsieren bleibt Wrapper-
+Domaene (663b: Licht-Skript-API 5/6 Stubs).
+
+INTENSITAETS-FRAGE Stefans ("jetzt schwaecher/natuerlicher")
+beantwortet: KEINE Wertaenderung -- der letzte Durchlauf zeigte
+den this-Stapel (jede Sekunde ein zusaetzliches Ewig-Licht, alle
+gleichzeitig aktiv -> Ueberzeichnung); jetzt lebt stets nur EIN
+Licht = wahre Einzelintensitaet. Der Befund BESTAETIGT die 663g-
+Diagnose von der Bildseite.
+
+OFFEN: (1) Stefans Langzeit-Performance-Urteil (worldcopy-
+Allokationslast ~11 Kopien/s im Level); (2) Feinschliff Bunker-
+vs-Terrain-Lichtabstimmung ("noch nicht perfekt abgestimmt" --
+verschiedene Pfade: Terrain-Detailzug vs Statics-Prelit; die
+Engine schaltet bei Licht in Reichweite zudem die VS-Varianten);
+(3) Ausbau-Kandidaten: atl_dock3 (2 rote Halos) + gen_kai2
+(orange) nativ beleuchten; Editor soll native OSD-Lichter
+ANZEIGEN (660-Notiz); Blinktakt/Intensitaet als Gestaltungsregler.
+
+=====================================================================
+665 -- GEBAEUDE-SIGNALLEUCHTEN NATIV: atl_dock3 (2x ROT) +
+       gen_kai2 (ORANGE) mit statischem nod_fx_light
+       (662c-Methode, KEIN Spawner, KEIN Halo-Blinken)
+=====================================================================
+Sitzung 2026-08-13. dat\pak\extracted unveraendert (nur
+gelesen). Umsetzung der 652/664-Ausbau-Kandidaten.
+
+ZU TESTEN (AquaNox_NativLicht.cmd, Level inst_asylum):
+    atl_dock3: ZWEI statische rote Lichter am Antennen-
+    turm (uebereinander, z 209/191); gen_kai2: EIN
+    statisches oranges Licht am Kai-Aufbau (z 93). Die
+    Gebaeude-Halos bleiben UNVERAENDERT statisch (die
+    Originale blinken dort nicht); Staebe blinken weiter
+    wie 663h. Rueckbau:
+    python mod_docu\tools\lichter_nativ_zurueck.py
+
+1) LADEPFAD VERIFIZIERT (662b-Muster): ALLE
+   Node_ParseIniFile-Verweise der Missionsdekompilate
+   nutzen osd/atl/atl_dock3.osd (z.B. 1h1.lua Z.849)
+   bzw. osd/gen/gen_kai2.osd (1h1.lua Z.189); KEIN
+   Skript laedt die Wurzelebene-Fassungen (andere
+   Dateien: 12640/2915 B vs. geladen 13010/3046 B).
+   Tilde-Regel 211: geladen sind
+   vfx\osd\atl\atl_dock3~.osd, vfx\osd\gen\gen_kai2~.osd.
+
+2) BEFUND GELADENE OSDs (scratchpad\
+   analyse_gebaeude_halos.py der Sitzung): Die Halos
+   sind dort ENKEL, nicht Wurzelkinder --
+   atl_dock3: child4 (atl_dock3_antenna.msh) traegt
+     child0/1 = halo_sig_01 (31.63/6.52/209.39) und
+     halo_sig_02 (36.56/7.49/191.37), beide ROT (1,0,0),
+     glow02, scale [8,8];
+   gen_kai2: child0 (gen_kai2_addon.msh) traegt child0 =
+     halo_pri (-0.51/68.62/92.99), ORANGE (1,0.5,0),
+     scale [60,60].
+   BBox-QUERBELEG (652-Lehre) BESTANDEN: halo_sig_01 IN
+   der Antennen-BBox (z 203.5..262.9), halo_sig_02 auf
+   dem Turmteil der Basis (Basis-z_max 210.2, x/y im
+   Antennenfuss), halo_pri IN der Addon-BBox
+   (z 80.9..98.1) -- echte Signalpositionen, KEINE
+   Kopierreste (die sind nur in gen_elfnote, 652).
+   FALLE NOTIERT: descook.dump zeigt 12 Null-Bytes als
+   "" an -- die localcs-Translationen der Zwischenknoten
+   sind NULLVEKTOREN, nicht leer. Alle Vorfahren-localcs
+   per Assert als Null gesichert -> Halo-Translation
+   gilt BYTE-GENAU auch im Wurzelrahmen.
+
+3) UMSETZUNG (scratchpad\patch_nativlicht_gebaeude.py
+   der Sitzung; Vorlage patch_nativlicht_stufe1.py OHNE
+   deren Blink-Teil -- ein Mechanismus je Aenderung):
+   je Halo EIN nod_fx_light-WURZELKIND im ALTEN
+   Blockstil, exakt der 662c-Block (namecla
+   nod_fx_light, nameson sig_licht_N, translation =
+   Halo-Bytes, rotation0-2 = 0, [visual] type omnifast,
+   rgb, range, apertureangle 180/intensity 1.0 wie
+   gehabt -- von der Engine ignoriert, 662b.4):
+     atl_dock3: child5+child6, rgb 1/0.12/0.08,
+                range [60,260]
+     gen_kai2:  child1, rgb 1/0.5/0.08, range [40,120]
+   RANGE-BEGRUENDUNG (konservativ, nach der in-game
+   bewiesenen Stab-Staffel r2 ~ 1.2x Objekthoehe):
+   atl_dock3 Hoehe 229 (Basis) / 263 (Antennenspitze)
+   ~ gen_pole 219.5 -> dessen [60,260]; gen_kai2 Hoehe
+   82 (Basis) / 98 (Addon) ~ gen_pole2 80.6 -> [40,120].
+
+4) PROBEN ALLE GRUEN (Muster 658b.5): Original-Rundlauf
+   byte-identisch; Altbereich identisch bis auf GENAU
+   die 4 next_sibling-Bytes des letzten Original-
+   Wurzelkinds (atl_dock3 @10853, gen_kai2 @1301);
+   Baum wertgleich + 26/13 neue Knoten; osd_tool liest
+   alle neuen Eintraege korrekt; Rundlauf der Patches
+   byte-identisch. Groessen 13010->13708, 3046->3395 B.
+
+5) EINGESPIELT (658b-Schema, SHA256-verifiziert):
+     <Spielordner>\vfx\osd\atl\atl_dock3~.osd (13708 B)
+     <Spielordner>\vfx\osd\gen\gen_kai2~.osd  ( 3395 B)
+   Buchfuehrung lichter_nativ_angelegt.txt ERGAENZT.
+
+6) RESTRISIKEN/NOTIZEN:
+   - 4-Lichter-Grenze je Objekt (139e): atl_dock3
+     traegt jetzt ZWEI Lichter -- Verdraengung erst im
+     Spiel beurteilbar.
+   - gen_kai2_ent~.osd (eigene Datei, Missionen 2h1/
+     2h3/2n1-2n3) auftragsgemaess NICHT angefasst --
+     dort weiter Halo ohne Licht (Originalzustand).
+   - lichter_nativ_zurueck.py loescht die zwei neuen
+     Dateien mit, raeumt aber vfx\osd\atl nicht ab
+     (kennt nur gen/osd) -- kosmetisch.
+   - NEU ggue. 662c ist nur die Enkel-Halo-Ableitung
+     der Position (Nullvektor-Kette per Assert); der
+     Lichtblock selbst ist der in 663 in-game bewiesene.
+
+=====================================================================
+665b -- EDITOR ZEIGT NATIVE OSD-LICHTER (664-OFFEN-PUNKT 3)
+=====================================================================
+Der aqtk-Editor zeigt die nod_fx_light-Bloecke der Objekt-
+OSDs (662c/663h) jetzt als eigene READ-ONLY-Gruppe -- die
+Kontrolle der Mod-Arbeit, die bisher nur die Wrapper-
+Lichtdatei sah. Sicherung toolkit_sicherung_s654 unberuehrt.
+
+WAS GEBAUT WURDE:
+(1) modell/level.py: _osd_lichter() laeuft den OSD-Baum wie
+    _osd_teile() ueber die child*-Bloecke und erkennt BEIDE
+    Bauformen: namecla nod_fx_light DIREKT im Kindblock
+    (gen_kai2, atl_dock3) ODER als Vorlagen-Kind eines
+    nod_fx_spawn (gen_pole* -> blinkend=True; der SPAWNER
+    traegt die Translation, das Licht-Kind (0,0,0)).
+    namecla steht je nach Stil direkt im Kindblock ODER im
+    [class]-Unterblock (Translation dann in [localcs]) --
+    beides abgedeckt. Je INSTANZ: Weltposition = Instanz-
+    lage + GEDREHTE Kind-Translation; Felder rgb, range
+    [r1,r2], blinkend.
+(2) _osd_roh(): lose OSDs im Spielordner GEWINNEN vor dem
+    Bestand -- der kennt nur PAKs und dat/pak/extracted,
+    die 662c-Bloecke liegen aber als lose Dateien. Ohne
+    den Vorrang saehe der Editor die alte Fassung ohne
+    Licht. (Nur fuer die Licht-Aufloesung; _osd_teile
+    liest weiter aus dem Bestand.)
+(3) szene()-JSON: neues Feld nativ_lichter; web/viewer.js
+    baut daraus eine EIGENE Gruppe: PointLight (distance =
+    r2, decay 2) + kleiner DIAMANT (Oktaeder) mit flachem
+    RING -- klar unterscheidbar von den editierbaren
+    Wrapper-Kugeln. KEIN Raycaster sieht die Gruppe an
+    (lichtUnterMaus prueft nur lichterGruppe, objektUnter-
+    Maus nur objektGruppe): nicht anklickbar, nicht
+    verschiebbar. blinkend animiert 0,5 s an / 0,5 s aus
+    (der OSD-Takt: [life] 0.5, delay 1.0). Die Mesh-
+    Einzelansicht blendet die Gruppe aus.
+(4) gui/hauptfenster.py: Zaehlerzeile "N nativ (OSD,
+    read-only)" im Lichter-Block + Protokollmeldung beim
+    Laden; zustand() meldet nativLichter/nativBlinkend/
+    nativSichtbar/nativReadOnly.
+
+FALLE GEFUNDEN UND BEHOBEN (an der 90-Grad-Probe gemessen):
+die Kind-Translation darf in Python NICHT durch den Achs-
+tausch gedreht werden. Der Viewer konjugiert die three.js-
+Euler-Matrix 'ZXY' mit dem Achstausch (T*M*T) -- in
+AquaNox-Achsen ist die Drehung deshalb die ROHE Euler-
+Matrix M = Rz(W0)*Rx(W1)*Ry(W2), W0 um die HOCHACHSE. Ein
+zusaetzlicher Tausch drehte W0 um die aq-y-Achse: die
+Probe kippte den Signalstab zur Seite ((0,0,209) ->
+(-209,0,0)) statt ihn stehen zu lassen. Python gegen den
+ECHTEN three.js-Codepfad (node, lib/three.module.js) an 5
+Faellen inkl. Mischwinkel verifiziert -- identisch.
+
+GEPRUEFT: py_compile level.py/hauptfenster.py/selbsttest.py
+ok; node --check viewer.js ok; python selbsttest.py endet
+mit "ALLES OK" inkl. 5 NEUER Pruefungen (1h1: native
+Lichter > 0 [19 im 90er-Fenster: 14x gen_pole blinkend +
+3x gen_kai2 + 2x atl_dock3 fest], Spawner-Stil als
+blinkend erkannt, Gruppe sichtbar, read-only belegt [kein
+Kind traegt lichtIndex], GUI-Zaehler gefuellt). Die
+Pruefzahlen sind bewusst ">0" statt fest: WAEHREND des
+Baus kamen gen_kai2~/atl_dock3~ als lose OSDs dazu -- der
+Bestand waechst mit der Mod-Arbeit. Gesamtzahlen ohne
+Fenstergrenze: 1h1 25 (20 blinkend), inst_asylum 15 (11).
+
+OFFEN: (1) welt() liefert Lichter nur fuer Objekte im
+90er-Fenster (plus Spawn/Wegpunkte) -- 1h1 zeigt 19 von
+25; (2) PointLight-Intensitaet im Viewer fest 1,5 -- r1
+wird mitgeliefert, aber nicht gedeutet, die OSD-intensity
+noch gar nicht; (3) _osd_teile/_mesh_zu_osd lesen weiter
+ohne Lose-Datei-Vorrang -- aendert die Mod-Arbeit Meshes
+in losen OSDs, hinkt die Mesh-Anzeige nach.
+
+=====================================================================
+665c -- LICHTAUSWAHL JE OBJEKT GEMESSEN: RECEIVER HAELT DIE 4
+       HELLSTEN LICHTER; EGO-WAFFE HAT EINEN FESTLICHT-
+       SONDERPFAD; SPIELERSCHIFF NUTZT DENSELBEN WEG WIE GEGNER
+       (Exe-Analyse Sitzung 2026-08-13; 527-Fallen vorab
+       gelesen; NUR GELESEN, nichts eingespielt)
+=====================================================================
+
+ZU TESTEN (billiger Differentialtest, entscheidet Punkt 4):
+    In inst_asylum ein GEGNERBOOT beobachten, das nahe an einem
+    Signalstab vorbeifliegt (naeher als ~260 = r2 des grossen
+    Stabs). Wird der GEGNER rot angestrahlt?
+    - JA  -> Fahrzeug-Beleuchtung ist gesund; das "dunkle
+      Spielerschiff" aus 663 ist die Ego-Waffe/der sichtbare
+      Bugtraeger (= Gun-Modelle, Sonderpfad, Punkt 3). Dann ist
+      der Befund Engine-Design.
+    - NEIN -> Receiver-Fuellung fuer bewegte Boote gestoert,
+      neue Analyse-Runde noetig (Punkt 4, Deutung ii).
+
+1) DIE 4-LICHTER-AUSWAHL (alles am Disassemblat gemessen):
+   - COH_LightReceiver (Typ 12, SetType-Pruefer 0x4384e0):
+     0x68 B, VIER Slots a 0x10 ab +0x10 (Lichtzeiger je +4),
+     Sortiermetriken +0x50..+0x5c, Zaehler +0x60, Gitter-
+     Handle +0x64. Erzeugt via 0x4ca240 am Visual-Objekt
+     (this+0x300) Feld +0xd0, Flag +0x108. Erzeuger sind die
+     ParseIniFile von 12 Klassen: NOD_Player (0x45efb1; in
+     funktionen.csv irrefuehrend "NOD_Vessel__ParseIniFile"
+     etikettiert), NOD_Vessel (0x485529), NOD_Generic
+     (0x49ce5c), NOD_Trash, NOD_ItemBox, NOD_Wheel, 3x
+     NOD_Turret_Base, NOD_PhysicalCharacter, NOD_Mine, plus
+     eine weitere Vessel-Fassung 0x4875b2. NOD_Gun, NOD_Gun_
+     Part, NOD_Cockpit, NOD_Bullet erzeugen KEINEN.
+   - REGISTRIERUNG (EnterSimulation-Zweig 0x4ca2c0, HeartBeat
+     0x4caec0 zieht nach): Receiver als 8-Ecken-AABB in das
+     Raumgitter [Aqua+0xe0], Kategorie 12 (Manager
+     [Aqua+0x114], vtbl 0x5f3f40, Insert 0x438560); das Licht
+     (COD_Light am Visual +0xcc, Flag +0x104) als WUERFELBOX
+     +-r2, Kategorie 13 (Manager [Aqua+0x110], vtbl 0x5f34c0,
+     Insert 0x4380a0). r2 liegt in COD_Light+0x54 (gesetzt am
+     Ende von COD_Light::ParseIniFile, 0x438090). Beide
+     Kategorien landen im selben Untergitter (Tabelle
+     0x5f3f64: Kat 12 und 13 -> Index 6). Die "COD-Meldung"
+     0x4caec0 aus 663g ist genau dieser Box-Nachzug je Frame
+     (0x4d3c10) -- bewegte Lichter UND bewegte Empfaenger
+     bleiben aktuell.
+   - JE SIM-FRAME (0x4143f0 -> 0x4387b0 auf [Aqua+0xe0]):
+     zuerst werden ALLE Receiver-Zaehler auf 0 gesetzt
+     (0x438540), dann liefert die Paarabfrage 0x4d3eb0 alle
+     Kat12/Kat13-Boxueberlappungen; je Paar laeuft
+     COH_LightReceiver::AddLight 0x4381f0:
+       dist   = |ReceiverPos - LichtPos| (Zentren, 0x436830)
+       f      = 1.0 wenn dist <= r1; 0.0 wenn dist >= r2;
+                dazwischen linear (COD_Light+0x3c/+0x40,
+                vorberechnet aus range [r1,r2])
+       METRIK = |rgb| * f   (Helligkeit AM Objekt)
+     Einfuege-Sortierung absteigend; unter 4 Slots wird
+     angehaengt, bei vollen Slots verdraengt ein helleres
+     Licht das schwaechste (Vergleich gegen +0x5c). ***
+     PRIORITAET = HELLIGKEIT AM OBJEKT, weder Reihenfolge
+     noch reine Distanz; die Liste wird JEDEN Frame neu
+     aufgebaut. ***
+   - PAINT: NOD_Body::Paint 0x467420 liest visual+0xd0 und
+     uebergibt bis zu 4 Lichter + globales Parallellicht
+     (Renderer+0x16970) an 0x40d630; die VS-Konstanten setzt
+     die Funktionsfamilie 0x4f8860/0x4f8990/0x4f90d0/
+     0x4f92c0/0x4f95d0 (Sprungtabelle Lichtzahl 0..4, >4 =
+     "wrong number of light" 0x628da4 -> Fatalkanal 0x524340
+     -- durch die 4er-Kappung im AddLight unerreichbar,
+     reine Absicherung). Die 4-Lichter-Grenze (139e) steckt
+     also doppelt fest: Receiver-Struktur UND Shaderwahl.
+
+2) SPIELERSCHIFF = DERSELBE WEG WIE GEGNER (gemessen):
+   NOD_Player (Fabrik 0x45ccb0, vtbl 0x5f4968): Receiver in
+   ParseIniFile 0x45efb1, Registrierung EnterSim 0x46182d
+   (-> 0x4ca2c0), HeartBeat-Nachzug an 4 Stellen (0x45f84e/
+   0x45ff6f/0x460cd3/0x46165f -> 0x4caec0), Paint = GEERBTES
+   NOD_Body::Paint (vtbl+0x58 = 0x467420 -- identischer
+   Codezeiger wie bei NOD_Vessel, vtbl 0x5f5a0c+0x58).
+   NOD_Vessel identisch: Receiver 0x485529, EnterSim
+   0x4861ea, HeartBeat 0x48608a. KEIN Sonderpfad fuer den
+   Rumpf. WICHTIG: Boote tragen KEIN eigenes COD_Light --
+   den Direktanbau 0x4ca1b0 rufen in der ganzen Exe nur
+   NOD_Bullet::ParseIniFile (0x472f1f) und NOD_FX_Light::
+   ParseIniFile (0x4a765c). Der sichtbare Scheinwerferkegel
+   der Boote ist KEIN Engine-Punktlicht. Damit ist die
+   663er-Kandidatenthese (a) "eigene Scheinwerfer belegen
+   die Slots" TOT.
+
+3) EGO-WAFFE: FESTBELEUCHTETER SONDERPFAD (gemessen):
+   Die sichtbare Waffe sind NOD_Gun/NOD_Gun_Part-Knoten
+   (Zeichnung per CVar g_showgun, Objektzeiger 0x66828c).
+   NOD_Gun::Paint 0x476d80 und NOD_Gun_Part::Paint 0x49b7b0
+   rendern ueber den Renderer-Einstieg 0x40f9b0, und der
+   LEERT die Lichtliste ([+0x190] = Basis) und traegt NUR
+   das globale Parallellicht ein -- der Punktlichtblock der
+   VS bleibt bauartbedingt IMMER leer. Die Gun-Klassen
+   erzeugen auch keinen Receiver (Punkt 1). Projektile
+   (NOD_Bullet::Paint 0x473410 -> 0x40fba0) rendern ebenso
+   nur mit Globallicht; NOD_Cockpit::Paint 0x447f90 ist
+   reine HUD-/Overlay-Zeichnung. *** Die Ego-Waffe kann
+   nativ NIE von Punktlichtern getroffen werden. ***
+
+4) URTEIL ZU STEFANS 663-BEFUND:
+   - EGO-WAFFE dunkel: Fall (b) Sonderpfad -- SICHER.
+   - SPIELERSCHIFF dunkel: im Code existiert KEIN Sonder-
+     pfad. Zwei Deutungen: (i) In der Ego-Sicht wird der
+     Rumpf nicht (sichtbar) gemalt; was auf dem Schirm als
+     "Schiff" erscheint (Bug-/Waffentraeger), SIND die Gun-
+     Modelle = Sonderpfad. (ii) Die Receiver-Fuellung
+     scheitert fuer bewegte Boote -- dann muessten auch
+     GEGNER dunkel bleiben. Genau das trennt der Test oben.
+     (Nicht zu Ende gemessen: der Spezial-Spaetpass des
+     Renderers malt bei gesetztem Flag [Renderer+0x17228]
+     zusaetzlich [Root-nod_game+0x90] ueber vtbl+0x58;
+     Identitaet dieses Knotens offen.)
+   - (a) Verdraengung: unwahrscheinlich -- Auswahl = die 4
+     hellsten, jeden Frame neu; Boote ohne Eigenlicht; nur
+     Muendungs-/Explosionslichter konkurrieren, solange sie
+     leben, und muessten AM SCHIFF heller sein.
+   - (c) Reichweite: NEIN -- die Licht-Gitterbox ist schon
+     +-r2, und die Attenuation nutzt dieselben r1/r2.
+
+5) KLEINSTER EINGRIFF / EMPFEHLUNG (ehrlich):
+   - Waffe nativ beleuchten hiesse: Exe-Patch in ZWEI Paint-
+     Funktionen (0x476d80/0x49b7b0), der statt 0x40f9b0 den
+     beleuchteten Einstieg 0x40d630 mit der Lichtliste des
+     VATER-Receivers (Player-visual+0xd0, jeden Frame
+     gefuellt) fuettert -- Trampolin-Code noetig, mittlerer
+     Aufwand, echtes Absturzrisiko, Nutzen rein kosmetisch.
+     Wrapper-seitig muesste die 1-Licht-VS-Variante der Gun
+     gegen eine 4-Licht-Variante getauscht werden (Shader-
+     wahl haengt an der Lichtzahl) -- hoher Aufwand.
+   - OSD-seitig gibt es NICHTS zu drehen: kein Feld erreicht
+     den Gun-Pfad, range wirkt dort nicht.
+   - EMPFEHLUNG: ALS ENGINE-DESIGN AKZEPTIEREN und
+     dokumentieren. Die Entwickler beleuchten die Waffe
+     absichtlich konstant (immer lesbar im Bild). Nur wenn
+     der Gegner-Test oben DUNKEL ergibt, lohnt eine zweite
+     Runde -- dann waere der Fahrzeug-Receiver-Weg gestoert
+     und ein gemeinsamer Fix denkbar.
+
+METHODIK: Alle Kernaussagen am Disassemblat (disasm.py,
+Funktionsgrenzen aus funktionen.csv -- 527.3); Basisregister
+an den Schluesselstellen geprueft (527.1: in 0x4ca2c0 ist ebx
+das VISUAL-Objekt, nicht der Node; vtbl+0x78 = 0x442c50 ist
+KEIN GetRadius, sondern ein Vaterketten-Laeufer -- eine
+527.1-Falle, die eine falsche "Lichtbox winzig"-These erzeugt
+haette und durch Nachmessen von COD_Light+0x54 = r2 fiel).
+Masse, die die Thesen brechen konnten: identischer Paint-
+Codezeiger 0x467420 bei Player UND Vessel (gegen Sonderpfad-
+These Schiff); nur 2 Aufrufer von 0x4ca1b0 in der ganzen Exe
+(gegen die Scheinwerfer-These); Zaehler-Nullung 0x438540 je
+Frame (gegen "Slots verstopfen dauerhaft"). funktionen.csv-
+Etiketten in diesem Umfeld sind teils falsch (0x45e870 heisst
+dort NOD_Vessel__ParseIniFile, ist aber per vtbl 0x5f4968+0x18
+die NOD_Player-Fassung) -- nur als Etikett benutzt.
+
+=====================================================================
+665d -- WEGPUNKT-RADIUS RUECKSCHREIBEN: DRITTES SUCHMUSTER
+WayPoint_SetRadius (der in 658 notierte Ausbau; Selbsttest OK)
+=====================================================================
+ZU TESTEN (Stefan): Wegpunkt in 1h1 anklicken, im
+Eigenschaftenfeld den Radius aendern (z.B. nav_waypoint_01
+auf 1000 statt 350), "Alle Aenderungen speichern" (Weg A),
+im Spiel pruefen: der Wegpunkt muss deutlich frueher
+umschalten. Drahtkugel muss beim Tippen sofort mitwachsen.
+
+DAS MUSTER, am Bytecode belegt (1h1.sco, main.f1, pc 11121;
+alle drei Wegpunkte identisch gebaut, Radien 350/150/5):
+
+    GETGLOBAL  "WayPoint_SetRadius"
+    GETGLOBAL  "node297"        <- der Knoten
+    PUSHINT    350              <- EIN Zahl-Slot
+    CALL       A=0 B=0
+
+GEAENDERT (py_compile sauber, node --check OK, selbsttest.py
+ALLES OK):
+- schreiber\sco_position.py (369 Z.): stellen_finden() mischt
+  den Radius-Fund dem Eintrag des Knotens ZU (radius_proto/
+  radius_slot/alt_radius) -- ein Wegpunkt ist EIN Objekt mit
+  zwei Aufrufen; _ablegen() verliert den Fund auch bei
+  umgekehrter Codereihenfolge nicht. anwenden() nimmt je
+  Aenderung ein Feld radius (None = nicht anfassen, 0 waere
+  ein gueltiger Wert), patcht ueber _zahl_ablegen (ganze
+  Zahlen als PUSHINT, sonst Pool-ANHANG wie gehabt), meldet
+  eine fehlende SetRadius-Stelle als uebersprungen (die
+  Position wird trotzdem gepatcht) und liest in Probe 3 auch
+  den Radius zurueck. bericht-geaendert traegt neu_radius/
+  alt_radius; Eintraege ohne wirklich gepatchte Slots werden
+  nicht mehr als "geaendert" gemeldet.
+- web\viewer.js (1961 Z.): der ursprung-Schnappschuss in
+  objektSetzen() enthaelt jetzt den radius; aenderungen()
+  liefert radius/alt_radius (radius nur, wenn er sich
+  wirklich unterscheidet, sonst null = Patcher fasst nichts
+  an) und laesst reine Radius-Aenderungen nicht mehr durchs
+  Gleichheitssieb fallen; aenderungenVerwerfen() nimmt den
+  Radius mit zurueck. Die Drahtkugel zog in objektSetzen()
+  schon seit 658 live nach -- Pfad unveraendert.
+- gui\hauptfenster.py (2225 Z.): die Radius-Spinbox wirkt
+  jetzt auch bei VORHANDENEN Wegpunkten (Tooltip sagt es);
+  _aenderungstext() schreibt eine eigene WayPoint_SetRadius-
+  Zeile und unterdrueckt die Body_SetCS-Zeile, wenn sich nur
+  der Radius geaendert hat; Zuruecksetzen stellt den Radius
+  mit her; der Einspielen-Dialog nennt "davon N mit
+  Wegpunkt-Radius".
+- selbsttest.py (338 Z.): Probe 11, bewusst NACH der
+  Lichter-Probe (die prueft geaendert==0): node297 waehlen,
+  Radius 350->500 -- JS-Map-Eintrag mit radius/alt_radius,
+  Aenderungstext enthaelt WayPoint_SetRadius(node297, 500),
+  Speicher-Patch von 1h1.sco (NUR im Speicher, keine Datei)
+  besteht Probe 1-3 inkl. Radius-Ruecklesen, Auswahl und
+  Drahtkugel zeigen 500.
+
+OFFLINE ZUSAETZLICH BELEGT: 1h1 hat 193 Stellen, 3 davon mit
+Radius; ein nicht-ganzzahliger Radius (175.5) geht sauber den
+PUSHNUM-Weg; Radius an einem Objekt ohne SetRadius-Stelle ->
+uebersprungen, Ergebnis BYTE-IDENTISCH zum Original.
+
+HINWEISE: (1) Ein reiner Radius-Patch schreibt die (unver-
+aenderte) Position mit -- kostet je Objekt bis 24 Byte Pool-
+Anhang, ist aber derselbe bewaehrte Weg wie beim Verschieben.
+(2) Traegt eine Stelle einen Lage-"grund", wird auch ihr
+Radius uebersprungen (konservativ, gemeldet). (3) Ob die
+Engine den gepatchten Radius im SPIEL nutzt, entscheidet der
+Spieltest -- der Bytecode ist identisch zu einem Original mit
+anderem Zahlwert, es spricht nichts dagegen. Baut auf dem
+parallelen Nativlicht-Ausbau auf; dessen Proben bleiben
+gruen (19 nativ / 14 blinkend).
+
+=====================================================================
+665e -- STEFANS TESTRUNDE: SCHIFF BLINKT MIT; SCHWEBUNGS-BEFUND
+=====================================================================
+Stefan: (1) Das SPIELERSCHIFF wird vom blinkenden Stablicht
+angestrahlt ("blinkt quasi mit") -- bestaetigt die 665c-Messung:
+das Boot laeuft ueber den normalen Receiver-Weg. Gebaeude-Lichter-
+Urteil steht noch aus (nicht erwaehnt). (2) EGO-WAFFEN-Frage
+beantwortet (665c): NOD_Gun::Paint leert die Lichtliste, nur
+Parallellicht; aenderbar nur per Laufzeit-Codepatch aus der DLL
+oder Wrapper-Volltransformation -- als OPTIONALES Kapitel
+eingestuft, Empfehlung niedrige Prioritaet (Stefan entscheidet).
+(3) PBRDemo: Kies + Sediment mit PBR bestaetigt ("alles normal");
+FELS nicht explizit erwaehnt -- beim Feinschliff nachfassen.
+(4) SCHWEBUNG praezise gemeldet: Halo und Licht laufen auseinander
+und wieder zusammen -- ZWEI UHREN (Halo = Renderuhr intervalon/
+off; Spawner = tick-quantisierte Simuhr). Fix-Agent laeuft:
+EINE Uhr fuer beide -- Halo als zweites kurzlebiges Spawn-Template
+im selben Takt (Explosions-Muster), Original-Sprite-Blinken
+entfaellt; Fallback bei struktureller Huerde: Halo 0.2/0.2
+(Minen-Muster, Schwebung unauffaellig).
+
+=====================================================================
+666 -- SCHWEBUNGS-FIX EINGESPIELT: HALO 0.2/0.2 (FALLBACK NACH
+       VORSTUDIE -- HALOS SIND KEINE SPAWN-TEMPLATES)
+=====================================================================
+Sitzung 2026-08-14. dat\pak\extracted unveraendert (nur gelesen).
+Fix fuer den 665e-Befund (4): Halo (Renderuhr, intervalon/off) und
+Spawner-Licht (tick-quantisierte Simuhr) blinkten mit fast gleicher,
+nicht identischer Periode und liefen als Schwebung auseinander.
+
+ZU TESTEN (AquaNox_NativLicht.cmd, Level inst_asylum):
+    STAEBE: Halo-Sprite blinkt jetzt SCHNELL (0,2 s an / 0,2 s
+    aus -- Minen-Warnblinker-Tempo); der rote LICHTSCHEIN behaelt
+    den traegen Sekundentakt (0,5 s an / 0,5 s aus). Erwartung:
+    KEIN langsames Auseinander-/Zusammenlaufen der beiden mehr --
+    das schnelle Sprite liest sich als eigenes Signal, nicht mehr
+    als verstimmte Kopie des Lichtpulses. GEBAEUDE-Lichter
+    (atl_dock3, gen_kai2): unveraendert STATISCH, wurden nicht
+    angefasst. KEIN Dialog beim Start. Rueckfaelle: Punkt 6.
+
+1) VORSTUDIE AM BESTAND (vorstudie_halo_spawn.py / _2.py, nur
+   gelesen) -- der Wunschweg "Halo als zweites Spawn-Template im
+   selben Takt" ist strukturell NICHT gedeckt:
+   - ALLE 91 nod_fx_spawn in extracted spawnen mit allen 320
+     aktiven Vorlagen-Kindern (+28 deaktivierte xchild5/xspawn5-
+     Paare = 348 Slots, deckt die 663h-Auszaehlung)
+     ausschliesslich nod_particleemitter (304 namecla-Stil,
+     16 class-Block-Stil). KEIN Slot spawnt ein nod_halo -- auch
+     nicht als Enkel: unter den Emitter-Vorlagen haengen nur
+     nod_fx_sound und nod_fx_light (class-Block-Stil, Licht MIT
+     [life]; Beleg fx_exp_dying4 child1/child0), nie ein Halo.
+   - 2909 nod_halo in ganz extracted: KEINES traegt einen
+     [life]-Block (Unterbloecke nur class/localcs/visual). Der
+     Halo-Parser 0x49a120 kennt kein [life] (663b.3) -- eine
+     gespawnte worldcopy-Halo-Kopie koennte NIE ablaufen: jede
+     Sekunde ein Ewig-Sprite an der Weltwurzel, additiv
+     aufhellend = das 663g-Leck in Sprite-Form, diesmal ohne
+     den 4-Lichter-Deckel.
+   - NOD_Halo::Duplicate ist unvermessen (ob die vorverrechneten
+     Farb-Bytes +0x32c und der Texturverweis mitkopiert wuerden,
+     unbekannt). Halo-Spawnen waere ZWEI ungetestete Engine-
+     Pfade in einem Test (Duplicate + Nicht-Ablauf) -- 662-Lehre
+     und Auftragsregel: dann FALLBACK, nicht riskieren.
+   - Kurzlebige Leucht-Sprites loest der Bestand durchgaengig
+     ueber nod_particleemitter (Partikel-lifetime im eigenen
+     Partikelsystem), nicht ueber Halos. Ein Partikel-Umbau
+     waere ein neues Grosskapitel, kein Sync-Fix.
+
+2) ENTSCHEIDUNG (Auftrags-Punkt 2a): Option (i) "Original-Halo
+   entfernen und als Spawn-Template fuehren" nach Punkt 1
+   VERWORFEN; umgesetzt ist der definierte FALLBACK: das
+   Original-halo_sig BLEIBT in allen drei OSDs und blinkt nativ
+   weiter, aber mit intervalon/intervaloff 0.2/0.2 statt 0.5/0.5
+   (des_mine01-Warnblinker-Muster, 56 Bestands-OSDs, 663b.3).
+   Die zwei Uhren existieren physikalisch weiter, die Schwebung
+   verliert aber die Auffaelligkeit: 0,4-s-Sprite gegen 1,0-s-
+   Lichtpuls sind nie "fast gleich", nichts laeuft sichtbar
+   auseinander -- wirkt als Design (schnelles Signal + traeger
+   Puls). Der Licht-Spawner bleibt UNVERAENDERT der in 664
+   bestaetigte 663h-Stand (worldcopy, delay 1.0, count 2 Mrd,
+   [life] 0.5, lifetime 1e9).
+
+3) UMSETZUNG: patch_nativlicht.py -- neue Konstanten HALO_ON/
+   HALO_OFF = 0.2/0.2, Entscheidung und Vorstudien-Belege im
+   Skriptkopf dokumentiert; Proben nachgefuehrt (osd_tool rundet
+   float32 auf 6 Nachkommastellen; 0.2 ist in float32 nicht
+   exakt, der Sollwert-Vergleich nutzt jetzt denselben Massstab).
+
+4) PROBEN ALLE GRUEN (Muster 663e.3): Original-Rundlauf byte-
+   identisch; Baum-Probe Altbaum wertgleich, +2 Halo-Intervalle
+   (0.2/0.2), +40 Spawn-Knoten; Spawn-Teilbaum feldgenau ==
+   Soll, vtypes == fx_exp_dying4-Vorlage; osd_tool-Ruecklesen
+   aller neuen Eintraege; Rundlauf der Patches byte-identisch.
+   ZUSATZPROBE (diffprobe_666.py): neue OSDs gegen den
+   eingespielten 663h-Stand = je Datei EXAKT 8 Diff-Bytes = die
+   zwei Intervall-Floats 0.5->0.2, Rest byte-identisch -- der
+   EINE Mechanismus dieses Tests, nichts anderes angefasst.
+
+5) EINGESPIELT (658b-Schema, SHA256-verifiziert), Groessen
+   unveraendert zum 663h-Stand:
+     vfx\osd\gen\gen_pole~.osd  2733 B
+     vfx\osd\gen\gen_pole1~.osd 2761 B
+     vfx\osd\gen\gen_pole2~.osd 2736 B
+   Buchfuehrung mod_docu\lichter_nativ_angelegt.txt auf 666
+   nachgefuehrt.
+
+6) RUECKFAELLE:
+   - 663h-Stand (0.5/0.5, mit Schwebung): patch_nativlicht.py
+     mit HALO_ON/HALO_OFF = 0.5 laufen lassen und nativlicht\
+     einspielen.
+   - Stufe 1 (nur Halo blinkt, Licht statisch): Kopien aus
+     scratchpad\nativlicht_stufe1\ nach vfx\osd\gen\.
+   - Voll-Rueckbau: python mod_docu\tools\lichter_nativ_zurueck.py
+
+Werkzeuge der Sitzung (Scratchpad): vorstudie_halo_spawn.py,
+vorstudie_halo_spawn2.py, diffprobe_666.py, patch_nativlicht.py
+(666-Fassung); Ausgaben in scratchpad\nativlicht\.
+
+=====================================================================
+666b -- ECHTE SYNCHRONITAET EINGESPIELT: HALO ENTFERNT, GLOW IST
+        JETZT EIN GESPAWNTES PARTIKEL-SPRITE IM LICHT-TAKT
+=====================================================================
+Sitzung 2026-08-14. dat\pak\extracted unveraendert (nur gelesen).
+Stefans Anforderung nach 666: Halo-Glow und Licht muessen ABSOLUT
+synchron blinken -- der 666-Fallback (getrennte Perioden) ist damit
+abgeloest. Loesung nach 666er-Vorstudienidee: EIN Taktgeber, ZWEI
+Vorlagen; das Original-halo_sig ist RAUS.
+
+ZU TESTEN (AquaNox_NativLicht.cmd, Level inst_asylum):
+    STAEBE: Roter Halo-Glow und roter Lichtschein blinken JETZT
+    ABSOLUT SYNCHRON im Sekundentakt (0,5 s an / 0,5 s aus) --
+    beide entstehen aus DEMSELBEN Spawn-Ereignis und sterben
+    zusammen; ein Auseinanderlaufen (Schwebung) ist strukturell
+    unmoeglich. KEIN schnelles 0,2er-Blinken mehr.
+    OPTIK-VORBEHALT: der Glow ist jetzt ein Partikel-Sprite, kein
+    Halo -- kleine Abweichungen in Groesse/Weichheit/Helligkeit
+    gegenueber frueher sind moeglich; Anlauf des Glows bis 0,1 s
+    nach Licht-An (konstant, keine Drift). Feinschliff ueber die
+    Emitter-Felder (size/a0-3/parpersecond, Punkt 4).
+    GEBAEUDE (atl_dock3, gen_kai2): NICHT angefasst, weiter
+    statisch. KEIN Dialog beim Start. Rueckfaelle: Punkt 7.
+
+1) VORSTUDIE AM BESTAND (vorstudie_emitter_glow.py/_2/_3/_4, nur
+   gelesen) -- der Emitter-Weg ist strukturell GEDECKT:
+   - Feldsatz ALLER 320 aktiven Spawn-Vorlagen (alle
+     nod_particleemitter) identisch aufgebaut: [osd] lifetime >
+     [particleemitter] > [emitter] (rejectdistance, coneangle,
+     parvelocity vec2, parrotation vec2, parpersecond) +
+     [particle] (rotvelocity vec2, friction vec3, lift vec3,
+     lifetime, size) > [visual] (trancparencytype, r0-3/g0-3/
+     b0-3/a0-3/s0-3 als (t,wert)-Keys bei t=0/0.3/0.7/1,
+     texture). Textur als Pfadstring 'vfx\tex\fx\glow02' --
+     glow02 im Bestand als Emitter-Textur belegt (bul_sizzler-
+     Vorlagen 4x, alle dp_in*/dp_out*-Warpblitze).
+   - RUHENDES GLUEHEN ist Bestands-Muster: 200 der 320 Vorlagen
+     haben ALLE Geschwindigkeitsfelder 0. Leitvorlagen:
+     dp_in0~.osd child0 "flash" (Warp-Blitz: parvelocity (0,0),
+     parrotation (0,0), coneangle 0, pps 10, glow02, Additive,
+     size 80) und dp_in0 child2 "flashes" (par-lifetime 0.2);
+     Explosions-Nachgluehen fx_exp_dying* child3 "exp_flash"
+     (parvelocity 0, pps 5, Knoten-lifetime 0.2-0.3).
+     trancparencytype-Verteilung: Additive 267/320.
+   - STERBLICHKEIT: [life] traegt KEINE der 320 Vorlagen (0/320)
+     -- die Auftragsannahme "[life] als Sterblichkeits-Beweis"
+     traf NICHT zu. Der Emitter stirbt stattdessen ueber [osd]
+     lifetime, AM DISASSEMBLAT GEMESSEN (527-Fallen gelesen,
+     Basisregister geprueft): Registrierung 0x46ecb0 (Fabrik
+     0x46ed00, 0x440 B, vtbl 0x5f4fd0); HeartBeat Slot 8 =
+     0x46efd0: lifetime(+0x438) > 0.0 (Schwelle 0x5f336c) UND
+     start(+0x434) + lifetime < jetzt (0x66d0e0) -> GC 0x442220
+     = Selbstentfernung (lifetime <= 0 waere ewig -- die 4
+     Bestands-Vorlagen mit 0.0 sind Dauerlaeufer, KEIN Sofort-
+     Tod). EnterSimulation Slot 9 = 0x46f0a0 setzt +0x434 =
+     Spielzeit. ParseIniFile 0x46eec0: [OSD], LifeTime und
+     [ParticleEmitter] sind PFLICHT (je Fatalkanal 0x524340);
+     LifeTime -> +0x438. Partikel haengen am Knoten: der
+     +0x430-Auslaufmodus im HeartBeat (warte bis 0 lebende
+     Partikel, dann GC) beweist es indirekt -- Knotentod beendet
+     den Glow HART, unabhaengig von der Partikel-Lebensdauer.
+   - DUPLICATE Slot 3 = 0x46ee00 GEMESSEN: vollstaendige
+     Tiefkopie (0x440-Alloc, FX-Block 0x5d02a0, +0x430/434/438,
+     LCS-Block 0x35 dwords, Kinder rekursiv via vtbl+0xc +
+     AddSon). Im Bestand exerziert: old_marax/old_crocell, 19
+     Slots mit count=99 (je 98 Duplikate in-game).
+   - addtype der Emitter-Vorlagen im Bestand: fathercopy 260 /
+     father 60, KEIN worldcopy. *** KORREKTUR zu 663b.4: die 57
+     fx_exp-* spawnen mit FATHERCOPY (count=1, delay=0), nicht
+     worldcopy. *** Fuer unser worldcopy aendert das nichts: der
+     Spawn-Zweig 0x46be00 ist klassenunabhaengig und durch das
+     in-game bestaetigte 663h-Licht bewiesen; klassenspezifisch
+     ist nur Duplicate (s.o., gemessen + Bestands-exerziert).
+
+2) UMSETZUNG (patch_nativlicht.py, 666b-Fassung; alte Fassung als
+   patch_nativlicht_666.py gesichert): je gen_pole~/1~/2~ aus dem
+   extracted-ORIGINAL neu gebaut:
+   a) Original-halo_sig-Kind (child0, 15 Knoten, glow02 scale
+      [8,8] color (1,0,0) opacity 1) KOMPLETT ENTFERNT; seine
+      Translation byte-genau in den Spawner uebernommen. Kein
+      intervalon/off mehr im Baum.
+   b) child0 = nod_fx_spawn "sig_takt" (worldcopy, delay 1.0,
+      count 2 Mrd, initialdelay 0, lifetime 1e9 -- alles wie
+      663h) mit jetzt ZWEI Slots [spawn0]/[spawn1] (feldgleich)
+      und ZWEI Vorlagen-Kindern:
+        child0 "sig_licht" nod_fx_light -- FELDGLEICH zum in
+          664 bestaetigten 663h-Stand ([life] 0.5, omnifast,
+          rgb 1/0.12/0.08, range wie gehabt);
+        child1 "sig_glow" nod_particleemitter -- nach dp_in0-
+          flash-Muster: [osd] lifetime 0.5 (= AN-Fenster, stirbt
+          mit dem Licht), pps 10, par-lifetime 0.2, parvelocity/
+          parrotation/rotvelocity (0,0), coneangle 0, lift 0,
+          friction (10,10,10), rejectdistance 1024 (Bestands-
+          maximum; 500 haette den Glow ab 500 m abgeschaltet),
+          size 8 (= Halo scale [8,8]), Additive, r=1/g=0/b=0
+          konstant, a=0.5 konstant (2 ueberlappende Partikel
+          additiv = 1.0 = Halo-opacity; Ueberzeichnung wie 663g
+          vermieden), s=1 konstant, texture vfx\tex\fx\glow02.
+      TAKTRECHNUNG: beide Slots feuern im selben HeartBeat-
+      Durchlauf (ein Taktgeber, eine Faelligkeitsrechnung je
+      Slot mit identischen Parametern). Licht AN [k, k+0.5];
+      Glow AN [k+e, k+0.5] mit konstantem Emissions-Anlauf
+      e <= 0.1 s (pps 10; Emissionsphase der Engine unvermessen,
+      der Warp-Blitz beweist aber sichtbare Sofort-Emission bei
+      pps 10 und Knoten-lifetime 0.2). KEINE zweite Uhr mehr.
+   c) Wurzel bleibt lueckenlos: halo_sig war das EINZIGE
+      Wurzelkind (per Assert gesichert), der Taktgeber ist das
+      neue child0.
+
+3) PROBEN ALLE GRUEN (Muster 663e.3, nachgefuehrt):
+   Original-Rundlauf byte-identisch; Baum-Probe: Kern (sed/
+   class/visual/collision/emitter/avoidance/shield) wertgleich,
+   -15 Halo-Knoten, +98 Takt-Knoten, kein halo_sig/intervalon/
+   opacity/scale/color/bsrad mehr im Baum; Takt-Teilbaum
+   feldgenau == Soll, vtypes gemessen gegen BEIDE Bestands-
+   Vorlagen (Spawner-Teil: fx_exp_dying4; Glow-Teil: dp_in0-
+   flash, inkl. Feld-REIHENFOLGE aller Emitter-Bloecke);
+   osd_tool-Ruecklesen (nameson sig_takt/sig_licht/sig_glow,
+   2x worldcopy/delay/count, lifetime-Reihe 1e9/0.5/0.2, texture
+   glow02, keine Halo-Felder); Rundlauf der Patches byte-
+   identisch. DIFF-PROBE gegen den eingespielten 666er-Stand:
+   Kern wertgleich, Licht-Vorlage und spawn0-Slot FELDGLEICH --
+   die Aenderungen sind exakt: -halo_sig(0.2/0.2-Stand),
+   +spawn1, +sig_glow. Ein Mechanismus, nur Staebe.
+
+4) EINGESPIELT (658b-Schema, SHA256-verifiziert):
+     vfx\osd\gen\gen_pole~.osd  1677 -> 3641 B
+     vfx\osd\gen\gen_pole1~.osd 1705 -> 3669 B
+     vfx\osd\gen\gen_pole2~.osd 1680 -> 3644 B
+   Buchfuehrung mod_docu\lichter_nativ_angelegt.txt auf 666b
+   nachgefuehrt. Feinschliff-Regler (falls Optik abweicht):
+   Groesse = [particle] size + s0-3; Helligkeit = a0-3 (Summe
+   sichtbarer Partikel x a vergleicht sich mit Halo-opacity 1);
+   Anlauf = parpersecond; Sichtweite des Glows = rejectdistance.
+
+5) RESTRISIKEN:
+   - Emissionsphase (wann im [0, 1/pps]-Fenster das erste
+     Partikel kommt) ist unvermessen -- abgesichert durch pps 10
+     (Anlauf max 0.1 s) und den in-game allgegenwaertigen
+     Warp-Blitz mit identischem Muster.
+   - Helligkeit: im Anlauf (erste ~0.1-0.2 s je Phase) lebt nur
+     1 Partikel (0.5 statt 1.0 Alpha-Summe) -- kurzes Aufglimmen
+     statt harter Kante moeglich; Feinschliff s. Punkt 4.
+   - Allokationslast: je Stab jetzt 2 worldcopy-Kopien/s (Licht
+     + Emitter, beide sterben nach 0.5 s; Emitter-Tod am
+     Disassemblat gemessen, s. Punkt 1) -- weiter im Rahmen der
+     Dauerexplosions-Groessenordnung, Langzeitbeobachtung wie
+     664 offen.
+   - 4-Lichter-Grenze (139e) unveraendert: weiterhin genau EIN
+     Licht je Stab.
+
+6) NEBENBEFUNDE fuer kuenftige Arbeiten:
+   - nod_particleemitter [osd] lifetime <= 0 = EWIGER Emitter
+     (Schwelle 0.0f @0x5f336c) -- der native Weg zu
+     Dauer-Partikelquellen ohne Spawner.
+   - Message-API: NOD_ParticleEmitter_SetLifeTime & Co.
+     existieren als Prototypen (0x4bb200 ff.) -- Nutzbarkeit
+     unvermessen (139b: nur SetCone wird je gerufen).
+   - 663b.4-Detail korrigiert: Explosions-OSDs spawnen
+     fathercopy, nicht worldcopy (Punkt 1).
+
+7) RUECKFAELLE:
+   - 666-Stand (Halo nativ 0.2/0.2 + Licht-Spawner, Stefans
+     letzter bestaetigter Optik-Stand): Kopien aus
+     scratchpad\nativlicht_666\ nach vfx\osd\gen\ (Hashes beim
+     Anlegen gegen den Spielordner verifiziert); Skriptfassung
+     dazu: scratchpad\patch_nativlicht_666.py.
+   - Stufe 1 (nur Halo blinkt, Licht statisch): Kopien aus
+     scratchpad\nativlicht_stufe1\ nach vfx\osd\gen\.
+   - Voll-Rueckbau: python mod_docu\tools\lichter_nativ_zurueck.py
+
+Werkzeuge der Sitzung (Scratchpad): vorstudie_emitter_glow.py/
+_glow2.py/_glow3.py/_glow4.py (Bestand), vorstudie_emitter_exe.py/
+_exe2/_exe3/_exe4.py (Disassemblat), patch_nativlicht.py (666b-
+Fassung); Ausgaben in scratchpad\nativlicht\, Fallback in
+scratchpad\nativlicht_666\.

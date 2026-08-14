@@ -1,4 +1,5 @@
 """Ein Level: Terrain, Objekte, Stimmung -- fertig fuer die Anzeige."""
+import math
 import re
 
 from ..parser import Unsicher
@@ -22,6 +23,36 @@ STIMMUNGEN = {
     "bedrohlich": {"nebel": "#2a1015", "ambient": "#5a2a30",
                    "sonne": "#ff8080", "sicht": 380},
 }
+
+
+def _kind_gedreht(drehung, v):
+    """Eine Kind-Translation mit der Instanzdrehung drehen.
+
+    *** DIESELBE Deutung wie im Viewer (drehungAusAquanox): ***
+        M = Rz(W0) * Rx(W1) * Ry(W2)     Winkel in Grad
+    -- an 161 Rohrpaaren gemessen (siehe web/viewer.js). Der Viewer
+    baut die three.js-Euler-Matrix 'ZXY' (x=W1, y=W2, z=W0) und
+    konjugiert sie mit dem Achstausch (T*M*T). *** Genau deshalb
+    gilt die ROHE Euler-Matrix direkt in AquaNox-Achsen: *** in
+    aq-Koordinaten ist R_aq = T*(T*M*T)*T = M, also Rz um die
+    HOCHACHSE. Wer hier noch einmal die Achsen tauscht, dreht W0
+    um die aq-y-Achse -- eine 90-Grad-Probe kippte den Signalstab
+    zur Seite statt ihn stehen zu lassen (am 13.08. gemessen).
+    """
+    d = list(drehung or (0.0, 0.0, 0.0))
+    while len(d) < 3:
+        d.append(0.0)
+    w0, w1, w2 = (math.radians(float(d[i] or 0.0)) for i in range(3))
+    cx, sx = math.cos(w1), math.sin(w1)
+    cy, sy = math.cos(w2), math.sin(w2)
+    cz, sz = math.cos(w0), math.sin(w0)
+    tx, ty, tz = float(v[0]), float(v[1]), float(v[2])
+    rx = ((cy * cz - sy * sz * sx) * tx + (-cx * sz) * ty
+          + (sy * cz + cy * sz * sx) * tz)
+    ry = ((cy * sz + sy * cz * sx) * tx + (cx * cz) * ty
+          + (sy * sz - cy * cz * sx) * tz)
+    rz = (-cx * sy) * tx + sx * ty + (cx * cy) * tz
+    return [rx, ry, rz]
 
 
 class Level:
@@ -232,7 +263,8 @@ class Level:
         return [o.as_dict() for o in self.skript.objekte[:hoechstens]]
 
     # ------------------------------------------------------------------
-    def welt(self, projekt, hoechstens=90, mit_meshes=True):
+    def welt(self, projekt, hoechstens=90, mit_meshes=True,
+             wichtig_namen=()):
         """Die Objekte des Levels mit Lage und Modell.
 
         *** Die Kette, an allen 88 Skripten belegt: ***
@@ -255,7 +287,22 @@ class Level:
         aus = []
         meshes = {}          # Meshpfad -> Geometrie (einmal je Datei)
         fehlend = []
-        for o in self.szene_objekte[:hoechstens]:
+        nativ = []           # nod_fx_light aus den OSDs, je INSTANZ
+        # *** SPAWN UND WEGPUNKTE IMMER MITNEHMEN. *** Das Fenster
+        # der ersten `hoechstens` Knoten liesse sie sonst fallen:
+        # in 1h1 steht player1 an Stelle 224, die drei nav_waypoints
+        # ab 296 (gemessen) -- alle hinter dem 90er-Fenster, obwohl
+        # gerade sie editierbar sein sollen.
+        # wichtig_namen: Endpunkte der Wegpunkt-Kanten, die KEINE
+        # nod_waypoint-Knoten sind -- dogfight baut seine Renn-
+        # Wegpunkte als NOD_Position, 3h4 zielt auf ein Schiff.
+        # Ohne diesen Zusatz laegen die Linien dort ins Leere.
+        wichtig = ("spawn", "wegpunkt")
+        wichtig_namen = set(wichtig_namen)
+        kandidaten = list(self.szene_objekte[:hoechstens]) + [
+            o for o in self.szene_objekte[hoechstens:]
+            if o.art in wichtig or o.name in wichtig_namen]
+        for o in kandidaten:
             if not o.vollstaendig:
                 continue
             eintrag = {"name": o.name, "art": o.art,
@@ -265,6 +312,9 @@ class Level:
                        "var": o.var, "proto": o.proto,
                        "position": list(o.position),
                        "drehung": list(o.drehung or (0, 0, 0)),
+                       # Nur Wegpunkte haben einen (WayPoint_SetRadius);
+                       # bei allen anderen bleibt er None.
+                       "radius": o.radius,
                        "osd": o.osd or "", "mesh": None}
             if mit_meshes and o.osd:
                 # Alle Teile des Objekts, nicht nur das erste Mesh --
@@ -289,6 +339,22 @@ class Level:
                         eintrag["teile"] = brauchbar[1:]
                 elif o.osd:
                     fehlend.append(o.osd)
+            # *** NATIVE LICHTER DIESER INSTANZ. *** Jede Instanz
+            # derselben OSD bekommt ihr eigenes Licht an ihrer
+            # Weltposition: Instanzlage + GEDREHTE Kind-Translation
+            # (beim Spawner-Stil traegt der Spawner die Translation,
+            # das Licht-Kind steht auf (0,0,0)).
+            if o.osd:
+                for li in self._osd_lichter(projekt, o.osd):
+                    r = _kind_gedreht(o.drehung, li["versatz"])
+                    nativ.append({
+                        "x": o.position[0] + r[0],
+                        "y": o.position[1] + r[1],
+                        "z": o.position[2] + r[2],
+                        "rgb": li["rgb"], "range": li["range"],
+                        "blinkend": li["blinkend"],
+                        "objekt": o.name, "osd": o.osd,
+                    })
             aus.append(eintrag)
 
         # Die Texturen aller geladenen Meshes -- jede nur EINMAL,
@@ -324,6 +390,11 @@ class Level:
 
         hinweise = [f"{len(aus)} Objekte, {len(meshes)} verschiedene "
                     f"Modelle geladen."]
+        if nativ:
+            blink = sum(1 for l in nativ if l["blinkend"])
+            hinweise.append(
+                f"{len(nativ)} native OSD-Lichter (nod_fx_light), "
+                f"davon {blink} blinkend -- read-only")
         if bilder or fehlende_tex:
             hinweise.append(
                 f"Objekttexturen: {len(bilder)} geladen"
@@ -333,6 +404,7 @@ class Level:
                    if fehlende_tex else ""))
 
         return {"objekte": aus, "meshes": meshes, "bilder": bilder,
+                "nativ_lichter": nativ,
                 "fehlende_texturen": sorted(set(fehlende_tex))[:12],
                 "fehlend": sorted(set(fehlend))[:12],
                 "hinweise": hinweise}
@@ -432,6 +504,133 @@ class Level:
         self._osd_speicher[schluessel] = aus
         return aus
 
+    @staticmethod
+    def _osd_roh(projekt, pfad):
+        """Rohdaten einer OSD -- die LOSE Datei im Spielordner gewinnt.
+
+        *** Der Bestand kennt nur PAKs und dat/pak/extracted. ***
+        Die seit 662c eingebauten nod_fx_light-Bloecke liegen aber
+        als lose Dateien im Spielordner (vfx\\osd\\gen\\gen_pole*~.osd)
+        -- genau so laedt sie auch die Engine, mit Vorrang vor den
+        PAKs. Ohne diesen Vorrang saehe der Editor die alte Fassung
+        ohne Licht und meldete ehrlich, aber falsch: kein Licht da.
+        """
+        import os as _os
+        if pfad:
+            voll = _os.path.join(projekt.ordner, *pfad.split("/"))
+            if _os.path.isfile(voll):
+                try:
+                    with open(voll, "rb") as f:     # nur lesen
+                        return f.read()
+                except OSError:
+                    pass
+        return projekt.bestand.lesen(pfad) if pfad else None
+
+    def _osd_lichter(self, projekt, osd_verweis):
+        """Alle nod_fx_light-Bloecke einer OSD, mit Lage im Objekt.
+
+        Zwei Bauformen (662c/663h):
+          - DIREKTES Kind:  [childN] namecla nod_fx_light, eigene
+            translation, [visual] type/rgb/range.
+          - VORLAGEN-Kind eines nod_fx_spawn: der SPAWNER traegt die
+            translation, das Licht-Kind darunter (0,0,0) und [life]
+            -- das Licht wird im Takt gespawnt, also blinkt es
+            (blinkend=True aus dem Spawner-Kontext).
+
+        namecla steht je nach Stil DIREKT im [childN]-Block (so
+        schreiben es die 662c-Bloecke) ODER in einem [class]-
+        Unterblock (klassischer Stil, translation dann in [localcs]
+        -- so haengt das nod_halo in gen_pole).
+
+        Rueckgabe: Liste von {"versatz", "rgb", "range", "blinkend"},
+        LOKAL zum Vaterobjekt, in AquaNox-Achsen.
+        """
+        from ..parser import szene as _sz
+        from ..parser import desbaum as _db
+
+        schluessel = ("lichter", osd_verweis)
+        if schluessel in self._osd_speicher:
+            return self._osd_speicher[schluessel]
+
+        pfad = _sz.osd_pfad(osd_verweis)
+        roh = self._osd_roh(projekt, pfad)
+        aus = []
+        if roh is not None:
+            try:
+                wurzeln, _ = _db.lies(roh, pfad or "")
+            except Exception:
+                wurzeln = []
+
+            def feld(knoten, name):
+                for f in knoten.kinder:
+                    if f.art == "feld" and str(f.name).lower() == name:
+                        return f.wert
+                return None
+
+            def block(knoten, name):
+                for k in knoten.kinder:
+                    if k.art != "feld" and str(k.name).lower() == name:
+                        return k
+                return None
+
+            def vek(wert, n):
+                if isinstance(wert, list) and len(wert) >= n:
+                    try:
+                        return [float(x) for x in wert[:n]]
+                    except (TypeError, ValueError):
+                        return None
+                return None
+
+            def klasse_von(knoten):
+                w = feld(knoten, "namecla")
+                if not w:
+                    b = block(knoten, "class")
+                    if b is not None:
+                        w = feld(b, "namecla")
+                return str(w or "").strip().lower()
+
+            def translation_von(knoten):
+                t = vek(feld(knoten, "translation"), 3)
+                if t is None:
+                    b = block(knoten, "localcs")
+                    if b is not None:
+                        t = vek(feld(b, "translation"), 3)
+                return t or [0.0, 0.0, 0.0]
+
+            def geh(knoten, versatz, spawner, tiefe):
+                if tiefe > 6:
+                    return
+                for k in knoten.kinder:
+                    if k.art == "feld":
+                        continue
+                    if not str(k.name).lower().startswith("child"):
+                        continue
+                    t = translation_von(k)
+                    ort = [versatz[i] + t[i] for i in range(3)]
+                    kl = klasse_von(k)
+                    if kl == "nod_fx_light":
+                        vis = block(k, "visual")
+                        rgb = vek(feld(vis, "rgb"), 3) if vis else None
+                        rw = vek(feld(vis, "range"), 2) if vis else None
+                        aus.append({
+                            "versatz": ort,
+                            "rgb": rgb or [1.0, 1.0, 1.0],
+                            "range": rw or [0.0, 100.0],
+                            "blinkend": bool(spawner),
+                        })
+                    # Weiter absteigen -- beim Spawner haengt das
+                    # Licht als Vorlagen-Kind eine Ebene tiefer.
+                    # Drehungen werden wie in _osd_teile() NICHT
+                    # verkettet (in allen geprueften Faellen 0).
+                    geh(k, ort, spawner or kl == "nod_fx_spawn",
+                        tiefe + 1)
+
+            for w in wurzeln:
+                geh(w, [0.0, 0.0, 0.0], False, 0)
+
+        self._osd_speicher[schluessel] = aus
+        return aus
+
     def _mesh_zu_osd(self, projekt, osd_verweis):
         """OSD-Verweis -> Meshpfad. Ueber [visual] namemesh."""
         from ..parser import szene as _sz
@@ -494,6 +693,65 @@ class Level:
         return {"position": eins["position"], "normale": eins["normale"],
                 "uv": eins["uv"], "gruppen": eins["gruppen"],
                 "indizes": eins["indizes"], "bbox": m.get("bbox")}
+    def _wegpunkt_kanten(self):
+        """Die Wegpunkt-Verkettung, aufgeloest auf die Szenenobjekte.
+
+        Die Kette steht NIRGENDS als Feld -- weder in den Wegpunkt-
+        OSDs noch im Missionsskript. Sie steckt allein im Triggernetz
+        des Dekompilats (parser/wegpunkte.py): Game_SetWayPoint-
+        Aufrufe, verkettet ueber Erreicht-Flags (hart) und die
+        Taskkey-/Ebenen-Folge (weich). Hier werden die Szenennamen
+        aus den BindEasy-Bindungen auf die var-Kennungen der
+        Szenenobjekte abgebildet -- nur damit kann die Ansicht die
+        Linien beim Verschieben nachziehen.
+        """
+        if self.skriptpfad:
+            return {"kanten": [], "hinweise": [
+                "Stationsskript -- die Wegpunkt-Kette gehoert zur "
+                "Mission, nicht zur Station"]}
+        try:
+            from ..parser import wegpunkte as _wp
+            d = _wp.fuer_level(self.name)
+        except Exception as e:
+            return {"kanten": [], "hinweise":
+                    [f"Wegpunkt-Kanten nicht lesbar: {e}"]}
+
+        hinweise = list(d["hinweise"])
+        # Szenenname -> Objekt. Wegpunkte gewinnen bei Namensgleich-
+        # heit (Knotennamen kommen mehrfach vor: 349 CreateNode,
+        # 258 Namen in 1h1); 3h4 zielt auch auf ein SCHIFF
+        # (cra_scout1_1) -- deshalb nicht auf art=wegpunkt filtern.
+        nach_name = {}
+        for o in (self.szene_objekte or []):
+            if not o.vollstaendig:
+                continue
+            alt = nach_name.get(o.name)
+            if alt is None or (o.art == "wegpunkt"
+                               and alt.art != "wegpunkt"):
+                nach_name[o.name] = o
+
+        kanten, fehlend = [], []
+        for k in d["kanten"]:
+            a = nach_name.get(k["von"])
+            b = nach_name.get(k["nach"])
+            if a is None or b is None:
+                fehlend.append(k["von"] if a is None else k["nach"])
+                continue
+            kanten.append({
+                "von": {"var": a.var, "name": a.name},
+                "nach": {"var": b.var, "name": b.name},
+                "art": k["art"],
+                "wiederholt": k["wiederholt"],
+                "beweglich": k["beweglich"],
+                "zeile": k["zeile"],
+            })
+        if fehlend:
+            hinweise.append(
+                f"{len(fehlend)} Wegpunkt-Kante(n) ohne Szenenobjekt "
+                f"({', '.join(sorted(set(fehlend))[:4])}) -- nicht "
+                f"gezeichnet")
+        return {"kanten": kanten, "hinweise": hinweise}
+
     def szene(self, schritt=4, stimmung="neutral", ueberhoehung=1.0,
               projekt=None, mit_meshes=True, hoechstens=90):
         """Das Datenpaket fuer den 3D-Viewer.
@@ -513,11 +771,21 @@ class Level:
         welt = t.welt() if t else {"offset": [0, 0, 0], "scale": [1, 1, 1],
                                    "quelle": "keine"}
 
+        # Die Wegpunkt-Verkettung aus dem Dekompilat -- leere Liste,
+        # wenn die Karte keine kennt; der Grund steht in den
+        # Hinweisen (ehrlich melden statt still nichts zeichnen).
+        # VOR welt(), damit die Endpunkte der Kanten sicher ins
+        # Objektfenster kommen (wichtig_namen).
+        wk = self._wegpunkt_kanten()
+        wk_namen = {k[s]["name"] for k in wk["kanten"]
+                    for s in ("von", "nach")}
+
         # Die Objekte samt Modellen. Ohne Projekt (etwa im Test) nur
         # die Lageangaben ohne Geometrie.
         if projekt is not None:
             welt_daten = self.welt(projekt, hoechstens=hoechstens,
-                                   mit_meshes=mit_meshes)
+                                   mit_meshes=mit_meshes,
+                                   wichtig_namen=wk_namen)
         else:
             welt_daten = {"objekte": self.objekte(), "meshes": {},
                           "hinweise": []}
@@ -563,9 +831,15 @@ class Level:
             "objekte": welt_daten["objekte"],
             "meshes": welt_daten["meshes"],
             "meshbilder": welt_daten.get("bilder") or {},
+            # Die nod_fx_light-Bloecke aus den Objekt-OSDs (662c) --
+            # READ-ONLY, der Viewer zeigt sie als eigene Gruppe.
+            "nativ_lichter": welt_daten.get("nativ_lichter") or [],
+            "wegpunkt_kanten": wk["kanten"],
+            "wegpunkt_hinweise": wk["hinweise"],
             "kartenordner": self.kartenordner,
             "terrainordner": self.terrainordner,
-            "hinweise": self.hinweise + welt_daten.get("hinweise", []),
+            "hinweise": (self.hinweise + welt_daten.get("hinweise", [])
+                         + wk["hinweise"]),
             "offen": [
                 "Das Hoehenfeld liegt bei 0..4096 (welt = index * "
                 "Scale), NICHT bei Offset. An 43 Karten geprueft: alle "

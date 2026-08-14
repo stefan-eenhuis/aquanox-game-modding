@@ -26,6 +26,33 @@ DAS MUSTER, an 1h1 nachgesehen:
     222  CALL       A=3 B=255
     223  CALL       A=0 B=0
 
+DAS ZWEITE MUSTER: Body_SetPosition. Wegpunkte (nod_waypoint,
+1h1.lua:2286-2304) setzen ihre Lage NICHT ueber Body_SetCS, sondern
+
+    GETGLOBAL  "Body_SetPosition"
+    GETGLOBAL  "node297"            <- der Knoten
+    GETGLOBAL  "MAT_Vector3"
+    PUSHNUM/PUSHINT x, y, z         <- drei Zahl-Slots
+    CALL       A=2 B=1
+    CALL       A=0 B=0
+
+Also derselbe Kopf, dieselben drei Positions-Slots -- nur OHNE den
+zweiten Vektor. Eine Drehung gibt es hier nicht; wer eine mitgibt,
+bekommt sie stillschweigend nicht geschrieben (rot_slots fehlen).
+
+DAS DRITTE MUSTER: WayPoint_SetRadius. Der Schaltradius der
+Wegpunkte, direkt hinter dem Body_SetPosition (1h1.sco, main.f1,
+pc 11121 nachgesehen -- alle drei Wegpunkte identisch gebaut):
+
+    GETGLOBAL  "WayPoint_SetRadius"
+    GETGLOBAL  "node297"            <- der Knoten
+    PUSHINT    350                  <- EIN Zahl-Slot
+    CALL       A=0 B=0
+
+Vier Befehle, eine Zahl. Die Fundstelle wird dem Eintrag des
+Knotens ZUGEMISCHT (radius_slot/alt_radius) -- ein Wegpunkt ist
+EIN Objekt, auch wenn er zwei Aufrufe im Skript hat.
+
 *** IMMER ANHAENGEN, NIE UEBERSCHREIBEN. *** In main.f1 von 1h1
 werden 52 von 1.103 Zahlkonstanten von mehreren Stellen benutzt --
 ein Ueberschreiben verschoebe fremde Objekte mit.
@@ -51,18 +78,53 @@ def _lua4dis():
 # Befehle, die eine Zahl auf den Stapel legen.
 _ZAHLBEFEHLE = ("PUSHNUM", "PUSHNEGNUM", "PUSHINT")
 
+# Die beiden Aufrufe, die eine Objektlage als Konstanten tragen.
+# Body_SetCS bringt Position UND Drehung, Body_SetPosition nur die
+# Position (Wegpunkte).
+_LAGE_AUFRUFE = ("Body_SetCS", "Body_SetPosition")
+
+# Das dritte Muster: der Schaltradius der Wegpunkte -- EIN Zahl-Slot,
+# wird dem Eintrag des Knotens zugemischt statt ihn zu ueberschreiben.
+_RADIUS_AUFRUF = "WayPoint_SetRadius"
+
+# Schluessel, die beim Zusammenfuehren zweier Fundstellen desselben
+# Knotens (Lage + Radius) erhalten bleiben muessen.
+_RADIUS_FELDER = ("radius_proto", "radius_slot", "alt_radius",
+                  "radius_grund")
+
+
+def _ablegen(aus, name, eintrag):
+    """Einen Lage-Eintrag ablegen, ohne Radius-Funde zu verlieren.
+
+    Kommt WayPoint_SetRadius im Code VOR der Lage (gibt es in den
+    Originalen nicht, aber verlassen wollen wir uns darauf nicht),
+    steht unter dem Namen schon ein Radius-Teil-Eintrag -- der wird
+    uebernommen statt ueberschrieben.
+    """
+    alt = aus.get(name)
+    if alt:
+        for k in _RADIUS_FELDER:
+            if k in alt and k not in eintrag:
+                eintrag[k] = alt[k]
+    aus[name] = eintrag
+
 
 class PatchFehler(Exception):
     pass
 
 
 def stellen_finden(top, lua4dis=None):
-    """Alle Body_SetCS-Stellen mit ihren Konstantenplaetzen.
+    """Alle Body_SetCS-, Body_SetPosition- UND WayPoint_SetRadius-
+    Stellen mit ihren Konstantenplaetzen.
 
-    Rueckgabe: {variablenname: {...}} mit proto, pc, pos_slots,
-    rot_slots, alt_position, alt_drehung. Stellen, deren Muster
-    nicht passt, kommen mit "grund" statt Slots -- sie werden
-    gemeldet, nicht verschwiegen.
+    Rueckgabe: {variablenname: {...}} mit proto, pc, funktion,
+    pos_slots, rot_slots, alt_position, alt_drehung. Bei
+    Body_SetPosition gibt es keine rot_slots -- der Aufruf kennt
+    keine Drehung. Wegpunkte tragen ZUSAETZLICH radius_proto,
+    radius_slot und alt_radius aus ihrem WayPoint_SetRadius --
+    im SELBEN Eintrag, denn der Knoten ist derselbe. Stellen,
+    deren Muster nicht passt, kommen mit "grund" (bzw.
+    "radius_grund") statt Slots -- gemeldet, nicht verschwiegen.
     """
     l = lua4dis or _lua4dis()
     op, argU, argA = l.op, l.argU, l.argA
@@ -76,16 +138,55 @@ def stellen_finden(top, lua4dis=None):
             if op(befehl) != "GETGLOBAL":
                 continue
             u = argU(befehl)
-            if u >= len(kstr) or kstr[u] != "Body_SetCS":
+            if u >= len(kstr):
                 continue
-            if i + 12 >= len(code):
+            funktion = kstr[u]
+
+            # --- Drittes Muster: WayPoint_SetRadius, 4 Befehle ---
+            # GETGLOBAL fn / GETGLOBAL node / Zahl / CALL. Der Fund
+            # wird dem (meist schon vorhandenen) Lage-Eintrag des
+            # Knotens zugemischt.
+            if funktion == _RADIUS_AUFRUF:
+                if i + 3 >= len(code):
+                    continue
+                b2 = code[i + 1]
+                if op(b2) != "GETGLOBAL":
+                    continue
+                name = kstr[argU(b2)] if argU(b2) < len(kstr) else None
+                if not name:
+                    continue
+                zb = code[i + 2]
+                n = op(zb)
+                if n not in _ZAHLBEFEHLE or op(code[i + 3]) != "CALL":
+                    aus.setdefault(name, {})["radius_grund"] = (
+                        "Radius nicht als einzelne Konstante")
+                    continue
+                if n == "PUSHINT":
+                    wert = float(l.argS(zb))
+                else:
+                    w = knum[argU(zb)] if argU(zb) < len(knum) else 0.0
+                    wert = -w if n == "PUSHNEGNUM" else w
+                ziel = aus.setdefault(name, {})
+                ziel["radius_proto"] = pr
+                ziel["radius_slot"] = i + 2
+                ziel["alt_radius"] = wert
+                ziel.pop("radius_grund", None)
                 continue
 
-            eintrag = {"proto": pr, "weg": weg, "pc": i}
+            if funktion not in _LAGE_AUFRUFE:
+                continue
+            # Body_SetPosition endet frueher (kein zweiter Vektor);
+            # fuer die drei Positions-Slots plus die beiden CALLs
+            # genuegen 8 Befehle, Body_SetCS braucht wie gehabt 13.
+            if i + (12 if funktion == "Body_SetCS" else 7) >= len(code):
+                continue
+
+            eintrag = {"proto": pr, "weg": weg, "pc": i,
+                       "funktion": funktion}
             # Der Knotenname steht unmittelbar dahinter.
             b2 = code[i + 1]
             if op(b2) != "GETGLOBAL":
-                eintrag["grund"] = "kein GETGLOBAL nach Body_SetCS"
+                eintrag["grund"] = f"kein GETGLOBAL nach {funktion}"
                 aus[f"?{weg}:{i}"] = eintrag
                 continue
             name = kstr[argU(b2)] if argU(b2) < len(kstr) else None
@@ -113,15 +214,19 @@ def stellen_finden(top, lua4dis=None):
             ps, pw = zahlen(i + 3)
             if ps is None:
                 eintrag["grund"] = "Position nicht als drei Konstanten"
-                aus[name] = eintrag
+                _ablegen(aus, name, eintrag)
                 continue
             eintrag["pos_slots"], eintrag["alt_position"] = ps, pw
 
-            rs, rw = zahlen(i + 8)
-            if rs is not None:
-                eintrag["rot_slots"], eintrag["alt_drehung"] = rs, rw
-            aus[name] = eintrag
-            break_außen = False
+            # Drehungs-Slots gibt es nur beim CS-Muster. Hinter einem
+            # Body_SetPosition an i+8 zu suchen faende die Zahlen des
+            # NAECHSTEN Befehls (etwa den Radius eines
+            # WayPoint_SetRadius) und patchte Fremdes.
+            if funktion == "Body_SetCS":
+                rs, rw = zahlen(i + 8)
+                if rs is not None:
+                    eintrag["rot_slots"], eintrag["alt_drehung"] = rs, rw
+            _ablegen(aus, name, eintrag)
     return aus
 
 
@@ -145,11 +250,19 @@ def _zahl_ablegen(pr, slot, wert, l):
 
 
 def anwenden(roh_sco, aenderungen, melder=None):
-    """Positionen aendern und die neuen Bytes liefern.
+    """Positionen (und Wegpunkt-Radien) aendern, neue Bytes liefern.
 
-    aenderungen: [{variable, position, drehung}]
+    aenderungen: [{variable, position, drehung, radius}]
     Gibt (bytes, bericht) zurueck. *** Drei Proben muessen bestehen ***,
     sonst wird nichts geliefert.
+
+    Das Muster waehlt die Fundlage: stellen_finden() liefert je
+    Variable entweder eine Body_SetCS-Stelle (Position + Drehung)
+    oder eine Body_SetPosition-Stelle (nur Position, Wegpunkte).
+    Eine Drehung wird nur geschrieben, wo es rot_slots gibt; ein
+    radius (Zahl oder None) nur, wo ein WayPoint_SetRadius gefunden
+    wurde -- sonst wird die Radius-Aenderung als uebersprungen
+    gemeldet, die Position des Objekts aber trotzdem gepatcht.
     """
     l = _lua4dis()
     for name in ("i_s", "i_k", "walk", "loads", "save"):
@@ -181,16 +294,36 @@ def anwenden(roh_sco, aenderungen, melder=None):
             bericht["uebersprungen"].append(
                 {"variable": v, "grund": st["grund"]})
             continue
-        pr = st["proto"]
+        eintrag = {"variable": v, "alt": st.get("alt_position"),
+                   "neu": None}
+        # pos_slots/rot_slots haengen am Lage-Proto, radius_slot am
+        # eigenen radius_proto -- meist derselbe, aber verbuergt ist
+        # das nirgends.
         if a.get("position") and st.get("pos_slots"):
             for k, slot in enumerate(st["pos_slots"]):
-                _zahl_ablegen(pr, slot, a["position"][k], l)
+                _zahl_ablegen(st["proto"], slot, a["position"][k], l)
+            eintrag["neu"] = a["position"]
         if a.get("drehung") and st.get("rot_slots"):
             for k, slot in enumerate(st["rot_slots"]):
-                _zahl_ablegen(pr, slot, a["drehung"][k], l)
-        bericht["geaendert"].append(
-            {"variable": v, "alt": st.get("alt_position"),
-             "neu": a.get("position")})
+                _zahl_ablegen(st["proto"], slot, a["drehung"][k], l)
+            eintrag["drehung_gepatcht"] = True
+        # Drittes Muster: der Wegpunkt-Radius. None heisst "nicht
+        # angefasst" -- 0 waere ein gueltiger Wert.
+        if a.get("radius") is not None:
+            if st.get("radius_slot") is not None:
+                _zahl_ablegen(st["radius_proto"], st["radius_slot"],
+                              a["radius"], l)
+                eintrag["neu_radius"] = float(a["radius"])
+                eintrag["alt_radius"] = st.get("alt_radius")
+            else:
+                bericht["uebersprungen"].append(
+                    {"variable": v,
+                     "grund": st.get("radius_grund")
+                     or "keine WayPoint_SetRadius-Stelle gefunden"})
+        if (eintrag["neu"] is not None
+                or eintrag.get("drehung_gepatcht")
+                or eintrag.get("neu_radius") is not None):
+            bericht["geaendert"].append(eintrag)
 
     ergebnis = l.save(top)
 
@@ -200,21 +333,37 @@ def anwenden(roh_sco, aenderungen, melder=None):
     except Exception as e:
         raise PatchFehler(f"Das Ergebnis ist nicht lesbar: {e}")
 
-    # Probe 3: Die neuen Werte stehen wirklich drin.
+    # Probe 3: Die neuen Werte stehen wirklich drin -- Position UND
+    # Radius, jeweils nur wo etwas geschrieben wurde.
     nach = stellen_finden(zurueck, l)
     for g in bericht["geaendert"]:
         st = nach.get(g["variable"])
-        if not st or not st.get("alt_position"):
+        if not st:
             raise PatchFehler(
                 f"{g['variable']}: nach dem Patch nicht mehr auffindbar")
-        ist = st["alt_position"]
-        soll = g["neu"]
-        if soll and any(abs(ist[k] - soll[k]) > 0.01 for k in range(3)):
-            raise PatchFehler(
-                f"{g['variable']}: Rueckleseprobe fehlgeschlagen -- "
-                f"steht {ist}, erwartet {soll}")
+        soll = g.get("neu")
+        if soll:
+            ist = st.get("alt_position")
+            if not ist:
+                raise PatchFehler(
+                    f"{g['variable']}: Position nach dem Patch nicht "
+                    f"mehr auffindbar")
+            if any(abs(ist[k] - soll[k]) > 0.01 for k in range(3)):
+                raise PatchFehler(
+                    f"{g['variable']}: Rueckleseprobe fehlgeschlagen -- "
+                    f"steht {ist}, erwartet {soll}")
+        soll_r = g.get("neu_radius")
+        if soll_r is not None:
+            ist_r = st.get("alt_radius")
+            if ist_r is None or abs(ist_r - soll_r) > 0.01:
+                raise PatchFehler(
+                    f"{g['variable']}: Radius-Rueckleseprobe "
+                    f"fehlgeschlagen -- steht {ist_r}, erwartet {soll_r}")
     if melder:
-        melder(f"{len(bericht['geaendert'])} Position(en) gepatcht, "
+        radien = sum(1 for g in bericht["geaendert"]
+                     if g.get("neu_radius") is not None)
+        melder(f"{len(bericht['geaendert'])} Objekt(e) gepatcht "
+               f"(davon {radien} mit Radius), "
                f"{len(bericht['uebersprungen'])} uebersprungen, "
                f"{len(ergebnis)} Byte")
     return ergebnis, bericht

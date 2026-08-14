@@ -3,13 +3,13 @@ import json
 import os
 
 from PySide6.QtCore import Qt, QUrl, QTimer
-from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtGui import QAction, QKeySequence, QColor
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QTreeWidget,
     QTreeWidgetItem, QTabWidget, QPlainTextEdit, QLabel, QFileDialog,
     QComboBox, QCheckBox, QDoubleSpinBox, QPushButton, QLineEdit,
     QTableWidget, QTableWidgetItem, QStatusBar, QHeaderView, QMessageBox,
-    QSlider, QTextBrowser, QDialog,
+    QSlider, QTextBrowser, QDialog, QColorDialog,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEnginePage, QWebEngineSettings
@@ -54,6 +54,12 @@ class Hauptfenster(QMainWindow):
         self._letzte_auswahl = None    # was das Eigenschaftenfenster zeigt
         self._aenderungen = []         # verschobene Objekte
         self._eig_stumm = False
+        # Die Wrapper-Lichter -- levelgebunden seit 655
+        # (mod_docu\lichter\<karte>.txt, Rueckfall alte Globaldatei).
+        self._lichter = []
+        self._licht_kommentare = []
+        self._letztes_licht = None     # was das Licht-Panel zeigt
+        self._licht_stumm = False
         self.setWindowTitle("AquaNox-1-Toolkit — Ansicht (read-only)")
         self.resize(1500, 900)
         self._aufbauen()
@@ -127,6 +133,32 @@ class Hauptfenster(QMainWindow):
             lay.addLayout(z)
         lay.addLayout(gitter)
 
+        # Nur fuer Wegpunkte sichtbar: der Schaltradius aus
+        # WayPoint_SetRadius. Bei NEUEN Wegpunkten wird er in den
+        # Skripttext geschrieben; bei vorhandenen laeuft er seit dem
+        # dritten Suchmuster (sco_position, WayPoint_SetRadius) wie
+        # die Position durch die Aenderungs-Map und wird beim
+        # Einspielen per Konstantentausch gepatcht.
+        self.radius_zeile = QWidget()
+        rz = QHBoxLayout(self.radius_zeile)
+        rz.setContentsMargins(0, 0, 0, 0)
+        rz.addWidget(QLabel("<b>Radius</b>"))
+        self.feld_radius = QDoubleSpinBox()
+        self.feld_radius.setRange(0.0, 100000.0)
+        self.feld_radius.setDecimals(0)
+        self.feld_radius.setSingleStep(10.0)
+        self.feld_radius.setKeyboardTracking(False)
+        self.feld_radius.valueChanged.connect(self._eig_uebernehmen)
+        self.feld_radius.setToolTip(
+            "Schaltradius des Wegpunkts (WayPoint_SetRadius).\n"
+            "Neue Wegpunkte: wird mitgeschrieben.\n"
+            "Vorhandene: wird beim Einspielen gepatcht\n"
+            "(Konstantentausch, drittes Suchmuster); die\n"
+            "Drahtkugel zieht sofort nach.")
+        rz.addWidget(self.feld_radius, 1)
+        self.radius_zeile.setVisible(False)
+        lay.addWidget(self.radius_zeile)
+
         # *** Kein Skalierungsfeld. *** Body_SetCS kennt nur Lage und
         # Drehung; eine Skalierung gaebe es im Skript nicht wieder.
         hinweis = QLabel(
@@ -143,6 +175,16 @@ class Hauptfenster(QMainWindow):
             "wohin die Kamera blickt -- auf Terrainhoehe.")
         self.eig_einfuegen.clicked.connect(self._asset_einfuegen)
         z0.addWidget(self.eig_einfuegen)
+        # *** KEIN Neuanlegen eines Starts. *** Je Karte gibt es genau
+        # einen (Node_CreateNode "nod_player"); der Knopf springt nur
+        # hin und waehlt aus.
+        self.eig_zum_start = QPushButton("Zum Player Start")
+        self.eig_zum_start.setToolTip(
+            "Springt zum Startpunkt des Spielers (player1) und\n"
+            "waehlt ihn aus. Einen zweiten Start gibt es nicht --\n"
+            "je Karte genau einer.")
+        self.eig_zum_start.clicked.connect(self._zum_player_start)
+        z0.addWidget(self.eig_zum_start)
         lay.addLayout(z0)
 
         z0b = QHBoxLayout()
@@ -155,6 +197,15 @@ class Hauptfenster(QMainWindow):
         self.eig_duplizieren.clicked.connect(self._eig_duplizieren)
         self.eig_duplizieren.setEnabled(False)
         z0b.addWidget(self.eig_duplizieren)
+        self.eig_wegpunkt = QPushButton("Wegpunkt einfuegen")
+        self.eig_wegpunkt.setToolTip(
+            "Setzt einen Navigationspunkt (nod_waypoint) dort ab,\n"
+            "wohin die Kamera blickt. Radius-Vorgabe 350 wie\n"
+            "nav_waypoint_01 in 1h1; der Skripttext folgt dem\n"
+            "Original-Muster inkl. WayPoint_SetRadius und\n"
+            "Node_EnterSimulation.")
+        self.eig_wegpunkt.clicked.connect(self._wegpunkt_einfuegen)
+        z0b.addWidget(self.eig_wegpunkt)
         lay.addLayout(z0b)
 
         z = QHBoxLayout()
@@ -205,6 +256,148 @@ class Hauptfenster(QMainWindow):
         alles.clicked.connect(self._alle_verwerfen)
         z2.addWidget(alles)
         lay.addLayout(z2)
+
+        # ------------------------------------------------------------
+        # *** LICHTQUELLEN DES d3d8-WRAPPERS. *** Sie stehen in
+        # KEINEM Skript, sondern in mod_docu\lichter.txt -- eine
+        # Datei fuers ganze Spiel, deshalb ein EIGENER Block mit
+        # eigenem Speichern-Knopf, getrennt von _einspielen().
+        zk = QHBoxLayout()
+        zk.addWidget(QLabel("<b>Lichtquelle (Wrapper)</b>"), 1)
+        self.licht_zaehler = QLabel("0/16")
+        self.licht_zaehler.setToolTip(
+            "Der Wrapper liest hoechstens 16 Zeilen (Mehrslot 652).")
+        zk.addWidget(self.licht_zaehler)
+        lay.addLayout(zk)
+
+        # Native OSD-Lichter (662c): nod_fx_light-Bloecke aus den
+        # Objekt-OSDs. NUR ein Zaehler -- sie stehen in der OSD,
+        # nicht in lichter.txt, und sind deshalb hier nicht
+        # editierbar (im Viewer: Diamant mit Ring, read-only).
+        self.nativ_zaehler = QLabel("0 nativ (OSD, read-only)")
+        self.nativ_zaehler.setStyleSheet("color:#888; font-size:11px")
+        self.nativ_zaehler.setToolTip(
+            "nod_fx_light-Bloecke aus den Objekt-OSDs (lose Dateien\n"
+            "im Spielordner gewinnen vor den PAKs). Im Viewer als\n"
+            "Diamant mit Ring, nicht anklickbar -- Aendern geht nur\n"
+            "in der OSD selbst.")
+        lay.addWidget(self.nativ_zaehler)
+
+        self.licht_kopf = QLabel("<i>Kein Licht gewaehlt</i>")
+        self.licht_kopf.setTextFormat(Qt.RichText)
+        lay.addWidget(self.licht_kopf)
+
+        self.lfelder = {}
+        z = QHBoxLayout()
+        for i in range(3):
+            f = QDoubleSpinBox()
+            f.setRange(-100000.0, 100000.0)
+            f.setDecimals(2)
+            f.setSingleStep(10.0)
+            f.setKeyboardTracking(False)
+            f.valueChanged.connect(self._licht_uebernehmen)
+            f.setEnabled(False)
+            f.setToolTip("Position " + "xyz"[i] +
+                         " (AquaNox-Welt, Z ist oben)")
+            self.lfelder[("pos", i)] = f
+            z.addWidget(f)
+        lay.addLayout(z)
+
+        z = QHBoxLayout()
+        for i in range(3):
+            f = QDoubleSpinBox()
+            f.setRange(0.0, 1.0)
+            f.setDecimals(3)
+            f.setSingleStep(0.05)
+            f.setKeyboardTracking(False)
+            f.valueChanged.connect(self._licht_uebernehmen)
+            f.setEnabled(False)
+            f.setToolTip("Farbe " + "RGB"[i] + " (0..1)")
+            self.lfelder[("farbe", i)] = f
+            z.addWidget(f)
+        # *** Farbfeld statt "..."-Knopf (658): *** die Flaeche ZEIGT
+        # die aktuelle Lichtfarbe und oeffnet per Klick den Dialog --
+        # EIN Element fuer Anzeige und Bedienung, damit Anzeige und
+        # Wert nie auseinanderlaufen koennen.
+        self.licht_farbfeld = QPushButton()
+        self.licht_farbfeld.setMinimumSize(48, 24)
+        self.licht_farbfeld.setToolTip(
+            "Aktuelle Lichtfarbe -- klicken zum Waehlen")
+        self.licht_farbfeld.clicked.connect(self._licht_farbe_waehlen)
+        self.licht_farbfeld.setEnabled(False)
+        z.addWidget(self.licht_farbfeld)
+        self._licht_farbfeld_auffrischen()
+        lay.addLayout(z)
+
+        z = QHBoxLayout()
+        z.addWidget(QLabel("Staerke"))
+        self.licht_staerke = QDoubleSpinBox()
+        self.licht_staerke.setRange(0.0, 100.0)
+        self.licht_staerke.setDecimals(2)
+        self.licht_staerke.setSingleStep(0.25)
+        self.licht_staerke.setKeyboardTracking(False)
+        self.licht_staerke.valueChanged.connect(self._licht_uebernehmen)
+        self.licht_staerke.setEnabled(False)
+        z.addWidget(self.licht_staerke, 1)
+        z.addWidget(QLabel("Radius"))
+        self.licht_radius = QDoubleSpinBox()
+        self.licht_radius.setRange(0.0, 100000.0)
+        self.licht_radius.setDecimals(0)
+        self.licht_radius.setSingleStep(50.0)
+        self.licht_radius.setKeyboardTracking(False)
+        self.licht_radius.valueChanged.connect(self._licht_uebernehmen)
+        self.licht_radius.setEnabled(False)
+        z.addWidget(self.licht_radius, 1)
+        lay.addLayout(z)
+
+        z = QHBoxLayout()
+        self.licht_modus = QComboBox()
+        # Reihenfolge = Zahlenwert in der Datei (0, 1, 2).
+        self.licht_modus.addItems(["fest", "pulsierend", "blinkend"])
+        self.licht_modus.currentIndexChanged.connect(
+            self._licht_uebernehmen)
+        self.licht_modus.setEnabled(False)
+        z.addWidget(self.licht_modus, 1)
+        self.licht_periode = QDoubleSpinBox()
+        self.licht_periode.setRange(50.0, 60000.0)
+        self.licht_periode.setDecimals(0)
+        self.licht_periode.setSingleStep(100.0)
+        self.licht_periode.setSuffix(" ms")
+        self.licht_periode.setKeyboardTracking(False)
+        self.licht_periode.valueChanged.connect(self._licht_uebernehmen)
+        self.licht_periode.setEnabled(False)
+        z.addWidget(self.licht_periode, 1)
+        lay.addLayout(z)
+
+        z = QHBoxLayout()
+        self.licht_neu = QPushButton("Licht einfuegen")
+        self.licht_neu.setToolTip(
+            "Neues Licht an der Kameraposition: rot (1 / 0.12 / "
+            "0.08),\nStaerke 2.0, Radius 500, pulsierend 1500 ms --\n"
+            "die Werte der Signalstab-Lichter.")
+        self.licht_neu.clicked.connect(self._licht_einfuegen)
+        z.addWidget(self.licht_neu)
+        self.licht_weg = QPushButton("Licht loeschen")
+        self.licht_weg.clicked.connect(self._licht_loeschen)
+        self.licht_weg.setEnabled(False)
+        z.addWidget(self.licht_weg)
+        lay.addLayout(z)
+
+        self.licht_speichern = QPushButton("Lichter speichern")
+        self.licht_speichern.setToolTip(
+            "Schreibt mod_docu\\lichter.txt neu -- der EIGENE Weg "
+            "der\nLichter, unabhaengig von 'Alle Aenderungen "
+            "speichern'.")
+        self.licht_speichern.clicked.connect(self._lichter_speichern)
+        lay.addWidget(self.licht_speichern)
+
+        licht_hinweis = QLabel(
+            "<span style='color:#888;font-size:11px'>"
+            "Levelgebunden (655): mod_docu\\lichter\\&lt;karte&gt;.txt, "
+            "gespeichert wird fuer die geladene Karte. Wirkt im Spiel "
+            "mit AQUANOX_LICHTER=1 (AquaNox_PBRDemo.cmd).</span>")
+        licht_hinweis.setWordWrap(True)
+        lay.addWidget(licht_hinweis)
         return w
 
     # ------------------------------------------------------------------
@@ -652,6 +845,10 @@ class Hauptfenster(QMainWindow):
             return
         self.blick.page().runJavaScript(
             "window.aqtk.auswahl()", self._auswahl_zeigen)
+        # Die Lichter haben ein eigenes Panel und eine eigene Abfrage
+        # -- sie sind keine Skriptobjekte.
+        self.blick.page().runJavaScript(
+            "window.aqtk.lichtAuswahl()", self._licht_auswahl_zeigen)
 
     def _auswahl_zeigen(self, roh):
         try:
@@ -668,6 +865,7 @@ class Hauptfenster(QMainWindow):
         self.eig_zuruecksetzen.setEnabled(bool(d and d.get("geaendert")))
         self.eig_duplizieren.setEnabled(an)
         if not an:
+            self.radius_zeile.setVisible(False)
             self.eigkopf.setText("<i>Kein Objekt gewaehlt</i><br>"
                                  "<span style='color:#888;font-size:11px'>"
                                  "In der 3D-Ansicht auf ein Objekt "
@@ -691,6 +889,12 @@ class Hauptfenster(QMainWindow):
             werte = d.get(gruppe) or [0, 0, 0]
             for i in range(3):
                 self.felder[(gruppe, i)].setValue(float(werte[i]))
+        # Der Radius nur bei Wegpunkten -- alle anderen Arten haben
+        # keinen, und ein leeres Feld wuerde nur Fragen aufwerfen.
+        wegpunkt = (d.get("art") == "wegpunkt")
+        self.radius_zeile.setVisible(wegpunkt)
+        if wegpunkt:
+            self.feld_radius.setValue(float(d.get("radius") or 0.0))
         self._eig_stumm = False
 
     def _eig_uebernehmen(self, *_):
@@ -701,11 +905,43 @@ class Hauptfenster(QMainWindow):
             return
         pos = [self.felder[("position", i)].value() for i in range(3)]
         dre = [self.felder[("drehung", i)].value() for i in range(3)]
+        radius = (self.feld_radius.value()
+                  if self.radius_zeile.isVisible() else None)
         self.blick.page().runJavaScript(
             f"window.aqtk.setzen({d['index']}, "
-            f"{json.dumps(pos)}, {json.dumps(dre)})")
+            f"{json.dumps(pos)}, {json.dumps(dre)}, "
+            f"{json.dumps(radius)})")
         self._letzte_auswahl = None      # erzwingt Neuanzeige
         QTimer.singleShot(60, self._aenderungen_abholen)
+
+    def _zum_player_start(self):
+        """Zum Startpunkt des Spielers springen -- nicht anlegen.
+
+        Der Start ist ein Knoten wie jeder andere (nod_player, Art
+        spawn) und laesst sich nach dem Anspringen ganz normal
+        verschieben und einspielen.
+        """
+        if not self.level or not self.level.szene_objekte:
+            self._sag("Erst eine Karte laden.")
+            return
+        spawns = [o for o in self.level.szene_objekte
+                  if o.art == "spawn" and o.vollstaendig]
+        start = next((o for o in spawns if o.name == "player1"),
+                     spawns[0] if spawns else None)
+        if start is None:
+            self._sag("Kein Player Start in dieser Karte gefunden.")
+            return
+        kennung = start.var or start.name
+
+        def zurueck(r):
+            if r:
+                self._sag(f"Player Start: {start.name} ({kennung}), "
+                          f"Position {start.position}")
+            else:
+                self._sag(f"Player Start {kennung} ist nicht in der "
+                          f"3D-Ansicht angekommen.")
+        self.blick.page().runJavaScript(
+            f"window.aqtk.zuObjekt({json.dumps(kennung)})", zurueck)
 
     def _asset_einfuegen(self):
         """Ein Asset aus der Liste in die Szene setzen.
@@ -754,6 +990,38 @@ class Hauptfenster(QMainWindow):
         self._sag(f"{a['name']} eingefuegt ({n} Mesh(es), "
                   f"{len(paket.get('bilder') or {})} Texturen)")
 
+    def _wegpunkt_einfuegen(self):
+        """Einen neuen Navigationspunkt in die Szene setzen.
+
+        Klasse nod_waypoint, Raute aus hud_waypoint.msh (ueber
+        osd/nav/nav_waypoint_01.osd), Radius-Vorgabe 350 wie das
+        Original in 1h1. Der Skripttext kommt aus sco_neu.quelltext()
+        und folgt dem Original-Muster.
+        """
+        if not self.projekt or not self.level:
+            self._sag("Erst eine Karte laden.")
+            return
+        from ..modell.level import asset_geometrie
+        osd = "osd/nav/nav_waypoint_01.osd"
+        try:
+            paket = asset_geometrie(self.projekt, osd, self.level)
+        except Exception as e:
+            self._sag(f"FEHLER beim Laden: {type(e).__name__}: {e}")
+            return
+        if paket.get("fehler"):
+            self._sag(f"{osd}: {paket['fehler']}")
+            return
+        extra = {"art": "wegpunkt", "klasse": "nod_waypoint",
+                 "radius": 350.0}
+        self.blick.page().runJavaScript(
+            f"window.aqtk.einfuegen("
+            f"{json.dumps(paket, ensure_ascii=False)}, "
+            f"{json.dumps('nav_waypoint_neu')}, "
+            f"{json.dumps(extra)})")
+        self._letzte_auswahl = None
+        QTimer.singleShot(120, self._aenderungen_abholen)
+        self._sag("Wegpunkt eingefuegt (nod_waypoint, Radius 350).")
+
     def _eig_duplizieren(self):
         d = self._letzte_auswahl
         if not d:
@@ -770,9 +1038,12 @@ class Hauptfenster(QMainWindow):
         if not d or not d.get("ursprung"):
             return
         u = d["ursprung"]
+        # Der Radius gehoert zum Ursprung dazu (null = Objekt hat
+        # keinen; setzen() laesst ihn dann in Ruhe).
         self.blick.page().runJavaScript(
             f"window.aqtk.setzen({d['index']}, "
-            f"{json.dumps(u['position'])}, {json.dumps(u['drehung'])})")
+            f"{json.dumps(u['position'])}, {json.dumps(u['drehung'])}, "
+            f"{json.dumps(u.get('radius'))})")
         self._letzte_auswahl = None
         QTimer.singleShot(60, self._aenderungen_abholen)
 
@@ -780,6 +1051,256 @@ class Hauptfenster(QMainWindow):
         self.blick.page().runJavaScript("window.aqtk.aenderungenVerwerfen()")
         self._letzte_auswahl = None
         QTimer.singleShot(80, self._aenderungen_abholen)
+
+    # ------------------------------------------------------------------
+    # Wrapper-Lichtquellen. *** Eigener Weg, eigener Speicher: ***
+    # die Lichter stehen in mod_docu\lichter.txt, nicht im Skript.
+    # Quelle der Wahrheit fuer Positionen ist die 3D-Ansicht (dort
+    # wird gezogen); self._lichter wird per Abfrage nachgefuehrt und
+    # vor dem Speichern noch einmal abgeglichen.
+    def _lichter_laden(self):
+        """Die Lichtdatei der KARTE lesen (655: levelgebunden,
+        mod_docu\\lichter\\<karte>.txt mit Rueckfall auf die alte
+        globale Datei -- exakt die Suchreihenfolge des Wrappers).
+
+        Wird bei jedem Kartenwechsel gerufen; ungespeicherte Zuege
+        sollen beim Wechsel nicht stumm weiterleben.
+        """
+        from ..parser import lichter as _li
+        if not self.projekt:
+            return
+        karte = self.level.name if self.level else None
+        liste, kommentare, hinweise = _li.lies(self.projekt.ordner, karte)
+        self._lichter = liste
+        self._licht_kommentare = kommentare
+        for h in hinweise:
+            self._sag(f"Lichter: {h}")
+        self._lichter_zeigen()
+        if liste:
+            self._sag(f"{len(liste)}/16 Wrapper-Lichter aus "
+                      f"{_li.pfad(self.projekt.ordner, karte)}")
+
+    def _lichter_zeigen(self, auswahl=None):
+        """Die Liste in die 3D-Ansicht schieben, Zaehler auffrischen."""
+        self._js(f"window.aqtk.lichterSetzen("
+                 f"{json.dumps(self._lichter)})")
+        if auswahl is not None:
+            self._js(f"window.aqtk.lichtAuswaehlen({int(auswahl)})")
+        self._letztes_licht = None
+        self.licht_zaehler.setText(f"{len(self._lichter)}/16")
+
+    def _licht_auswahl_zeigen(self, roh):
+        """Das gewaehlte Licht ins Panel -- Gegenstueck zu
+        _auswahl_zeigen, im selben 200-ms-Takt."""
+        try:
+            d = json.loads(roh) if roh and roh != "null" else None
+        except Exception:
+            d = None
+        if d == self._letztes_licht:
+            return
+        self._letztes_licht = d
+
+        an = d is not None
+        for f in self.lfelder.values():
+            f.setEnabled(an)
+        for f in (self.licht_staerke, self.licht_radius,
+                  self.licht_periode):
+            f.setEnabled(an)
+        self.licht_modus.setEnabled(an)
+        self.licht_farbfeld.setEnabled(an)
+        self.licht_weg.setEnabled(an)
+        if not an:
+            self.licht_kopf.setText("<i>Kein Licht gewaehlt</i>")
+            self._licht_farbfeld_auffrischen()   # Feld leeren
+            return
+
+        i = d.get("index", -1)
+        # Die Ansicht ist die Quelle der Wahrheit -- was dort gezogen
+        # wurde, kommt hier an und wird uebernommen.
+        from ..parser.lichter import FELDER
+        if 0 <= i < len(self._lichter):
+            self._lichter[i] = {k: d[k] for k in FELDER if k in d}
+        self.licht_kopf.setText(
+            f"<b>Licht {i + 1}</b> von {len(self._lichter)}"
+            + (" <span style='color:#c88'>(geaendert)</span>"
+               if d.get("geaendert") else ""))
+
+        self._licht_stumm = True
+        for k, w in (("x", 0), ("y", 1), ("z", 2)):
+            self.lfelder[("pos", w)].setValue(float(d.get(k) or 0.0))
+        for k, w in (("r", 0), ("g", 1), ("b", 2)):
+            self.lfelder[("farbe", w)].setValue(float(d.get(k) or 0.0))
+        self.licht_staerke.setValue(float(d.get("intensitaet") or 0.0))
+        self.licht_radius.setValue(float(d.get("radius") or 0.0))
+        self.licht_modus.setCurrentIndex(
+            max(0, min(2, int(d.get("modus") or 0))))
+        self.licht_periode.setValue(float(d.get("periode_ms") or 1500))
+        self._licht_stumm = False
+        # Stumm gesetzte Spinboxen feuern kein valueChanged --
+        # das Farbfeld deshalb hier von Hand nachfuehren.
+        self._licht_farbfeld_auffrischen()
+
+    def _licht_uebernehmen(self, *_):
+        """Werte aus dem Panel ins gewaehlte Licht der Ansicht."""
+        if getattr(self, "_licht_stumm", False):
+            return
+        d = self._letztes_licht
+        if not d:
+            return
+        i = d.get("index", -1)
+        licht = {
+            "x": self.lfelder[("pos", 0)].value(),
+            "y": self.lfelder[("pos", 1)].value(),
+            "z": self.lfelder[("pos", 2)].value(),
+            "r": self.lfelder[("farbe", 0)].value(),
+            "g": self.lfelder[("farbe", 1)].value(),
+            "b": self.lfelder[("farbe", 2)].value(),
+            "intensitaet": self.licht_staerke.value(),
+            "radius": self.licht_radius.value(),
+            "modus": self.licht_modus.currentIndex(),
+            "periode_ms": int(self.licht_periode.value()),
+        }
+        if 0 <= i < len(self._lichter):
+            self._lichter[i] = dict(licht)
+        werte = dict(licht)
+        werte["position"] = [licht["x"], licht["y"], licht["z"]]
+        self._js(f"window.aqtk.lichtSetzen({int(i)}, "
+                 f"{json.dumps(werte)})")
+        self._letztes_licht = None     # erzwingt Neuanzeige
+        self._licht_farbfeld_auffrischen()
+
+    def _licht_farbfeld_auffrischen(self):
+        """Das Farbfeld den r/g/b-Spinboxen nachfuehren.
+
+        EINE Stelle fuer alle Wege (Lichtauswahl, Spinbox, Dialog),
+        damit Feld und Werte nie auseinanderlaufen. Ohne gewaehltes
+        Licht bleibt das Feld leer statt eine alte Farbe zu zeigen.
+        """
+        if self.licht_farbfeld.isEnabled():
+            css = QColor.fromRgbF(
+                self.lfelder[("farbe", 0)].value(),
+                self.lfelder[("farbe", 1)].value(),
+                self.lfelder[("farbe", 2)].value()).name()
+        else:
+            css = "transparent"
+        # Stylesheet statt Palette: die setzt Windows' Standardstil
+        # bei Knoepfen sonst stillschweigend ausser Kraft.
+        self.licht_farbfeld.setStyleSheet(
+            f"background-color: {css}; border: 1px solid #888;")
+
+    def _licht_farbe_waehlen(self):
+        """Farbe per QColorDialog -- bequemer als drei Spinboxen."""
+        d = self._letztes_licht
+        if not d:
+            return
+        # Vorbelegung aus den Spinboxen: die sind IMMER aktuell,
+        # waehrend d nach einer Aenderung bis zum naechsten
+        # 200-ms-Abgleich veraltet sein kann.
+        alt = QColor.fromRgbF(
+            self.lfelder[("farbe", 0)].value(),
+            self.lfelder[("farbe", 1)].value(),
+            self.lfelder[("farbe", 2)].value())
+        neu = QColorDialog.getColor(alt, self, "Lichtfarbe")
+        if not neu.isValid():
+            return
+        self._licht_stumm = True
+        self.lfelder[("farbe", 0)].setValue(neu.redF())
+        self.lfelder[("farbe", 1)].setValue(neu.greenF())
+        self.lfelder[("farbe", 2)].setValue(neu.blueF())
+        self._licht_stumm = False
+        self._licht_uebernehmen()
+
+    def _licht_einfuegen(self):
+        """Neues Licht an der Kameraposition -- Vorgabe wie die
+        Signalstab-Lichter (rot, pulsierend)."""
+        from ..parser.lichter import MAX_LICHTER
+        if len(self._lichter) >= MAX_LICHTER:
+            self._sag(f"Schon {MAX_LICHTER} Lichter -- mehr liest der "
+                      f"Wrapper nicht. Erst eines loeschen.")
+            return
+
+        def kamera(roh):
+            try:
+                k = json.loads(roh) if roh else None
+            except Exception:
+                k = None
+            # three.js (x, y, z) -> AquaNox (x, z, y): Y ist dort
+            # die Hoehe, hier ist es Z.
+            if isinstance(k, list) and len(k) == 3:
+                pos = [float(k[0]), float(k[2]), float(k[1])]
+            else:
+                pos = [0.0, 0.0, 0.0]
+            self._lichter.append({
+                "x": pos[0], "y": pos[1], "z": pos[2],
+                "r": 1.0, "g": 0.12, "b": 0.08,
+                "intensitaet": 2.0, "radius": 500.0,
+                "modus": 1, "periode_ms": 1500,
+            })
+            self._lichter_zeigen(auswahl=len(self._lichter) - 1)
+            self._sag(f"Licht {len(self._lichter)}/16 an der "
+                      f"Kameraposition eingefuegt (rot, pulsierend). "
+                      f"Speichern nicht vergessen.")
+        self.blick.page().runJavaScript(
+            "JSON.stringify(window.aqtk.zustand().kamera)", kamera)
+
+    def _licht_loeschen(self):
+        d = self._letztes_licht
+        if not d:
+            return
+        i = d.get("index", -1)
+        if not (0 <= i < len(self._lichter)):
+            return
+        del self._lichter[i]
+        self._lichter_zeigen()
+        self._sag(f"Licht {i + 1} geloescht -- noch "
+                  f"{len(self._lichter)}/16. Speichern nicht "
+                  f"vergessen.")
+
+    def _lichter_speichern(self):
+        """mod_docu\\lichter.txt neu schreiben.
+
+        *** Eigener Weg, nicht _einspielen(): *** die Datei gehoert
+        dem d3d8-Wrapper, nicht dem Missionsskript. Vor dem Schreiben
+        werden die Zug-Aenderungen aus der Ansicht abgeglichen --
+        sie ist die Quelle der Wahrheit fuer Positionen.
+        """
+        if not self.projekt:
+            self._sag("Erst ein Projekt oeffnen.")
+            return
+        from ..parser.lichter import FELDER
+
+        def weiter(roh):
+            try:
+                aend = json.loads(roh) if roh else []
+            except Exception:
+                aend = []
+            for a in aend:
+                i = a.get("index")
+                neu = a.get("neu")
+                if (neu and isinstance(i, int)
+                        and 0 <= i < len(self._lichter)):
+                    self._lichter[i] = {k: neu[k] for k in FELDER
+                                        if k in neu}
+            from ..schreiber import SchreibFehler
+            from ..schreiber import lichter as _sl
+            # 655: levelgebunden speichern -- der Wrapper laedt die
+            # Kartendatei ueber den Kommandozeilen-Kartennamen.
+            karte = self.level.name if self.level else None
+            try:
+                ziel = _sl.schreiben(self.projekt.ordner, self._lichter,
+                                     kommentare=self._licht_kommentare,
+                                     melder=self._sag, karte=karte)
+            except SchreibFehler as e:
+                self._sag(f"ABGELEHNT: {e}")
+                return
+            except Exception as e:
+                self._sag(f"FEHLER: {type(e).__name__}: {e}")
+                return
+            self._sag(f"{len(self._lichter)}/16 Lichter -> {ziel} "
+                      f"-- wirken im Spiel mit AQUANOX_LICHTER=1 "
+                      f"(AquaNox_PBRDemo.cmd).")
+        self.blick.page().runJavaScript(
+            "window.aqtk.lichterAenderungen()", weiter)
 
     def _aenderungen_abholen(self):
         self.blick.page().runJavaScript(
@@ -835,14 +1356,34 @@ class Hauptfenster(QMainWindow):
                 v = a.get("variable") or a.get("name")
                 p, dr = a["position"], a["drehung"]
                 ap, ad = a["alt_position"], a["alt_drehung"]
+                # Was hat sich wirklich geaendert? Ein reiner
+                # Radius-Eintrag braucht keine Body_SetCS-Zeile.
+                lage_anders = (not ap or not ad
+                               or any(abs(p[i] - ap[i]) > 1e-4
+                                      for i in range(3))
+                               or any(abs(dr[i] - ad[i]) > 1e-4
+                                      for i in range(3)))
+                radius = a.get("radius")
                 if not kurz:
                     z.append(f"# {a['name']}   vorher "
                              f"({ap[0]:.1f}, {ap[1]:.1f}, {ap[2]:.1f}) "
                              f"/ ({ad[0]:.2f}, {ad[1]:.2f}, {ad[2]:.2f})")
-                z.append(
-                    f"Body_SetCS({v}, MAT_Vector3({p[0]:.5f}, {p[1]:.5f}, "
-                    f"{p[2]:.5f}), MAT_Vector3({dr[0]:.5f}, {dr[1]:.5f}, "
-                    f"{dr[2]:.5f}))")
+                if lage_anders:
+                    z.append(
+                        f"Body_SetCS({v}, MAT_Vector3({p[0]:.5f}, "
+                        f"{p[1]:.5f}, {p[2]:.5f}), "
+                        f"MAT_Vector3({dr[0]:.5f}, {dr[1]:.5f}, "
+                        f"{dr[2]:.5f}))")
+                # Geaenderter Wegpunkt-Radius: eigene Zeile, wird
+                # beim Einspielen ueber das dritte Suchmuster
+                # (WayPoint_SetRadius) gepatcht.
+                if radius is not None:
+                    ar = a.get("alt_radius")
+                    if not kurz and ar is not None:
+                        z.append(f"# {a['name']}   Radius vorher "
+                                 f"{ar:.0f}")
+                    z.append(f"WayPoint_SetRadius({v}, "
+                             f"{float(radius):.0f})")
 
         if neulinge:
             z.append("")
@@ -859,16 +1400,31 @@ class Hauptfenster(QMainWindow):
             for i, n in enumerate(neulinge, 1):
                 v = f"nodeNEU{i}"
                 p, dr = n["position"], n["drehung"]
+                klasse = n.get("klasse") or "nod_generic"
+                wegpunkt = (klasse == "nod_waypoint")
                 z.append(f"# {n['name']}  (Vorlage: {n.get('vorlage')})")
-                z.append(f'{v} = Node_CreateNode("nod_generic", '
+                z.append(f'{v} = Node_CreateNode("{klasse}", '
                          f'"{n["name"]}")')
                 z.append(f"Node_AddSon(<Verzeichnis>, {v})")
-                z.append(
-                    f"Body_SetCS({v}, MAT_Vector3({p[0]:.5f}, {p[1]:.5f}, "
-                    f"{p[2]:.5f}), MAT_Vector3({dr[0]:.5f}, {dr[1]:.5f}, "
-                    f"{dr[2]:.5f}))")
+                if wegpunkt:
+                    # Das Original-Muster (1h1.lua:2286): nur die
+                    # Lage, dann Radius, OSD, EnterSimulation.
+                    z.append(
+                        f"Body_SetPosition({v}, MAT_Vector3("
+                        f"{p[0]:.5f}, {p[1]:.5f}, {p[2]:.5f}))")
+                    r = n.get("radius")
+                    z.append(f"WayPoint_SetRadius({v}, "
+                             f"{float(r) if r is not None else 350:.0f})")
+                else:
+                    z.append(
+                        f"Body_SetCS({v}, MAT_Vector3({p[0]:.5f}, "
+                        f"{p[1]:.5f}, {p[2]:.5f}), "
+                        f"MAT_Vector3({dr[0]:.5f}, {dr[1]:.5f}, "
+                        f"{dr[2]:.5f}))")
                 if n.get("osd"):
                     z.append(f'Node_ParseIniFile({v}, "{n["osd"]}")')
+                if wegpunkt:
+                    z.append(f"Node_EnterSimulation({v})")
                 z.append("")
         return "\n".join(z)
 
@@ -926,8 +1482,12 @@ class Hauptfenster(QMainWindow):
         schon = _mod.mod_lesen(spiel).get("dateien") or {}
         teile = []
         if liste:
-            teile.append(f"{len(liste)} verschobene(s) Objekt(e) "
-                         f"(Konstantentausch)")
+            radien = sum(1 for a in liste
+                         if a.get("radius") is not None)
+            teile.append(f"{len(liste)} geaenderte(s) Objekt(e) "
+                         f"(Konstantentausch"
+                         + (f", davon {radien} mit Wegpunkt-Radius"
+                            if radien else "") + ")")
         if neu:
             teile.append(f"{len(neu)} neue(s) Objekt(e) "
                          f"(Quelltext an __StartUp)")
@@ -1165,6 +1725,7 @@ class Hauptfenster(QMainWindow):
                 self._graph_fuer = None
                 self._neu_zeichnen()
                 self._infos_fuellen()
+                self._lichter_laden()
             except Exception as e:
                 self._sag(f"FEHLER beim Laden der Station: "
                           f"{type(e).__name__}: {e}")
@@ -1566,6 +2127,9 @@ class Hauptfenster(QMainWindow):
             return
         self._neu_zeichnen()
         self._infos_fuellen()
+        # Die Wrapper-Lichter frisch aus der Datei -- sie sind
+        # kartenunabhaengig und werden in jeder Karte gezeigt.
+        self._lichter_laden()
 
     def _neu_zeichnen(self):
         if not self.level:
@@ -1594,6 +2158,32 @@ class Hauptfenster(QMainWindow):
         t = szene["terrain"]
         self._sag(f"{szene['level']}: Raster {t['breite']}x{t['hoehe']}, "
                   f"{len(szene['objekte'])} Objekte")
+        # Native OSD-Lichter: Zaehlerzeile im Lichter-Block plus
+        # Protokollmeldung -- read-only, nur zur Kontrolle der in
+        # den OSDs eingebauten nod_fx_light-Bloecke (662c).
+        nl = szene.get("nativ_lichter") or []
+        self.nativ_zaehler.setText(f"{len(nl)} nativ (OSD, read-only)")
+        if nl:
+            blink = sum(1 for l in nl if l.get("blinkend"))
+            self._sag(f"Native OSD-Lichter: {len(nl)} nod_fx_light in "
+                      f"den Objekt-OSDs, davon {blink} blinkend -- "
+                      f"read-only (Diamant mit Ring)")
+        # Die Wegpunkt-Kette -- ehrlich melden, auch wenn es keine
+        # gibt: der Grund steht in den Hinweisen des Parsers.
+        wk = szene.get("wegpunkt_kanten") or []
+        wh = szene.get("wegpunkt_hinweise") or []
+        if wk:
+            hart = sum(1 for k in wk if k.get("art") == "erreicht")
+            self._sag(f"Wegpunkt-Kette: {len(wk)} Verbindung(en) aus "
+                      f"dem Dekompilat -- {hart} hart belegt "
+                      f"(erreicht), {len(wk) - hart} aus der Taskkey-/"
+                      f"Ebenen-Folge (Heuristik)")
+        else:
+            self._sag("Wegpunkt-Kette: keine Linien -- "
+                      + (wh[0] if wh else
+                         "keine Verkettung im Dekompilat erkennbar"))
+        for h in wh[1:] if not wk else wh:
+            self._sag(f"  Wegpunkte: {h}")
 
     def _infos_fuellen(self):
         lv = self.level

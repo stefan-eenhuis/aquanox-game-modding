@@ -32,6 +32,10 @@ let letzteMitAlpha = 0;      // davon mit ausgewertetem Alphakanal
 let detailAn = true;         // Materialschichten -- siehe detailEinbauen()
 let detailStaerke = 1.0;     // 0 = nur Farbkarte, 1 = volle Mischung
 let aktiveUniforms = null;   // Zugriff auf die Shader-Uniforms
+let wegpunktGruppe = null;   // Verbindungslinien der Wegpunkt-Kette
+let wegpunktLinien = [];     // { linie, von, nach } -- Objektindizes
+let nativGruppe = null;      // native OSD-Lichter (nod_fx_light)
+let nativDaten = [];         // wie Python sie lieferte -- READ-ONLY
 
 // ------------------------------------------------------------------ Aufbau
 function aufbauen() {
@@ -68,6 +72,8 @@ function aufbauen() {
 function zeichnen() {
   requestAnimationFrame(zeichnen);
   flugFortsetzen();
+  lichterAnimieren();
+  nativAnimieren();
   steuerung.update();
   renderer.render(szene, kamera);
   markenNachfuehren();
@@ -390,6 +396,8 @@ function objekteBauen(liste, meshes, bilder) {
   if (objektGruppe) { szene.remove(objektGruppe); objektGruppe = null; }
   marken.forEach(m => m.el.remove());
   marken = [];
+  // Die Drahtkugel haengt an einem Netz der alten Gruppe.
+  radiusKugelZeigen(null, null);
   if (!liste || !liste.length) return;
 
   meshes = meshes || {};
@@ -570,6 +578,84 @@ function objekteBauen(liste, meshes, bilder) {
   return mitModell;
 }
 
+// ------------------------------------------- Wegpunkt-Verbindungslinien
+//
+// *** DIE KETTE STEHT NIRGENDS ALS FELD. *** Weder die Wegpunkt-OSDs
+// noch das Missionsskript verketten die Punkte -- die Reihenfolge
+// steckt allein im Triggernetz des Dekompilats (parser/wegpunkte.py:
+// Game_SetWayPoint, Erreicht-Flags, Taskkey-Folge). Hier wird NUR
+// gezeichnet, was Python als wegpunkt_kanten liefert: je Kante eine
+// Linie zwischen den beiden Positionen. Dezentes Gelb passend zu den
+// Rauten, leicht durchscheinend; harte "erreicht"-Kanten etwas
+// kraeftiger als die heuristischen "folge"-Kanten. Eigene Gruppe,
+// die die Mesh-Einzelansicht wie die Lichter ausblendet.
+function wegpunktLinienBauen(daten) {
+  if (wegpunktGruppe) {
+    szene.remove(wegpunktGruppe);
+    wegpunktGruppe.traverse((k) => {
+      if (k.geometry) k.geometry.dispose();
+      if (k.material) k.material.dispose();
+    });
+    wegpunktGruppe = null;
+  }
+  wegpunktLinien = [];
+  const kanten = (daten && daten.wegpunkt_kanten) || [];
+  if (!kanten.length || !objektGruppe) return;
+
+  // var ist die eindeutige Kennung (Skriptvariable); der Name nur
+  // Rueckfall -- wie ueberall sonst in der Auswahl.
+  const nachVar = new Map();
+  const nachName = new Map();
+  (daten.objekte || []).forEach((o, i) => {
+    if (o.var && !nachVar.has(o.var)) nachVar.set(o.var, i);
+    if (o.name && !nachName.has(o.name)) nachName.set(o.name, i);
+  });
+
+  wegpunktGruppe = new THREE.Group();
+  for (const k of kanten) {
+    const von = nachVar.has(k.von.var) ? nachVar.get(k.von.var)
+                                       : nachName.get(k.von.name);
+    const nach = nachVar.has(k.nach.var) ? nachVar.get(k.nach.var)
+                                         : nachName.get(k.nach.name);
+    if (von === undefined || nach === undefined) continue;
+    const a = objektGruppe.children[von].position;
+    const b = objektGruppe.children[nach].position;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(
+      [a.x, a.y, a.z, b.x, b.y, b.z], 3));
+    const linie = new THREE.Line(geo, new THREE.LineBasicMaterial({
+      color: 0xf0d060, transparent: true,
+      // "erreicht" ist am Triggernetz hart belegt, "folge" nur eine
+      // Taskkey-/Ebenen-Heuristik -- die weiche Kante ist blasser.
+      opacity: k.art === 'erreicht' ? 0.6 : 0.35,
+      depthWrite: false }));
+    linie.renderOrder = 3;
+    wegpunktGruppe.add(linie);
+    wegpunktLinien.push({ linie, von, nach });
+  }
+  szene.add(wegpunktGruppe);
+}
+
+// Beim Verschieben ziehen die anliegenden Linien live nach --
+// gerufen aus objektSetzen(), demselben Pfad, der auch die Raute
+// versetzt. Ohne Index werden alle Linien nachgezogen (Verwerfen).
+function wegpunktLinienNachfuehren(index) {
+  if (!objektGruppe) return;
+  for (const l of wegpunktLinien) {
+    if (index !== undefined && l.von !== index && l.nach !== index) {
+      continue;
+    }
+    const a = objektGruppe.children[l.von];
+    const b = objektGruppe.children[l.nach];
+    if (!a || !b) continue;
+    const p = l.linie.geometry.attributes.position;
+    p.setXYZ(0, a.position.x, a.position.y, a.position.z);
+    p.setXYZ(1, b.position.x, b.position.y, b.position.z);
+    p.needsUpdate = true;
+    l.linie.geometry.computeBoundingSphere();
+  }
+}
+
 // ------------------------------------------------------- Kamerafahrt
 function hinfliegen(ziel, dauer = 700) {
   if (!ziel) return;
@@ -678,7 +764,18 @@ function szeneSetzen(daten) {
   gitterSetzen(weite);
   const mitModell = objekteBauen(daten.objekte, daten.meshes,
                                  daten.meshbilder);
+  // Die Verbindungslinien der Wegpunkt-Kette -- nach den Objekten,
+  // weil sie deren Positionen brauchen. Karten ohne erkennbare
+  // Kette liefern eine leere Liste: dann gibt es KEINE Linien.
+  wegpunktLinienBauen(daten);
+  // Die nativen OSD-Lichter der Karte -- read-only, siehe
+  // nativLichterBauen(). Neu gebaut je Karte, also frisch sichtbar.
+  nativLichterBauen(daten.nativ_lichter);
   wasserBauen(daten.wasser, masse);
+  // Die Wrapper-Lichter sind kartenunabhaengig und bleiben beim
+  // Kartenwechsel stehen -- nur die Mesh-Einzelansicht blendet sie
+  // aus, hier kommen sie wieder.
+  if (lichterGruppe) lichterGruppe.visible = true;
 
   if (masse) {
     // Auf die MITTE der Karte blicken, nicht auf den Nullpunkt --
@@ -742,6 +839,14 @@ function meshZeigen(daten) {
   marken.forEach((m) => m.el.remove());
   marken = [];
   laden.style.display = 'none';
+  // Unsichtbare Lichter leuchten in three.js auch nicht -- das
+  // Einzelmesh soll seine eigene Studiobeleuchtung behalten.
+  if (lichterGruppe) lichterGruppe.visible = false;
+  // Die Wegpunkt-Linien gehoeren zur Karte, nicht zum Einzelmesh.
+  if (wegpunktGruppe) wegpunktGruppe.visible = false;
+  // Ebenso die nativen OSD-Lichter -- sie haengen an den
+  // Objektinstanzen der Karte, nicht am einzelnen Modell.
+  if (nativGruppe) nativGruppe.visible = false;
 
   if (daten.fehler) {
     kopf.innerHTML = `<h1>Fehler</h1><div class="z">${daten.fehler}</div>`;
@@ -904,14 +1009,45 @@ function zustandDesObjekts() {
     // Werte in AQUANOX-Achsen, wie sie im Skript stehen.
     position: daten.position,
     drehung: daten.drehung,
+    // Nur Wegpunkte haben einen (WayPoint_SetRadius).
+    radius: (daten.radius === undefined) ? null : daten.radius,
     ursprung: ae ? ae.ursprung : null,
     geaendert: !!ae,
     teile: (daten.teile || []).length,
   };
 }
 
+// ------------------------------------------- Wegpunkt-Schaltradius
+//
+// Die Drahtkugel zeigt den Radius aus WayPoint_SetRadius am gerade
+// GEWAEHLTEN Wegpunkt -- staendig eingeblendet laege sie bei drei
+// Wegpunkten mit 350er-Radius wie ein Vorhang ueber der Karte.
+let radiusKugel = null;
+
+function radiusKugelZeigen(netz, daten) {
+  if (radiusKugel) {
+    szene.remove(radiusKugel);
+    radiusKugel.geometry.dispose();
+    radiusKugel.material.dispose();
+    radiusKugel = null;
+  }
+  if (!netz || !daten || daten.art !== 'wegpunkt' || !daten.radius) {
+    return;
+  }
+  radiusKugel = new THREE.Mesh(
+    new THREE.SphereGeometry(daten.radius, 24, 16),
+    new THREE.MeshBasicMaterial({
+      color: 0xa0a0ff, wireframe: true,
+      transparent: true, opacity: 0.35 }));
+  radiusKugel.position.copy(netz.position);
+  szene.add(radiusKugel);
+}
+
 function auswaehlen(index) {
   gewaehltesObjekt = null;
+  // Objekt- und Lichtauswahl schliessen einander aus -- Rahmen und
+  // Anfasser gibt es nur einmal.
+  gewaehltesLicht = null;
   hervorheben(null);
   if (index !== null && index !== undefined && objektGruppe
       && letzteSzene) {
@@ -922,6 +1058,8 @@ function auswaehlen(index) {
       hervorheben(netz);
     }
   }
+  radiusKugelZeigen(gewaehltesObjekt ? gewaehltesObjekt.netz : null,
+                    gewaehltesObjekt ? gewaehltesObjekt.daten : null);
   anfasserZeigen(gewaehltesObjekt ? gewaehltesObjekt.netz : null);
   if (typeof window.aqtkAuswahl === 'function') {
     window.aqtkAuswahl(JSON.stringify(zustandDesObjekts()));
@@ -929,7 +1067,11 @@ function auswaehlen(index) {
 }
 
 // Position/Drehung setzen -- in AquaNox-Achsen, wie im Skript.
-function objektSetzen(index, position, drehung) {
+// radius (optional) gilt nur fuer Wegpunkte und laeuft seit dem
+// dritten Suchmuster (WayPoint_SetRadius in sco_position.py) wie
+// die Position durch die Aenderungs-Map -- er wird also wirklich
+// zurueckgeschrieben, nicht nur angezeigt.
+function objektSetzen(index, position, drehung, radius) {
   if (!objektGruppe || !letzteSzene) return false;
   const netz = objektGruppe.children[index];
   const daten = letzteSzene.objekte[index];
@@ -939,11 +1081,13 @@ function objektSetzen(index, position, drehung) {
   if (!aenderungen.has(kennung)) {
     // Den Ursprungszustand EINMAL sichern, bevor er ueberschrieben
     // wird -- sonst laesst sich nicht mehr sagen, was sich geaendert
-    // hat.
+    // hat. Der Radius gehoert dazu (null = Objekt hat keinen).
     aenderungen.set(kennung, {
       variable: daten.var || null, name: daten.name,
       ursprung: { position: daten.position.slice(),
-                  drehung: (daten.drehung || [0, 0, 0]).slice() },
+                  drehung: (daten.drehung || [0, 0, 0]).slice(),
+                  radius: (daten.radius === undefined)
+                    ? null : daten.radius },
     });
   }
   if (position) {
@@ -957,13 +1101,25 @@ function objektSetzen(index, position, drehung) {
         drehungAusAquanox(daten.drehung));
     }
   }
+  if (radius !== undefined && radius !== null) {
+    daten.radius = Number(radius);
+  }
   const e = aenderungen.get(kennung);
   e.position = daten.position.slice();
   e.drehung = (daten.drehung || [0, 0, 0]).slice();
-  if (rahmen && gewaehltesObjekt && gewaehltesObjekt.index === index) {
-    rahmen.setFromObject(netz);
-    anfasserNachfuehren();
+  e.radius = (daten.radius === undefined) ? null : daten.radius;
+  if (gewaehltesObjekt && gewaehltesObjekt.index === index) {
+    if (rahmen) {
+      rahmen.setFromObject(netz);
+      anfasserNachfuehren();
+    }
+    // Drahtkugel nachziehen -- neu bauen ist billiger als die
+    // Geometrie zu skalieren, und es passiert nur beim Editieren.
+    radiusKugelZeigen(netz, daten);
   }
+  // Anliegende Wegpunkt-Linien ziehen live mit -- derselbe Pfad,
+  // der auch die Raute versetzt.
+  wegpunktLinienNachfuehren(index);
   markenNachfuehren();
   return true;
 }
@@ -993,6 +1149,10 @@ renderer_bereit(() => {
                + Math.abs(e.clientY - klickStart.y);
     klickStart = null;
     if (weit > 4) return;              // war ein Schwenk
+    // Die Lichtkugeln haben Vorrang: sie sind klein, und ein Licht
+    // steht oft mitten in einem grossen Objekt.
+    const li = lichtUnterMaus(e);
+    if (li !== null) { lichtAuswaehlen(li); return; }
     auswaehlen(objektUnterMaus(e));
   });
 });
@@ -1101,15 +1261,23 @@ function zugPunkt(ereignis, richtung, ursprung) {
 
 function zugStarten(ereignis) {
   const griff = anfasserGetroffen(ereignis);
-  if (!griff || !gewaehltesObjekt) return false;
-  const ursprung = gewaehltesObjekt.netz.position.clone();
+  // Der Anfasser gehoert entweder einem Objekt oder einem Licht --
+  // beide ziehen ueber dieselben Pfeile.
+  const ziel = gewaehltesLicht || gewaehltesObjekt;
+  if (!griff || !ziel) return false;
+  const ursprung = ziel.netz.position.clone();
   const t = zugPunkt(ereignis, griff.richtung, ursprung);
   if (t === null) return false;
+  const licht = !!gewaehltesLicht;
   ziehen = {
     achse: griff.achse, richtung: griff.richtung.clone(),
     ursprung, anfang: t,
-    startwert: gewaehltesObjekt.daten.position.slice(),
-    index: gewaehltesObjekt.index,
+    licht,
+    startwert: licht
+      ? [lichterDaten[ziel.index].x, lichterDaten[ziel.index].y,
+         lichterDaten[ziel.index].z]
+      : gewaehltesObjekt.daten.position.slice(),
+    index: ziel.index,
   };
   steuerung.enabled = false;      // sonst dreht die Kamera mit
   return true;
@@ -1122,8 +1290,12 @@ function zugFortsetzen(ereignis) {
   const delta = t - ziehen.anfang;
   const neu = ziehen.startwert.slice();
   neu[ziehen.achse] = ziehen.startwert[ziehen.achse] + delta;
-  objektSetzen(ziehen.index, neu, null);
-  anfasserNachfuehren();
+  if (ziehen.licht) {
+    lichtSetzen(ziehen.index, { position: neu });
+  } else {
+    objektSetzen(ziehen.index, neu, null);
+    anfasserNachfuehren();
+  }
 }
 
 function zugBeenden() {
@@ -1133,6 +1305,237 @@ function zugBeenden() {
   if (typeof window.aqtkAuswahl === 'function') {
     window.aqtkAuswahl(JSON.stringify(zustandDesObjekts()));
   }
+}
+
+// ------------------------------------------- Wrapper-Lichtquellen
+//
+// mod_docu\lichter.txt -- EINE Datei fuers ganze Spiel, gelesen vom
+// d3d8-Wrapper (nur mit AQUANOX_LICHTER=1). Je Zeile ein PointLight
+// (Distanz = Radius, decay 2) plus eine kleine Leuchtkugel als
+// Anfasser. *** Aenderungen laufen in eine EIGENE Map
+// (lichtAenderungen), NICHT in aenderungen: *** dort wuerden sie
+// beim Einspielen sco_position als angebliche Skriptvariablen
+// begegnen -- und Lichter stehen in keinem Skript.
+let lichterGruppe = null;             // je Licht ein Group(Punkt, Kugel)
+let lichterDaten = [];                // die Liste, wie sie Python schickte
+const lichtAenderungen = new Map();   // Index -> {ursprung, neu}
+let gewaehltesLicht = null;           // { index, netz }
+
+function lichterBauen(liste) {
+  if (lichterGruppe) {
+    szene.remove(lichterGruppe);
+    lichterGruppe.traverse((k) => {
+      if (k.geometry) k.geometry.dispose();
+      if (k.material) k.material.dispose();
+    });
+    lichterGruppe = null;
+  }
+  if (gewaehltesLicht) {
+    gewaehltesLicht = null;
+    hervorheben(null);
+    anfasserZeigen(null);
+  }
+  lichterDaten = liste || [];
+  lichtAenderungen.clear();
+  if (!lichterDaten.length) return;
+
+  lichterGruppe = new THREE.Group();
+  lichterDaten.forEach((l, i) => {
+    const traeger = new THREE.Group();
+    const farbe = new THREE.Color(l.r, l.g, l.b);
+    // decay 2 wie ein physisches Punktlicht; distance kappt bei
+    // seinem Radius -- dasselbe Modell wie 1/R^2 im Wrapper.
+    const punkt = new THREE.PointLight(farbe, l.intensitaet || 1,
+                                       l.radius || 0, 2);
+    traeger.add(punkt);
+    // Die Kugel ist der Anfasser; MeshBasic leuchtet von selbst,
+    // ein eigenes Material je Licht, damit das Pulsieren nicht
+    // alle faerbt.
+    const kugel = new THREE.Mesh(
+      new THREE.SphereGeometry(8, 12, 8),
+      new THREE.MeshBasicMaterial({ color: farbe.clone() }));
+    kugel.userData.lichtIndex = i;
+    kugel.userData.basisfarbe = farbe.clone();
+    traeger.add(kugel);
+    traeger.position.copy(ausAquanox([l.x, l.y, l.z]));
+    lichterGruppe.add(traeger);
+  });
+  szene.add(lichterGruppe);
+}
+
+// Puls und Blinken -- je Frame aus zeichnen() gerufen. Der
+// Phasenversatz ist der des Wrappers: index * 357 ms.
+function lichterAnimieren() {
+  if (!lichterGruppe) return;
+  const t = performance.now();
+  lichterDaten.forEach((l, i) => {
+    const traeger = lichterGruppe.children[i];
+    if (!traeger) return;
+    const punkt = traeger.children[0];
+    const kugel = traeger.children[1];
+    let f = 1;
+    if (l.modus === 1 || l.modus === 2) {
+      const periode = Math.max(50, l.periode_ms || 1500);
+      const ph = (t + i * 357) / periode;
+      // modus 1: Sinus zwischen 0 und 1; modus 2: halbe Periode an,
+      // halbe aus (die Kugel bleibt schwach sichtbar, sonst ist das
+      // Licht beim Aus nicht mehr anklickbar).
+      f = (l.modus === 1)
+        ? 0.5 + 0.5 * Math.sin(ph * 2 * Math.PI)
+        : ((ph % 1) < 0.5 ? 1 : 0);
+    }
+    punkt.intensity = (l.intensitaet || 1) * f;
+    if (kugel.userData.basisfarbe) {
+      kugel.material.color.copy(kugel.userData.basisfarbe)
+        .multiplyScalar(0.25 + 0.75 * f);
+    }
+  });
+}
+
+function lichtUnterMaus(ereignis) {
+  if (!lichterGruppe) return null;
+  const r = renderer.domElement.getBoundingClientRect();
+  mausNdc.x = ((ereignis.clientX - r.left) / r.width) * 2 - 1;
+  mausNdc.y = -((ereignis.clientY - r.top) / r.height) * 2 + 1;
+  strahlwerfer.setFromCamera(mausNdc, kamera);
+  const treffer = strahlwerfer.intersectObjects(
+    lichterGruppe.children, true);
+  for (const x of treffer) {
+    if (x.object.userData.lichtIndex !== undefined) {
+      return x.object.userData.lichtIndex;
+    }
+  }
+  return null;
+}
+
+function lichtAuswaehlen(index) {
+  // Objekt abwaehlen -- Rahmen und Anfasser gehoeren dann dem Licht.
+  auswaehlen(null);
+  gewaehltesLicht = null;
+  if (index !== null && index !== undefined && lichterGruppe
+      && lichterGruppe.children[index]) {
+    const netz = lichterGruppe.children[index];
+    gewaehltesLicht = { index, netz };
+    hervorheben(netz);
+    anfasserZeigen(netz);
+  }
+}
+
+// Werte eines Lichts aendern -- Position in AquaNox-Achsen, alle
+// uebrigen Felder wie in der Datei (r, g, b, intensitaet, radius,
+// modus, periode_ms). Der Ursprung wird EINMAL gesichert.
+function lichtSetzen(index, werte) {
+  const l = lichterDaten[index];
+  const traeger = lichterGruppe ? lichterGruppe.children[index] : null;
+  if (!l || !traeger || !werte) return false;
+  if (!lichtAenderungen.has(index)) {
+    lichtAenderungen.set(index, { ursprung: Object.assign({}, l) });
+  }
+  if (werte.position) {
+    l.x = Number(werte.position[0]);
+    l.y = Number(werte.position[1]);
+    l.z = Number(werte.position[2]);
+    traeger.position.copy(ausAquanox([l.x, l.y, l.z]));
+  }
+  for (const k of ['r', 'g', 'b', 'intensitaet', 'radius',
+                   'modus', 'periode_ms']) {
+    if (werte[k] !== undefined && werte[k] !== null) l[k] = werte[k];
+  }
+  const punkt = traeger.children[0];
+  const kugel = traeger.children[1];
+  punkt.color.setRGB(l.r, l.g, l.b);
+  punkt.intensity = l.intensitaet || 1;
+  punkt.distance = l.radius || 0;
+  kugel.userData.basisfarbe = new THREE.Color(l.r, l.g, l.b);
+  const e = lichtAenderungen.get(index);
+  e.neu = Object.assign({}, l);
+  if (gewaehltesLicht && gewaehltesLicht.index === index) {
+    if (rahmen) rahmen.setFromObject(traeger);
+    if (anfasser) anfasser.position.copy(traeger.position);
+  }
+  return true;
+}
+
+function lichtZustand() {
+  if (!gewaehltesLicht) return null;
+  const i = gewaehltesLicht.index;
+  const l = lichterDaten[i];
+  if (!l) return null;
+  return Object.assign({ index: i,
+                         geaendert: lichtAenderungen.has(i) }, l);
+}
+
+// --------------------------------------------- Native OSD-Lichter
+//
+// nod_fx_light-Bloecke aus den Objekt-OSDs (662c) -- Python loest
+// sie je INSTANZ auf und liefert sie als nativ_lichter mit fertiger
+// Weltposition. *** READ-ONLY: *** eigene Gruppe, die KEIN
+// Raycaster ansieht (objektUnterMaus prueft nur objektGruppe,
+// lichtUnterMaus nur lichterGruppe) -- nicht anklickbar, nicht
+// verschiebbar; Aendern geht nur in der OSD selbst. Der Marker ist
+// ein kleiner DIAMANT mit flachem RING, damit er sich klar von den
+// editierbaren Wrapper-Kugeln unterscheidet.
+function nativLichterBauen(liste) {
+  if (nativGruppe) {
+    szene.remove(nativGruppe);
+    nativGruppe.traverse((k) => {
+      if (k.geometry) k.geometry.dispose();
+      if (k.material) k.material.dispose();
+    });
+    nativGruppe = null;
+  }
+  nativDaten = liste || [];
+  if (!nativDaten.length) return;
+
+  nativGruppe = new THREE.Group();
+  nativDaten.forEach((l) => {
+    const traeger = new THREE.Group();
+    const rgb = l.rgb || [1, 1, 1];
+    const farbe = new THREE.Color(rgb[0], rgb[1], rgb[2]);
+    // range = [r1, r2] aus [visual] -- r2 ist die Aussengrenze und
+    // wird wie beim Wrapper als distance benutzt (decay 2).
+    const weite = (l.range && l.range[1]) || 100;
+    const punkt = new THREE.PointLight(farbe, 1.5, weite, 2);
+    traeger.add(punkt);
+    // Eigenes Material je Licht, damit das Blinken nicht alle
+    // faerbt. KEIN userData.lichtIndex -- das ist der Marker der
+    // editierbaren Lichter, und genau darueber waehlt
+    // lichtUnterMaus aus.
+    const diamant = new THREE.Mesh(
+      new THREE.OctahedronGeometry(6),
+      new THREE.MeshBasicMaterial({ color: farbe.clone() }));
+    diamant.userData.basisfarbe = farbe.clone();
+    traeger.add(diamant);
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(11, 0.9, 6, 24),
+      new THREE.MeshBasicMaterial({ color: farbe.clone(),
+        transparent: true, opacity: 0.7, depthWrite: false }));
+    ring.rotation.x = Math.PI / 2;      // flach, wie ein Reifrock
+    ring.userData.basisfarbe = farbe.clone();
+    traeger.add(ring);
+    traeger.position.copy(ausAquanox([l.x, l.y, l.z]));
+    nativGruppe.add(traeger);
+  });
+  szene.add(nativGruppe);
+}
+
+// Blinken 0,5 s an / 0,5 s aus -- der Takt der OSD ([life] time 0.5
+// am Vorlagen-Kind, spawn-delay 1.0). Je Frame aus zeichnen().
+function nativAnimieren() {
+  if (!nativGruppe) return;
+  const f = (performance.now() % 1000) < 500 ? 1 : 0;
+  nativDaten.forEach((l, i) => {
+    const traeger = nativGruppe.children[i];
+    if (!traeger || !l.blinkend) return;
+    traeger.children[0].intensity = 1.5 * f;
+    // Marker dimmen statt verstecken -- man soll ihn finden.
+    for (const kind of [traeger.children[1], traeger.children[2]]) {
+      if (kind && kind.userData.basisfarbe) {
+        kind.material.color.copy(kind.userData.basisfarbe)
+          .multiplyScalar(0.25 + 0.75 * f);
+      }
+    }
+  });
 }
 
 // ------------------------------------------------- Bruecke nach Python
@@ -1192,6 +1595,12 @@ window.aqtk = {
       var: null,                     // hat noch keine Skriptvariable
       neu: true,
       vorlage: daten.var || daten.name,
+      // Parser-geladene Wegpunkte tragen KEIN klasse-Feld (nur
+      // art='wegpunkt'). Ohne klasse schriebe sco_neu.quelltext()
+      // das nod_generic-Muster (Body_SetCS) und verwuerfe den
+      // Radius -- deshalb die Klasse hier aus der Art ableiten.
+      klasse: daten.klasse ||
+        (daten.art === 'wegpunkt' ? 'nod_waypoint' : null),
       position: [daten.position[0] + v[0], daten.position[1] + v[1],
                  daten.position[2] + v[2]],
       drehung: (daten.drehung || [0, 0, 0]).slice(),
@@ -1217,7 +1626,10 @@ window.aqtk = {
   // Python liefert Geometrie und Texturen fertig (level.py,
   // asset_geometrie); hier wird daraus ein Netz gebaut und an die
   // Stelle gesetzt, auf die die Kamera blickt.
-  einfuegen: (paket, name) => {
+  // extra: weitere Felder fuer den Szeneneintrag -- der Wegpunkt-
+  // Knopf gibt hier {art, klasse, radius} mit, damit der Neuling
+  // im Skripttext als nod_waypoint statt nod_generic erscheint.
+  einfuegen: (paket, name, extra) => {
     if (!letzteSzene || !objektGruppe || !paket || paket.fehler) {
       return null;
     }
@@ -1247,6 +1659,7 @@ window.aqtk = {
       mesh: paket.mesh, teile: paket.teile || [],
       position, drehung: [0, 0, 0],
     };
+    Object.assign(eintrag, extra || {});
     letzteSzene.objekte.push(eintrag);
 
     // *** Die Szene neu bauen. *** Ein Einzelnetz von Hand
@@ -1268,13 +1681,20 @@ window.aqtk = {
       .map((o) => ({
         index: o.index, name: o.name, vorlage: o.vorlage,
         osd: o.osd || '', art: o.art,
+        // Klasse und Radius braucht sco_neu.quelltext() -- ein
+        // Wegpunkt bekommt sonst das nod_generic-Muster.
+        klasse: o.klasse || null,
+        radius: (o.radius === undefined) ? null : o.radius,
         position: o.position, drehung: o.drehung,
       }))),
 
   auswahl: () => JSON.stringify(zustandDesObjekts()),
-  // Position und Drehung in AQUANOX-Achsen setzen.
-  setzen: (index, position, drehung) =>
-    objektSetzen(index, position, drehung),
+  // Position und Drehung in AQUANOX-Achsen setzen; radius optional
+  // (nur Wegpunkte) -- laeuft in die Aenderungs-Map und wird beim
+  // Einspielen ueber das WayPoint_SetRadius-Muster gepatcht; die
+  // Drahtkugel zieht sofort nach.
+  setzen: (index, position, drehung, radius) =>
+    objektSetzen(index, position, drehung, radius),
 
   // Alle Aenderungen als Liste -- Grundlage der Skriptausgabe.
   aenderungen: () => {
@@ -1284,13 +1704,23 @@ window.aqtk = {
       const gleich = (a, b) => a && b
         && Math.abs(a[0] - b[0]) < 1e-4 && Math.abs(a[1] - b[1]) < 1e-4
         && Math.abs(a[2] - b[2]) < 1e-4;
+      // Der Radius zaehlt als eigene Aenderung (Wegpunkte). null im
+      // Eintrag heisst fuer den Patcher "nicht anfassen" -- deshalb
+      // wird er nur mitgegeben, wenn er sich wirklich unterscheidet.
+      const rAlt = (e.ursprung.radius === undefined)
+        ? null : e.ursprung.radius;
+      const radiusAnders = (e.radius !== null && e.radius !== undefined
+        && (rAlt === null || Math.abs(e.radius - rAlt) > 1e-4));
       if (gleich(e.position, e.ursprung.position)
-          && gleich(e.drehung, e.ursprung.drehung)) continue;
+          && gleich(e.drehung, e.ursprung.drehung)
+          && !radiusAnders) continue;
       aus.push({
         kennung, variable: e.variable, name: e.name,
         position: e.position, drehung: e.drehung,
         alt_position: e.ursprung.position,
         alt_drehung: e.ursprung.drehung,
+        radius: radiusAnders ? e.radius : null,
+        alt_radius: rAlt,
       });
     }
     return JSON.stringify(aus);
@@ -1306,6 +1736,11 @@ window.aqtk = {
       const daten = letzteSzene.objekte[i];
       daten.position = e.ursprung.position.slice();
       daten.drehung = e.ursprung.drehung.slice();
+      // Auch den Radius zuruecknehmen -- null heisst: das Objekt
+      // hatte nie einen, dann bleibt er unangetastet.
+      if (e.ursprung.radius !== null && e.ursprung.radius !== undefined) {
+        daten.radius = e.ursprung.radius;
+      }
       if (netz) {
         netz.position.copy(ausAquanox(daten.position));
         if (drehungAn) {
@@ -1316,6 +1751,7 @@ window.aqtk = {
     }
     aenderungen.clear();
     if (gewaehltesObjekt) auswaehlen(gewaehltesObjekt.index);
+    wegpunktLinienNachfuehren();      // alle Linien zurueckziehen
     markenNachfuehren();
   },
 
@@ -1356,19 +1792,42 @@ window.aqtk = {
     nebelWeite = weite || 0;
     if (letzteSzene) stimmungSetzen(letzteSzene.stimmung, letzteWeite);
   },
-  // Zu einem Objekt fliegen -- ueber seinen Namen.
-  zuObjekt: (name) => {
-    const m = marken.find((x) => x.name === name);
-    if (m) { hinfliegen(m.netz); return true; }
-    if (objektGruppe && letzteSzene) {
-      const i = letzteSzene.objekte.findIndex((o) => o.name === name);
-      if (i >= 0 && objektGruppe.children[i]) {
-        hinfliegen(objektGruppe.children[i]);
-        return true;
-      }
+  // Zu einem Objekt fliegen -- ueber Variablenname ODER Anzeigenamen.
+  // *** Die Variable zuerst: *** sie ist eindeutig (258 Namen auf
+  // 349 Knoten in 1h1), der Name nur eine Beschriftung. Ausgewaehlt
+  // wird mit, damit rechts gleich die Eigenschaften stehen -- so
+  // springt der Knopf "Zum Player Start" direkt ins Bearbeiten.
+  zuObjekt: (kennung) => {
+    if (!objektGruppe || !letzteSzene) return false;
+    let i = letzteSzene.objekte.findIndex((o) => o.var === kennung);
+    if (i < 0) {
+      i = letzteSzene.objekte.findIndex((o) => o.name === kennung);
     }
-    return false;
+    if (i < 0 || !objektGruppe.children[i]) return false;
+    auswaehlen(i);
+    hinfliegen(objektGruppe.children[i]);
+    return true;
   },
+  // --- Wrapper-Lichtquellen (mod_docu\lichter.txt) ---
+  // Die ganze Liste setzen (beim Laden, Einfuegen, Loeschen).
+  lichterSetzen: (liste) => { lichterBauen(liste); },
+  // Die Aenderungen aus dem Ziehen -- EIGENE Map, damit sie nie
+  // mit den Skript-Objekten in einen Topf geraten. Python holt
+  // sie vor dem Speichern ab und schreibt die Datei komplett neu.
+  lichterAenderungen: () => {
+    const aus = [];
+    for (const [index, e] of lichtAenderungen) {
+      aus.push({ index, ursprung: e.ursprung, neu: e.neu || null });
+    }
+    return JSON.stringify(aus);
+  },
+  // Der gewaehlte Lichteintrag fuer das Eigenschaftenfenster --
+  // wird wie auswahl() im 200-ms-Takt abgefragt.
+  lichtAuswahl: () => JSON.stringify(lichtZustand()),
+  lichtAuswaehlen: (index) => { lichtAuswaehlen(index); },
+  // Einzelne Felder eines Lichts setzen (Spinboxen, Farbdialog).
+  lichtSetzen: (index, werte) => lichtSetzen(index, werte),
+
   // Pruefung: stehen die Objekte wirklich auf dem Terrain?
   // Von jedem Objekt aus ein Strahl nach unten und nach oben. Wer
   // die Weltabbildung aendert, sieht hier sofort, ob sie noch
@@ -1451,6 +1910,14 @@ window.aqtk = {
       farbkarte: !!(m && m.map),
       anfasser: !!anfasser,
       anfasserTeile: anfasser ? anfasser.children.length : 0,
+      radiusKugel: !!radiusKugel,
+      wegpunkte: letzteSzene.objekte.filter(
+        (o) => o.art === 'wegpunkt').length,
+      // Kanten = was Python lieferte, Linien = was davon gezeichnet
+      // wurde -- weichen sie ab, fehlt einem Endpunkt das Objekt.
+      wegpunktKanten: (letzteSzene.wegpunkt_kanten || []).length,
+      wegpunktLinien: wegpunktLinien.length,
+      wegpunktLinienSichtbar: !!wegpunktGruppe && wegpunktGruppe.visible,
       gewaehlt: gewaehltesObjekt ? gewaehltesObjekt.index : null,
       geaendert: aenderungen.size,
       meshtextur: zeigeMeshtextur,
@@ -1469,6 +1936,18 @@ window.aqtk = {
       wasser: !!wasserNetz,
 
       wassertiefe: wasserNetz ? wasserNetz.position.y : null,
+      lichter: lichterDaten.length,
+      lichtGewaehlt: gewaehltesLicht ? gewaehltesLicht.index : null,
+      lichtGeaendert: lichtAenderungen.size,
+      // Native OSD-Lichter: Anzahl, Sichtbarkeit, und der Beleg,
+      // dass sie read-only sind -- kein Kind traegt einen
+      // lichtIndex, also kann lichtUnterMaus sie nie treffen.
+      nativLichter: nativDaten.length,
+      nativBlinkend: nativDaten.filter((l) => l.blinkend).length,
+      nativSichtbar: !!nativGruppe && nativGruppe.visible,
+      nativReadOnly: !nativGruppe || !nativGruppe.children.some(
+        (g) => g.children.some(
+          (k) => k.userData && k.userData.lichtIndex !== undefined)),
       kamera: kamera
         ? [Math.round(kamera.position.x), Math.round(kamera.position.y),
            Math.round(kamera.position.z)]

@@ -100,12 +100,15 @@ def lauf():
         print("  Anfang:", " ".join(t.split())[:160])
     QTimer.singleShot(4450, levelinfo)
 
-    # 2) Die Objektliste in der Oberflaeche
+    # 2) Die Objektliste in der Oberflaeche.
+    #    87 = die 83 aus dem 90er-Fenster PLUS player1 und die drei
+    #    nav_waypoints -- Spawn und Wegpunkte werden seit dem
+    #    Wegpunkt-Ausbau immer mitgenommen (level.py, welt()).
     def liste():
         n = f.objektliste.topLevelItemCount()
         print(f"\n-- Objektliste --  {n} Zeilen, "
               f"Reitertext '{f.untenreiter.tabText(f.objektreiter)}'")
-        pruefe(n == 83, "83 Objekte in der Liste")
+        pruefe(n == 87, "87 Objekte in der Liste (83 + Spawn + 3 Wegpunkte)")
         if n:
             k = f.objektliste.topLevelItem(0)
             print(f"  erste Zeile: {k.text(0)} | {k.text(1)} | {k.text(2)}")
@@ -137,13 +140,198 @@ def lauf():
     QTimer.singleShot(8400, lambda: js(
         "JSON.stringify(window.aqtk.zustand().kamera)", "KAMERA Uebersicht"))
 
+    # 7) Player Start: der Knopf springt zu player1 und WAEHLT ihn.
+    QTimer.singleShot(8600, f._zum_player_start)
+
+    def start_geprueft(r):
+        import json as _j
+        d = _j.loads(r) if r and r != "null" else None
+        print(f"PLAYER START: {r}")
+        pruefe(d is not None, "Player Start ist ausgewaehlt")
+        pruefe(bool(d) and d.get("name") == "player1",
+               "Auswahl heisst player1")
+        pruefe(bool(d) and d.get("art") == "spawn", "Art ist spawn")
+    QTimer.singleShot(9800, lambda: f.blick.page().runJavaScript(
+        "window.aqtk.auswahl()", start_geprueft))
+
+    # 8) Wegpunkte: sichtbar, waehlbar, mit Radius und Drahtkugel.
+    QTimer.singleShot(9900, lambda: f._js(
+        "window.aqtk.zuObjekt('node297')"))
+
+    def wegpunkt_geprueft(r):
+        import json as _j
+        d = _j.loads(r)
+        print(f"WEGPUNKT: {r}")
+        pruefe(d.get("wegpunkte") == 3,
+               "drei nav_waypoints in der Szene")
+        pruefe(d.get("radiusKugel") is True,
+               "Drahtkugel am gewaehlten Wegpunkt")
+        a = d.get("auswahl") or {}
+        pruefe(a.get("art") == "wegpunkt", "Auswahl ist ein Wegpunkt")
+        pruefe(a.get("radius") == 350, "Radius 350 aus WayPoint_SetRadius")
+    QTimer.singleShot(11000, lambda: f.blick.page().runJavaScript(
+        "JSON.stringify(Object.assign({}, window.aqtk.zustand(), "
+        "{auswahl: JSON.parse(window.aqtk.auswahl())}))",
+        wegpunkt_geprueft))
+
+    # 8b) Wegpunkt-KANTEN: 1h1 hat die Kette wp01 -> attack -> wp02
+    #     (aus dem Dekompilat, parser/wegpunkte.py) -- zwei Kanten,
+    #     und beide muessen als Linien in der Szene haengen.
+    def kanten_geprueft(r):
+        import json as _j
+        d = _j.loads(r)
+        print(f"WEGPUNKT-KANTEN: {r}")
+        pruefe(d.get("wegpunktKanten") == 2,
+               "zwei Wegpunkt-Kanten in 1h1 (wp01 -> attack -> wp02)")
+        pruefe(d.get("wegpunktLinien") == 2,
+               "beide Kanten sind als Linien in der Szene")
+        pruefe(d.get("wegpunktLinienSichtbar") is True,
+               "die Linien-Gruppe ist sichtbar")
+    QTimer.singleShot(11050, lambda: f.blick.page().runJavaScript(
+        "JSON.stringify({wegpunktKanten: window.aqtk.zustand()"
+        ".wegpunktKanten, wegpunktLinien: window.aqtk.zustand()"
+        ".wegpunktLinien, wegpunktLinienSichtbar: window.aqtk.zustand()"
+        ".wegpunktLinienSichtbar})", kanten_geprueft))
+
+    # 9) Wrapper-Lichter: die Pipeline GUI -> Ansicht -> Aenderungen.
+    #    Unabhaengig vom Dateibestand (mod_docu\lichter.txt kann
+    #    fehlen): eine Probeliste wird gesetzt, ein Licht verschoben,
+    #    die Aenderung muss in der EIGENEN Map ankommen.
+    def lichter_setzen():
+        f._lichter = [
+            {"x": 2561.22, "y": 2020.62, "z": 550.59, "r": 1.0,
+             "g": 0.12, "b": 0.08, "intensitaet": 2.0, "radius": 500.0,
+             "modus": 1, "periode_ms": 1500},
+            {"x": 100.0, "y": 200.0, "z": 300.0, "r": 0.2,
+             "g": 0.6, "b": 1.0, "intensitaet": 1.0, "radius": 250.0,
+             "modus": 2, "periode_ms": 800},
+        ]
+        f._lichter_zeigen(auswahl=1)
+    QTimer.singleShot(11100, lichter_setzen)
+    QTimer.singleShot(11500, lambda: f._js(
+        "window.aqtk.lichtSetzen(1, {position: [111, 222, 333]})"))
+
+    def lichter_geprueft(r):
+        import json as _j
+        d = _j.loads(r)
+        print(f"LICHTER: {r}")
+        pruefe(d.get("lichter") == 2, "zwei Probelichter in der Szene")
+        pruefe(d.get("lichtGewaehlt") == 1, "Licht 2 ist gewaehlt")
+        ae = d.get("aenderungen") or []
+        pruefe(len(ae) == 1 and ae[0].get("neu", {}).get("x") == 111,
+               "Verschieben landet in der EIGENEN Lichter-Map")
+        pruefe(d.get("geaendert") == 0,
+               "Objekt-Aenderungsliste bleibt davon unberuehrt")
+        pruefe(f.licht_zaehler.text() == "2/16", "Zaehler zeigt 2/16")
+    QTimer.singleShot(12200, lambda: f.blick.page().runJavaScript(
+        "JSON.stringify(Object.assign({}, window.aqtk.zustand(), "
+        "{aenderungen: JSON.parse(window.aqtk.lichterAenderungen())}))",
+        lichter_geprueft))
+
+    # 10) Native OSD-Lichter: 1h1 hat 14 gen_pole-Instanzen im
+    #     90er-Fenster, und die LOSEN vfx\osd\gen\gen_pole*~.osd
+    #     tragen seit 662c einen nod_fx_light-Block als Vorlagen-
+    #     Kind eines nod_fx_spawn (-> blinkend); gen_kai2/atl_dock3
+    #     tragen ihn DIREKT (-> fest). Der Viewer muss sie als
+    #     eigene READ-ONLY-Gruppe zeigen -- kein lichtIndex, also
+    #     nie per Klick waehlbar. *** Keine festen Zahlen: *** die
+    #     losen OSDs wachsen mit der Mod-Arbeit (am 13.08. kamen
+    #     waehrend des Baus zwei dazu).
+    def nativ_geprueft(r):
+        import json as _j
+        d = _j.loads(r)
+        print(f"NATIVE LICHTER: {r}")
+        pruefe((d.get("nativLichter") or 0) > 0,
+               "native OSD-Lichter in der Szene (nod_fx_light, 662c)")
+        pruefe((d.get("nativBlinkend") or 0) > 0,
+               "Spawner-Stil wird als blinkend erkannt (gen_pole)")
+        pruefe(d.get("nativSichtbar") is True,
+               "native Lichtgruppe ist sichtbar")
+        pruefe(d.get("nativReadOnly") is True,
+               "native Lichtgruppe ist read-only (kein lichtIndex)")
+        pruefe(f.nativ_zaehler.text().endswith("nativ (OSD, read-only)")
+               and not f.nativ_zaehler.text().startswith("0 "),
+               "GUI-Zaehler nennt die nativen Lichter")
+    QTimer.singleShot(12400, lambda: f.blick.page().runJavaScript(
+        "JSON.stringify({nativLichter: window.aqtk.zustand()"
+        ".nativLichter, nativBlinkend: window.aqtk.zustand()"
+        ".nativBlinkend, nativSichtbar: window.aqtk.zustand()"
+        ".nativSichtbar, nativReadOnly: window.aqtk.zustand()"
+        ".nativReadOnly})", nativ_geprueft))
+
+    # 11) Radius-Rueckschreiben (drittes Suchmuster in sco_position,
+    #     der in 658 notierte Ausbau): Wegpunkt waehlen, Radius auf
+    #     500 stellen -- die Aenderung muss in der JS-Map landen,
+    #     der Aenderungstext den WayPoint_SetRadius-Patch nennen,
+    #     und der Speicher-Patch (1h1.sco NUR IM SPEICHER, wie die
+    #     658er-Probe) muss die Rueckleseprobe bestehen. *** Erst
+    #     NACH der Lichter-Probe: *** die prueft geaendert == 0.
+    QTimer.singleShot(12500, lambda: f._js(
+        "window.aqtk.zuObjekt('node297')"))
+
+    def radius_aendern(r):
+        import json as _j
+        d = _j.loads(r) if r and r != "null" else None
+        pruefe(bool(d) and d.get("art") == "wegpunkt",
+               "Radius-Probe: node297 ist wieder gewaehlt")
+        if not d:
+            return
+        f.blick.page().runJavaScript(
+            f"window.aqtk.setzen({d['index']}, "
+            f"{_j.dumps(d['position'])}, {_j.dumps(d['drehung'])}, 500)")
+    QTimer.singleShot(13600, lambda: f.blick.page().runJavaScript(
+        "window.aqtk.auswahl()", radius_aendern))
+
+    def radius_geprueft(r):
+        import json as _j
+        liste = _j.loads(r) if r else []
+        eintraege = [a for a in liste
+                     if (a.get("variable") or a.get("name")) == "node297"]
+        print(f"RADIUS-AENDERUNG: {eintraege}")
+        pruefe(len(eintraege) == 1
+               and eintraege[0].get("radius") == 500
+               and eintraege[0].get("alt_radius") == 350,
+               "Radius 350 -> 500 landet in der JS-Aenderungs-Map")
+        text = f._aenderungstext(liste, [], kurz=True)
+        pruefe("WayPoint_SetRadius(node297, 500)" in text,
+               "Aenderungstext enthaelt den WayPoint_SetRadius-Patch")
+        # Speicher-Patch + Rueckleseprobe wie die 658er-Probe: das
+        # Original-Skript wird gelesen, im SPEICHER gepatcht und
+        # wieder eingelesen -- keine Datei wird angefasst.
+        from aqtk.schreiber import sco_position
+        roh = f.projekt.bestand.lesen("map/1h1/script/1h1.sco")
+        try:
+            neu, bericht = sco_position.anwenden(roh, liste)
+            g = [x for x in bericht["geaendert"]
+                 if x["variable"] == "node297"]
+            pruefe(len(g) == 1 and g[0].get("neu_radius") == 500.0
+                   and g[0].get("alt_radius") == 350.0,
+                   "Speicher-Patch: WayPoint_SetRadius 350 -> 500, "
+                   "Ruecklesen bestanden (Probe 1-3)")
+        except Exception as e:
+            pruefe(False, f"Speicher-Patch: {type(e).__name__}: {e}")
+    QTimer.singleShot(14000, lambda: f.blick.page().runJavaScript(
+        "window.aqtk.aenderungen()", radius_geprueft))
+
+    def radius_ansicht(r):
+        import json as _j
+        d = _j.loads(r)
+        a = d.get("auswahl") or {}
+        print(f"RADIUS-ANSICHT: {r}")
+        pruefe(a.get("radius") == 500, "Auswahl traegt den neuen Radius")
+        pruefe(d.get("radiusKugel") is True,
+               "Drahtkugel ist live nachgezogen")
+    QTimer.singleShot(14300, lambda: f.blick.page().runJavaScript(
+        "JSON.stringify({radiusKugel: window.aqtk.zustand().radiusKugel, "
+        "auswahl: JSON.parse(window.aqtk.auswahl())})", radius_ansicht))
+
     def ende():
         print("\n-- Meldungen --\n" +
               "\n".join(f.meldungen.toPlainText().splitlines()[-6:]))
         print("\n" + ("ALLES OK" if not fehler
                       else f"{len(fehler)} FEHLER: " + "; ".join(fehler)))
         app.quit()
-    QTimer.singleShot(8800, ende)
+    QTimer.singleShot(14700, ende)
 
 
 QTimer.singleShot(1300, lauf)

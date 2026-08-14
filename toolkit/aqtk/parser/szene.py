@@ -34,7 +34,7 @@ class Objekt:
     # var ist der Variablenname aus dem Skript ("node8") -- er ist
     # die EINDEUTIGE Kennung; name ist nur die Beschriftung.
     __slots__ = ("name", "position", "drehung", "osd", "proto", "art",
-                 "var")
+                 "var", "radius")
 
     def __init__(self, name, position=None, drehung=None, osd=None,
                  proto="", art="objekt"):
@@ -46,6 +46,7 @@ class Objekt:
         self.art = art
 
         self.var = None
+        self.radius = None                # aus WayPoint_SetRadius
 
     @property
     def vollstaendig(self):
@@ -61,6 +62,7 @@ class Objekt:
                 "position": list(self.position or (0, 0, 0)),
                 "drehung": list(self.drehung or (0, 0, 0)),
                 "osd": self.osd or "", "art": self.art,
+                "radius": self.radius,
                 "proto": self.proto}
 
 
@@ -115,6 +117,8 @@ def lies(aufrufe):
     reihenfolge = []
     ordner = None
     zaehler = {"Node_CreateNode": 0, "Body_SetCS": 0,
+               "Body_SetPosition": 0, "Position_SetPosition": 0,
+               "WayPoint_SetRadius": 0, "Position_SetRadius": 0,
                "Node_ParseIniFile": 0, "Game_SetLightCache": 0}
 
     # 1) Der Kartenordner. Er steht im ersten Argument nach dem Knoten.
@@ -190,6 +194,44 @@ def lies(aufrufe):
                 ziel.position = v[0]
             if len(v) > 1 and ziel.drehung is None:
                 ziel.drehung = v[1]
+
+        elif f in ("Body_SetPosition", "Position_SetPosition"):
+            # *** WEGPUNKTE SETZEN NUR DIE LAGE. *** Das Muster
+            # (1h1.lua:2286-2304) ist Body_SetPosition(node,
+            # MAT_Vector3(x,y,z)) -- OHNE Drehung. Wer nur Body_SetCS
+            # kennt, laesst sie ohne Position und der vollstaendig-
+            # Filter wirft sie weg. Die Drehung wird auf (0,0,0)
+            # gesetzt, denn genau das bedeutet der Aufruf.
+            #
+            # Position_SetPosition ist dasselbe fuer NOD_Position-
+            # Marker -- dogfight baut seine Renn-Wegpunkte so
+            # (dogfight.lua Z. 362-370: NOD_Position "Waypoint_N"
+            # unter /Scenario_Dynamic/Navigation, Radius 5). Ohne
+            # diesen Zweig haetten die Wegpunkt-Kanten der Karte
+            # keine Endpunkte.
+            zaehler[f] += 1
+            ziel = _ueber_variable(a, nach_var) or aktuell
+            if ziel is None:
+                continue
+            v = _vektoren(a.argumente)
+            if v and ziel.position is None:
+                ziel.position = v[0]
+                if ziel.drehung is None:
+                    ziel.drehung = (0.0, 0.0, 0.0)
+
+        elif f in ("WayPoint_SetRadius", "Position_SetRadius"):
+            # WayPoint_SetRadius(node, 350) -- eine einzelne Zahl,
+            # der Schaltradius des Navigationspunkts.
+            # Position_SetRadius ist das Gegenstueck der
+            # NOD_Position-Marker (dogfight: Radius 5).
+            zaehler[f] += 1
+            ziel = _ueber_variable(a, nach_var) or aktuell
+            if ziel is None:
+                continue
+            for arg in a.argumente[1:]:
+                if isinstance(arg, float):
+                    ziel.radius = arg
+                    break
 
         elif f == "Node_ParseIniFile":
             zaehler["Node_ParseIniFile"] += 1

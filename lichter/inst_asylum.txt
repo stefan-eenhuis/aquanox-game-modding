@@ -1,0 +1,10 @@
+# Eigene Lichtquellen (649/652/655). Aktiv mit AQUANOX_LICHTER=1.
+# Je Zeile: x y z  r g b  intensitaet  radius  modus  periode_ms
+#   modus: 0 = fest, 1 = pulsierend (sinus), 2 = blinkend (an/aus)
+#   Position im WELTRAUM (Z ist oben); wirkt auf die Statics-Umgebung.
+# Bis 16 Zeilen aktiv (Mehrslot 652); Pulse laufen phasenversetzt.
+#
+# 663: Die 11 Signalstab-Lichter sind RAUS -- die Staebe leuchten
+# seit 662c NATIV (nod_fx_light-Block in den gen_pole-OSDs, echtes
+# Engine-Licht, beleuchtet auch Objekte). Diese Datei ist jetzt der
+# Platz fuer ZUSATZ-Lichter aus dem Editor (Lichtquellen-Panel).

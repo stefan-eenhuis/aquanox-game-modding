@@ -30,3 +30,14 @@ ee29ba129831caf0
 f148a9e5afeaf141
 f5242dd73f451fbe
 ff913c674e8ca99b
+# 674 (2026-08-15): Gebaeude-Kaustik-Suche -- KEINE weiteren Hashes.
+# Gemessen: (a) Exe kennt genau EINE Kaustik-Quelle ("caustic\caustic.tse",
+# String 0x60411c); Game_SetCausticTerrain/Object/Building (0x60eba8 ff.)
+# uebergeben nur Staerke+Tempo (Missionswerte: Terrain 0.025, Object 0.1,
+# Building 0.025 / 0.2-0.6), keine Texturpfade. (b) dat\pak\extracted
+# enthaelt nur caus001..032_l2..l6 (4x4..64x64, 160 Dateien), kein bcaus*.
+# (c) Dump-Inventar (225 PNGs, alle Groessen) per 644er-Cluster gegen die
+# 32 Frames geprueft: kein zweiter Kaustik-Cluster (14 Kandidaten unter
+# MAD-75 alle visuell verworfen: Normalmaps, Gestein, Sprites, Selektor).
+# Die 32 Eintraege oben sind vollstaendig. Zeilen mit '#' liest der
+# Wrapper-Lader als 0 und ueberspringt sie (_strtoui64, Basis 16).

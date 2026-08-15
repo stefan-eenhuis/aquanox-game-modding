@@ -26,8 +26,9 @@ for zeile in open(LISTE, encoding="latin-1"):
     else:
         print("fehlt schon:", p)
 
-# leere Ordner aufraeumen (nur die von uns angelegten)
-for rel in (r"vfx\osd\gen", r"vfx\osd"):
+# leere Ordner aufraeumen (nur die von uns angelegten; atl kam mit
+# den Gebaeudelichtern 665 dazu)
+for rel in (r"vfx\osd\gen", r"vfx\osd\atl", r"vfx\osd"):
     d = os.path.join(SPIEL, rel)
     if os.path.isdir(d) and not os.listdir(d):
         os.rmdir(d)

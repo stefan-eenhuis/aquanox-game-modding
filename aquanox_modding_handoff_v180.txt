@@ -50447,3 +50447,1158 @@ _glow2.py/_glow3.py/_glow4.py (Bestand), vorstudie_emitter_exe.py/
 _exe2/_exe3/_exe4.py (Disassemblat), patch_nativlicht.py (666b-
 Fassung); Ausgaben in scratchpad\nativlicht\, Fallback in
 scratchpad\nativlicht_666\.
+
+=====================================================================
+667 -- SYNCHRON-GLOW BESTAETIGT ("sieht klasse aus")
+=====================================================================
+Stefan bestaetigt 666b: Halo-Glow und Licht blinken absolut
+synchron, Optik gefaellt. DAS NATIVE LICHTKAPITEL IST DAMIT
+VOLLSTAENDIG ABGESCHLOSSEN UND DURCHGEHEND BESTAETIGT:
+- statische Lichter (662c): Staebe, atl_dock3 2x rot, gen_kai2
+  orange (Gebaeude-Sichtung durch Stefan steht formal noch aus)
+- blinkende Lichter (663h): NOD_FX_SPAWN-Takt, worldcopy
+- synchroner Glow (666b): Partikelemitter im zweiten Spawn-Slot
+  derselben Uhr, Original-Halo entfernt
+Alles rein aus dem Level-Bestand (lose OSDs, PAK-tauglich);
+Wrapper-Lichter = Editor-Zusatzlichter + weiches Pulsieren.
+Offene Stefan-Urteile: Gebaeudelichter-Sichtung, Langzeit-
+Performance, Fels-an-Haengen (661), Editor-Featureliste (659).
+
+---------------------------------------------------------------------
+667b -- NEUER AUFTRAG NOTIERT: KAUSTIK-ORIENTIERUNG (Stefan)
+---------------------------------------------------------------------
+Stefans Befund (physikalisch praezise): Die Kaustik beruecksichtigt
+die FLAECHENORIENTIERUNG nicht -- Gebaeude-UNTERSEITEN zeigen volle
+Kaustik (dorthin faellt nie von Wellen gebrochenes Sonnenlicht),
+und ein Bomber traegt RINGSHERUM dieselbe Kaustik statt primaer
+auf der OBERSEITE.
+
+LOESUNGSSKIZZE (nach der Terrain-Vollvariante angehen -- der
+laufende 668er-Workflow arbeitet in denselben Wrapper-Dateien):
+- Physik: Faktor = max(N * up, 0) mit N = Flaechennormale, up = +Z;
+  regelbar als AQUANOX_KAUSTIK_RICHTUNG=s mit
+  faktor = (1-s) + s * sat(N.z) (s=0 heutiges Verhalten; kleiner
+  Grundanteil verhindert voellig tote Waende).
+- ERKENNUNG vorhanden: Die 32 Kaustik-Frame-Hashes (kaustik_
+  hashes.txt) + AqKaustikZug()-Mechanik identifizieren die Zuege
+  bereits im Draw-Pfad (Hash an Stufe 0 + Blend).
+- OFFENE PFADFRAGE (zuerst klaeren): Laufen die Kaustik-Zuege
+  durch UNSERE ps_3_0-Pfade (dann Shader-Gate; braucht Kaustik-
+  Flag im Schluessel -- static_assert 38 anpassen!) oder als
+  Fixed Function an allen Pfaden vorbei (619-Befund; dann eigener
+  Mini-PS fuer erkannte Kaustik-Zuege: Textur x N.z-Faktor,
+  braucht die Normale als PS-Eingang und damit den VS3-Partner)?
+  Log-Diagnose analog 650 (Blend/PS-Zustand der Kaustik-Zuege).
+- Gilt fuer STATICS-Kaustik UND SCHIFFS-Kaustik (Bomber-Befund) --
+  beide Zugarten pruefen.
+
+=====================================================================
+668 -- TERRAINMIX-VOLLVARIANTE: DIE ECHTE SELEKTORKARTE (=2)
+=====================================================================
+
+*** ZU TESTEN (Stefan): ***
+AquaNox_PBRDemo.cmd starten (setzt jetzt AQUANOX_TERRAINMIX=2).
+Erwartung: Die Fels/Sand-Grenzen auf dem Terrain folgen den
+GEMALTEN Formen der Originalkarte -- Becken, Haenge und Felszungen
+liegen dort, wo der Editor sie zeigt, nicht mehr nur an steilen
+Stellen. A/B: AQUANOX_TERRAINMIX=1 in der cmd stellt die
+Neigungsheuristik (661) zurueck, 0/leer schaltet den Mix ganz ab.
+Blick besonders auf: (a) sitzen die Felsflaechen deckungsgleich
+mit den steilen Haengen UND den flachen Felsbecken der Karte,
+(b) wandern die Grenzen NICHT beim Umherfliegen (das waere ein
+c7-Fehler), (c) Kachelnaehte des Terrains unauffaellig.
+
+1) FORSCHUNGSGRUNDLAGE (663g/665er-Reihe, verbindlich vermessen):
+   - Der Terrain-Detailzug (Modus 23, Stufen 1, Src=9 Dest=3)
+     bindet den VS rep_terrainprelit_vs_dmfm (0x61C0C8); der
+     schreibt als EINZIGE UV oT0 = (v0.xy + c19) * c20 (Kies-
+     Detail; d3d8.log:8476-8504). Die Selektor-UV der Familie
+     (oT1 = (v0.xy + c15) * c16) schreibt er NICHT -- texcoord2
+     bleibt undeklariert. t2-Weg damit AUSGESCHLOSSEN.
+   - Auf St2 haengt beim Detailzug trotzdem der ENGINE-GEBAUTE
+     Slot-1-Selektor (FELS, A4R4G4B4, 256x256): Dump 633624ac ==
+     flipud(Slot-1-Maske 0x10<=A_roh<0x30) zu 100,00% aller
+     RGBA-Pixel (d3d8.log:13247-13261; Bindeschema sel0@St0/
+     mat0@St1, sel1@St2, mat1@St3; St0 wird vom sichtbaren
+     Detailzug durch material_3 ueberschrieben).
+   - UV-Abbildung Welt -> Selektor: u = x/4096, v = y/4096 OHNE
+     V-Flip -- die hochgeladene Selektortextur behaelt die TGA-
+     DATEIzeilenfolge (bottom-up, Deskriptor 0x08), Dateizeile 0
+     = welt_y 0. (Der V-Flip existiert nur gegenueber top-down-
+     Dekodern wie Pillow; parser/terrain.py Z.184-188: Ursprung
+     (0,0), Offset-Feld NICHT benutzen. 1h1: Kante (1025-1)*
+     Scale 4 = 4096 WE.)
+
+2) UV-WEG-ENTSCHEIDUNG (Weltrekonstruktion statt t0-Abkuerzung):
+   Der bequeme Weg uv_selektor = t0/512 (Material-UV = welt/8)
+   waere NUR korrekt, wenn c19 die volle Objekt->Welt-Verschiebung
+   truege. c19 ist aber fmod-basiert (Kachel-Orchestratoren
+   0x4fbfe0/0x4fc5f0/0x4fc940, Helfer 0x4fd340/0x4fd3e0) -- nur
+   modulo W3=8 eindeutig, je Kachel also um ganze Kacheln
+   verschoben. Deshalb WELTREKONSTRUKTION: t6 (Objektraum-
+   Position, VS3-Zweitfassung haengt sie als oT6 an) und
+   welt = t6 - c7 mit c7 = PrelitKamera - WeltKamera (654er-
+   Verschiebung; exakt fuer nur VERSCHOBENE Statics -- Terrain-
+   Sektoren sind genau das). uv = welt.xy * c6.z (1/4096).
+
+3) SHADERAENDERUNGEN (Generator, Modus-23-TerrainMix-Block):
+   - AqTerrainMixAn (bool) -> AqTerrainMix (int 0/1/2), env
+     AQUANOX_TERRAINMIX=1|2, prozesskonstant, KEIN Schluesselfeld
+     (Cache je Prozess eindeutig); Logzeile im #ifndef-Rahmen.
+   - Kopf bei TerrainMix: def c6 traegt jetzt z = 0.000244140625
+     (1/4096); Vollvariante deklariert zusaetzlich dcl_2d s2
+     (Stufen==1 garantiert: die TexBenutzt-Schleife legt s2 nie
+     selbst an).
+   - Rumpf Vollvariante (ersetzt NUR die Maskenrechnung; Sand/
+     Fels-Sampling und Misch-Schwanz identisch 661):
+         add r26.xy, t6, -c7
+         mul r26.xy, r26, c6.z
+         texld r26, r26, s2
+         mov r23.w, r26.w
+     Gewicht Fels = Alpha der Hartmaske (0xF -> 1.0), an den
+     Kanten durch die bilineare Filterung von selbst weich;
+     Sand = 1 - Fels (im Schwanz als mad-Lerp). X5584 geprueft:
+     je Anweisung hoechstens EIN Konstantenregister.
+   - EINSCHRAENKUNG (dokumentiert): auf den 5-6 Karten mit
+     Slot-2-Anteilen (A_roh>=0x30) faellt Slot 2 in den Sand-
+     Anteil; 1h1 hat 0 Slot-2-Pixel, dort exakt.
+
+4) c7-UPLOAD -- BEWUSSTE ABWEICHUNG VOM PLAN: Der Plan sagte
+   "im 23er-Konstantenblock neben AqLichtUpload" (also im
+   AqKonstSchmutzig-Gatter). Das waere ein Fehler: auch der
+   19er-Pfad und der Lichtpfad VERBRAUCHEN das Schmutzig-Flag,
+   ohne c7 zu schreiben -- laeuft ein Basiszug derselben Kachel
+   zwischen WVP-Upload und Detailzug (kachel-major, genau so
+   zeichnet die Engine), zeichnete der Detailzug mit dem c7 der
+   VORIGEN Kachel: Selektor je Kachel verschoben. Deshalb steht
+   der c7-Upload direkt NACH dem Schmutzig-Block, laeuft vor
+   JEDEM Detailzug (Kosten: 1 Register je Terrain-Zug) und loest
+   AqMatrixSchmutzig selbst auf (der Lichtpfad tut das nicht).
+   Rueckfall ohne gueltige Kameras: c7 = 0 (welt = t6, analog
+   654). Merksatz: EIN FLAG MIT MEHREREN VERBRAUCHERN IST KEIN
+   JE-ZUG-EREIGNIS.
+
+5) PROBEN UND BAU:
+   - 599-Probe offline (scratchpad\pruef_terrainmix_668.py,
+     D3DXAssembleShader): BEIDE Varianten hr=0.
+   - Laut:  MSBuild Release x86 -> bin\Release\d3d8.dll,
+     229.888 B, 1 'Redirecting'-Treffer (erwartet).
+   - Still: $env:CL=/DD3D8TO9NOLOG, OutDir/IntDir ReleaseStill
+     (645b-Schema) -> 196.096 B, 0 'Redirecting'-Treffer
+     (554.3-Gegenprobe bestanden).
+   - Eingespielt: d3d8_mit_log.dll + d3d8_still.dll, je fc /b
+     sauber. AquaNox_PBRDemo.cmd: TERRAINMIX=1 -> 2.
+   - Sicherungen: mod_docu\hook\d3d8to9_device_s668.cpp und
+     d3d8to9_s668.hpp (auch der Header aenderte sich: int-Regler).
+
+6) OFFEN/AUSBAU: c6.x/c6.y (UV-Skalen 8/110, 8/32) und c6.z
+   (1/4096) sind 1h1-Werte aus material.des/terrain.des --
+   Karten mit anderer Groesse/Skala brauchen den CPU-Upload je
+   Karte (gleicher Weg wie c7, dann echtes def raus). Slot-2-
+   Karten (drittes Material) waeren ueber die ROHE material_s
+   (A=Index) oder den Slot-2-Selektor der Engine erreichbar.
+
+=====================================================================
+669 -- KAUSTIK-ORIENTIERUNG (667b): NUR OBERSEITEN; UND DER
+       KAUSTIK-SCHALTER WAR SEIT 650 WIRKUNGSLOS (REPARIERT)
+=====================================================================
+
+*** ZU TESTEN (Stefan): ***
+AquaNox_PBRDemo.cmd starten (setzt jetzt AQUANOX_KAUSTIK_RICHTUNG=
+0.8; die Zeile AQUANOX_KAUSTIK=0 ist RAUS -- sie war seit 650
+ohnehin wirkungslos, siehe 2). Erwartung:
+  a) GEBAEUDE: Unterseiten praktisch OHNE Kaustik (nur 20%
+     Grundanteil), Oberseiten volle Kaustik, senkrechte Waende
+     schwach.
+  b) BOMBER/SCHIFFE: Kaustik primaer auf der OBERSEITE, nicht mehr
+     ringsherum; rollt das Schiff, bleibt "oben" korrekt (Welt-
+     Oberseite, nicht Modell-Oberseite).
+  c) LOG-BEWEIS: d3d8.log muss "AquaNox-KAUSTIK-23: <hash>"
+     (Statics) und "AquaNox-KAUSTIK-S2: <hash>" (Schiffe) zeigen.
+     Fehlt KAUSTIK-23 komplett, feuert das Statics-Gate nie -- dann
+     ist die Modus-23-These widerlegt (siehe Risiken, Punkt 5).
+  d) A/B: AQUANOX_KAUSTIK_RICHTUNG=0 (oder Zeile loeschen) stellt
+     das bisherige Verhalten exakt wieder her. AQUANOX_KAUSTIK=0
+     schaltet die Kaustik jetzt WIRKLICH komplett ab (Screenshot-
+     Werkzeug, 644er-Zweck).
+
+1) DIAGNOSE (verbindlich, mit Belegen) -- ZWEI MECHANISMEN:
+   - STATICS-Kaustik = ein EIGENER 2x-Multiplikationszug
+     (Src=DESTCOLOR/Dest=SRCCOLOR) mit dem animierten Kaustik-
+     Frame auf STUFE 0 und wandernden UVs. Genau diese Signatur
+     uebernimmt seit 614 UNSER Detailpfad (Modus 23) -- die
+     Kaustik der Gebaeude entsteht also in unserem eigenen
+     Shader. STARKE INDIZIENKETTE, kein Direktbeweis: deshalb
+     die Beweis-Logzeile KAUSTIK-23 (einmal je Hash beim
+     Modus-23-Schluesselbau, wenn AqHash0 in der Kaustik-Liste).
+   - SCHIFFS-Kaustik = STUFE 2 IM SCHIFFSZUG SELBST (Modus 5,
+     Hemi=1, Stufen=3; Kette S2 = BLENDTEXTUREALPHA(TEXTURE,
+     CURRENT), Coord=2): unser Stufen-Nachbau blendet den
+     Kaustik-Frame per Textur-Alpha ueber das ganze Schiff.
+     Der Bomber-Befund (667b: Kaustik ringsherum) entsteht in
+     UNSEREM Shader. Beweis-Logzeile KAUSTIK-S2 analog (AqHash2).
+   - AUFLOESUNG 619/646: Der 619-Befund "Blend-Zuege laufen nie
+     durch unsere Pfade" gilt fuer SRCALPHA (Fenster) -- NICHT
+     fuer die Kaustik: der Statics-Kaustik-Zug ist ein DESTCOLOR/
+     SRCCOLOR-Detailzug und laeuft seit 614 durch Modus 23. Die
+     646er-Vermutung, Stefans "dynamische Kaustik" wirke ueber
+     den PRELIT-Pfad (19), ist damit ebenfalls aufgeloest: Prelit
+     nimmt nur DECKENDE Zuege (589) -- die Kaustik lebt im
+     Detailpfad (23) bzw. im Schiffszug (5). Dass die caus-Frames
+     Heuristik-Karten geladen bekommen (644-Nebenfund), bleibt
+     wahr -- wirksam werden die Karten im 23er (NormalKarte-
+     Zweig), nicht im 19er.
+
+2) KAUSTIK=0-ENTHUELLUNG: AQUANOX_KAUSTIK=0 war SEIT 650
+   WIRKUNGSLOS. Die 650er-Verschaerfung des Draw-Skips verlangte
+   Dest==ONE (additiv) -- die echten Statics-Kaustik-Zuege mischen
+   aber DESTCOLOR/SRCCOLOR, und die Schiffs-Kaustik steckt deckend
+   im Hauptzug. Ergebnis: seit 650 lief JEDER Test mit Kaustik,
+   auch die Demos mit gesetztem KAUSTIK=0 (darum "sie war eh an").
+   Stefan MAG die Kaustik (646) -- fuer die Demo war der stumme
+   Schalter also folgenlos; als Werkzeug ist er jetzt repariert.
+
+3) UMBAU (Quelle s669, hpp + device.cpp):
+   a) Kaustik-Hash-Liste (kaustik_hashes.txt) wird IMMER geladen
+      (vorher nur bei KAUSTIK=0) -- sie speist jetzt auch die
+      ERKENNUNG im Schluesselbau. Neuer Stufe-2-Schatten AqHash2
+      (SetTexture analog AqHash0, inkl. Volumen/Wuerfel-Reset und
+      AqDefaults). Neue Regler, beide prozesskonstant:
+      AQUANOX_KAUSTIK_RICHTUNG=s (float 0..1, Vorgabe 0 = wie
+      bisher), AQUANOX_KAUSTIK=0 (jetzt = Kaustik komplett aus).
+   b) AqSchluessel: neues Feld unsigned char Kaustik (0 = keine,
+      1 = Statics-St0-Kaustik, 2 = Schiffs-St2-Kaustik);
+      static_assert 38 -> 39 (nur unsigned chars, keine
+      Fuellbytes). Gesetzt beim Schluesselbau: Modus-23-Zweig mit
+      AqHash0 in der Liste => 1; Modus-5-Kette mit Stufen>=3 und
+      AqHash2 in der Liste => 2. DOKUMENTIERTE ANNAHME: die
+      Kaustik-Stufe der Schiffe IST Stufe 2 (das Gate haengt fest
+      am s==2 im BLENDTEXTUREALPHA-Fall).
+   c) STATICS-GATE (Generator, Modus 23, k.Kaustik==1), am
+      Rumpfende nach Terrainmix/Anti-Kachel/Wandlicht/Lichtern,
+      vor den Kennfarben-Proben: N FRISCH aus t5 normalisiert
+      (r27/r28 -- r0 ist dort gestoert, r20 existiert nur bei
+      NormalKarte; t5 = Objektraum-Normale, Statics sind nur
+      verschoben: Objektraum-Nz == Welt-Nz), f = (1-s) +
+      s*sat(N.z). *** NEUTRALWERT-KRITISCH: r3 = 0.5 +
+      (r3-0.5)*f -- gegen 0.5 lerpen (Neutral der 2x-Modulation),
+      NIEMALS gegen 0 (sonst schwarze Unterseiten). *** mad-
+      Ketten (X5766), je Anweisung ein Konstantenregister
+      (X5584). Bei KAUSTIK=0: r3 = 0.5 fest.
+   d) SCHIFFS-GATE (Generator, Modus 5, k.Kaustik==2): direkt VOR
+      dem BLENDTEXTUREALPHA-lrp der Stufe 2. up = HEMISPHAEREN-
+      ACHSE c13 (je Objekt im Objektraum gesetzt -- korrekt auch
+      bei rollendem Schiff; c13 NICHT im Modus 23 verwenden, dort
+      veraltet): f = (1-s) + s*sat(dp3(N_frisch, c13)), dann
+      r6.w *= f (Alpha 0 = Neutralwert der Stufe, lrp gibt
+      CURRENT zurueck). Bei KAUSTIK=0: r6.w = 0 fest.
+   e) SKIP-REPARATUR: AqKaustikZug() nimmt zusaetzlich den
+      Statics-Fall (AqBlendAn && Src==DESTCOLOR &&
+      Dest==SRCCOLOR && Hash0 in Liste). SRCALPHA (Schiffs-BASIS,
+      die 650er-Regression) bleibt unerreichbar. Die Schiffs-
+      Kaustik ist per Skip prinzipiell NICHT abschaltbar (steckt
+      im Hauptzug -- ein Skip fraesse das ganze Schiff): sie
+      laeuft bei KAUSTIK=0 ueber das d)-Gate mit f=0.
+   f) s und (1-s) als def-LITERALE in den Shaderkopf gebacken
+      (sprintf %.6f, def c32 = s, 1-s, 0.5, 0.0) -- NICHT ueber
+      c5: der "AqModus >= 4"-Konstantenpfad laedt c5 nicht hoch
+      (650-Nebenbefund). c32 kollisionsfrei (defs c1/c3/c6/c30/
+      c31, AqKonst c8..c29, Lichter ab c200).
+   g) Beweis-Logzeilen einmal je Hash (AqTexGesehen-Salz-Muster
+      wie KAUSTIK-SKIP 650; Salze ^0x23CA / ^0x52CA), JEDE
+      Logzeile im #ifndef D3D8TO9NOLOG.
+
+4) PROBEN UND BAU:
+   - 599-Probe offline (scratchpad\pruef_kaustik.py, D3DX-
+     AssembleShader): DREI Shader -- Statics-Gate, Schiffs-Gate,
+     KAUSTIK-AUS-Varianten -- alle hr=0.
+   - Laut:  MSBuild Release x86 -> 232.448 B, 1 'Redirecting'-
+     Treffer (erwartet).
+   - Still: CL=/DD3D8TO9NOLOG, OutDir/IntDir ReleaseStill (645b-
+     Schema) -> 197.632 B, 0 'Redirecting'-Treffer (554.3-
+     Gegenprobe bestanden).
+   - Eingespielt: d3d8_mit_log.dll + d3d8_still.dll, je fc /b
+     sauber. AquaNox_PBRDemo.cmd: KAUSTIK=0 entfernt,
+     KAUSTIK_RICHTUNG=0.8 ergaenzt (kraeftige Orientierung, 20%
+     Grundanteil).
+   - Sicherungen: mod_docu\hook\d3d8to9_device_s669.cpp und
+     d3d8to9_s669.hpp.
+
+5) RISIKEN / GRENZEN (ehrlich):
+   - Die Modus-23-These ist eine INDIZIENKETTE. Feuert das Gate
+     nie, zeigt das Log es sofort (KAUSTIK-23 fehlt) -- dann
+     laeuft die Statics-Kaustik doch an unseren Pfaden vorbei
+     (FF-Verdacht 667b) und braucht die dort skizzierte Mini-PS-
+     Loesung; naechster Schritt waere die Log-Diagnose der
+     Blend/PS-Zustaende analog 650.
+   - Die 32er-Hash-Liste ist Cluster-Indiz (644), kein Pixel-
+     beweis -- Restrisiko einer Kollision bleibt; jede Wirkung
+     ist jetzt aber geloggt (KAUSTIK-23/-S2/-SKIP), diese
+     Fehlerklasse kann nicht mehr unsichtbar werden.
+   - NEUTRALWERT-FALLE BEHOBEN: das Statics-Gate lerpt gegen 0.5
+     (Neutral der 2x-Modulation); ein naiver Faktor gegen 0
+     haette schwarze Unterseiten gemalt.
+   - Schiffs-Annahme "Kaustik = Stufe 2": traegt eine andere
+     Stufe den Frame, bleibt der Zug schlicht unveraendert (kein
+     Schaden, keine Wirkung) -- die S2-Logzeile verraet, ob die
+     Erkennung ueberhaupt anspringt.
+   - Das Statics-Gate moduliert die FERTIGE Zugfarbe -- in
+     Kaustik-Zuegen also auch eventuelle eigene Punktlicht-
+     Beitraege (Beifang, dort gewollt neutralisierbar).
+
+=====================================================================
+670 -- 668/669-REGRESSIONEN: WELTKAMERA-GATE ENTFERNT + c7-RASTERUNG
+       (TERRAIN-RUCKELN); KAUSTIK-TRAEGER-DIAGNOSE -- ALLE 32
+       FRAMES SIND ERSTGEBUNDEN AUF ST=2, NICHT ST=0!
+=====================================================================
+
+*** ZU TESTEN (Stefan): ***
+AquaNox_PBRDemo.cmd starten (cmd unveraendert). Danach BILD und LOG:
+  a) TERRAIN: Ist das Ruckeln weg (Beleuchtung/Kaustik sprang ~2x/s
+     bei Bewegung)? Sitzen die Fels/Sand-Grenzen jetzt fest an den
+     gemalten Formen, auch beim Umherfliegen?
+  b) KAUSTIK-Orientierung: vermutlich WEITER unveraendert (die
+     669er-Gates greifen noch nicht) -- entscheidend ist das LOG.
+  c) LOG-BEWEIS (d3d8.log bitte schicken; alles Einmal-Zeilen):
+     - "AquaNox-TERRAINMIX2: WeltKam=<0/1> PrelitKam=<0/1> c7=..."
+       WeltKam=1 => die Engine setzt VIEW, c7 = womit die Selektor-
+       UV wirklich rechnet; WeltKam=0 => Engine setzt VIEW NIE.
+     - "AquaNox-WELTKAMERA: ..." (sollte jetzt erscheinen).
+     - "AquaNox-KAUSTIK-BIND: <hash> St=<n>" -- jede (Hash,Stufe)-
+       Kombination der 32 Kaustik-Frames (mehrere Stufen moeglich).
+     - "AquaNox-KAUSTIK-ZUG: Modus=<m> St=<s> Hash=<h> Schl=<0/1>"
+       -- Kaustik-Hash in einem Zug UNSERER Pfade (23 = Detail,
+       5 = Licht/Schiff); Schl=0 heisst: der Schluesselbau lehnte
+       ab und der Zug lief still als Fixed Function weiter.
+     - KAUSTIK-23 / KAUSTIK-S2 wie gehabt (erwartet weiter 0x,
+       solange die Erkennung an St0 bzw. Modus-5+St2 haengt).
+
+1) BEFUNDE AUS STEFANS 668/669-LAUF (Log 19:03 + Quellenpruefung):
+   a) S2-GATE-REIHENFOLGE-VERDACHT (597er-Klasse) GEPRUEFT UND
+      WIDERLEGT: AqBaueSchluessel setzt k.Modus SELBST als erste
+      Zuweisung (k.Modus = AqModus, device.cpp Z. 4657; Demo
+      prozesskonstant 5). Nur Prelit/Detail UEBERSCHREIBEN den
+      Modus nach dem Bau (19/23); der Licht-Pfad laesst ihn
+      stehen. Beide 669er-Gates (23er ~Z. 4112, S2 ~Z. 4286)
+      sitzen nach der Modusvergabe und VOR AqHolePS -- die
+      Reihenfolge ist korrekt, hier liegt KEIN 597er-Fehler
+      (Code-Kommentar an der S2-Stelle haelt das jetzt fest).
+      Dass die Gates schweigen, ist ein TRAEGER-Problem (1d).
+   b) WELTKAMERA 0x ERKLAERT -- ES WAR UNSER EIGENES GATE: Das
+      Demo-Level inst_asylum laedt 0 eigene Lichter ("AquaNox-
+      LICHTER: 0 geladen"; die Datei enthaelt seit 663 nur noch
+      Kommentare, die Signalstaebe leuchten nativ). Damit war
+      AqLichterAn=false, und der SetTransform-Hook hat die VIEW-
+      Matrix wegen "&& AqLichterAn" NIE erfasst -- c7 blieb den
+      ganzen Lauf auf dem 0-Rueckfall. OB die Engine VIEW
+      ueberhaupt setzt, ist damit weiterhin UNBEANTWORTET; genau
+      das beantwortet jetzt die TERRAINMIX2-Zeile.
+   c) TERRAIN-RUCKELN KAM NICHT VON c7: c7 war konstant 0 -- eine
+      Konstante kann nicht ruckeln. Mechanismus ist der 668/2-
+      fmod-Befund selbst: welt = t6 - 0 = t6, und t6 (Objektraum)
+      SPRINGT, wenn die Engine den Sektorursprung neu verankert
+      (Kachel-Orchestratoren) -- das geschieht nur bei Bewegung
+      und in diskreten Schritten: exakt Stefans "nur bei
+      Bewegung, ~2x pro Sekunde, ruckelnd". (Die eigenen Lichter
+      waren mit 0 Stueck unbeteiligt; "Beleuchtung aendert sich"
+      = der springende Materialmix samt Kaustik-Eindruck. Auch
+      der Anti-Kachel-Term liest t6 und sprang mit.) Mit
+      GUELTIGER Weltkamera hebt sich der Sprung exakt auf:
+      springt der Sektorursprung, springen PrelitKamera und damit
+      c7 identisch mit -- welt = t6 - c7 bleibt stetig.
+   d) NEUER KERNBEFUND (Abgleich TEXTUR-Zeilen des 19:03-Logs
+      gegen kaustik_hashes.txt): ALLE 32 Kaustik-Frames haben
+      ihre ERSTBINDUNG auf St=2 (64x64), KEINER auf St=0. Die
+      669er-Statics-These (Frame auf St0 eines eigenen 2x-Zugs)
+      ist damit stark geschwaecht; die heisse Spur ist STUFE 2 --
+      vermutlich als Stufe IM Statics-/Detailzug (wie beim
+      Schiff; 649: Station-Detailzug 0b64fc55... mit
+      BLENDTEXTUREALPHA-Stufen). Dann greifen BEIDE 669er-Gates
+      prinzipbedingt nicht: das 23er prueft nur St0 (AqHash0),
+      das S2er nur Modus 5. Vorsicht: das TEXTUR-Log meldet nur
+      die ERSTE Bindung je Hash -- ob die Frames JE auf anderen
+      Stufen erscheinen, zeigt erst das neue KAUSTIK-BIND.
+
+2) FIX WELTKAMERA (Regression seit 654, sichtbar seit 668): Im
+   SetTransform-Hook ist "&& AqLichterAn" ENTFERNT -- die VIEW-
+   Matrix wird IMMER erfasst (Kosten: eine 3x3-Multiplikation je
+   VIEW-Set). Kommentar angepasst: auch der 668er-Terrainmix
+   braucht die Weltkamera, nicht nur die eigenen Lichter.
+   MERKSATZ: EIN GATE, DAS FUER VERBRAUCHER A GEBAUT WURDE,
+   VERHUNGERT STILL JEDEN SPAETEREN VERBRAUCHER B.
+
+3) FIX TERRAIN-RUCKELN TEIL 2 -- c7-RASTERUNG (654er-Zeitversatz-
+   Falle, praeventiv): Sobald die Weltkamera erfasst wird, truege
+   c7 = PrelitKam - WeltKam die Kamerabewegung seit dem letzten
+   VIEW-Set (WeltKam nur im VIEW-Takt frisch, PrelitKam je Zug)
+   -- die Selektor-UV spraenge im VIEW-Takt. GEGENMITTEL: c7.xy
+   wird auf das 4-WE-Raster gerundet (floorf(v/4+0.5)*4).
+   BEGRUENDUNG: die wahre Differenz ist ein Sektorursprung, und
+   jeder Sektorursprung liegt auf dem Vertexraster des Terrains
+   (terrain.des Scale 4; 1h1: 1024*4 = 4096 WE, 4 teilt 4096) --
+   Rundung auf 4 ist fuer jede ECHTE Verschiebung exakt und
+   schluckt Kameradrift bis +-2 WE. 8 waere UNBEWIESEN: laegen
+   alle Urspruenge auf dem 8er-Raster, waere das fmod-c19 der
+   Engine sinnlos. z bleibt roh (der Shader liest c7 nur als .xy;
+   Hoehen liegen nicht auf dem 4er-Raster). VERWORFEN: "c7 je
+   Kachel-Matrix einfrieren (Cache ueber AqVSMatrixReg-Inhalt)"
+   -- die WVP-Matrix enthaelt die View und aendert sich mit JEDEM
+   Frame, der Cache traefe nie; zudem froere er den Drift des
+   Ersttreffers ein. Rundung ist robuster UND billiger. GRENZE:
+   kommt zwischen VIEW-Set und Terrainzug mehr als 2 WE Bewegung
+   zusammen, liegt c7 um 4er-Schritte daneben (fester Versatz der
+   Grenzen, KEIN Springen im Sektortakt mehr); die TERRAINMIX2-
+   Zeile liefert den c7-Istwert zur Beurteilung. AqLichtUpload
+   rundet BEWUSST NICHT: es laeuft auch fuer Schiffe (rotiert,
+   Ursprung nicht rasterbar), und ein Sub-WE-Drift ist in einem
+   stetigen Abstandsabfall unsichtbar.
+
+4) DIAGNOSE-INSTRUMENTE (jede Zeile im #ifndef D3D8TO9NOLOG):
+   a) KAUSTIK-BIND (SetTexture): fuer die 32 Kaustik-Hashes
+      einmal je (Hash,Stufe)-KOMBINATION "AquaNox-KAUSTIK-BIND:
+      <hash> St=<n>" (Salz Hash^Stage^0xB1D, AqTexGesehen-
+      Muster). Hebt die Nur-Erstbindung-Blindheit des TEXTUR-
+      Logs auf (das 1d ueberhaupt erst als Luecke entlarvte).
+   b) KAUSTIK-ZUG (Detail- UND Licht-Pfad): einmal je (Modus,
+      Stufe,Hash), wenn IRGENDEINE Stufe 0..3 des Zugs einen
+      Kaustik-Hash traegt: "AquaNox-KAUSTIK-ZUG: Modus=<m>
+      St=<s> Hash=<h> Schl=<0/1>". BEWUSST VOR der Ablehnungs-
+      behandlung des jeweiligen Pfads: Schl=0 = "Schluesselbau
+      lehnte ab, Zug lief als FF" -- der bisher unsichtbare
+      Fall. Neuer Stufe-3-Schatten AqHash3 (SetTexture analog
+      AqHash2 inkl. Loesen/Volumen/Wuerfel/AqDefaults; die
+      Terrain-Kette traegt material_1 auf St3); Stufe 1 aus
+      AqStufe1Tex->AqHash. Salz Hash^(Modus<<16)^(St<<8)^0x26A.
+   c) TERRAINMIX2 (Detailpfad, nur AQUANOX_TERRAINMIX=2): einmal
+      beim ERSTEN ECHTEN Terrainzug (gleiche Signatur wie der
+      TerrainMix-Block des Generators: Stufen=1, NormalKarte,
+      Tex0=2D, SELECTARG2 -- Stationen laufen auch durch Modus
+      23, deren c7 interessiert nicht): "AquaNox-TERRAINMIX2:
+      WeltKam=<0/1> PrelitKam=<0/1> c7=<x,y,z>" (c7 NACH der
+      Rundung, also der wirklich hochgeladene Wert).
+
+5) ERWARTUNGSBILD / ENTSCHEIDUNGSBAUM FUER DEN NAECHSTEN LAUF:
+   - TERRAINMIX2 WeltKam=1 UND Ruckeln weg => 668er-Weg steht.
+   - TERRAINMIX2 WeltKam=0 => die Engine setzt VIEW nie; c7
+     braucht eine andere Quelle (Kandidat: Weltkamera aus der
+     WVP-Matrix eines bekannten W=I-Zugs abgreifen).
+   - KAUSTIK-BIND nur St=2 UND KAUSTIK-ZUG Modus=23 St=2 =>
+     Statics-Kaustik ist eine STUFE im Detailzug: das 23er-Gate
+     von AqHash0 auf die Traegerstufe umbauen -- als STUFEN-Gate
+     (Alpha/lrp wie beim Schiff), nicht als Ganzzug-Modulation.
+   - KAUSTIK-BIND vorhanden, aber KEIN KAUSTIK-ZUG => die
+     Kaustik laeuft an unseren Pfaden vorbei (FF-Verdacht 667b)
+     => Mini-PS-Loesung; Blend-/PS-Zustands-Diagnose analog 650.
+   - KAUSTIK-ZUG mit Schl=0 => Whitelist-Ablehnung; die
+     AqLogAblehnung-Zeilen daneben nennen den Grund.
+   - KAUSTIK-ZUG Modus=5 St=2 mit Schl=1, aber KAUSTIK-S2
+     weiter 0x => dann (und erst dann) ist die S2-Erkennung
+     selbst kaputt -- mit Zeile in der Hand gezielt nachfassen.
+
+6) PROBEN UND BAU: KEINE Shaderaenderung (alles CPU-seitig),
+   darum keine 599-Offlineprobe noetig.
+   - Laut:  MSBuild Release x86 -> bin\Release\d3d8.dll,
+     234.496 B, 1 'Redirecting'-Treffer (erwartet).
+   - Still: CL=/DD3D8TO9NOLOG, OutDir/IntDir ReleaseStill
+     (645b-Schema) -> 198.144 B, 0 'Redirecting'-Treffer
+     (554.3-Gegenprobe bestanden).
+   - Eingespielt: d3d8_mit_log.dll + d3d8_still.dll, je fc /b
+     sauber. AquaNox_PBRDemo.cmd unveraendert.
+   - Sicherungen: mod_docu\hook\d3d8to9_device_s670.cpp und
+     d3d8to9_s670.hpp (Header: AqHash3, AqTerrainMix2Gemeldet).
+
+---------------------------------------------------------------------
+671b -- GEPARKT: LARGEADDRESSAWARE (Stefans Entscheid: To-Do, noch
+        nicht angehen)
+---------------------------------------------------------------------
+Hintergrund (Stefans Frage nach 64 Bit / Speicher): 64-Bit-
+Umstellung ist ohne Quellcode praktisch unmoeglich (Neuimplemen-
+tierung). 32-Bit-Prozess hat standardmaessig 2 GB Nutzeranteil;
+mit LARGEADDRESSAWARE-Flag im PE-Header unter 64-Bit-Windows
+4 GB. Plan (bei Freigabe): Backup Aqua_original.exe anlegen,
+Flag setzen (Ein-Bit-Patch der PE-Characteristics bzw. editbin
+/LARGEADDRESSAWARE), einmal normaler Testdurchlauf. Restrisiko:
+Uralt-Code mit Zeiger-Annahmen oberhalb 2 GB (selten). WICHTIG:
+Erste Aenderung an der Exe-DATEI selbst -- nur mit Stefans
+explizitem Go. Einordnung: Aktueller Bedarf weit unter 2 GB;
+LAA ist Polster fuer LOD/Sichtweite/Texturen, kein Blocker.
+
+=====================================================================
+671 -- KAUSTIK-GATE MIT DYNAMISCHER STUFE + TERRAINMIX-VOLLVARIANTE
+       AUF c15/c16-SPIEGELUNG (MESSLAUF 23:49 AUSGEWERTET)
+=====================================================================
+
+*** ZU TESTEN (Stefan): ***
+AquaNox_PBRDemo.cmd starten (setzt wieder AQUANOX_KAUSTIK_RICHTUNG=
+0.8 -- die Sofortmassnahme "Richtung aus" ist raus, das Gate ist
+jetzt stufenrichtig). Danach BILD und LOG:
+  a) BOMBER/SCHIFFE: Texturmischung wieder NORMAL (669er-Regression
+     weg)? UND Kaustik primaer auf der OBERSEITE, nicht mehr rings-
+     herum; rollt das Schiff, bleibt "oben" korrekt (Welt-Oben)?
+  b) STATICS/GEBAEUDE: Unterseiten praktisch ohne Kaustik (20%
+     Grundanteil), Oberseiten voll, senkrechte Waende schwach?
+  c) TERRAIN: Fels/Sand-Grenzen an den GEMALTEN Formen der Karte,
+     und RUHIG beim Umherfliegen (kein Springen im Sektortakt)?
+  d) LOG-BEWEIS (d3d8.log bitte schicken):
+     - "AquaNox-KAUSTIK-GATE: Modus=<m> St=<s> Op=<op>" -- einmal je
+       Kombination; erwartet Modus=5 und Modus=23 mit WECHSELNDEN
+       Stufen (0..2) und Ops (die 670er-KAUSTIK-ZUG-Vielfalt).
+     - "AquaNox-KAUSTIK-OP-UNBEKANNT: ..." -- sollte FEHLEN; taucht
+       sie auf, traegt ein Zug die Kaustik auf einer Op, die das
+       Gate bewusst NICHT anfasst (konservativ, Zug unveraendert).
+     - "AquaNox-TERRAINMIX2: c15=<x,y> c16=<x,y> frisch=<f><f>" --
+       die NEUEN gespiegelten Werte; Erwartung: frisch=11 und c16
+       in der Selektor-Skala (1h1-Plausibilitaet: Groessenordnung
+       1/4096 = 0.000244 -- tatsaechlich einfach ablesen).
+       frisch=00 hiesse: die Engine laedt c15/c16 nie -> These
+       widerlegt, Selektor saehe einfarbig aus (EIN Texel).
+  e) A/B: AQUANOX_KAUSTIK_RICHTUNG=0 stellt das ungerichtete
+     Verhalten exakt her; AQUANOX_KAUSTIK=0 schaltet die Kaustik
+     ganz ab (jetzt op-richtig neutral je Traegerstufe).
+
+1) MESSDATEN DES 23:49-LAUFS (d3d8.log, Grundlage beider Umbauten):
+   - KAUSTIK-BIND: ALLE 32 Kaustik-Frames binden an St=0 UND St=1
+     UND St=2 (je 32x) -- die Kaustik-Stufe ist JE ZUG VERSCHIEDEN.
+   - KAUSTIK-ZUG: Kombinationen Modus=5 St=0/1/2 und Modus=23
+     St=1/2, ALLE Schl=1 (kein FF-Rueckfall; die Zuege laufen
+     durch unsere Pfade).
+   - TERRAINMIX2: WeltKam=0 PrelitKam=1 c7=0,0,0 -- die Engine
+     setzt SetTransform(VIEW) NIE; der 668er-Kamera-Weg ist TOT
+     (c7 blieb den ganzen Lauf auf dem 0-Rueckfall).
+   - Stefans Bomber-Regression bestaetigt erklaert: das 669er-
+     S2-Gate (feste Stufe-2-Annahme) dimmte die FALSCHE Stufe ->
+     Texturmischung kippte. (Sofortmassnahme war RICHTUNG=0.)
+
+2) UMBAU 1 -- KAUSTIK-GATE MIT DYNAMISCHER STUFE (Quelle s671):
+   a) Schluessel: unsigned char KaustikStufe ersetzt das 669er-Feld
+      Kaustik (255 = keine, sonst 0..3 = die ERSTE Kettenstufe,
+      deren Hash in der Kaustik-Liste steht; Stufen-Schatten
+      AqHash0 / AqStufe1Tex->AqHash / AqHash2 / AqHash3, nur
+      2D-Stufen k.Tex==1). static_assert bleibt 39 (Feld ersetzt
+      Feld, geprueft). *** FALLE VERMIEDEN: nach dem memset wird
+      EXPLIZIT 255 gesetzt -- 0 ist jetzt eine GUELTIGE
+      Stufennummer, das memset-0 haette jedem Zug ein Stufe-0-
+      Gate verpasst. *** Gilt fuer ALLE uebernommenen Modi
+      (5, 19, 23 -- nicht nur 5/23; die Messdaten zeigen die
+      Vielfalt; Erkennung sitzt in AqBaueSchluessel selbst).
+   b) Generator: das Orientierungs-Dimmen sitzt IN der Stufen-
+      Nachbau-Schleife DIREKT nach dem texld der Traegerstufe
+      (s == k.KaustikStufe) und wirkt auf den TEXEL r6,
+      OP-ABHAENGIG am Neutralwert der Stufe:
+        BLENDTEXTUREALPHA: r6.w *= f (Neutral 0, lrp gibt
+          CURRENT zurueck).
+        MODULATE:   r6.rgb = 1.0 + (r6.rgb - 1.0)*f (Neutral 1).
+        MODULATE2X: r6.rgb = 0.5 + (r6.rgb - 0.5)*f (Neutral 0.5
+          -- NIEMALS gegen 0, 669er-Lehre; mad-Ketten, X5766).
+        ADD und Stufe-0-SELECTARG (Kaustik als Basis, z. B.
+          additive Overlays): r6.rgb *= f (Neutral 0).
+      NUR dokumentierte Ops werden gebaut; alles andere
+      (MODULATEALPHA_ADDCOLOR, SELECTARG jenseits Stufe 0) ->
+      Gate NICHT anwenden (konservativ) + Einmalzeile
+      "KAUSTIK-OP-UNBEKANNT: Op=<o> St=<s> Modus=<m>". ADDSIGNED
+      steht nicht in der Schluesselbau-Whitelist -- der Fall kann
+      das Gate nie erreichen (dokumentiert, kein Code). Nur
+      ps_3_0-Familie (r27/r28 existieren in ps_2_0 nicht); je
+      Anweisung EIN Konstantenregister (X5584).
+   c) Up-Vektor je Modus: Modus 5 -> c13-Hemi-Achse (je Objekt im
+      Objektraum, rollfest); Modus 19/23 -> frisch normalisierte
+      t5-Normale, N.z (Statics nur verschoben, Objektraum-Nz ==
+      Welt-Nz; c13 dort veraltet -- 669er-Befund). f = (1-s) +
+      s*sat(up-Anteil), s/(1-s) als def-Literale in c32 (Kopf,
+      jetzt an KaustikStufe != 255 gebunden); AQUANOX_KAUSTIK=0
+      -> f fest 0 = op-richtiger Neutralwert direkt.
+   d) AUSGEBAUT: das 669er-S2-Gate im BLENDTEXTUREALPHA-Fall und
+      das Statics-Ganzzug-Gate am Rumpfende (ein Ganzzug-Dimmen
+      haette Material-Mischstufen desselben Zugs mitorientiert --
+      exakt der Bomber-Fehler). Beweiszeilen KAUSTIK-23/-S2
+      ersetzt durch "KAUSTIK-GATE: Modus=<m> St=<s> Op=<op>"
+      einmal je Kombination (Salz 0x6A7E<<40 ^ Modus<<16 ^
+      St<<8 ^ Op, AqTexGesehen-Muster), in ALLEN drei Pfaden
+      (Prelit/Detail/Licht), jede Zeile im #ifndef-Rahmen.
+
+3) UMBAU 2 -- TERRAINMIX-VOLLVARIANTE AUF c15/c16-SPIEGELUNG
+   (der 668er-Forschungs-Alternativweg, nach dem WeltKam=0-Beweis
+   jetzt Pflicht):
+   a) SetVertexShaderConstant-Hook schattet vs c15/c16 (AqVSC15/
+      AqVSC16 + Frische-Flags AqVSC15Gueltig/AqVSC16Gueltig;
+      Muster wie der c2-Schatten daneben). Dort laedt die Engine
+      die Parameter ihrer Selektor-UV-Formel der Terrain-Familie
+      (oT1 = (v0.xy + c15) * c16) hoch.
+   b) 23er-Bindungspfad (TERRAINMIX=2): statt der c7-Kamera-
+      Differenz jetzt c7 = (c15.x, c15.y, c16.x, c16.y) als EIN
+      ps-Register, weiterhin vor JEDEM Detailzug (668/4-Lehre:
+      EIN FLAG MIT MEHREREN VERBRAUCHERN IST KEIN JE-ZUG-
+      EREIGNIS). Die Kamera-Logik samt 670er-4-WE-Rasterung ist
+      fuer diesen Pfad AUSGEBAUT (Kommentar an der Stelle).
+   c) Shader: uv = (t6.xy + c7.xy) * c7.zw -- exakt die Engine-
+      Formel (t6 = v0 durchgereicht; c7.zwzw bedient die .xy-
+      Maske). X5584 geprueft: c7 je Anweisung einmal (zwei
+      Anweisungen). KEIN V-Flip (668-Befund). c6.z (1/4096)
+      bleibt als unbenutzter Platzhalter-def.
+   d) TERRAINMIX2-Logzeile loggt jetzt die gespiegelten c15/c16
+      samt Frische-Flags beim ersten echten Terrainzug.
+      Rueckfall: ohne je gesehene c15/c16 ist c7 = 0 -> uv
+      konstant 0, Selektor liefert EIN Texel -- sichtbar
+      einfarbig statt still falsch verschoben.
+
+4) PROBEN UND BAU:
+   - 599-Probe offline (scratchpad\pruef_kaustik2.py, D3DX-
+     AssembleShader): SIEBEN Shader -- Gate BTA(Modus 5)/MODULATE/
+     MODULATE2X/ADD/SELECT0, die vier KAUSTIK-AUS-Neutralwerte,
+     die neue TERRAINMIX2-UV samt Misch-Schwanz -- ALLE hr=0.
+   - Laut:  MSBuild Release x86 -> bin\Release\d3d8.dll,
+     235.520 B, 1 'Redirecting'-Treffer (erwartet).
+   - Still: CL=/DD3D8TO9NOLOG, OutDir/IntDir ReleaseStill (645b-
+     Schema) -> 198.144 B, 0 'Redirecting'-Treffer (554.3-
+     Gegenprobe bestanden).
+   - Eingespielt: d3d8_mit_log.dll + d3d8_still.dll, je fc /b
+     sauber. AquaNox_PBRDemo.cmd: die 671-rem-Zeile ersetzt durch
+     "set AQUANOX_KAUSTIK_RICHTUNG=0.8".
+   - Sicherungen: mod_docu\hook\d3d8to9_device_s671.cpp und
+     d3d8to9_s671.hpp.
+
+5) RISIKEN / GRENZEN (ehrlich):
+   - c15/c16-These: dass die Engine die Selektor-Parameter auch
+     beim dmfm-Detail-VS hochlaedt, ist ein Familien-Indiz --
+     frisch=00 oder unplausible Werte in der TERRAINMIX2-Zeile
+     widerlegen sie sofort (und das Bild zeigte es als
+     einfarbigen Selektor, nicht als stilles Falsch).
+   - Traegt ein Zug Kaustik-Frames auf ZWEI Stufen (Messdaten
+     legen das fuer Modus 23 St1+St2 nahe), dimmt das Gate nur
+     die ERSTE -- bewusste Vereinfachung; die KAUSTIK-GATE-
+     Zeilen zeigen, welche Kombinationen wirklich laufen.
+   - Modus-5-Zuege mit Kaustik auf Stufe 0 sind vermutlich
+     additive Overlays (Dest=ONE): dort ist Neutral 0 exakt
+     richtig; c13 als Up traegt nur bei gesetzten Hemi-
+     Konstanten (Schiffe: ja; Overlays erben notfalls das c13
+     des letzten Hemi-Objekts -- Restrisiko, im Bild als
+     falsch orientierte Overlay-Kaustik erkennbar).
+   - Das Gate dimmt NUR die Traegerstufe -- Material-Mischstufen
+     desselben Zugs bleiben unangetastet (der 669er-Bomber-
+     Fehler ist damit strukturell ausgeschlossen).
+
+
+
+================================================================================
+672. TERRAIN-LOD: DIE STUFENWAHL IST GEMESSEN -- UND DIE
+     DREI WEGE, SIE STILLZULEGEN
+================================================================================
+
+    (Exe-Analyse Sitzung 2026-08-15; 527-Fallen vorab
+    gelesen; Nummer 672 beim Append vergeben. Auftrag:
+    das Gelaende baut sich beim Annaehern sichtbar auf,
+    Wunsch ist volle Aufloesung initial und immer.)
+
+    Seit Weitsicht Stufe 2 (551, Nebel 2000) ist der
+    Uebergang sichtbarer als je im Original -- der Nebel
+    bei 500 hat ihn frueher versteckt.
+
+672.1 DIE MECHANIK, AM DISASSEMBLAT GEMESSEN
+--------------------------------------------------------------------------------
+
+    Kette: ren_terrain_lod -> Ringbreite W -> pro Bild
+    Neu-Triangulierung nach Distanz und D2-Fehlermass.
+
+    a) ren_terrain_lod wird fuer das Rendern GENAU EINMAL
+       gelesen, im NOD_Terrain-Konstruktor 0x00442680:
+         0x00442746  push 0x60a018    "ren_terrain_lod"
+         0x0044274b  call 0x521520    MOS_CVar::Find
+         0x00442755  mov [ebx+0x4f0], eax    Zeigercache
+         0x0044275b  call 0x520f10    S32_Get
+         0x00442760  cmp  eax, 9
+         0x00442763  ja   0x442b10           Default
+         0x00442769  jmp  [eax*4+0x442b38]   Sprungtabelle
+       Die anderen Stringverweise (0x59616e Setzer,
+       0x596a56 Leser) sind das Leistungsmenue.
+
+    b) Sprungtabelle 0x00442b38, 10 Eintraege, W=100+15n,
+       jeder Zweig als Float-Immediate verifiziert:
+       100/115/130/145/160/175/190/205/220/235.
+         lod 9:  0x00442b09  push 0x436b0000  (235.0)
+         lod >9: 0x00442b10  push 0x42c80000  (100.0)
+       *** WER ren_terrain_lod AUF 10+ SETZT, BEKOMMT DEN
+       DEFAULT = 100.0 = DIE SCHLECHTESTE STUFE. Die
+       plant_detail-Regel "ueber 9 harmlos" (550.3) gilt
+       hier NICHT. *** config_1_18.txt steht auf 9
+       (geprueft 2026-08-15) -- der CVar-Weg ist zu.
+
+    c) W fuellt die Ringtabelle NOD_Terrain+0x324:
+       60 Floats (alle = W), +0x414 = W, +0x418 = 60*W
+       (lod 9: 14100). Fueller FUN_00443b90 (lod 9 und
+       Default), lod 0..8 inline. Kein zweiter Schreiber
+       -- deckt sich mit 550.1a, keine Bildratenregelung.
+
+    d) Verbrauch in FUN_004431b0 (einziger Aufrufer
+       0x442e37 in FUN_00442e00; vtable-getrieben ueber
+       den Trigger NOD_Terrain+0x4ec, bei bewegter Kamera
+       praktisch jedes Bild):
+         - 6 Frustumebenen, jede um 100.0 ([0x5f34a8])
+           nach aussen, an MRT_Terrain (call 0x502e00)
+         - 0x0044335c fld [ebx+0x414]:
+           MRT+0x258 = W*W (1.0 falls W<=1)
+           MRT+0x254 = (MRT+0x244 + MRT+0x248)*W*0.5
+         - Aqua_Renderer::Terrain_Triangulate 0x0040e290:
+           das Gelaende wird JEDES BILD neu trianguliert
+           (kontinuierliches LOD, D2-Feld aus CreateD2/
+           PropagateD2, 502). Das "Aufbauen" IST diese
+           Verfeinerung; volle Aufloesung reicht nur
+           ~1 Ringbreite (235 WE) weit.
+
+    e) terrain.des-Ziele im MRT_Terrain (Parse-Stellen
+       0x5030cb..0x50315c, bestaetigt 520): +0xf8 MinRes,
+       +0x100 MaximumD2, +0xf0 RestrictedQuadTree,
+       +0xf4 TriangulationMode, +0x870 NumOfTriMaps.
+       MinimumResolution geht PRO BILD in die Kachel-
+       Triangulierung (FUN_00503a60 reicht [MRT+0xf8] an
+       FUN_00500560).
+       *** FALLE 527.1 KONKRET GEFANGEN: [x+0xf0]/[x+0xf4]
+       heisst im MRT_Terrain RestrictedQuadTree/Triangu-
+       lationMode, in der NOD-Ringtabelle W/60*W --
+       gleiche Versaetze, verschiedene Objekte. ***
+
+672.2 DIE DREI WEGE, NACH RISIKO
+--------------------------------------------------------------------------------
+
+    (a) CVAR: AUSGEREIZT. 9 ist Tabellenmaximum, >9
+        verschlechtert (s.o.).
+
+    (b) terrain.des, lose Datei, je Karte testbar:
+        b1: MinimumResolution 15.0 -> 10.0 (der auskommen-
+            tierte Entwicklerwert, 550.8). Hebt die Grund-
+            aufloesung, verkleinert den Sprung; ~2,25x
+            Dreiecke gegen heute.
+        b2: MaximumD2 senken (100.0 -> 10.0). HYPOTHESE:
+            kleiner Nenner saettigt das D2-Feld (Klemme
+            1.0), Fernnetz wird dichter. Vorzeichen NICHT
+            am Code bewiesen -- nur als Einzeltest.
+        Beide beheben das DISTANZ-Popping nicht ganz,
+        denn W steht nicht in den Daten.
+
+    (c) CODEPATCH, MINIMAL: Float-Operand des lod-9-Zweigs
+        bei VA 0x00442b0a (Dateioffset 0x42b0a, Bytes
+        00 00 6B 43 = 235.0). Stufen: 470.0 = 00 00 EB 43
+        (EIN Byte Differenz), 1000.0 = 00 00 7A 44.
+        Bevorzugt in-memory aus der Hook-DLL vor dem
+        ersten Kartenladen (Konstruktor laeuft je Level);
+        ren_terrain_lod bleibt 9; Ruecknahme = Bytes
+        zurueck. NICHT 0x5f34a8 (100.0) patchen: doppelt
+        genutzt (Frustum-Marge UND lod-0-Faktor).
+
+672.3 RISIKEN UND EMPFEHLUNG
+--------------------------------------------------------------------------------
+
+    - Neu-Triangulierung laeuft pro Bild auf der CPU
+      (x87, ein Thread); Last ~quadratisch mit W bzw.
+      (1/MinRes)^2. Die GPU langweilt sich, die CPU nicht.
+    - Harte Grenze 16384 Vertices/Dreiecke je Teilstueck,
+      TERMINATION "terrain triangulation failed - vertex
+      overflow" (502) -- Absturz, kein Degradieren.
+    - 32 Bit ohne LAA (~1,7 GB, 550.11): Symptom Absturz
+      beim Laden oder in der Mission.
+
+    REIHENFOLGE: 1. b1 auf EINER Karte (1h1, lose Datei),
+    Anflugtest Missionsstart Nachtschicht. 2. b2 ebenda
+    als getrennter Versuch, Ergebnis festhalten. 3. Erst
+    wenn Distanz-Popping bleibt: Patch (c), erst 470.0,
+    Mission durchspielen, dann 1000.0. 4. NIE >9 in die
+    config. OFFEN: die exakte Verfeinerungsformel in
+    FUN_00500560/FUN_00501ca0 -- fuer die drei Wege nicht
+    noetig, fuer Ringe-einzeln-Steuern schon.
+
+---------------------------------------------------------------------
+672b -- LOD-SCHRITT 1 EINGESPIELT: MinimumResolution 15 -> 10
+---------------------------------------------------------------------
+Konsequenz aus 672: In der LOSEN map\1h1\terrain\terrain.des (vom
+Weitsicht-Erbe, gilt auch fuer inst_asylum -- Leih-Terrain) ist
+MinimumResolution auf den originalen Entwicklerwert 10.0 gestellt
+(auskommentiert stand er direkt darueber). ~2.25x Dreiecke,
+kleinerer Aufbau-Sprung. MaximumD2 bewusst unangetastet (672er-
+Schritt 2 = separater Einzeltest -- ein Mechanismus je Test).
+Schritt 3 (Ringbreiten-Patch 235->470 in-memory aus der DLL, VA
+0x442b0a) liegt spezifiziert bereit, wartet auf Stefans Urteil.
+WARNUNGEN aus 672 stehen: ren_terrain_lod NIE ueber 9 (Default-
+Zweig = schlechteste Stufe!); CPU-Triangulation Ein-Thread;
+16384-Vertex-TERMINATION je Teilstueck; ~1.7 GB ohne LAA.
+
+=====================================================================
+673 -- DREI PRAEZISE FIXES NACH MESSLAUF 00:34: SELEKTOR-SIGNATUR-
+       FILTER (c15/c16), KAUSTIK-GATE OP 18, ANTI-KACHEL
+       SPRUNGKOMPENSIERT
+=====================================================================
+
+*** ZU TESTEN (Stefan): ***
+AquaNox_PBRDemo.cmd starten (unveraendert). Danach BILD und LOG:
+  a) TERRAIN: Fels/Sand-Grenzen jetzt GROSSFLAECHIG nach den
+     GEMALTEN Formen der Karte (nicht mehr fein gerastert/37x zu
+     klein gekachelt) UND RUHIG beim Umherfliegen -- kein Springen
+     der Maske im Kacheltakt (das war Stefans verbliebenes
+     Terrain-Ruckeln)?
+  b) ANTI-KACHEL: das Grossskala-Muster auf dem Terrain ebenfalls
+     RUHIG beim Fliegen (kein Beleuchtungs-Ruckeln im Sektortakt
+     mehr)? Auf Stationen unveraendert?
+  c) KAUSTIK: JETZT sichtbar ORIENTIERT auf den SCHIFFEN --
+     Oberseiten voll, Unterseiten praktisch frei (20% Grundanteil);
+     rollt das Schiff, bleibt "oben" korrekt? (Bisher wirkte die
+     Orientierung nirgends: die Schiffs-Grundmischung lief ueber
+     Op 18, die das Gate ausliess.)
+  d) LOG-BEWEIS (d3d8.log bitte schicken):
+     - "AquaNox-TERRAINMIX2: ... sig=1" und c16 in der
+       Selektorskala (~0.000244) -- NICHT mehr 0.00909.
+     - "AquaNox-KAUSTIK-OP-UNBEKANNT: Op=18" darf NICHT mehr
+       erscheinen (andere Op-Nummern duerfen -- die bleiben
+       bewusst konservativ unangetastet, bitte melden).
+     - sig=0 oder frisch=00 hiesse: die Engine laedt die
+       Selektorwerte getrennt vom c16-Paar oder nie -- dann ist
+       die 673er-Koppelung (c15 nur im selben Upload wie ein
+       passendes c16) zu ueberdenken; Selektor saehe einfarbig aus.
+
+1) MESSBEFUNDE DES 00:34-LAUFS (Grundlage):
+   - TERRAINMIX2: c15=(-220,-110) c16=(0.00909,0.00909) frisch=11.
+     0.00909 = 1/110 = W0-MATERIALSKALA (material.des), NICHT die
+     Selektorskala 1/4096 = 0.000244: der 671er-Spiegel nahm JEDEN
+     c15/c16-Upload -- die Engine ueberschreibt die Register aber
+     zwischen Selektor- und Detail-Upload. Folge: Fels/Sand-Maske
+     37x zu fein gekachelt + springt beim Kachelwechsel (Stefans
+     verbliebenes Terrain-Ruckeln).
+   - KAUSTIK-OP-UNBEKANNT: Op=18 = D3DTOP_MODULATEALPHA_ADDCOLOR
+     (result = Arg1.RGB + Arg1.A*Arg2.RGB) -- die Schiffs-
+     Grundmischung selbst ("S0 MODULATEALPHA_ADDCOLOR(DIFFUSE,
+     TEXTURE)", 670er-Forensik). Vom 671er-Gate konservativ
+     ausgelassen -> Kaustik-Orientierung wirkte auf Schiffen
+     NIRGENDS (dafuer kein Schaden).
+
+2) FIX 1 -- SELEKTOR-SIGNATUR-FILTER im c15/c16-Hook (Anker
+   AqVSC15/AqVSC16, SetVertexShaderConstant):
+   - Schattenwerte werden NUR uebernommen, wenn das FRISCH
+     geschriebene c16 zur Selektorskala passt: 0 < c16.xy < 0.002.
+     Die Materialskalen liegen >= 1/256 = 0.0039 -- Faktor >30
+     Abstand, die Schwelle trennt sauber (Messwerte im Kommentar).
+   - c15 haengt am SELBEN Upload-Aufruf: die Formel
+     oT1 = (v0.xy + c15) * c16 ist ein PAAR; ein Material-c15 zu
+     einem Selektor-c16 waere exakt der alte Fehler. Frische-Flags
+     bleiben (Bedeutung jetzt: "je einen PASSENDEN Upload gesehen").
+   - TERRAINMIX2-Logzeile um "sig=<0|1>" erweitert (1 = Schatten
+     traegt Selektorskala-Werte).
+
+3) FIX 2 -- KAUSTIK-GATE OP 18 (Generator, Stufen-Nachbau):
+   - Op 18 in die Gate-Faelle aufgenommen (OpBekannt +
+     D3DTOP_MODULATEALPHA_ADDCOLOR). HERLEITUNG im Kommentar:
+     der Nachbau lautet mad_sat r3.xyz, A1.w, A2, A1; der
+     TEXTURE-Texel liegt in r6. Ist r6 das Arg2 (der gemessene
+     Fall), ist sein GESAMTER Beitrag der Summand Arg1.A*r6.rgb
+     -> r6.rgb *= f VOR der Formel; bei f=0 bleibt exakt Arg1.RGB
+     stehen (Neutral 0). Ist r6 das Arg1 (r6.rgb + r6.a*Arg2.rgb),
+     dimmt derselbe Griff den direkten Add-Anteil, waehrend r6.w
+     unangetastet Arg2 weitermoduliert. BEIDE Argument-Lagen:
+     derselbe Griff wie ADD (r6.rgb *= f bzw. mov r6.xyz, c32.w
+     bei KAUSTIK=0); r6.w wird NIE angefasst.
+   - KAUSTIK-OP-UNBEKANNT fuer Op 18 kann damit nicht mehr feuern.
+     ALLE anderen unbekannten Ops bleiben konservativ unangetastet
+     (nicht geraten -- Einmalzeile bleibt als Fangnetz).
+
+4) FIX 3 -- ANTI-KACHEL SPRUNGKOMPENSIERT (Anker "ANTI-KACHEL
+   (649)", Terrain-Fall):
+   - Befund: der Block nutzte rohe t6-Schraegsummen; auf dem
+     Terrain springt t6 (= durchgereichtes v0) bei der Sektor-
+     Neuverankerung -> das Grossskala-Muster ruckte im Sektortakt
+     (Beleuchtungs-Ruckeln beim Fliegen).
+   - In der TerrainMix-VOLLVARIANTE (TerrainMix && AQUANOX_
+     TERRAINMIX=2 -- nur dann liegt c7 = (c15.xy, c16.xy) im
+     Shader) jetzt sprungkompensierte Basis:
+       uv = ((t6.x+c7.x)+t6.z, (t6.y+c7.y)-t6.z) * c5.z
+     Die xy-Kompensation absorbiert den Sektorsprung exakt
+     (dieselbe Verankerung wie die Engine-Selektorformel). z
+     bleibt ROH: die Hoehe wird bei der Neuverankerung vermutlich
+     nicht bzw. minimal versetzt -- UNBEWIESEN; bliebe ein Rest-
+     Ruckeln, ist z der naechste Kandidat (dokumentiert im Code).
+     X5584: c7 und c5 je in eigener Anweisung (4 statt 3 Zeilen).
+   - Nicht-Terrain-23er (kein TerrainMix-Schluessel, kein c7 im
+     Shader): roher Weg UNVERAENDERT -- Stationsurspruenge sind
+     stabil.
+
+5) PROBEN UND BAU:
+   - 599-Probe offline (scratchpad\pruef_673.py, D3DXAssemble-
+     Shader): FUENF Shader -- Op-18-Gate Modus 5 (c13-Up), Op-18-
+     Gate N.z-Up, Op-18-KAUSTIK=0-Neutral, ANTI-KACHEL-Terrain
+     (voller TerrainMix2-Schwanz + neue UV), ANTI-KACHEL-Roh-
+     Kontrolle -- ALLE hr=0 (X5584/X5766 beruecksichtigt).
+   - Laut:  MSBuild Release x86 -> bin\Release\d3d8.dll,
+     236.032 B, 1 'Redirecting'-Treffer (byte-exakt; erwartet).
+   - Still: CL=/DD3D8TO9NOLOG, OutDir/IntDir ReleaseStill (645b-
+     Schema) -> 198.656 B, 0 'Redirecting'-Treffer (554.3-
+     Gegenprobe bestanden; Hinweis: Select-String auf der Binaer-
+     datei liefert einen DEKODIER-Scheintreffer -- byte-exakt
+     mit Python gezaehlt).
+   - Eingespielt: d3d8_mit_log.dll + d3d8_still.dll, je fc /b
+     sauber (d3d8.dll zieht der Starter beim naechsten Lauf
+     selbst nach). AquaNox_PBRDemo.cmd unveraendert.
+   - Sicherung: mod_docu\hook\d3d8to9_device_s673.cpp. Header
+     NICHT beruehrt (d3d8to9_s671.hpp bleibt der Stand).
+
+6) RISIKEN / GRENZEN (ehrlich):
+   - Signatur-Koppelung: laedt die Engine c15 in einem EIGENEN
+     Aufruf (nicht zusammen mit c16), bleibt der c15-Schatten
+     leer -- sichtbar als frisch=01/sig=1 mit falschem Versatz
+     bzw. frisch=00 (einfarbiger Selektor). Die Logzeile
+     diagnostiziert beide Faelle sofort.
+   - Schwelle 0.002: trennt 1/4096 von >= 1/256 mit Faktor >30.
+     Karten mit Selektorskala > 1/512 gaebe es erst bei
+     Terraingroessen < 512 WE -- dann Schwelle nachziehen.
+   - Op-18-Gate: dimmt den TEXEL-Beitrag der Traegerstufe; liegt
+     die Kaustik in einem Op-18-Zug als Arg1 UND traegt ihr Alpha
+     die Mischung eines Materials (statt der Kaustik selbst),
+     bliebe das Alpha bewusst unorientiert -- konservativ richtig,
+     im Bild schlimmstenfalls schwaecherer Effekt, kein Schaden.
+   - Anti-Kachel-z: springt die Hoehe bei der Neuverankerung doch,
+     bleibt ein (kleineres) Rest-Ruckeln -- dann z ueber einen
+     dritten c7-Kanal kompensieren (c7.zw sind belegt; braeuchte
+     ein weiteres Register oder Umpacken).
+
+
+=====================================================================
+674 -- SELEKTOR-UV IST EIN VERTEXDATUM (v3): DAS 673er-FILTER-
+       PHANTOM STATISCH AUFGELOEST, VOLLVARIANTE AUF v3-DURCH-
+       REICHUNG; GEBAEUDE-KAUSTIK: KEINE ZWEITE TEXTURFAMILIE,
+       LISTE IST VOLLSTAENDIG
+=====================================================================
+
+*** ZU TESTEN (Stefan): ***
+AquaNox_PBRDemo.cmd starten (cmd unveraendert). Danach BILD und LOG:
+  a) TERRAIN: Fels/Sand-Grenzen ERSTMALS grossflaechig nach den
+     GEMALTEN Formen der Karte (bisher lief die Vollvariante auf
+     dem 0-Rueckfall = einfarbiger Selektor) UND RUHIG beim
+     Umherfliegen -- kein Springen im Kachel-/Sektortakt.
+  b) ANTI-KACHEL: Grossskala-Muster auf dem Terrain ebenfalls ruhig
+     beim Fliegen; auf Stationen unveraendert.
+  c) LOG-BEWEIS (d3d8.log bitte schicken):
+     "AquaNox-TERRAINMIX2: Weg=v3 Stride=40 (Soll 40) oT4=1".
+     Stride != 40 oder oT4=0 bitte melden -- dann stimmt die
+     Deklarations- bzw. dmfm-Erkennungs-Herleitung nicht und die
+     Maske waere Muell (Diagnose steht dann in 674/5).
+  d) PILZ-GEBAEUDE (Kaustik-Klaerung, ZWEI Beobachtungen):
+     1. BEWEGT sich das grobe Wirbelmuster auf der Unterseite
+        (wandernd/animiert wie die Schiffs-Kaustik) oder steht es
+        STILL? Still = das Muster ist in Lightmap/Textur GEBACKEN
+        -- kein Kaustik-Zug, kein Gate kann es je erfassen.
+     2. A/B: einmal mit "set AQUANOX_KAUSTIK=0" in der cmd starten
+        -- verschwindet die Unterseiten-Kaustik? Nein = der
+        Traeger laeuft ausserhalb unserer Gates (dann Log dazu).
+
+1) AUFGABE 1 -- DIE ECHTEN c15/c16-WERTE, STATISCH HERGELEITET
+   (Exe-Analyse Sitzung 2026-08-15; 527-Fallen vorab gelesen):
+   a) 0x4f2b40 ist SetVertexShaderConstant(reg, daten, anzahl):
+      kopiert anzahl*16 Byte in den Konstantenspiegel
+      0x692420 + reg*16 und laedt ueber [0x66d188]/0x50ba90 hoch
+      (Basisregister am Disassemblat geprueft, 527.1).
+   b) Die Kachel-Orchestratoren (Dispatcher 0x4fbda0 nach zwei
+      Caps-Bits: 0x4fd550 Einpass-Bestweg, 0x4fc5f0, 0x4fc940,
+      0x4fbfe0 Mehrpass-Rueckfall) laden vor jedem Materialzug
+      Register 15 mit ANZAHL 2 (= c15 UND c16 in einem Aufruf)
+      und fuer das Kies-Detail Register 0x13 (= c19/c20):
+          c16 = (1/W, 1/W, 1/W, 1/W)
+          c15.xy = -floor(S/W) * W
+      W = MATERIAL-Fenster je Lage aus material.des (Kachelstruktur
+      +0x28/+0x2c/+0x30; Detail +0x34: W3 = 8; 1h1: W0 = 110,
+      W1 = 32). S = Weltanker, zwei Floats bei Kontext+0x270
+      (Getter 0x52d290 = "lea eax,[ecx+0x270]"). floor = CRT
+      0x42a28f (EIN double-Argument -- kein fmod; der 668er-Name
+      "fmod-basiert" meinte dieselbe Wirkung: nur modulo W
+      eindeutig). Der 668er-Helfer 0x4fd340 rechnet identisch und
+      schreibt direkt Spiegel-Slot 0x692510 = 0x692420 + 15*16 --
+      die Registernummer ist damit doppelt bewiesen.
+   c) FOLGE: Die 00:34-Messwerte c15=(-220,-110), c16=(0.00909,
+      0.00909) waren KORREKTE Engine-Werte (Materialfenster
+      W0=110; Anker S in [220,330)x[110,220)). 4096/110 = 37.2 =
+      exakt Stefans "37x zu fein". *** ES GIBT KEINEN SELEKTOR-
+      SKALA-UPLOAD: der 673er-Filter (0 < c16 < 0.002) konnte
+      prinzipbedingt nie treffen (00:52-Log: sig=0 bestaetigt).
+      Er jagte ein Phantom -- eine Kalibrierung ist unmoeglich,
+      weil die gesuchten Werte nicht existieren. ***
+   d) WO DIE SELEKTOR-UV WIRKLICH HERKOMMT: Disassemblat der
+      terrainprelit-VS-Familie (D3DXDisassembleShader auf die
+      Blobs 0x61bcb4 ff.):
+          vs_mmsm:     mov oT0.xy, v3   <- SELEKTOR = VERTEXDATUM
+                       add r0.xy, v0, c15
+                       mul oT1.xy, r0, c16  <- MATERIAL-UV
+          vs_mmsmmmsm: oT0 UND oT2 aus v3 (beide Selektoren),
+                       Materialien ueber c15/c16 + c17/c18
+          ps_mmsmdmfm: r0 = t0*t1, dann *t2 (Selektor*Material)
+      *** DIE 668er-FORMELZUORDNUNG WAR SEITENVERKEHRT:
+      (v0.xy+c15)*c16 ist die MATERIAL-UV, nicht die Selektor-UV.
+      *** Die gemeinsame DEKLARATION aller 10 terrainprelit-VS
+      wird in 0x50b7a0 auf dem Stack gebaut (0x20000000,
+      0x40020000/1, 0x40040002, 0x40010003, 0x40000004, END):
+      v0=FLOAT3 Pos, v1=FLOAT3, v2=D3DCOLOR, v3=FLOAT2
+      (Selektor-UV, Offset 28), v4=FLOAT1 -- Schrittweite 40.
+      AUCH der Detailzug (dmfm) hat v3 also im Vertexstrom; sein
+      VS liest es nur nicht.
+   e) RUHE BEIM FLIEGEN PER KONSTRUKTION: das Terrain wird jedes
+      Bild neu trianguliert (672), die Engine rechnet v3 dabei
+      konsistent mit (welt/4096, 668er-Abbildung ohne V-Flip) --
+      die Selektor-UV ist ABSOLUT verankert, kein Anker-, kein
+      Neuverankerungs-Problem mehr. Jede c15/c19-Arithmetik in
+      unserem Shader war ein Umweg um Daten, die im Strom liegen.
+
+2) UMBAU (Quelle s674, device.cpp + hpp):
+   a) c15/c16-Spiegel + 673er-Signatur-Filter AUSGEBAUT
+      (SetVertexShaderConstant; Header: AqVSC15/16 samt Frische-
+      Flags raus). ps c7 ist wieder frei; der c7-Upload im 23er-
+      Bindungspfad ist raus.
+   b) CreateVertexShader/vs_3_0-Zweitfassung: dmfm wird BYTE-EXAKT
+      am Disassemblat erkannt ("add r0.xy, v0, c19" UND
+      "mul oT0.xy, r0, c20" -- Scan ueber alle 79 vs-Blobs der
+      Exe: GENAU 1 Treffer, rep_terrainprelit_vs_dmfm; kein
+      Shader der Exe schreibt selbst oT4, zusaetzlich als
+      Bedingung abgesichert). Bei TERRAINMIX=2 haengt die
+      Zweitfassung "mov oT4.xy, v3" an; AqNachVS3 deklariert
+      dcl_normal v3 (Registernummer-Semantik) und uebersetzt
+      oT4 -> o7/dcl_texcoord4. Diagnose-Flag
+      AqSelektorDurchgereicht haelt fest, dass die Zeile wirklich
+      angehaengt wurde.
+   c) Generator, Vollvariante: texld r26, t4, s2 -- die ORIGINALE
+      Engine-UV, 2 statt 4 Anweisungen. Neuer Tausch t4->v9
+      (Tabelle war 7 Eintraege, jetzt 8), Kopf deklariert
+      dcl_texcoord4 v9 nur bei TERRAINMIX=2.
+   d) Anti-Kachel-Terrainbasis: welt.xy = t4 * c6.z, c6.z-def von
+      0.000244140625 (unbenutzter Platzhalter) auf 4096.0 gedreht;
+      z bleibt roh aus t6 (673er-Offenpunkt unveraendert).
+      *** X5583 VON DER 599-PROBE GEFANGEN: ps_3_0 erlaubt nur
+      EIN v-Eingangsregister je Anweisung (Cousin von X5584) --
+      die mad-Fassung (t4 und t6 in einer Zeile) fiel durch;
+      eingebaut ist mul + add/add. ***
+   e) SetStreamSource schattet die Schrittweite von Stream 0
+      (AqStrom0Schritt). Neue TERRAINMIX2-Logzeile beim ersten
+      echten Terrainzug: "Weg=v3 Stride=<n> (Soll 40) oT4=<0/1>"
+      -- Stride!=40 widerlegte die Deklarations-Herleitung,
+      oT4=0 die dmfm-Erkennung (beide Fehlerfaelle waeren sonst
+      still).
+
+3) AUFGABE 2 -- GEBAEUDE-KAUSTIK: MESSERGEBNIS "KEINE ZWEITE
+   TEXTURFAMILIE" (melden statt raten):
+   a) Missionsdekompilate (alle 74): Game_SetCaustic* uebergeben
+      NUR (node, Staerke, Tempo) -- Terrain 0.025 / Object 0.1 /
+      Building 0.025, Tempo 0.2..0.6. Keine Texturpfade; Building
+      ist sogar der SCHWAECHSTE der drei Werte.
+   b) Datenbestand: dat\pak\extracted enthaelt als Kaustik NUR
+      vfx\tex\caustic\caus001..032 in fuenf Detailstufen _l2..._l6
+      (4x4 bis 64x64; 160 Dateien). KEIN bcaus*, kein zweiter
+      caustic-Bestand. Exe-Strings: genau EINE Quelle
+      "caustic\caustic.tse" (0x60411c); die drei Setter-Strings
+      (0x60eba8 ff.) sind reine Kommandonamen.
+   c) Dump-Abgleich (644er-Cluster-Methodik, alle 225 Dump-PNGs
+      aller Groessen gegen die 32 Frames): KEIN zweiter Kaustik-
+      Cluster. 14 MAD-Kandidaten unter Schwelle visuell geprueft
+      und alle verworfen (Normalmaps, Gestein, Glow-Sprites,
+      Selektor 633624ac, Stationsdetail 0b64fc55, Fels 8a24b131).
+   d) kaustik_hashes.txt: NICHTS anzuhaengen -- die 32 Eintraege
+      sind vollstaendig. Herkunftskommentar an die Datei
+      angehaengt ('#'-Zeilen liest der Wrapper-Lader als 0 und
+      ueberspringt sie -- an _strtoui64 gemessen).
+   e) ZUR PILZ-BEOBACHTUNG (Erklaerungslage nach Log 00:52):
+      - KEIN Modus-23-Zug traegt eine Kaustik auf St0; die
+        Modus-23-Bindungen St1/St2 sind KETTEN-INAKTIV (Stufen=1,
+        der Schluesselbau prueft korrekt nur Kettenstufen). Der
+        669er "eigene St0-2x-Kaustikzug" existiert in diesem
+        Lauf nicht.
+      - Der einzige Gebaeude-Traeger im Log ist der PRELIT-
+        BASISZUG: KAUSTIK-GATE Modus=19 St=1 Op=18 -- das Gate
+        greift dort bereits.
+      - Alpha der 32 Frames ist konstant 255 (an den Dumps
+        gemessen): der Op-18-Alphapfad (Arg1.A*Arg2.RGB) kann
+        das MUSTER nicht tragen; r6.rgb*=f dimmt es vollstaendig.
+        Die 673er-Sorge "Alpha bleibt unorientiert" ist fuer
+        diese Frames gegenstandslos.
+      - Bleibt die Unterseite trotzdem voll: entweder (a) das
+        grobe Wirbelmuster ist GEBACKEN (Lightmap/Textur --
+        statisch, Testpunkt d1) oder (b) ein Traeger ausserhalb
+        unserer Pfade (Testpunkt d2, KAUSTIK=0-A/B). Die zwei
+        Beobachtungen trennen die Faelle eindeutig -- erst dann
+        wird gebaut, nicht vorher geraten.
+
+4) PROBEN UND BAU:
+   - 599-Probe offline (scratchpad\pruef_674.py, Kopie
+     mod_docu\hook\pruef_674.py): DREI Shader -- dmfm-Zweit-
+     fassung vs_3_0 mit oT4-Durchreichung, TerrainMix2-PS
+     (v9-Selektor + neue Anti-Kachel-Basis, voller Schwanz),
+     Anti-Kachel-Roh-Kontrolle -- ALLE hr=0. Die Probe fing
+     X5583 (s.o.), bevor es ins Spiel kam.
+   - Laut:  MSBuild Release x86 -> bin\Release\d3d8.dll,
+     236.032 B, 1 'Redirecting'-Treffer (byte-exakt, Python).
+   - Still: CL=/DD3D8TO9NOLOG, OutDir/IntDir ReleaseStill (645b-
+     Schema) -> 199.168 B, 0 'Redirecting'-Treffer (554.3-
+     Gegenprobe bestanden).
+   - Eingespielt: d3d8_mit_log.dll + d3d8_still.dll, je fc /b
+     sauber (d3d8.dll zieht der Starter beim naechsten Lauf
+     nach). AquaNox_PBRDemo.cmd unveraendert.
+   - Sicherungen: mod_docu\hook\d3d8to9_device_s674.cpp und
+     d3d8to9_s674.hpp (Header: Spiegel raus, AqStrom0Schritt +
+     AqSelektorDurchgereicht rein).
+
+5) RISIKEN / GRENZEN (ehrlich):
+   - v3 = welt/4096: folgt aus mmsm-Disassemblat + 668er-Pixel-
+     beweis der Selektortextur + Kartenkante 4096; ein direkter
+     Vertexdaten-Dump steht aus. Braeche die Annahme, zeigte das
+     Bild eine falsch skalierte, aber STEHENDE Maske; Stride!=40
+     bzw. oT4=0 in der Logzeile sind die Alarmzeichen.
+   - Stationszuege, die zufaellig die TerrainMix-Signatur treffen
+     (Modus 23, Stufen=1, NormalKarte, SELECTARG2), laesen
+     texcoord4 undefiniert (ihr VS schreibt o7 nicht) -- gleiche
+     Exponierung wie bisher mit der c7-UV, nie beobachtet.
+   - Die dmfm-Erkennung haengt am D3DX-Disassemblat-Wortlaut;
+     ein D3DX-Wechsel koennte die Schreibweise aendern -- das
+     meldete die Logzeile sofort als oT4=0.
+   - c6.z = 4096 ist ein 1h1-Wert (wie c6.x/y); der bekannte
+     Je-Karte-Ausbau bleibt offen. Die Selektor-ABTASTUNG selbst
+     (t4) ist jetzt kartenunabhaengig korrekt -- nur die Anti-
+     Kachel-Weltskala haengt an der Kantenlaenge.
+   - Anti-Kachel-z bleibt roh (673er-Offenpunkt): springt die
+     Hoehe bei der Neuverankerung, bliebe ein Rest-Ruckeln des
+     Grossskala-Musters.
+
+=====================================================================
+675 -- TERRAIN-VOLLVARIANTE BESTAETIGT (v3-Weg): RUHIG BEI BEWEGUNG
+=====================================================================
+Stefan: "Beleuchtung/Kaustik auf dem Terrain bei Bewegung sieht
+wieder gut aus und nicht ruckelig." Der 674er-v3-Vertexdaten-Weg
+traegt -- Selektorkarte + Anti-Kachel aus den Original-Vertex-UVs,
+konstruktiv sprungfrei. DAS TERRAIN-KAPITEL (660-675) IST
+GESCHLOSSEN: Neigungsmix (=1) und gemalte Selektor-Vollvariante
+(=2) beide funktionsfaehig, LOD-Schritt 1 aktiv.
+
+OFFEN: Pilz-Gebaeude ("keine Aenderung") -- Stefans A/B-
+Beobachtungen stehen aus; Verdachtspruefung "eingebackenes
+Muster" laeuft jetzt direkt an den Dump-Texturen (Wirbelmuster
+im Albedo-PNG = gebacken bewiesen, kein Spiellauf noetig).
+Stefans neue Konzeptfrage (Kaustik wie Licht/Schatten von oben)
+in 675b beantwortet.
+
+---------------------------------------------------------------------
+675b -- PILZ-MUSTER: DRITTE HYPOTHESE + STEFANS SCHATTEN-KONZEPT
+---------------------------------------------------------------------
+Dump-Sichtung der Prelit-Wand-Texturen (ecafb9c8, 697c96fd u.a.):
+KEIN eingebacktes Wirbelmuster gefunden. Damit drei Kandidaten
+fuer das Muster auf der Pilz-Unterseite:
+  (a) echte Laufzeit-Kaustik ueber einen noch unerkannten Pfad
+      -- Kennzeichen: wabert VON SELBST, verschwindet bei
+      AQUANOX_KAUSTIK=0;
+  (b) eingebacken in eine noch nicht identifizierte Textur --
+      Kennzeichen: statisch, bleibt bei KAUSTIK=0;
+  (c) UNSER Umgebungswuerfel-Glanz (Metall-Heuristik + 128er-
+      Strukturwuerfel) -- Kennzeichen: wandert MIT DER KAMERA-
+      BEWEGUNG, bleibt bei KAUSTIK=0; Gegenprobe AQUANOX_METALL=0.
+Stefans DREI Kurzbeobachtungen entscheiden (im Testauftrag).
+
+STEFANS KONZEPTFRAGE (Kaustik wie Licht/Schatten von oben):
+1. Die ORIENTIERUNGS-Stufe (Flaeche zeigt zum Licht oder nicht)
+   IST das gebaute 671er-Gate -- N*up-Faktor, wirkt auf jede
+   ERKANNTE Laufzeit-Kaustik (Schiffe/Prelit bestaetigt im Log).
+2. ECHTE VERSCHATTUNG (etwas liegt DARUEBER -- der Pilz-Schirm
+   verschattet Stiel und Boden) braeuchte eine Top-Down-
+   Tiefenkarte (Schattenkarte von oben) oder vorberechnete
+   Occlusion je Vertex/Textur -- machbar, aber ein GROSSES
+   Kapitel (Render-Target-Pass im Wrapper oder Offline-Baking in
+   die Ersatz-ORM als Occlusion-Kanal; letzteres passt zur
+   vorhandenen PBR-Maschine: O-Kanal ist seit 643 der Hoehen-
+   kanal -- ein VIERTER Kanal/zweite Karte waere noetig).
+3. Fuer GEBACKENE Muster hilft kein Laufzeit-Gate -- nur
+   Textur-Ersatz (vorhandene Ersetzungs-Maschine).
